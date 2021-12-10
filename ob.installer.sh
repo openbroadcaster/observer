@@ -33,6 +33,9 @@ get_password
 OBCONF_PASS=$PASSWORD
 OBCONF_URL="http://localhost"
 OBCONF_EMAIL="admin@localhost.localhost"
+get_password
+updates_password=$(php -r "echo password_hash('$PASSWORD',PASSWORD_DEFAULT).\"\n\";")
+updates_password_plan_text=$PASSWORD
 
 MYSQL_PASS=""
 MYSQL_ROOTPASS=""	# leave blank to be prompted for password during installation
@@ -201,6 +204,6 @@ echo "Version: $version"
 echo "Branch: $branch"
 echo "Your mysql login : $USER/$MYSQL_PASS"
 echo "Your admin password: $OBCONF_PASS"
-echo "Your updates login: updates/updates"
+echo "Your updates login: updates/$updates_password_plan_text"
 echo ""
 echo "Thank you for chosing OpenBroadcaster!"
