@@ -34,7 +34,8 @@ OBCONF_PASS=$PASSWORD
 OBCONF_URL="http://localhost"
 OBCONF_EMAIL="admin@localhost.localhost"
 
-MYSQL_PASS=""
+get_password
+MYSQL_PASS=$PASSWORD
 MYSQL_ROOTPASS=""	# leave blank to be prompted for password during installation
 
 # if using the default FQDN value leave this as "_".
@@ -180,9 +181,10 @@ echo ""
 echo "*** Setting up mysql ***"
 echo ""
 
-sudo mysqladmin create obdb -p$MYSQL_ROOTPASS
-mysql -e "CREATE USER obsuser@localhost IDENTIFIED BY '$MYSQL_PASS'; GRANT ALL PRIVILEGES ON obdb. * TO 'obsuser'@'localhost'; FLUSH PRIVILEGES;" -p$MYSQL_ROOTPASS
-sudo mysql -p$MYSQL_PASS obdb < /var/www/observer/db/dbclean.sql
+sudo mysqladmin create obdb
+mysql -e "CREATE USER obsuser@localhost IDENTIFIED BY '$MYSQL_PASS'; GRANT ALL PRIVILEGES ON obdb. * TO 'obsuser'@'localhost'; FLUSH PRIVILEGES;"
+sudo mysql obdb < /var/www/observer/db/dbclean.sql
+cd /var/www/observer/ && tools/password_change.php "admin" "$OBCONF_PASS"
 
 echo ""
 echo "*** Setting up ob manager and media directory ***"
