@@ -213,6 +213,7 @@ Description=OB Transcode service
 [Service]
 User=ob
 Group=www-data
+WorkingDirectory=/var/www/observer/tools/stream/
 ExecStart=/var/www/observer/tools/stream/transcode.sh
 
 [Install]
