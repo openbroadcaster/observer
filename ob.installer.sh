@@ -47,6 +47,12 @@ OBSERVER_BRANCH="main"
 # set the user being used for things like the home folder.
 USER="obsuser"
 
+# Make sure we have the "obsuser" user.
+
+useradd obsuser > /dev/null 2>&1 
+usermod -a -G obsuser obsuser > /dev/null 2>&1 
+usermod -a -G www-data obsuser > /dev/null 2>&1 
+
 # based on code from: https://brianchildress.co/named-parameters-in-bash/
 
 branch=${branch:-master}
@@ -195,6 +201,25 @@ mkdir -p /var/www/observer/assets/uploads
 chown -R www-data /home/media /var/www/observer/assets
 find /home/media/ -type d -exec chmod 0775 {} \;
 find /home/media/ -type f -exec chmod 0664 {} \;
+
+echo ""
+echo "*** Setting up the OB Transcode service ***"
+echo ""
+
+cat > /etc/systemd/system/ob_transcode.service <<EOF
+[Unit]
+Description=OB Transcode service
+
+[Service]
+User=ob
+Group=www-data
+ExecStart=/var/www/observer/tools/stream/transcode.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable ob_transcode.service && systemctl start ob_transcode.service && echo "*** The OB Transcode service has been actvated ***"
 
 echo ""
 echo "OBServer software is installed"
