@@ -1,0 +1,24 @@
+{
+  "name": "friendsofcake-site",
+  "version": "2.0.0",
+  "description": "FriendsOfCake.com website.",
+  "main": "index.html",
+  "authors": [
+    "See GitHub"
+  ],
+  "license": "MIT",
+  "homepage": "http://friendsofcake.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "components-font-awesome": "~4.3.0",
+    "bootstrap": "~3.3.4",
+    "modernizr": "~2.8.3"
+  }
+}

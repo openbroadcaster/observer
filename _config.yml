@@ -1,0 +1,6 @@
+paginate: 5
+exclude:
+  - README.md
+project_title: foo-bar
+kramdown:
+   toc_levels: "2,3"
