@@ -699,7 +699,15 @@ OB.Schedule.loadSchedule = function()
   else if(OB.Schedule.schedule_mode == 'schedule')
   {
     var post = [];
-    post.push(['shows','search', { 'start': String(Math.round(OB.Schedule.schedule_start.getTime()/1000)), 'end': String(Math.round(OB.Schedule.schedule_end.getTime()/1000)), 'player': OB.Schedule.player_id }]);
+    
+    // adjust request to account for timezone discrepancies (since we're not being smart about getting the exact start/end timestamps in the player's timezone)
+    // TODO this could be improved by requesting in local time (i.e., YYYY-MM-DD HH:MM:SS).
+    // https://www.quora.com/Can-time-difference-between-two-places-be-greater-than-24-hours
+    
+    var schedule_request_start = String(Math.round( OB.Schedule.schedule_start.getTime()/1000 - (60*60*26) ));
+    var schedule_request_end = String(Math.round( OB.Schedule.schedule_end.getTime()/1000 + (60*60*26) ));
+    
+    post.push(['shows','search', { 'start': schedule_request_start, 'end': schedule_request_end, 'player': OB.Schedule.player_id }]);
     /*post.push(['shows', 'search', {'start': moment(OB.Schedule.schedule_start.getTime()).format('Y-MM-DD HH:mm:ss'), 'end': moment(OB.Schedule.schedule_end.getTime()).format('Y-MM-DD HH:mm:ss'), 'player': OB.Schedule.player_id}]);*/
     post.push(['shows','set_last_player', { 'player': OB.Schedule.player_id}]);
 
@@ -796,6 +804,9 @@ OB.Schedule.refreshData = function()
   $.each(schedule_data, function(index,data) {
 
     if(data.day===null) return;
+    
+    // skip if day number mismatch (occurs because extra data is obtained from server due to potential client/player timezone discrepancy)
+    if(parseInt(data.exp_start.substr(8,2), 10) != parseInt($('#schedule_days_'+data.day).text(), 10)) return;
 
     // see if our block passes through an expanded hour
     var block_duration = parseInt(data.block_duration);
@@ -942,7 +953,7 @@ OB.Schedule.scheduleDetails = function(e,id)
     $('#schedule_details_name').text(data.description);
   }
 
-  $('#schedule_details_datetime').text(format_timestamp(data.start));
+  $('#schedule_details_datetime').text(data.exp_start);
   $('#schedule_details_duration').text(secsToTime(data.duration));
   $('#schedule_details_user').text(data.user);
 

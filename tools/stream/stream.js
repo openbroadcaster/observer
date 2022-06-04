@@ -241,8 +241,18 @@ function load(widget)
       $item.data('metadata',item);
     });
 
-    // play item if single media and it's an image. otherwise it's click player box to play.
-    if(media_id) $(widget).find('.ob-stream-widget-item[data-type=image] .ob-stream-widget-item-play').click();
+    // play item if single media and it's an image. otherwise set thumbnail with click player box to play.
+    if(media_id)
+    {
+      if($(widget).find('.ob-stream-widget-item[data-type=image] .ob-stream-widget-item-play').length)
+      {
+        $(widget).find('.ob-stream-widget-item[data-type=image] .ob-stream-widget-item-play').click();
+      }
+      else if(media[0].thumbnail)
+      {
+        $(widget).find('.ob-stream-widget-player').css('background-image','url('+obstream.url + media[0].thumbnail+')');
+      }
+    }
 
     // add "load more" if link or auto      
     var more = $(widget).attr('data-more');

@@ -38,14 +38,6 @@ class OBFHelpers
   }
 
   /**
-   * Test method. Simply echoes 'obfhelper test'.
-   */
-  public function test()
-  {
-    echo 'obfhelper test';
-  }
-
-  /**
    * Sanitize HTML, allowing only specific tags and attributes from user input
    * and stripping out everything else.
    *
@@ -106,5 +98,114 @@ class OBFHelpers
       if (!isset($args[$def])) $args[$def] = $defval;
     }
   }
+  
+  /**
+   * Determine image format.
+   * 
+   * @param filename Image filename.
+   */
+  static public function image_format($filename)
+  {
+    if(!file_exists($filename))
+    {
+      trigger_error('This file does not exist', E_USER_WARNING);
+      return false;
+    }
+    
+    $mime_type = mime_content_type($filename);
+    switch($mime_type)
+    {
+      case 'image/svg+xml':
+        return 'svg';
+      case 'image/jpeg':
+        return 'jpg';
+      case 'image/png':
+        return 'png';
+    }
+    
+    // backup in case mime type failed
+    $gd_type = getimagesize($filename);
+    if(isset($gd_type[2]))
+    {
+      switch($gd_type[2])
+      {
+        case IMAGETYPE_JPEG:
+          return 'jpg';
+        case IMAGETYPE_PNG:
+          return 'png';
+      }
+    }
+    
+    // no result
+    return false;
+  }
+  
+  /**
+   * Resize an image.
+   * 
+   * @param src Source filename.
+   * @param dst Destination filename (JPEG).
+   * @param width Target width.
+   * @param height Target height.
+   */
+  static public function image_resize($src, $dst, $width, $height)
+  {
+    if(!file_exists($src)) { trigger_error('The source file does not exist', E_USER_WARNING); return false; }
+    if(!is_writeable(pathinfo($dst)['dirname'])) { trigger_error('The destination directory is not writeable', E_USER_WARNING); return false; }
+  
+    // figure out image format
+    $format = OBFHelpers::image_format($src);
+    if(!$format) { trigger_error('Unable to determine image format', E_USER_WARNING); return false; }
 
+    if($format=='svg' && !extension_loaded('imagick')) trigger_error('The ImageMagick (imagick) extension is required to resize SVG images.', E_USER_ERROR);
+
+    if($format=='svg')
+    {
+      $im = new Imagick();
+      $svg = file_get_contents($src);
+      $im->readImageBlob($svg);
+
+      $source_width = $im->getImageWidth();
+      $source_height = $im->getImageHeight();
+      $source_ratio = $source_width/$source_height;
+      $ratio = $width/$height;
+
+      if($ratio > $source_ratio) $width = $height * $source_ratio;
+      else $height = $width / $source_ratio;
+
+      $im->setImageFormat("jpeg");
+      $im->adaptiveResizeImage($width, $height);
+
+      $im->writeImage($cache_file);
+      $im->clear();
+      $im->destroy();
+    }
+
+    else
+    {
+      $image_data = getimagesize($src);
+
+      list($source_width,$source_height) = $image_data;
+
+      $source_ratio = $source_width/$source_height;
+      $ratio = $width/$height;
+
+      if($ratio > $source_ratio) $width = $height * $source_ratio;
+      else $height = $width / $source_ratio;
+
+      // png or jpg?
+      if($image_data[2]==IMAGETYPE_PNG) $image_source = imagecreatefrompng($src);
+      else $image_source = imagecreatefromjpeg($src);
+
+      $image_dest = imagecreatetruecolor($width,$height);
+
+      imagecopyresampled($image_dest,$image_source,0,0,0,0,$width,$height,$source_width,$source_height);
+
+      imagejpeg($image_dest,$dst);
+      imagedestroy($image_dest);
+      imagedestroy($image_source);
+    }
+    
+    return true;
+  }
 }

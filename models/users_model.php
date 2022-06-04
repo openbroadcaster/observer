@@ -626,9 +626,12 @@ class UsersModel extends OBFModel
     }
 
     // make sure language is valid
-    $languages = array_keys($this->models->ui('get_languages'));
+    $languages = $this->models->ui('get_languages');
+    $language_codes = [];
+    foreach($languages as $language) $language_codes[] = $language['code'];
+    
     //T The language selected is not valid.
-    if($data['language']!=='' && array_search($data['language'],$languages)===false) return array(false,'The language selected is not valid.');
+    if($data['language']!=='' && array_search($data['language'],$language_codes)===false) return array(false,'The language selected is not valid.');
 
     // make sure theme is valid
     $themes = array_keys($this->models->ui('get_themes'));

@@ -262,71 +262,21 @@ class MediaPreview extends OBFController
 
       $cache_file = $cache_dir.'/'.$media['id'].'_'.$dest_width.'x'.$dest_height.'.jpg';
 
+      if(!file_exists($cache_file)) OBFHelpers::image_resize($media_file, $cache_file, $dest_width, $dest_height);
+
       if(!file_exists($cache_file))
       {
- 
-        // TODO better error reporting back to user needed.
-        // SVG preview requires imagick extension.
-        if($format=='svg' && !extension_loaded('imagick')) die();
-
-        if($format=='svg')
-        {
-          $im = new Imagick();
-          $svg = file_get_contents($media_file);
-          $im->readImageBlob($svg);
-
-          $source_width = $im->getImageWidth();
-          $source_height = $im->getImageHeight();
-          $source_ratio = $source_width/$source_height;
-          $dest_ratio = $dest_width/$dest_height;
-
-          if($dest_ratio > $source_ratio) $dest_width = $dest_height * $source_ratio;
-          else $dest_height = $dest_width / $source_ratio;
-
-          $im->setImageFormat("jpeg");
-          $im->adaptiveResizeImage($dest_width, $dest_height);
-
-          $im->writeImage($cache_file);
-          $im->clear();
-          $im->destroy();
-        }
-
-        else
-        {
-          $image_data = getimagesize($media_file);
-
-          list($source_width,$source_height) = $image_data;
-
-          $source_ratio = $source_width/$source_height;
-          $dest_ratio = $dest_width/$dest_height;
-
-          if($dest_ratio > $source_ratio) $dest_width = $dest_height * $source_ratio;
-          else $dest_height = $dest_width / $source_ratio;
-
-          if($image_data[2]==IMAGETYPE_PNG) $image_source = imagecreatefrompng($media_file);
-          elseif($image_data[2]==IMAGETYPE_JPEG) $image_source = imagecreatefromjpeg($media_file);
-          elseif($image_data[2]==IMAGETYPE_GIF) $image_source = imagecreatefromgif($media_file);
-          else die();
-
-          $image_dest = imagecreatetruecolor($dest_width,$dest_height);
-
-          imagecopyresampled($image_dest,$image_source,0,0,0,0,$dest_width,$dest_height,$source_width,$source_height);
-
-          imagejpeg($image_dest,$cache_file);
-          imagedestroy($image_dest);
-          imagedestroy($image_source);
-        }
+        http_response_code(404);
+        exit;
       }
-
+      
       header('Content-type: image/jpeg');
       header('Content-Length: '.filesize($cache_file));
       $fp = fopen($cache_file,'rb');
       fpassthru($fp);
-
     }
 
     exit();
-
   }
 
 }

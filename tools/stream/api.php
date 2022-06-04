@@ -70,7 +70,6 @@ $db->what('media.type');
 $db->what('media.format');
 $db->what('media.file_location');
 $db->what('media.stream_version');
-$db->what('media.thumbnail_version');
 
 // public approved unarchived only
 $db->where('media.status','public');
@@ -120,9 +119,17 @@ foreach($media as $item)
   }
   
   $thumbnail_file = 'streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/thumb.jpg';
-  if($item['thumbnail_version'] && file_exists(OB_CACHE.'/'.$thumbnail_file))
+  if(file_exists(OB_CACHE.'/'.$thumbnail_file))
   {
     $item['thumbnail'] = $thumbnail_file;
+  }
+  else
+  {
+    $thumbnail_file = 'thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg';
+    if(file_exists(OB_CACHE.'/'.$thumbnail_file))
+    {
+      $item['thumbnail'] = 'thumbnail.php?id='.$item['id'];
+    }
   }
 
   $item_return = [

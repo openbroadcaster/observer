@@ -95,14 +95,14 @@ class OBFChecker
 
   public function config_file_exists()
   {
-    if(!file_exists('../config.php')) return array('Settings file', 'Settings file (config.php) not found.',2);
+    if(!file_exists(__DIR__.'/../config.php')) return array('Settings file', 'Settings file (config.php) not found.',2);
     return array('Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.'."\n\n".'If you see an error below (or if output stops), check config.php for errors.',0);
   }
 
   public function config_file_valid()
   {
 
-    require('../components.php');
+    require(__DIR__.'/../components.php');
 
     $fatal_error = false;
     $errors = array();
@@ -231,8 +231,7 @@ class OBFUpdates
     {
       $result = $checker->$checker_method();
       $this->checker_results[] = $result;
-
-      if($result[2]==2) { $this->checker_status = false; return; } // fatal error encountered.
+      if((!defined('OB_FORCE_UPDATE') || OB_FORCE_UPDATE!==true) && $result[2]==2) { $this->checker_status = false; return; } // fatal error encountered.
     }
 
     $this->dbver = $checker->dbver;
@@ -244,6 +243,9 @@ class OBFUpdates
 
   public function auth()
   {
+    // CLI doesn't require auth.
+    if(php_sapi_name()==='cli') return;
+    
     // no user or password set for updates.
     if(!defined('OB_UPDATES_USER') || !defined('OB_UPDATES_PW'))
     {

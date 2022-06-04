@@ -55,14 +55,18 @@ class MediaThumbnail extends OBFController
   public function output($id)
   {
     global $user;
-  
+
     $this->db->where('id',$id);
     $media = $this->db->get_one('media');
     if(!$media) $this->not_found();
     
     // check permissions
-    $is_media_owner = $media['owner_id']==$user->param('id');    
-    if($media['status']=='private' && !$is_media_owner) $user->require_permission('manage_media');
+    if($media['status']!='public')
+    {
+      $user->require_authenticated();
+      $is_media_owner = $media['owner_id']==$user->param('id');    
+      if($media['status']=='private' && !$is_media_owner) $user->require_permission('manage_media');
+    }
     
     $l0 = $media['file_location'][0];
     $l1 = $media['file_location'][1];

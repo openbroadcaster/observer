@@ -304,6 +304,10 @@ class Remote
       {
         $this->db->where('id',$show['item_id']);
         $media = $this->db->get_one('media');
+        $media['item_type'] = $media['type'];
+        $media['type'] = 'media';
+        if($media['item_type']=='image') $media['duration'] = $show['duration'];
+        $media['context'] = 'Media';
 
         if($media)
         {

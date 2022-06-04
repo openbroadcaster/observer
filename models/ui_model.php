@@ -129,7 +129,7 @@ class UIModel extends OBFModel
    */
   public function get_languages($args = [])
   {
-    $languages = array();
+    $languages = [];
 
     foreach ($this->db->get('translations_languages') as $language) {
       $languages[] = array(
@@ -150,11 +150,13 @@ class UIModel extends OBFModel
   public function get_user_language($args = [])
   {
     $all_languages = $this->get_languages();
-
-    if($this->user->userdata && !empty($this->user->userdata['language']) && !empty($all_languages[$this->user->userdata['language']]))
-      return $all_languages[$this->user->userdata['language']];
-
-    else return false;
+  
+    // no language set?
+    if(!$this->user->userdata || empty($this->user->userdata['language'])) return false;
+    
+    // loop and return language if code match
+    foreach($all_languages as $language) if($language['code'] == $this->user->userdata['language']) return $language;
+    return false;
   }
 
   /**
@@ -166,17 +168,16 @@ class UIModel extends OBFModel
   public function strings($args = [])
   {
 
-    if ($this->user->userdata && !empty($this->user->userdata['language'])) {
-      $language = $this->user->userdata['language'];
+    // no language set?
+    if(!$this->user->userdata || empty($this->user->userdata['language'])) return [];
 
-      if(!preg_match('/^[0-9a-z_-]+$/i',$language)) return array();
+    // loop and return language if code match
+    $all_languages = $this->get_languages();
+    foreach($all_languages as $language) if($language['code'] == $this->user->userdata['language'])
+    {
+      $strings = [];
 
-      $languages = array_keys($this->get_languages());
-      if(array_search($language,$languages)===false) return array();
-
-      $strings = array();
-
-      $this->db->where('code', $language);
+      $this->db->where('code', $language['code']);
       $lang_id = $this->db->get_one('translations_languages')['id'];
 
       $this->db->where('language_id', $lang_id);
@@ -187,10 +188,10 @@ class UIModel extends OBFModel
       }
 
       return $strings;
-
-    } else {
-      return array();
     }
+    
+    // language not found
+    return [];
   }
 
   /**

@@ -19,7 +19,30 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('updates.php'); 
+// experimental functionality to run updates from command line
+if(php_sapi_name() === 'cli' && ($argv[1] ?? null)==='force-update')
+{
+  define('OB_FORCE_UPDATE', true);
+  require('updates.php');
+  require_once(__DIR__.'/../components.php');
+  $list = $u->updates();
+  foreach($list as $update)
+  {
+    if($update->needed)
+    {
+      if(!$u->run($update))
+      {
+        echo 'Update failed, exiting.'.PHP_EOL;
+        exit(1);
+      }
+      echo 'Update '.$update->version.' installed.'.PHP_EOL;
+    }
+  }
+
+  exit(0);
+}
+
+require_once('updates.php'); 
 
 if(empty($_GET['run']) || $_GET['run']!=1) $run=false;
 else $run=true;

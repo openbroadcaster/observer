@@ -275,12 +275,50 @@ class MediaModel extends OBFModel
 
     $this->db->where('media.id', $args['id']);
     $media = $this->db->get_one('media');
+    
     if($media)
     {
-      $media['thumbnail'] = file_exists(OB_CACHE.'/thumbnails/'.$media['file_location'][0].'/'.$media['file_location'][1].'/'.$media['id'].'.jpg');
+      $media['thumbnail'] = $this->models->media('media_thumbnail_exists',['media'=>$media]);
     }
     
     return $media;
+  }
+  
+  /**
+   * Check if media thumbnail exists (create if necessary).
+   *
+   * @param media ID or media row array.
+   */
+  public function media_thumbnail_exists($args = [])
+  {
+    OBFHelpers::require_args($args, ['media']);
+
+    if(!is_array($args['media']))
+    {
+      $this->db->where('id', $args['media']);
+      $media = $this->db->get_one('media');
+    }
+    else $media = $args['media'];
+    
+    OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
+    if(strlen($media['file_location'])!=2) { trigger_error('Invalid media file location.',E_USER_WARNING); return false; }
+    
+    $thumbnail_directory = OB_CACHE.'/thumbnails/'.$media['file_location'][0].'/'.$media['file_location'][1];
+    $thumbnail_file = $thumbnail_directory.'/'.$media['id'].'.jpg';
+    
+    if(!file_exists($thumbnail_directory)) mkdir($thumbnail_directory, 0755, true);
+    
+    if($media['type']=='image' && !file_exists($thumbnail_file))
+    {    
+      if($media['is_archived']==1) $media_file=OB_MEDIA_ARCHIVE;
+      elseif($media['is_approved']==0) $media_file=OB_MEDIA_UPLOADS;
+      else $media_file=OB_MEDIA;
+      $media_file.='/'.$media['file_location'][0].'/'.$media['file_location'][1];
+      $media_file=$media_file.'/'.$media['filename'];
+      OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
+    }
+    
+    return file_exists($thumbnail_file);
   }
 
   /**
@@ -513,6 +551,7 @@ class MediaModel extends OBFModel
   public function search($args = [])
   {
     OBFHelpers::require_args($args, ['params']);
+    OBFHelpers::default_args($args['params'], ['sort_by'=> null]);
     OBFHelpers::default_args($args, ['player_id' => false, 'random_order' => false, 'include_private' => false]);
 
     // if we are accessing from a remote, determine the valid media types.
@@ -626,7 +665,7 @@ class MediaModel extends OBFModel
       $items = $this->db->get('media');
       foreach($items as &$item)
       {
-        $item['thumbnail'] = file_exists(OB_CACHE.'/thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg');
+        $item['thumbnail'] = $this->models->media('media_thumbnail_exists',['media'=>$item]);
       }
 
       return array($items,$total_media_found);
@@ -658,7 +697,7 @@ class MediaModel extends OBFModel
       $items = $this->db->get('media');
       foreach($items as &$item)
       {
-        $item['thumbnail'] = file_exists(OB_CACHE.'/thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg');
+        $item['thumbnail'] = $this->models->media('media_thumbnail_exists',['media'=>$item]);
       }
 
       return array($items,$total_media_found);
