@@ -1,6 +1,7 @@
 <?php
 
 require('../components.php');
+$models = OBFModels::get_instance();
 $db = OBFDB::get_instance();
 $db->where('name', 'client_login_message');
 $result = $db->get_one('settings');
@@ -8,6 +9,8 @@ $welcome_message = $result ? $result['value'] : '';
 
 if(is_file('VERSION')) $version = trim(file_get_contents('VERSION'));
 else $version = 4;
+
+$update_required = $models->updates('update_required');
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -22,9 +25,19 @@ else $version = 4;
 </head>
 <body>
 
-<div id="container1">
+<div id="container">
 
-	<div id="container2">
+	<?php if($update_required) { ?>
+	
+		<div class="error">
+			<h1>Update Required</h1>
+			<p>A database update is required using one of the following methods:</p>
+			<ul>
+				<li><strong><a href="/updates">Web Browser</a></strong><br>You will need to have <span>OB_UPDATES_USER</span> and <span>OB_UPDATES_PW</span> set in config.php.</li>
+				<li><strong>Command Line</strong><br>By running "php index.php run" in the /updates directory. Please note this functionality is currently experimental.</li></p>
+		</div>
+	
+	<?php } else { ?>
 
 		<div class="section" id="login">
 			<?php include('login.php'); ?>
@@ -37,11 +50,12 @@ else $version = 4;
 		<div class="section" id="newaccount" style="display: none;">
 			<?php include('newaccount.php'); ?>
 		</div>
+		
+		<p>Running version <?=$version?>.</p>
+	
+	<?php }  ?>
 
-		<p style="font-size: 0.9em; padding-top: 1em;">Running version <?=$version?>.<br>Browser support Firefox 36+, Chrome 41+, Safari 7+, IE 11+.</p>
-		<p style="font-size: 0.9em; padding-top: 1em;">OpenBroadcaster is released under Affero GPL v3 and may be downloaded at <a href="https://openbroadcaster.com/observer">openbroadcaster.com</a>.  View <a href="https://openbroadcaster.com/observer_licence">license</a>.</p>
-
-	</div>
+	<p>OpenBroadcaster is released under Affero GPL v3 and may be downloaded at <a href="https://openbroadcaster.com/observer">openbroadcaster.com</a>.  View&nbsp;<a href="https://openbroadcaster.com/observer_licence">license</a>.</p>
 
 </div>
 

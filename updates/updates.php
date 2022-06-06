@@ -267,7 +267,7 @@ class OBFUpdates
     $updates = array();
     foreach($scandir as $file)
     {
-      if(!preg_match('/[0-9]{8}\.php$/',$file)) continue;
+      if(!preg_match('/^[0-9]{8}\.php$/',$file)) continue;
       $file_explode = explode('.',$file);
       $version = $file_explode[0];
 

@@ -24,7 +24,7 @@ if(!defined('OB_ERROR_BAD_POSTDATA')) define('OB_ERROR_BAD_POSTDATA',1);
 if(!defined('OB_ERROR_BAD_CONTROLLER')) define('OB_ERROR_BAD_CONTROLLER',2);
 if(!defined('OB_ERROR_BAD_DATA')) define('OB_ERROR_BAD_DATA',3);
 if(!defined('OB_ERROR_DENIED')) define('OB_ERROR_DENIED',4);
-if(!defined('OB_LOCAL')) define('OB_LOCAL',dirname(__FILE__));
+if(!defined('OB_LOCAL')) define('OB_LOCAL',__DIR__);
 
 // use same working directory regardless of where our script is.
 chdir(OB_LOCAL); 

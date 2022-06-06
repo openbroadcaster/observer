@@ -1,6 +1,7 @@
 html,body
 {
   height: 100%;
+	font-size: 16px;
 }
 
 body
@@ -8,48 +9,52 @@ body
   margin: 0;
   padding: 0;
 	font-family: sans-serif;
-	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  height: 100%;
+	background-color: #2a2a2a;
+	line-height: 1.33;
 }
 
 h1
 {
 	margin-top: 0;
 }
-
-p, td
-{
-	font-size: 14px;
-}
-
 p:last-child
 {
 	margin-bottom: 0;
 }
 
-#container1
-{
-  display: -webkit-flex;
-	-webkit-flex-direction: row;
-	-webkit-align-items: center;
-  -webkit-justify-content: center;
-
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-
-  height: 100%;
-}
-
-#container2
+#container
 {
 	max-width: 600px;
 	padding: 20px 15px;
 	border: 1px solid #666;
-	border-radius: 25px;
+	background-color: #ccc;
 }
 
 #login_message
 {
   color: #a00;
+}
+
+.error h1
+{
+	text-transform: uppercase;
+}
+
+.error span
+{
+	font-family: monospace;
+}
+
+ul
+{
+	list-style-type: square;
+}
+
+li:not(:last-child)
+{
+	padding-bottom: 10px;
 }

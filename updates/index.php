@@ -20,7 +20,7 @@
 */
 
 // experimental functionality to run updates from command line
-if(php_sapi_name() === 'cli' && ($argv[1] ?? null)==='force-update')
+if(php_sapi_name() === 'cli' && ($argv[1] ?? null)==='run')
 {
   define('OB_FORCE_UPDATE', true);
   require('updates.php');
