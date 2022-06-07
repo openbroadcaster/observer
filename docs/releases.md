@@ -45,3 +45,4 @@ In future, there will also be version branches that are no longer supported (end
 
 - It is recommended that production environments not needing the latest features upgrade to the next version once it has been feature-frozen for 6 months. (For example, upgrade to version 5.3 in May 2023).
 - Bug fixes during the last 6 months of version support may be limited to major, breaking, and security bugs only, so that development can be focused on newer versions.
+- Release dates are flexible so we are able to tie development we're doing such as doing with funded client(s) then we can wait a month or something to get that done instead of splitting that dev between two releases.
