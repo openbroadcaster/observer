@@ -80,7 +80,7 @@ Please check out the various GIT projects and components on [OpenBroadcaster](ht
 
 ## Releases and Versioning
 
-See our [Releases Guide]([https://github.com/openbroadcaster/observer/blob/main/docs/releases.md](https://github.com/openbroadcaster/observer/blob/gh-pages/docs/releases.md)) 
+See our [Releases Guide](https://github.com/openbroadcaster/observer/blob/gh-pages/docs/releases.md) 
 
 ## Code of Conduct
 
