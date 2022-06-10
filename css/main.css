@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Friends Of Cake
+   ========================================================================== */
+/* MAP */
+#map {
+  height: 350px;
+  width: 550px;
+  background-color: black;
+}
+/* TYPOGRAPHY */
+h1, h2, h3, h4, p.lead {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+p.lead {
+  font-size: 1.70em;
+  text-shadow: 1px 1px #19494a;
+  color: #c54753;
+}
+.buglist {
+  font-size: 0.8em;
+  color:red;
+}
+h2 {
+  font-size: 2.4em;
+  color: #19494a;
+}
+h3 {
+  margin: 0;
+  line-height: 180%;
+}
+h4 {
+  font-size: 1.56em;
+}
+a {
+  color: #19494a;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: none;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.64em;
+  font-weight: 300;
+  color: #333;
+}
+.white-panel,
+body {
+  background: rgb(229,229,229); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(229,229,229,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(229,229,229,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(229,229,229,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(229,229,229,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(229,229,229,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(229,229,229,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+footer {
+  font-size: .875em;
+  text-align: center;
+}
+/* TABLES */
+table{
+    border-collapse: separate;
+    border-spacing: 5px;
+    margin: 0px 10px 10px 0px;
+}
+
+th{
+    border-bottom:2px solid #000000;
+    padding: 4px;
+}
+
+td{  
+    padding: 1px 5px 5px 1px;
+}
+td:first-child {
+  font-weight: bold;
+}
+
+/* NAVIGATION */
+
+.navbar-toggle {
+  margin-top: 10px;
+  padding: 0;
+}
+.site-navigation {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 0px;
+  background: rgba(255, 255, 255, .5);
+}
+
+.site-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.site-navigation li {
+    display: block;
+    float: left;
+    margin: 0 2px 0 0;
+    position: relative;
+    text-decoration: none;
+}
+  
+.site-navigation li a {
+    display: block;
+}
+
+.site-navigation li:hover {
+    @include transition(background, 0.2s);
+    cursor: pointer;
+}
+
+.site-navigation ul li ul {
+  background: rgba(255, 255, 255, .8);
+    visibility: hidden;
+    float: left;
+  min-width: 150px;
+    position: absolute;
+  transition: visibility 0.65s ease-in;
+    left: 0;
+    z-index: 999;
+}
+
+.site-navigation ul li:hover > ul,
+.site-navigation ul li ul:hover {
+   visibility: visible;
+}
+
+.site-navigation ul li ul li {
+    clear: both;
+    padding: 5px 0 5px 18px;
+  width: 100%;
+}
+
+.site-navigation ul li ul li:hover {
+  background: rgba(222, 222, 222, .9);
+}
+
+.navbar-social li {
+  border-left: 1px solid #bebebe;
+  border-right: 1px solid #bebebe;
+  font-size: 1.2em;
+}
+.navbar-social li a:hover {
+  background: #dedede;
+  background: rgba(222, 222, 222, .6);
+}
+
+/* MASTHEAD */
+.jumbotron {
+  background: url(../img/jumbotron.jpg) no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  top: -50px;
+  margin-bottom: -50px;
+}
+.jumbotron .logo {
+  width: 100%;
+  margin-top: 30px;
+}
+
+/* FEATURETTES */
+.pane-featurettes {
+  padding: 14px 0;
+  margin: 0;
+  border-bottom: 1px solid #fefefe;
+  border-top: 1px solid #cecece;
+}
+.pane-featurettes .logo {
+  width: 69%;
+  margin: 0 auto;
+  border: 0;
+}
+.white-panel {
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top: 1px solid #fefefe;
+  border-left: 1px solid #efefef;
+  border-bottom: 1px solid #aeaeae;
+  box-shadow: 0px 0px 1px rgba(240, 240, 240, 0.1);
+}
+.feat .fa {
+  margin-top: 10px;
+  color: #19494a;
+}
+.feat h3 {
+  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+  font-size: 1.75em;
+  color: #c54753;
+}
+.feat p {
+  text-align: justify;
+}
+@media (max-width: 992px) {
+  .pane-featurettes .well {
+    margin-bottom: 14px;
+  }
+}
+
+/* PAGE ELEMENTS */
+.fa-twitter {
+  color: #4099FF;
+}
+.bg-grey {
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+#twitter-widget-0 {
+  width: 100%!important;
+  margin-top: 20px!important;
+}
+
+/* ===============================
+   PROJECTS / PINBOOT
+   ============================== */
+   .thumbnail {
+       position: relative;
+       padding: 4px;
+       margin-bottom: 20px;
+   }
+   .thumbnail > h4 {
+       padding: 7px 5px 0px;
+       white-space: nowrap;
+       overflow: hidden;
+       text-overflow: ellipsis;
+   }
+   .thumbnail h4 .info {
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       font-size: 0.6em;
+       padding-left: 15px;
+       border-top-right-radius: 3px;
+       border-bottom-left-radius: 4px;
+       border-radius: 0px;
+       border-bottom-left-radius: 5px;
+       cursor:  pointer;
+   }
+   .thumbnail p.brief {
+     padding: 0px 5px;
+   }
+   .thumbnail h4 .info > span {
+       margin-right: 10px;
+   }
+   .thumbnail img {
+       width: 100%;
+   }
+   .thumbnail a.btn {
+       border-top-left-radius: 0px;
+       border-top-right-radius: 0px;
+   }
+
+
+/* ===============================
+   IMAGES 
+   ============================== */
+img { 
+   border:1px solid #021a40;
+}
+.screenshot {
+	width:600px;
+	height: 400px;
+}
+.lowres {
+	width:600px;
+	height: 550px;
+}
+.square_redux {
+	width: 400px;
+	height: 400px;
+        margin: 10px;
+}
