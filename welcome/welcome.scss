@@ -142,24 +142,35 @@ p:empty
   display: none;
 }
 
-.error h1
+.update_required
 {
-	text-transform: uppercase;
-}
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  
+  h1
+  {
+    text-align: center;
+  }
 
-.error span
-{
-	font-family: monospace;
-}
+  p
+  {
+    margin-top: 25px;
+  }
+  
+  ul
+  {
+    list-style-type: square;
+  }
 
-ul
-{
-	list-style-type: square;
-}
-
-li:not(:last-child)
-{
-	padding-bottom: 10px;
+  li:not(:last-child)
+  {
+    padding-bottom: 10px;
+  }
+  
+  li:last-child
+  {
+    margin-bottom: 25px;
+  }
 }
 
 .welcome_license, .welcome_version

@@ -31,12 +31,12 @@ $update_required = $models->updates('update_required');
 
 	<?php if($update_required) { ?>
 	
-		<div class="error">
+		<div class="update_required">
 			<h1>Update Required</h1>
 			<p>A database update is required using one of the following methods:</p>
 			<ul>
 				<li><strong><a href="/updates">Web Browser</a></strong><br>You will need to have <span>OB_UPDATES_USER</span> and <span>OB_UPDATES_PW</span> set in config.php.</li>
-				<li><strong>Command Line</strong><br>By running "php index.php run" in the /updates directory. Please note this functionality is currently experimental.</li></p>
+				<li><strong>Command Line</strong><br>By running "php index.php run" in the /updates directory. Please note this functionality is currently experimental.</li>
 		</div>
 	
 	<?php } else { ?>
