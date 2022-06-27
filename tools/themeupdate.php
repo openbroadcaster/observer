@@ -29,6 +29,6 @@ foreach($dirs as $dir)
   $fulldir = realpath(__DIR__.'/../themes/'.$dir);
   if($dir[0]=='.' || !is_dir($fulldir) || !is_file($fulldir.'/style.scss')) continue;
 
-  $command = 'sass --scss -t compact '.escapeshellarg($fulldir.'/style.scss').' '.escapeshellarg($fulldir.'/style.css');
+  $command = 'sass -s compressed '.escapeshellarg($fulldir.'/style.scss').' '.escapeshellarg($fulldir.'/style.css');
   passthru($command);
 }
