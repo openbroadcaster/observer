@@ -54,5 +54,6 @@ require('classes/obfuser.php');
 require('classes/obfmodule.php');
 
 // load third party components
-require('extras/PHPMailer/src/Exception.php');
-require('extras/PHPMailer/src/PHPMailer.php');
+require('vendor/autoload.php');
+//require('extras/PHPMailer/src/Exception.php');
+//require('extras/PHPMailer/src/PHPMailer.php');
