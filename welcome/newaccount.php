@@ -2,34 +2,14 @@
 
 <h1>New Account</h1>
 
-<p id="newaccount_message"></p>
+<form id="newaccount_form" onSubmit="return false;"> 
+  <p id="newaccount_message">A random password will be emailed to you.</p>
+  <input id="newaccount_name" type="text" aria-label="Name" placeholder="Name">
+  <input id="newaccount_username" type="text" aria-label="Username" placeholder="Username">
+  <input id="newaccount_email" type="text" aria-label="Email "placeholder="Email">
+  <input id="newaccount_submit" type="button" value="Create New Account" onclick="OB.Welcome.newaccount();">
+</form>
 
-<div id="newaccount_form">
-
-  <p>Fill out the following form to create a new account.  A random password will be emailed to you.</p>
-
-  <table>
-  <tr>
-    <td class="required">Name: </td>
-    <td><input id="newaccount_name" type="text"></td>
-  </tr>
-  <tr>
-    <td class="required">Username: </td>
-    <td><input id="newaccount_username" type="text"></td>
-  </tr>
-  <tr>
-    <td class="required">Email: </td>
-    <td><input id="newaccount_email" type="text"></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td class="submit"><input type="button" value="Create New Account" onclick="OB.Welcome.newaccount();"></td>
-  </tr>
-
-  </table>
-
-</div>
-
-<p><a href="javascript: OB.Welcome.show('login');">Return to login window.</a></p>
+<div class="welcome_actions"><a href="javascript: OB.Welcome.show('login');">Return to Login</a></div>
 
 </div>

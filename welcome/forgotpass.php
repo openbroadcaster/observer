@@ -2,22 +2,13 @@
 
   <h1>Forgot Password</h1>
 
-  <p id="forgotpass_message"></p>
-
-  <p>Enter your email address.  Your username and a new password will be emailed to you.</p>
-
-  <table>
-  <tr>
-    <td class="required">Email Address:</td>
-    <td><input id="forgotpass_email" type="text" size="25" name="email"></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td class="submit"><input type="button" name="submit" value="Submit" onclick="OB.Welcome.forgotpass();"></td>
-  </tr>
-  </table>
-
-  <p><a href="javascript: OB.Welcome.show('login');">Return to login window.</a></p>
+  <form id="forgotpass_form" onSubmit="return false;">
+    <p id="forgotpass_message">Your username and a new password will be emailed to you.</p>
+    <input aria-label="Email" placeholder="Email" id="forgotpass_email" type="text" size="25" name="email">
+    <input id="forgotpass_submit" type="button" name="submit" value="Submit" onclick="OB.Welcome.forgotpass();">
+  </form>
+  
+  <div class="welcome_actions"><a href="javascript: OB.Welcome.show('login');">Return to Login</a></div>
 
 </div>
 

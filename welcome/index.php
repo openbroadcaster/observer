@@ -7,8 +7,10 @@ $db->where('name', 'client_login_message');
 $result = $db->get_one('settings');
 $welcome_message = $result ? $result['value'] : '';
 
-if(is_file('VERSION')) $version = trim(file_get_contents('VERSION'));
-else $version = 4;
+$version = trim(file_get_contents('VERSION'));
+$version_array = explode('-', $version, 2);
+$version_string = $version_array[0];
+if(!empty($version_array[1])) $version_string = $version_string . ' ('.$version_array[1].')';
 
 $update_required = $models->updates('update_required');
 
@@ -19,7 +21,7 @@ $update_required = $models->updates('update_required');
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="../extras/jquery.json.js"></script>
 	<script src="welcome.js?v=<?=urlencode($version)?>"></script>
-	<link href='//fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link type="text/css" href="../extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
 	<link rel="stylesheet" href="welcome.css?v=<?=urlencode($version)?>" type="text/css">
   <title>OpenBroadcaster</title>
 </head>
@@ -50,12 +52,10 @@ $update_required = $models->updates('update_required');
 		<div class="section" id="newaccount" style="display: none;">
 			<?php include('newaccount.php'); ?>
 		</div>
-		
-		<p>Running version <?=$version?>.</p>
 	
 	<?php }  ?>
 
-	<p>OpenBroadcaster is released under Affero GPL v3 and may be downloaded at <a href="https://openbroadcaster.com/observer">openbroadcaster.com</a>.  View&nbsp;<a href="https://openbroadcaster.com/observer_licence">license</a>.</p>
+	<div class="welcome_license">OpenBroadcaster is released under Affero GPL v3 and may be downloaded at <a href="https://openbroadcaster.com/observer">openbroadcaster.com</a>.  View&nbsp;<a href="https://openbroadcaster.com/observer_licence">license</a>. Running version <?=$version_string?>.</div>
 
 </div>
 

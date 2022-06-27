@@ -24,13 +24,14 @@ OB.Welcome.login = function()
 	data.password = $('#login_password').val();
 
 	$('#login_message').text('');
+	$('#login_submit').val('Logging in...').prop('disabled',true);
 
   $.post('../api.php', {'c': 'account', 'a': 'login', 'd': $.toJSON(data) },function(response) {
 
     if(response.status==false)
     {
       $('#login_message').text(response.msg);
-
+			$('#login_submit').val('Log In').prop('disabled',false);
       $('#login_username').focus();
       $('#login_username').select();
     }
@@ -50,10 +51,13 @@ OB.Welcome.forgotpass = function()
 	data.email = $('#forgotpass_email').val();
 
 	$('#forgotpass_message').text('');
+	$('#forgotpass_submit').val('Sending...').prop('disabled',true);
 
 	$.post('../api.php', {'c': 'account', 'a': 'forgotpass', 'd': $.toJSON(data)}, function(response)
 	{
 		$('#forgotpass_message').text(response.msg);
+		if(response.status==true) $('#forgotpass_form input').remove();
+		$('#forgotpass_submit').val('Submit').prop('disabled',false);
 	},'json');
 
 }
@@ -66,11 +70,13 @@ OB.Welcome.newaccount = function()
 	data.email = $('#newaccount_email').val();
 
 	$('#newaccount_message').text('');
+	$('#newaccount_submit').val('Sending...').prop('disabled',true);
 
 	$.post('../api.php', {'c': 'account', 'a': 'newaccount', 'd': $.toJSON(data)},function(response)
 	{
 		$('#newaccount_message').html(response.msg);
-		if(response.status==true) $('#newaccount_form').hide();
+		if(response.status==true) $('#newaccount_form input').remove();
+		$('#newaccount_submit').val('Submit').prop('disabled',false);
 	},'json');
 
 }
