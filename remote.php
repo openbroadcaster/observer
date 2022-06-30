@@ -52,7 +52,7 @@ class Remote
   private $xml;
 
   private $TimeslotsModel;
-  private $SchedulesModel;
+  private $ShowsModel;
   private $MediaModel;
   private $PlayersModel;
 
@@ -64,7 +64,7 @@ class Remote
     $this->db = OBFDB::get_instance();
 
     $this->TimeslotsModel = $this->load->model('Timeslots');
-    $this->SchedulesModel = $this->load->model('Schedules');
+    $this->ShowsModel = $this->load->model('Shows');
     $this->MediaModel = $this->load->model('Media');
     $this->PlayersModel = $this->load->model('Players');
     $this->PlaylistsModel = $this->load->model('Playlists');
@@ -265,7 +265,7 @@ class Remote
 
     $end_timestamp=$localtime + $this->buffer + 60;
 
-    $shows = $this->SchedulesModel('get_shows',$localtime,$end_timestamp,$this->schedule_player_id);
+    $shows = $this->ShowsModel('get_shows',$localtime,$end_timestamp,$this->schedule_player_id);
 
     $show_times = array();
 
@@ -1068,7 +1068,7 @@ class Remote
   }
 
   private function media()
-  { 
+  {
     if(empty($_POST['media_id'])) die();
 
     $this->db->where('id',$_POST['media_id']);
@@ -1092,7 +1092,7 @@ class Remote
 
     readfile($fullpath);
   }
-  
+
   private function thumbnail()
   {
     if(empty($_POST['media_id'])) die();
@@ -1103,7 +1103,7 @@ class Remote
 
     $filedir = '/'.$media['file_location'][0].'/'.$media['file_location'][1];
     $fullpath = OB_CACHE.'/thumbnails/'.$filedir.'/'.$media['id'].'.jpg';
-  
+
     if(!file_exists($fullpath)) die();
 
     header('Content-Type: image/jpeg');

@@ -42,7 +42,7 @@
 
      $id = $this->data('id');
 
-     $show = $this->models->schedules('get_show_by_id', $id, false);
+     $show = $this->models->shows('get_show_by_id', $id, false);
 
      //T Show not found.
      if (!$show) return array(false, 'Show not found.');
@@ -62,7 +62,7 @@
 
      $id = $this->data('id');
 
-     $show = $this->models->schedules('get_show_by_id', $id, true);
+     $show = $this->models->shows('get_show_by_id', $id, true);
 
      //T Show not found.
      if (!$show) return array(false, 'Show not found.');
@@ -100,7 +100,7 @@
      //T Player ID is invalid.
      if (!$player_data) return array(false, 'Player ID is invalid.');
 
-     $data = $this->models->schedules('get_shows', $start, $end, $player);
+     $data = $this->models->shows('get_shows', $start, $end, $player);
 
      //T Shows data.
      return array(true, 'Shows data.', $data);
@@ -156,10 +156,10 @@
      $recurring = trim($this->data('recurring'));
 
      // check timeslot.  we can delete a show that we have scheduled, regardless of whether we own that timeslot anymore.
-     $show = $this->models->schedules('get_show_by_id', $id, $recurring);
+     $show = $this->models->shows('get_show_by_id', $id, $recurring);
      if ($show['user_id'] != $this->user->param('id')) $this->user->require_permission('manage_timeslots');
 
-     $this->models->schedules('delete_show', $id, $recurring);
+     $this->models->shows('delete_show', $id, $recurring);
 
      //T Show deleted.
      return array(true,'Show deleted.');
@@ -198,7 +198,7 @@
 
      // if we are editing, make sure ID is valid.
      if (!empty($id)) {
-       $original_show_data = $this->models->schedules('get_show_by_id', $id, $edit_recurring);
+       $original_show_data = $this->models->shows('get_show_by_id', $id, $edit_recurring);
        //T Show not found.
        if (!$original_show_data) return array(false, 'Show not found.');
 
@@ -207,7 +207,7 @@
      }
 
      // validate show
-     $validate = $this->models->schedules('validate_show', $data, $id);
+     $validate = $this->models->shows('validate_show', $data, $id);
      if ($validate[0] == false) return array(false, $validate[1]);
 
      // generate our duration in seconds.
@@ -218,11 +218,11 @@
      $data['duration']=$duration;
 
      // collision check!
-     $collision_timeslot_check = $this->models->schedules('collision_timeslot_check', $data, $id, $edit_recurring);
+     $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id, $edit_recurring);
      if ($collision_timeslot_check[0] == false) return array(false, $collision_timeslot_check[1]);
 
      // FINALLY CREATE/EDIT SHOW
-     $this->models->schedules('save_show', $data, $id, $edit_recurring);
+     $this->models->shows('save_show', $data, $id, $edit_recurring);
 
      //T Show added.
      return array(true,'Show added.');

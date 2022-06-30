@@ -24,7 +24,7 @@
  *
  * @package Model
  */
-class SchedulesModel extends OBFModel
+class ShowsModel extends OBFModel
 {
 
   public function __construct()
@@ -673,7 +673,7 @@ class SchedulesModel extends OBFModel
       $dbdata['mode'] = 'once';
       $dbdata['recurring_interval'] = 0;
       $dbdata['recurring_end'] = $show_end->format('Y-m-d');
-            
+
       $show_id = $this->db->insert('shows', $dbdata);
 
       $expanded_data = [];

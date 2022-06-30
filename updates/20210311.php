@@ -51,13 +51,13 @@ class OBUpdate20210311 extends OBUpdate {
         'stop' => $stop_formatted
       ];
             
-      $validate = $this->models->schedules('validate_show', $data, false, true);
+      $validate = $this->models->shows('validate_show', $data, false, true);
       if(!$validate[0]) continue; // invalid show, skipping
       
-      $collision = $this->models->schedules('collision_timeslot_check', $data, false, false, true);
+      $collision = $this->models->shows('collision_timeslot_check', $data, false, false, true);
       if(!$collision[0]) continue; // conflict, skipping
       
-      $this->models->schedules('save_show', $data);
+      $this->models->shows('save_show', $data);
     }
     
     return true;
