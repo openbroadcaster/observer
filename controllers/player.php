@@ -168,6 +168,8 @@ class Player extends OBFController
    * result in invalid settings for child players.
    *
    * @param id
+   *
+   * @route DELETE /players/(:id:)
    */
   public function delete()
   {
