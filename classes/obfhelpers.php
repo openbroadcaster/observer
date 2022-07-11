@@ -26,11 +26,10 @@
  */
 class OBFHelpers
 {
-
-  static public function &get_instance()
+  public static function &get_instance()
   {
     static $instance;
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
     $instance = new OBFHelpers();
@@ -45,7 +44,7 @@ class OBFHelpers
    *
    * @return sanitized_html
    */
-  static public function sanitize_html ($html) {
+  public static function sanitize_html($html) {
     $allow_tags = "<p><br><strong><b><u><ul><ol><li><a>";
     $allow_attr = array('href', 'title', 'alt');
 
@@ -74,7 +73,7 @@ class OBFHelpers
    * @param args The array of arguments to check.
    * @param reqs The required arguments, in the format ['req1', 'req2', ...]
    */
-  static public function require_args ($args, $reqs) {
+  public static function require_args($args, $reqs) {
     if (!is_array($args)) user_error('Passed arguments should be an array.');
     if (!is_array($reqs)) user_error('Required arguments should be an array.');
 
@@ -90,7 +89,7 @@ class OBFHelpers
    * @param args A reference to the array of arguments to check.
    * @param defs The default values in case an argument is not set, in the format ['def1' => defval1, 'def2' => defval2, ...]
    */
-  static public function default_args (&$args, $defs) {
+  public static function default_args(&$args, $defs) {
     if (!is_array($args)) user_error('Passed arguments should be an array.');
     if (!is_array($defs)) user_error('Default arguments should be an array.');
 
@@ -98,20 +97,20 @@ class OBFHelpers
       if (!isset($args[$def])) $args[$def] = $defval;
     }
   }
-  
+
   /**
    * Determine image format.
-   * 
+   *
    * @param filename Image filename.
    */
-  static public function image_format($filename)
+  public static function image_format($filename)
   {
     if(!file_exists($filename))
     {
       trigger_error('This file does not exist', E_USER_WARNING);
       return false;
     }
-    
+
     $mime_type = mime_content_type($filename);
     switch($mime_type)
     {
@@ -122,7 +121,7 @@ class OBFHelpers
       case 'image/png':
         return 'png';
     }
-    
+
     // backup in case mime type failed
     $gd_type = getimagesize($filename);
     if(isset($gd_type[2]))
@@ -135,24 +134,24 @@ class OBFHelpers
           return 'png';
       }
     }
-    
+
     // no result
     return false;
   }
-  
+
   /**
    * Resize an image.
-   * 
+   *
    * @param src Source filename.
    * @param dst Destination filename (JPEG).
    * @param width Target width.
    * @param height Target height.
    */
-  static public function image_resize($src, $dst, $width, $height)
+  public static function image_resize($src, $dst, $width, $height)
   {
     if(!file_exists($src)) { trigger_error('The source file does not exist', E_USER_WARNING); return false; }
     if(!is_writeable(pathinfo($dst)['dirname'])) { trigger_error('The destination directory is not writeable', E_USER_WARNING); return false; }
-  
+
     // figure out image format
     $format = OBFHelpers::image_format($src);
     if(!$format) { trigger_error('Unable to determine image format', E_USER_WARNING); return false; }
@@ -185,7 +184,7 @@ class OBFHelpers
     {
       $image_data = getimagesize($src);
 
-      list($source_width,$source_height) = $image_data;
+      list($source_width, $source_height) = $image_data;
 
       $source_ratio = $source_width/$source_height;
       $ratio = $width/$height;
@@ -197,15 +196,15 @@ class OBFHelpers
       if($image_data[2]==IMAGETYPE_PNG) $image_source = imagecreatefrompng($src);
       else $image_source = imagecreatefromjpeg($src);
 
-      $image_dest = imagecreatetruecolor($width,$height);
+      $image_dest = imagecreatetruecolor($width, $height);
 
-      imagecopyresampled($image_dest,$image_source,0,0,0,0,$width,$height,$source_width,$source_height);
+      imagecopyresampled($image_dest, $image_source, 0, 0, 0, 0, $width, $height, $source_width, $source_height);
 
-      imagejpeg($image_dest,$dst);
+      imagejpeg($image_dest, $dst);
       imagedestroy($image_dest);
       imagedestroy($image_source);
     }
-    
+
     return true;
   }
 }

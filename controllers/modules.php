@@ -26,7 +26,6 @@
  */
 class Modules extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -59,7 +58,7 @@ class Modules extends OBFController
 
     $module = $this->data('name');
 
-    $install = $this->models->modules('install',$module);
+    $install = $this->models->modules('install', $module);
 
     if($install) return array(true,'Module installed. Refreshing the page may be required to update the user interface.');
     else return array(false,'An error occurred while attempting to install this module.');
@@ -76,7 +75,7 @@ class Modules extends OBFController
 
     $module = $this->data('name');
 
-    $uninstall = $this->models->modules('uninstall',$module);
+    $uninstall = $this->models->modules('uninstall', $module);
 
     if($uninstall) return array(true,'Module uninstalled. Refreshing the page may be required to update the user interface.');
     else return array(false,'An error occurred while attempting to uninstall this module.');

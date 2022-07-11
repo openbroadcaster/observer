@@ -18,4 +18,3 @@ class OBUpdate20161206 extends OBUpdate
 
   }
 }
-

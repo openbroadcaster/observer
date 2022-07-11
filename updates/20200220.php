@@ -1,16 +1,16 @@
 <?php
 
-class OBUpdate20200220 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200220 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = 'Support custom playlist item types.';
 
     return $updates;
   }
 
-  public function run () {
-  
+  public function run() {
+
     $this->db->query('
 CREATE TABLE IF NOT EXISTS `playlists_items_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

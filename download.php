@@ -1,6 +1,6 @@
 <?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -39,7 +39,7 @@ class ObDownload
 
     if(!$media_id) return false;
 
-    $this->db->where('id',$media_id);
+    $this->db->where('id', $media_id);
     $media = $this->db->get_one('media');
     if(empty($media)) die();
 
@@ -54,17 +54,17 @@ class ObDownload
     $fullpath=$filedir.'/'.$media['filename'];
 
     if(!file_exists($fullpath)) die();
-    
+
     header("Access-Control-Allow-Origin: *");
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
-    header("Content-Transfer-Encoding: binary"); 
+    header("Content-Transfer-Encoding: binary");
     header("Content-Length: ".filesize($fullpath));
     header('Content-Disposition: attachment; filename="'.$media['filename'].'"');
 
     readfile($fullpath);
 
-  } 
+  }
 
 }
 

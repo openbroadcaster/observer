@@ -24,9 +24,9 @@
  *
  * @package Controller
  */
- class Shows extends OBFController {
-
-   public function __construct () {
+ class Shows extends OBFController
+{
+   public function __construct() {
      parent::__construct();
    }
 
@@ -37,7 +37,7 @@
     *
     * @return show
     */
-   public function get () {
+   public function get() {
      $this->user->require_authenticated();
 
      $id = $this->data('id');
@@ -57,7 +57,7 @@
     *
     * @return show.
     */
-   public function get_recurring () {
+   public function get_recurring() {
      $this->user->require_authenticated();
 
      $id = $this->data('id');
@@ -80,7 +80,7 @@
     *
     * @return shows
     */
-   public function search () {
+   public function search() {
      $this->user->require_authenticated();
 
      $start  = $this->data('start');
@@ -114,7 +114,7 @@
     *
     * @param player
     */
-   public function set_last_player () {
+   public function set_last_player() {
      $player_id = $this->data('player');
 
      $this->db->where('id', $player_id);
@@ -134,7 +134,7 @@
     *
     * @return player
     */
-   public function get_last_player () {
+   public function get_last_player() {
      $player_id = $this->user->get_setting('last_schedule_player');
      //T Last schedule player.
      if ($player_id) return array(true, 'Last schedule player.', $player_id);
@@ -149,7 +149,7 @@
     * @param id
     * @param recurring
     */
-   public function delete () {
+   public function delete() {
      $this->user->require_authenticated();
 
      $id        = trim($this->data('id'));
@@ -179,7 +179,7 @@
     * @param item_type
     * @param item_id
     */
-   public function save () {
+   public function save() {
      $this->user->require_authenticated();
 
      $id             = trim($this->data('id'));

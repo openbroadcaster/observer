@@ -1,8 +1,8 @@
 <?php
 
-class OBUpdate20200622 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200622 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "Add API key table linked to users for requests from external sources.";
     $updates[] = "Add API key management permission to users_permissions table.";
@@ -10,7 +10,7 @@ class OBUpdate20200622 extends OBUpdate {
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     // Add table for API key management.
     $this->db->query('CREATE TABLE `users_appkeys` (
       `id` int(10) UNSIGNED NOT NULL,

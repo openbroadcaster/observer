@@ -5,7 +5,7 @@ if(php_sapi_name()!='cli') die('Command line tool only.');
 header('Content-Type: application/json');
 require_once('../../components.php');
 require_once('extras/getid3/getid3/getid3.php');
-$getID3 = new getID3;
+$getID3 = new getID3();
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
 $user_agent = 'OpenBroadcaster/'.trim(file_get_contents('VERSION'));
@@ -30,7 +30,7 @@ while(true)
   foreach($rows as $row)
   {
     usleep(100000);
-      
+
     // get our cover art
     $cover_art_url = false;
     $ch = curl_init('https://coverartarchive.org/release-group/'.$row['sync_releasegroup_id']);
@@ -51,17 +51,17 @@ while(true)
         break;
       }
     }
-    
+
     // download cover art
     if($cover_art_url)
     {
-      echo $row['id'].': saving cover art'.PHP_EOL;    
+      echo $row['id'].': saving cover art'.PHP_EOL;
       $l1 = $row['file_location'][0];
       $l2 = $row['file_location'][1];
-      
+
       if(!file_exists(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2))
       {
-        if(!mkdir(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2,0777,true)) die('Unable to create thumbnail directory; check permissions.'.PHP_EOL);
+        if(!mkdir(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2, 0777, true)) die('Unable to create thumbnail directory; check permissions.'.PHP_EOL);
       }
       $cover_art_data = file_get_contents($cover_art_url);
       if($cover_art_data)
@@ -70,8 +70,8 @@ while(true)
       }
     }
 
-    $db->where('media_id',$row['id']);
-    $db->update('media_metadata',[
+    $db->where('media_id', $row['id']);
+    $db->update('media_metadata', [
       'sync_coverart_raw'=>$coverart_raw_response
     ]);
   }

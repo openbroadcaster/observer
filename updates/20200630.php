@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20200630 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200630 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "Add sessions table for user logins, allowing users to be logged in in multiple locations at once.";
     $updates[] = "Delete session column from users table. No need to move them as sessions will rely on session row ID rather than user ID from this point on.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     // Add sessions table for user logins, allowing users to be logged in in multiple locations at once.
     $this->db->query('CREATE TABLE `users_sessions` (
       `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ,
@@ -31,7 +31,7 @@ class OBUpdate20200630 extends OBUpdate {
         'key_expiry' => $user['key_expiry']
       ]);
     } */
-    
+
     $this->db->query('ALTER TABLE `users` DROP `key`, DROP `key_expiry`;');
 
     return true;

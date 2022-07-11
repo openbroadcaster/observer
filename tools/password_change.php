@@ -10,7 +10,7 @@ if(empty($argv[1]) || empty($argv[2])) die('Invalid args.'.PHP_EOL);
 
 require(__DIR__.'/../config.php');
 
-$hashed = password_hash($argv[2].OB_HASH_SALT,PASSWORD_DEFAULT);
+$hashed = password_hash($argv[2].OB_HASH_SALT, PASSWORD_DEFAULT);
 
 $conn = mysqli_connect(OB_DB_HOST, OB_DB_USER, OB_DB_PASS);
 mysqli_select_db($conn, OB_DB_NAME);

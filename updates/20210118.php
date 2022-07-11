@@ -1,14 +1,14 @@
 <?php
 
-class OBUpdate20210118 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20210118 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "Dayparting (dynamic selection restrictions) table.";
     return $updates;
   }
 
-  public function run () {    
+  public function run() {
 
     $this->db->query('
       CREATE TABLE IF NOT EXISTS `dayparting` (
@@ -23,7 +23,7 @@ class OBUpdate20210118 extends OBUpdate {
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ');
-    
+
     if ($this->db->error()) return false;
     return true;
   }

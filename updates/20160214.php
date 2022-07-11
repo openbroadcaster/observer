@@ -11,7 +11,7 @@ class OBUpdate20160214 extends OBUpdate
 
   public function run()
   {
- 
+
     // ADD TIMESTAMP INDEX TO PLAYLOG TABLE
 
     $this->db->query('SHOW INDEX FROM `playlog`');
@@ -62,7 +62,7 @@ class OBUpdate20160214 extends OBUpdate
       $this->db->query('SHOW TABLE STATUS WHERE Name = \''.$table.'\'');
       $status = $this->db->assoc_row();
       if(strtolower($status['Engine'])=='innodb') continue;
-  
+
       $this->db->query('ALTER TABLE '.$table.' ENGINE=InnoDB');
     }
 
@@ -71,4 +71,3 @@ class OBUpdate20160214 extends OBUpdate
 
   }
 }
-

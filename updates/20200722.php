@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20200722 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200722 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "CASCADE updates to devices, users, or media items to emergencies table. Clean up table first. Fix typing on device_id.";
     $updates[] = "CASCADE updates to devices to notices table. Clean up table first.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // CASCADE updates to devices, users, or media items to emergencies table. Clean up table first. Fix typing on device_id.

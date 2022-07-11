@@ -26,7 +26,6 @@
  */
 class OBFModule
 {
-
   public $db;
   public $callback_handler;
 

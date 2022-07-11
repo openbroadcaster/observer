@@ -2,15 +2,14 @@
 
 class OBUpdate20220704 extends OBUpdate
 {
-
-  public function items ()
+  public function items()
   {
     $updates   = array();
     $updates[] = 'Rename old schedules tables, add underscore for deprecated/old tables.';
     return $updates;
   }
 
-  public function run ()
+  public function run()
   {
     $this->db->query('START TRANSACTION;');
 

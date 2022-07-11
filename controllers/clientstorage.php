@@ -27,7 +27,6 @@
  */
 class ClientStorage extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();

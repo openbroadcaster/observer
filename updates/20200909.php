@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20200909 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200909 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "Update timeslots permission in users_permissions to be more clear.";
     $updates[] = "Update timeslots table names to be more clear.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // Update timeslots permission in users_permissions to be more clear.

@@ -26,7 +26,6 @@
  */
 class OBFIO
 {
-
   public function __construct()
   {
 
@@ -37,12 +36,12 @@ class OBFIO
    *
    * @return instance
    */
-  static function &get_instance()
+  public static function &get_instance()
   {
 
     static $instance;
 
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
 
@@ -84,7 +83,7 @@ class OBFIO
 
     }
 
-    $this->output( array('error'=> array('no'=>$error_no,'msg'=>$msg,'uid'=>$user->param('id'))) );
+    $this->output(array('error'=> array('no'=>$error_no,'msg'=>$msg,'uid'=>$user->param('id'))));
 
   }
 

@@ -29,7 +29,6 @@
  */
 class Settings extends OBFController
 {
-
   public $media_types = array('audio','image','video');
 
   public function __construct()
@@ -46,7 +45,7 @@ class Settings extends OBFController
   public function metadata_order()
   {
     $this->user->require_permission('manage_media_settings');
-    $this->models->mediametadata('save_field_order',$this->data('order'));
+    $this->models->mediametadata('save_field_order', $this->data('order'));
     //T Metadata field order saved.
     return [true,'Metadata field order saved.'];
   }
@@ -75,17 +74,17 @@ class Settings extends OBFController
     $data['select_options'] = trim($this->data('select_options'));
 
     $data['default'] = $this->data('default');
-    if(is_array($data['default'])) $data['default'] = array_map('trim',$data['default']);
+    if(is_array($data['default'])) $data['default'] = array_map('trim', $data['default']);
     else $data['default'] = trim($data['default']);
 
     $data['tag_suggestions'] = $this->data('tag_suggestions');
-    if(is_array($data['tag_suggestions'])) $data['tag_suggestions'] = array_map('trim',$data['tag_suggestions']);
+    if(is_array($data['tag_suggestions'])) $data['tag_suggestions'] = array_map('trim', $data['tag_suggestions']);
     else $data['tag_suggestions'] = [];
 
-    $validation = $this->models->mediametadata('validate',$data,$id);
+    $validation = $this->models->mediametadata('validate', $data, $id);
     if($validation[0]==false) return $validation;
 
-    $save = $this->models->mediametadata('save',$data,$id);
+    $save = $this->models->mediametadata('save', $data, $id);
 
     if(!$save) return [false,'An unknown error occurred while trying to save this metadata field.'];
     else return [true,'Metadata field saved.'];
@@ -100,7 +99,7 @@ class Settings extends OBFController
   {
     $this->user->require_permission('manage_media_settings');
 
-    $delete = $this->models->mediametadata('delete',$this->data('id'));
+    $delete = $this->models->mediametadata('delete', $this->data('id'));
 
     if(!$delete) return [false,'An unknown error occured while trying to delete this metadata field.'];
     else return [true,'Metadata field deleted.'];
@@ -116,7 +115,7 @@ class Settings extends OBFController
    */
   public function metadata_tag_search()
   {
-    $results = $this->models->mediametadata('tag_search',[
+    $results = $this->models->mediametadata('tag_search', [
       'id' => $this->data('id'),
       'search' => $this->data('search')
     ]);
@@ -142,7 +141,7 @@ class Settings extends OBFController
     $limit = $this->data('limit');
     $offset = $this->data('offset');
 
-    $categories = $this->models->mediacategories('search',$filters,$orderby,$orderdesc,$limit,$offset);
+    $categories = $this->models->mediacategories('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
     if($categories === false) return array(false,'An unknown error occurred while fetching categories.');
     else return array(true,'Category list.',$categories);
@@ -166,10 +165,10 @@ class Settings extends OBFController
     $data['name'] = trim($this->data('name'));
     $data['is_default'] = $this->data('default');
 
-    $validation = $this->models->mediacategories('validate',$data,$id);
+    $validation = $this->models->mediacategories('validate', $data, $id);
     if($validation[0]==false) return $validation;
 
-    $save = $this->models->mediacategories('save',$data,$id);
+    $save = $this->models->mediacategories('save', $data, $id);
 
     if(!$save) return array(false,'An unknown error occurred while trying to save this category.');
     else return array(true,'Category saved.');
@@ -186,10 +185,10 @@ class Settings extends OBFController
 
     $id = trim($this->data['id']);
 
-    $can_delete = $this->models->mediacategories('can_delete',$id);
+    $can_delete = $this->models->mediacategories('can_delete', $id);
     if($can_delete[0]==false) return $can_delete;
 
-    $delete = $this->models->mediacategories('delete',$id);
+    $delete = $this->models->mediacategories('delete', $id);
 
     if($delete) return array(true,'Category deleted.');
     else return array(false,'An unknown error occured while trying to delete the category.');
@@ -206,7 +205,7 @@ class Settings extends OBFController
   {
     $id = trim($this->data['id']);
 
-    $category = $this->models->mediacategories('get_by_id',$id);
+    $category = $this->models->mediacategories('get_by_id', $id);
 
     if($category) return array(true,'Category information.',$category);
     else return array(false,'Category not found.');
@@ -231,7 +230,7 @@ class Settings extends OBFController
     $limit = $this->data('limit');
     $offset = $this->data('offset');
 
-    $genres = $this->models->mediagenres('search',$filters,$orderby,$orderdesc,$limit,$offset);
+    $genres = $this->models->mediagenres('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
     if($genres === false) return array(false,'An unknown error occurred while fetching genres.');
     else return array(true,'Genre list.',$genres);
@@ -258,10 +257,10 @@ class Settings extends OBFController
     $data['media_category_id'] = $this->data('media_category_id');
     $data['is_default'] = $this->data('default');
 
-    $validation = $this->models->mediagenres('validate',$data,$id);
+    $validation = $this->models->mediagenres('validate', $data, $id);
     if($validation[0]==false) return $validation;
 
-    if($this->models->mediagenres('save',$data,$id)) return array(true,'Genre saved.');
+    if($this->models->mediagenres('save', $data, $id)) return array(true,'Genre saved.');
     else return array(false,'An unknown error occurred while trying to save this genre.');
 
   }
@@ -278,7 +277,7 @@ class Settings extends OBFController
 
     $id = trim($this->data['id']);
 
-    $delete = $this->models->mediagenres('delete',$id);
+    $delete = $this->models->mediagenres('delete', $id);
 
     if($delete) return array(true,'Genre deleted.');
     else return array(false,'An unknown error occured while trying to delete the genre.');
@@ -297,7 +296,7 @@ class Settings extends OBFController
 
     $id = trim($this->data['id']);
 
-    $genre = $this->models->mediagenres('get_by_id',$id);
+    $genre = $this->models->mediagenres('get_by_id', $id);
 
     if($genre) return array(true,'Genre information.',$genre);
     else return array(false,'Genre not found.');
@@ -363,7 +362,7 @@ class Settings extends OBFController
    *
    * @return metadata_fields
    */
-  public function media_get_fields () {
+  public function media_get_fields() {
     return $this->models->mediametadata('get_fields');
   }
 
@@ -381,7 +380,7 @@ class Settings extends OBFController
    * @param dynamic_content_default
    * @param dynamic_content_hidden
    */
-  public function media_required_fields () {
+  public function media_required_fields() {
     $this->user->require_permission('manage_media_settings');
     $result = [false, 'An unknown error occurred while trying to update required media fields.'];
 
@@ -407,7 +406,7 @@ class Settings extends OBFController
     return $result;
   }
 
-  public function playlist_item_types () {
+  public function playlist_item_types() {
     $types = $this->models->playlists('get_item_types');
     return [true,'Playlist Item Types',$types];
   }

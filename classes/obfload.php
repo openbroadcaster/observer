@@ -27,7 +27,6 @@
  */
 class OBFLoad
 {
-
   private $model_files;
   private $controller_files;
   private $db;
@@ -54,8 +53,8 @@ class OBFLoad
     {
       if($file=='..' || $file=='.') continue;
       if(!is_file('models/'.$file)) continue;
-      if(substr($file,-4)!='.php') continue;
-      $name_split = explode('_',$file);
+      if(substr($file, -4)!='.php') continue;
+      $name_split = explode('_', $file);
       if(count($name_split)!=2) continue;
       $this->model_files[$name_split[0]] = 'models/'.$file;
     }
@@ -67,8 +66,8 @@ class OBFLoad
     {
       if($file=='..' || $file=='.') continue;
       if(!is_file('controllers/'.$file)) continue;
-      if(substr($file,-4)!='.php') continue;
-      $this->controller_files[substr($file,0,-4)] = 'controllers/'.$file;
+      if(substr($file, -4)!='.php') continue;
+      $this->controller_files[substr($file, 0, -4)] = 'controllers/'.$file;
     }
 
     // scan through modules.
@@ -93,8 +92,8 @@ class OBFLoad
         {
           if($file=='..' || $file=='.') continue;
           if(!is_file('modules/'.$dir.'/models/'.$file)) continue;
-          if(substr($file,-4)!='.php') continue;
-          $name_split = explode('_',$file);
+          if(substr($file, -4)!='.php') continue;
+          $name_split = explode('_', $file);
           if(count($name_split)!=2) continue;
           $this->model_files[$name_split[0]] = 'modules/'.$dir.'/models/'.$file;
         }
@@ -112,8 +111,8 @@ class OBFLoad
         {
           if($file=='..' || $file=='.') continue;
           if(!is_file('modules/'.$dir.'/controllers/'.$file)) continue;
-          if(substr($file,-4)!='.php') continue;
-          $this->controller_files[substr($file,0,-4)] = 'modules/'.$dir.'/controllers/'.$file;
+          if(substr($file, -4)!='.php') continue;
+          $this->controller_files[substr($file, 0, -4)] = 'modules/'.$dir.'/controllers/'.$file;
         }
 
       }
@@ -125,9 +124,9 @@ class OBFLoad
         $module_class_name = $dir.'Module';
 
         // remove underscores in name if we need to.  if it still doesn't exist, then that's a problem.
-        if(!class_exists($module_class_name)) $module_class_name = str_replace('_','',$module_class_name);
+        if(!class_exists($module_class_name)) $module_class_name = str_replace('_', '', $module_class_name);
 
-        $module_instance = new $module_class_name;
+        $module_instance = new $module_class_name();
         $module_instance->callbacks();
 
       }
@@ -142,11 +141,11 @@ class OBFLoad
    *
    * @return instance
    */
-  static public function &get_instance() {
+  public static function &get_instance() {
 
     static $instance;
 
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
 
@@ -166,7 +165,7 @@ class OBFLoad
    */
   public function model($model)
   {
-    if(!preg_match('/^[a-z0-9_]+$/i',$model)) return false;
+    if(!preg_match('/^[a-z0-9_]+$/i', $model)) return false;
     if(!isset($this->model_files[strtolower($model)])) return false;
     $model_file = $this->model_files[strtolower($model)];
     require_once($model_file);
@@ -184,7 +183,7 @@ class OBFLoad
    */
   public function controller($controller)
   {
-    if(!preg_match('/^[a-z0-9_]+$/i',$controller)) return false;
+    if(!preg_match('/^[a-z0-9_]+$/i', $controller)) return false;
     if(!isset($this->controller_files[strtolower($controller)])) return false;
     $controller_file = $this->controller_files[strtolower($controller)];
     require_once($controller_file);

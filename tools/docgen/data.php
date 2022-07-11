@@ -5,14 +5,15 @@ contains a single class (DocGenClass) as well as metadata. Each class in the tre
 can contain multiple private methods (DocGenMethod), as well as class metadata.
 The array of methods is private to ensure correct typing. */
 
-class DocGenFile {
+class DocGenFile
+{
   public $name;
   public $dir;
   public $description;
 
   private $class;
 
-  public function __construct ($name, $dir, $description = []) {
+  public function __construct($name, $dir, $description = []) {
     $this->name = $name;
     $this->dir  = $dir;
     $this->description = $description;
@@ -20,23 +21,24 @@ class DocGenFile {
     $this->class = new DocGenClass(null);
   }
 
-  public function getClass () : DocGenClass {
+  public function getClass(): DocGenClass {
     return $this->class;
   }
 
-  public function setClass (DocGenClass $class) {
+  public function setClass(DocGenClass $class) {
     $this->class = $class;
   }
 }
 
-class DocGenClass {
+class DocGenClass
+{
   public $name;
   public $description;
   public $package;
 
   private $methods;
 
-  public function __construct ($name, $description = [], $package = "NoPak") {
+  public function __construct($name, $description = [], $package = "NoPak") {
     $this->name = $name;
     $this->description = $description;
     $this->package = $package;
@@ -44,16 +46,17 @@ class DocGenClass {
     $this->methods = array();
   }
 
-  public function getMethods () {
+  public function getMethods() {
     return $this->methods;
   }
 
-  public function addMethod (DocGenMethod $method) {
+  public function addMethod(DocGenMethod $method) {
     $this->methods[] = $method;
   }
 }
 
-class DocGenMethod {
+class DocGenMethod
+{
   public $name;
   public $description;
   public $visibility;
@@ -62,7 +65,7 @@ class DocGenMethod {
   public $route;
   public $args;
 
-  public function __construct ($name, $description = [], $visibility = "public", $args = [], $param = [], $return = "", $route = []) {
+  public function __construct($name, $description = [], $visibility = "public", $args = [], $param = [], $return = "", $route = []) {
     $this->name = $name;
     $this->description = $description;
     $this->visibility = $visibility;
@@ -77,7 +80,7 @@ class DocGenMethod {
 Using previously determined blocks (arrays of decls and docs), and the name of the
 file, figure out all the classes and methods and their documentation. */
 
-function generate_tree (array $blocks, string $filename, string $dir) : DocGenFile {
+function generate_tree(array $blocks, string $filename, string $dir): DocGenFile {
   $doc_file    = new DocGenFile($filename, $dir);
   $doc_class   = null;
   $doc_methods = [];

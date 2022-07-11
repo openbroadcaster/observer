@@ -26,8 +26,9 @@
  *
  * @package Controller
  */
-class ClientSettings extends OBFController {
-  public function __construct () {
+class ClientSettings extends OBFController
+{
+  public function __construct() {
     parent::__construct();
   }
 
@@ -38,7 +39,7 @@ class ClientSettings extends OBFController {
    *
    * @return setting_result
    */
-  public function set_login_message () {
+  public function set_login_message() {
     $this->user->require_permission('manage_global_client_storage');
     $data = $this->data('client_login_message');
     return $this->models->settings('setting_set', 'client_login_message', $data);
@@ -49,7 +50,7 @@ class ClientSettings extends OBFController {
    *
    * @return client_login_message
    */
-  public function get_login_message () {
+  public function get_login_message() {
     return $this->models->settings('setting_get', 'client_login_message');
 
   }
@@ -61,7 +62,7 @@ class ClientSettings extends OBFController {
    *
    * @return setting_result
    */
-  public function set_welcome_page () {
+  public function set_welcome_page() {
     $this->user->require_permission('manage_global_client_storage');
     $data = $this->data('client_welcome_page');
     return $this->models->settings('setting_set', 'client_welcome_page', $data);
@@ -72,7 +73,7 @@ class ClientSettings extends OBFController {
   *
   * @return client_welcome_page
   */
-  public function get_welcome_page () {
+  public function get_welcome_page() {
     $this->user->require_authenticated();
     return $this->models->settings('setting_get', 'client_welcome_page');
   }

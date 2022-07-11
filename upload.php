@@ -53,8 +53,8 @@ elseif(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
 // this is another comment
 if(empty($_POST['appkey']))
 {
-  $user->auth($auth_id,$auth_key);
-} 
+  $user->auth($auth_id, $auth_key);
+}
 else
 {
   $user->auth_appkey($_POST['appkey'], [['media','save']]);
@@ -63,7 +63,6 @@ else
 // define our class, create instance, handle upload.
 class Upload extends OBFController
 {
-
   // used by handle_upload() to get some important information about the uploaded media
   private function media_info($filename)
   {
@@ -81,7 +80,7 @@ class Upload extends OBFController
     $models = OBFModels::get_instance();
 
     $key = $this->randKey();
-    $id = $this->db->insert('uploads',array('key'=>$key, 'expiry'=>strtotime('+24 hours')));
+    $id = $this->db->insert('uploads', array('key'=>$key, 'expiry'=>strtotime('+24 hours')));
 
     $input = fopen("php://input", "r");
     $target = fopen(OB_ASSETS.'/uploads/'.$id, "w");
@@ -97,7 +96,7 @@ class Upload extends OBFController
     }
 
     // make sure not too big. filesize limit in MB, default 1024.
-    if( ($realSize/1024/1024) > OB_MEDIA_FILESIZE_LIMIT )
+    if(($realSize/1024/1024) > OB_MEDIA_FILESIZE_LIMIT)
     {
       echo json_encode(array('error'=>'File too large (max size 1GB).'));
       unlink(OB_ASSETS.'/uploads/'.$id);
@@ -123,8 +122,8 @@ class Upload extends OBFController
 
     // get some useful media information, insert it into the db with our file id/key.
     $media_info = $this->media_info(OB_ASSETS.'/uploads/'.$id);
-    $this->db->where('id',$id);
-    $this->db->update('uploads',array('format'=>$media_info['format'], 'type'=>$media_info['type'], 'duration'=>$media_info['duration']));
+    $this->db->where('id', $id);
+    $this->db->update('uploads', array('format'=>$media_info['format'], 'type'=>$media_info['type'], 'duration'=>$media_info['duration']));
 
     $result['media_info'] = $media_info;
 
@@ -140,7 +139,7 @@ class Upload extends OBFController
 
     $chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789';
     $key = '';
-    for($i=0;$i<16;$i++)  $key.=$chars[rand(0,(strlen($chars)-1))];
+    for($i=0;$i<16;$i++)  $key.=$chars[rand(0, (strlen($chars)-1))];
     return $key;
 
   }

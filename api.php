@@ -23,7 +23,6 @@ require_once('components.php');
 
 class OBFAPI
 {
-
   private $load;
   private $user;
   private $io;
@@ -55,13 +54,13 @@ class OBFAPI
       $this->io->error(OB_ERROR_BAD_POSTDATA);
       return;
     }
-    
+
     // preliminary request validity check
     foreach($requests as $request)
     {
       if(!is_array($request) || count($request)!=3) { $this->io->error(OB_ERROR_BAD_POSTDATA); return; }
     }
-    
+
     // try to get an ID/key pair for user authorization.
     if(!empty($_POST['i']) && !empty($_POST['k']))
     {
@@ -71,11 +70,11 @@ class OBFAPI
 
     if (empty($_POST['appkey'])) {
       // authorize our user (from post data, cookie data, whatever.)
-      $this->user->auth($auth_id,$auth_key);
+      $this->user->auth($auth_id, $auth_key);
     } else {
       $this->user->auth_appkey($_POST['appkey'], $requests);
     }
-    
+
     // make sure each request has a valid controller (not done above since auth required before controller load)
     foreach($requests as $request)
     {
@@ -93,24 +92,24 @@ class OBFAPI
 
       // load our controller.
       $this->controller = $this->load->controller($controller);
-      $this->controller->data = json_decode($request[2],true,512);
+      $this->controller->data = json_decode($request[2], true, 512);
 
       // launch callbacks to be run before requested main process.
       // this is not passed to the main process (might be later if it turns out that would be useful...)
       $cb_name = get_class($this->controller).'.'.$action; // get Cased contrller name (get_class)
       $this->callback_handler->reset_retvals($cb_name); // reset any retvals stored from last request.
-      $cb_return = $this->callback_handler->fire($cb_name,'init',$null,$this->controller->data);
+      $cb_return = $this->callback_handler->fire($cb_name, 'init', $null, $this->controller->data);
 
       // do callbacks all main process to be run?
       if(empty($cb_return->r))
       {
         // run main process.
         $output = $this->controller->handle($action);
-        $this->callback_handler->store_retval($cb_name,$cb_name,$output);
+        $this->callback_handler->store_retval($cb_name, $cb_name, $output);
 
         // launch callbacks to be run after requested main process.
         // callbacks can manipulate output here.
-        $cb_return = $this->callback_handler->fire($cb_name,'return',$null,$this->controller->data);
+        $cb_return = $this->callback_handler->fire($cb_name, 'return', $null, $this->controller->data);
 
         // callback changes output.
         if(!empty($cb_return->r)) $output = $cb_return->v;

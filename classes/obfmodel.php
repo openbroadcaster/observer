@@ -26,7 +26,6 @@
  */
 class OBFModel
 {
-
   public $load;
   public $db;
   public $user;
@@ -58,7 +57,7 @@ class OBFModel
    *
    * @return return_value
    */
-  public function __call($name,$args)
+  public function __call($name, $args)
   {
     if(!isset($this->$name))
     {
@@ -68,7 +67,7 @@ class OBFModel
 
     $obj = $this->$name;
 
-    return call_user_func_array($obj,$args);
+    return call_user_func_array($obj, $args);
   }
 
   /**
@@ -88,7 +87,7 @@ class OBFModel
     $method = $stack[0]['args'][0];
 
     // make sure method exists.
-    if(!method_exists($this,$method)) return;
+    if(!method_exists($this, $method)) return;
 
     // get our args by reference.
     if(count($stack[0]['args'])>1){
@@ -98,22 +97,22 @@ class OBFModel
       }
     }
 
-    $eval_args = implode(',',$eval_args);
+    $eval_args = implode(',', $eval_args);
 
     // call our 'init' callbacks.
     $retval = null;
     $cb_name = get_class($this).'.'.$method;
-    $cb_return = $this->callback_handler->fire($cb_name,'init',$args);
+    $cb_return = $this->callback_handler->fire($cb_name, 'init', $args);
 
     // a callback is forcing an early return.
     if(!empty($cb_return->r)) return $cb_return->v;
 
     // call our requested method
     eval('$retval = $this->$method('.$eval_args.');');
-    $this->callback_handler->store_retval($cb_name,$cb_name,$retval);
+    $this->callback_handler->store_retval($cb_name, $cb_name, $retval);
 
     // call our 'return' callbacks;
-    $cb_return = $this->callback_handler->fire($cb_name,'return',$args);
+    $cb_return = $this->callback_handler->fire($cb_name, 'return', $args);
 
     // reset our return value list for this process chain
     $this->callback_handler->reset_retvals($cb_name);

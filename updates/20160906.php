@@ -2,7 +2,6 @@
 
 class OBUpdate20160906 extends OBUpdate
 {
-
   public function items()
   {
     $updates = array();
@@ -13,19 +12,19 @@ class OBUpdate20160906 extends OBUpdate
   public function run()
   {
     // "Inuktitut" replaces "Inuit" if available.
-    $this->db->where('name','Inuit');
+    $this->db->where('name', 'Inuit');
     $inuit = $this->db->get_one('media_languages');
 
     if($inuit)
     {
-      $this->db->where('id',$inuit['id']);
-      $this->db->update('media_languages',array('name'=>'Inuktitut'));
+      $this->db->where('id', $inuit['id']);
+      $this->db->update('media_languages', array('name'=>'Inuktitut'));
     }
 
-    else $this->db->insert('media_languages',array('name'=>'Inuktitut'));
+    else $this->db->insert('media_languages', array('name'=>'Inuktitut'));
 
     // Add additional languages.
-    $languages = explode("\n","Abenaki 
+    $languages = explode("\n", "Abenaki 
                       Algonquin 
                       Assiniboine 
                       Atikamekw 
@@ -103,7 +102,7 @@ class OBUpdate20160906 extends OBUpdate
       foreach($languages as $language)
       {
         $language = trim($language);
-        $this->db->insert('media_languages',array('name'=>$language));
+        $this->db->insert('media_languages', array('name'=>$language));
       }
 
       return true;

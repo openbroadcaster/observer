@@ -26,7 +26,6 @@
  */
 class OBFModels
 {
-
   public $load;
   private $models;
 
@@ -35,8 +34,8 @@ class OBFModels
     $this->load = OBFLoad::get_instance();
     $this->models = new stdClass();
   }
-  
-  public function __call($name,$args)
+
+  public function __call($name, $args)
   {
     if(!isset($this->models->$name))
     {
@@ -47,18 +46,18 @@ class OBFModels
         trigger_error('Call to undefined model '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
         die();
       }
-      
+
       $this->models->$name = $model;
     }
-    
+
     return call_user_func_array($this->models->$name, $args);
   }
-  
-  static function &get_instance()
+
+  public static function &get_instance()
   {
     static $instance;
 
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
 

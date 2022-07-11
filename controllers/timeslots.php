@@ -24,9 +24,9 @@
  *
  * @package Controller
  */
- class Timeslots extends OBFController {
-
-   public function __construct () {
+ class Timeslots extends OBFController
+{
+   public function __construct() {
      parent::__construct();
    }
 
@@ -37,7 +37,7 @@
     *
     * @return timeslot
     */
-   public function get () {
+   public function get() {
      $id = $this->data('id');
 
      $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, false);
@@ -57,7 +57,7 @@
     *
     * @return timeslot
     */
-   public function get_recurring () {
+   public function get_recurring() {
      $id = $this->data('id');
 
      $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, true);
@@ -84,7 +84,7 @@
     *
     * @return timeslots
     */
-   public function search () {
+   public function search() {
      $this->user->require_authenticated();
 
      $start   = $this->data('start');
@@ -127,7 +127,7 @@
     *
     * @param player
     */
-   public function set_last_player () {
+   public function set_last_player() {
      $player_id = $this->data('player');
 
      $this->db->where('id', $player_id);
@@ -147,7 +147,7 @@
     *
     * @return player
     */
-   public function get_last_player () {
+   public function get_last_player() {
      $player_id = $this->user->get_setting('last_timeslots_player');
      //T Last timeslots player.
      if ($player_id) return array(true, 'Last timeslots player.', $player_id);
@@ -163,7 +163,7 @@
     * @param id
     * @param recurring
     */
-   public function delete () {
+   public function delete() {
      $id        = trim($this->data('id'));
      $recurring = trim($this->data('recurring'));
 
@@ -195,7 +195,7 @@
     * @param duration
     * @param stop
     */
-   public function save () {
+   public function save() {
      $id             = trim($this->data('id'));
      $edit_recurring = trim($this->data('edit_recurring'));
 

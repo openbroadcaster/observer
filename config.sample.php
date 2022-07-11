@@ -1,25 +1,25 @@
 <?php
 
-define('OB_DB_USER','dbuser'); // database user
-define('OB_DB_PASS','dbpass'); // database password
-define('OB_DB_HOST','localhost'); // database hostname
-define('OB_DB_NAME','dbname'); // database name
+define('OB_DB_USER', 'dbuser'); // database user
+define('OB_DB_PASS', 'dbpass'); // database password
+define('OB_DB_HOST', 'localhost'); // database hostname
+define('OB_DB_NAME', 'dbname'); // database name
 
-define('OB_HASH_SALT','CHANGEMEPLEASE'); // change to random characters for password salt.
+define('OB_HASH_SALT', 'CHANGEMEPLEASE'); // change to random characters for password salt.
 
 // make sure the following directories are writable by the web server.
-define('OB_MEDIA','/where/to/put/media');
-define('OB_MEDIA_UPLOADS','/where/to/put/media/uploads'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
-define('OB_MEDIA_ARCHIVE','/where/to/put/media/archive'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
-define('OB_CACHE','/where/to/put/cache/files');
+define('OB_MEDIA', '/where/to/put/media');
+define('OB_MEDIA_UPLOADS', '/where/to/put/media/uploads'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
+define('OB_MEDIA_ARCHIVE', '/where/to/put/media/archive'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
+define('OB_CACHE', '/where/to/put/cache/files');
 
-define('OB_SITE','http://example.com/'); // where do you access OB?
+define('OB_SITE', 'http://example.com/'); // where do you access OB?
 
-define('OB_EMAIL_REPLY','noreply@example.com'); // emails to users come from this address
-define('OB_EMAIL_FROM','OpenBroadcaster'); // emails to users come from this name
+define('OB_EMAIL_REPLY', 'noreply@example.com'); // emails to users come from this address
+define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this name
 
-define('OB_UPDATES_USER','updates'); // username/password for updates area 
-define('OB_UPDATES_PW','PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
+define('OB_UPDATES_USER', 'updates'); // username/password for updates area
+define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
 
 //
 // THE FOLLOWING ARE OPTIONAL SETTINGS

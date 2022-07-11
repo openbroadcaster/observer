@@ -27,7 +27,6 @@
  */
 class Emergency extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -44,7 +43,7 @@ class Emergency extends OBFController
    *
    * @return emergency
    */
-  public function get () {
+  public function get() {
     $id = trim($this->data('id'));
 
     if (!empty($id)) {
@@ -66,7 +65,7 @@ class Emergency extends OBFController
    *
    * @return emergencies
    */
-  public function search () {
+  public function search() {
     $player_id = trim($this->data('player_id'));
 
     if (!empty($player_id)) {
@@ -88,12 +87,12 @@ class Emergency extends OBFController
   {
     $player_id = $this->data('player');
 
-    $this->db->where('id',$player_id);
+    $this->db->where('id', $player_id);
     $player_data = $this->db->get_one('players');
 
     if($player_data)
     {
-      $this->user->set_setting('last_emergencies_player',$player_id);
+      $this->user->set_setting('last_emergencies_player', $player_id);
       return array(true,'Set last emergencies player.');
     }
     //T This player no longer exists.

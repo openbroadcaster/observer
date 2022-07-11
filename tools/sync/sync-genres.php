@@ -5,7 +5,7 @@ if(php_sapi_name()!='cli') die('Command line tool only.');
 header('Content-Type: application/json');
 require_once('../../components.php');
 require_once('extras/getid3/getid3/getid3.php');
-$getID3 = new getID3;
+$getID3 = new getID3();
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
 $user_agent = 'OpenBroadcaster/'.trim(file_get_contents('VERSION'));
@@ -30,9 +30,9 @@ while(true)
   foreach($rows as $row)
   {
     usleep(500000);
-    
+
     $genres = [];
-    
+
     // get genres from musicbrainz
     $ch = curl_init('https://musicbrainz.org/ws/2/release-group/'.$row['sync_releasegroup_id'].'?inc=genres&fmt=json');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -48,24 +48,24 @@ while(true)
       $genres[] = $genre->name;
     }
 
-    $db->where('media_id',$row['id']);
-    $db->update('media_metadata',[
+    $db->where('media_id', $row['id']);
+    $db->update('media_metadata', [
       'sync_musicbrainz_raw'=>$musicbrainz_raw_response
     ]);
-    
+
     // update database with genres
     if(!empty($genres))
     {
-      echo $row['id'].': '.implode($genres,', ').PHP_EOL;
-      $db->where('media_id',$row['id']);
-      $db->update('media_metadata',[
-        'genres'=>implode($genres,',')
+      echo $row['id'].': '.implode($genres, ', ').PHP_EOL;
+      $db->where('media_id', $row['id']);
+      $db->update('media_metadata', [
+        'genres'=>implode($genres, ',')
       ]);
-      $db->where('media_id',$row['id']);
+      $db->where('media_id', $row['id']);
       $db->delete('media_metadata_tags');
       foreach($genres as $genre)
       {
-        $db->insert('media_metadata_tags',['media_id'=>$row['id'], 'media_metadata_column_id'=>1, 'tag'=>$genre]);
+        $db->insert('media_metadata_tags', ['media_id'=>$row['id'], 'media_metadata_column_id'=>1, 'tag'=>$genre]);
       }
     }
   }

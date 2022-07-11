@@ -2,7 +2,6 @@
 
 class OBUpdate20160409 extends OBUpdate
 {
-
   public function items()
   {
     $updates = array();
@@ -27,8 +26,8 @@ class OBUpdate20160409 extends OBUpdate
 
       if($info['algo']==0)
       {
-        $this->db->where('id',$user['id']);
-        $this->db->update('users',array('password'=>''));
+        $this->db->where('id', $user['id']);
+        $this->db->update('users', array('password'=>''));
       }
     }
 

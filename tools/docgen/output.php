@@ -8,7 +8,7 @@ the output as well. Use a separate function for creating the index page, which
 still needs to know about the nav menu but doesn't show any class or method
 data. */
 
-function html_file (DocGenFile $doc_file, array $nav_tree) : string {
+function html_file(DocGenFile $doc_file, array $nav_tree): string {
   $html = html_header($nav_tree);
 
   $file_dir         = $doc_file->dir;
@@ -37,7 +37,7 @@ function html_file (DocGenFile $doc_file, array $nav_tree) : string {
   return $html;
 }
 
-function html_index (array $nav_tree) : string {
+function html_index(array $nav_tree): string {
   $html = html_header($nav_tree);
 
   ob_start();
@@ -51,7 +51,7 @@ function html_index (array $nav_tree) : string {
 /* Take an HTML documentation page and wrap it in the appropriate headers and
 everything. */
 
-function html_page (string $page, array $nav_tree) : string {
+function html_page(string $page, array $nav_tree): string {
   $html = html_header($nav_tree);
 
   ob_start();
@@ -77,13 +77,13 @@ function html_page (string $page, array $nav_tree) : string {
 /* Generate HTML section for the header. This needs a separate function to
 account for CSS and JS includes. */
 
-function html_header (array $nav_tree) : string {
+function html_header(array $nav_tree): string {
   ob_start();
 
   $title   = "OpenBroadcaster Documentation";
   $styles  = array_diff(scandir(__DIR__ . '/style/'), ['..', '.']);
   $scripts = array_diff(scandir(__DIR__ . '/js/'), ['..', '.']);
-  include ('templates/header.php');
+  include('templates/header.php');
 
   $html = ob_get_contents();
   ob_clean();
@@ -93,7 +93,7 @@ function html_header (array $nav_tree) : string {
 
 /* Generate HTML section for the class documentation. */
 
-function html_class_header (DocGenClass $doc_class) : string {
+function html_class_header(DocGenClass $doc_class): string {
   ob_start();
 
   $class_name        = $doc_class->name;
@@ -107,7 +107,7 @@ function html_class_header (DocGenClass $doc_class) : string {
   return $html;
 }
 
-function html_class_footer (DocGenClass $doc_class) : string {
+function html_class_footer(DocGenClass $doc_class): string {
   ob_start();
 
   include('templates/class_footer.php');
@@ -120,7 +120,7 @@ function html_class_footer (DocGenClass $doc_class) : string {
 
 /* Generate HTML section for the method documentation. */
 
-function html_method (DocGenMethod $doc_method) : string {
+function html_method(DocGenMethod $doc_method): string {
   ob_start();
 
   $method_name        = $doc_method->name;

@@ -27,7 +27,7 @@ if(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
   $auth_key = $_COOKIE['ob_auth_key'];
 
   $user = OBFUser::get_instance();
-  $user->auth($auth_id,$auth_key);
+  $user->auth($auth_id, $auth_key);
 }
 
 $models = OBFModels::get_instance();

@@ -27,7 +27,6 @@
  */
 class OBFCallbacks
 {
-
   private $callbacks;
   private $load;
   private $retvals;
@@ -43,9 +42,9 @@ class OBFCallbacks
    *
    * @return instance
    */
-  static function &get_instance() {
+  public static function &get_instance() {
     static $instance;
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
     $instance = new OBFCallbacks();
@@ -71,7 +70,7 @@ class OBFCallbacks
    * @param callback Callback string in Class.method format.
    * @param value Return values to store.
    */
-  public function store_retval($hook,$callback,$value)
+  public function store_retval($hook, $callback, $value)
   {
     if(!isset($this->retvals[$hook])) $this->retvals[$hook] = array();
     $this->retvals[$hook][$callback] = $value;
@@ -102,7 +101,7 @@ class OBFCallbacks
    * @param weight Lower numbers are run first. Can be negative. Default 0.
    *
    */
-  public function register_callback($callback,$hook,$position,$weight=0)
+  public function register_callback($callback, $hook, $position, $weight=0)
   {
 
     /*
@@ -129,7 +128,7 @@ class OBFCallbacks
     if(!isset($this->callbacks[$hook])) $this->callbacks[$hook]=array();
     if(!isset($this->callbacks[$hook][$position])) $this->callbacks[$hook][$position]=array();
 
-    $cb = new stdClass;
+    $cb = new stdClass();
     $cb->callback = $callback;
     $cb->hook = $hook;
     $cb->position = $position;
@@ -137,7 +136,7 @@ class OBFCallbacks
 
     $this->callbacks[$hook][$position][]=$cb;
 
-    usort($this->callbacks[$hook][$position],array($this,'callbacks_sort'));
+    usort($this->callbacks[$hook][$position], array($this,'callbacks_sort'));
 
     return true;
 
@@ -152,7 +151,7 @@ class OBFCallbacks
    *
    * @return -1 | 1
    */
-  private function callbacks_sort($a,$b)
+  private function callbacks_sort($a, $b)
   {
     return ($a->weight < $b->weight) ? -1 : 1;
   }
@@ -167,37 +166,37 @@ class OBFCallbacks
    *
    * @return obfcallback_return
    */
-  public function fire($hook,$position,&$args=null,&$data=null)
+  public function fire($hook, $position, &$args=null, &$data=null)
   {
 
     // get our OBFLoader.  (Loading in construct creates a loop/php-crash).
     if(empty($this->load)) $this->load = OBFLoad::get_instance();
 
     // return early if no registered callbacks.
-    if(!isset($this->callbacks[$hook])) return new OBFCallbackReturn;
-    if(!isset($this->callbacks[$hook][$position])) return new OBFCallbackReturn;
+    if(!isset($this->callbacks[$hook])) return new OBFCallbackReturn();
+    if(!isset($this->callbacks[$hook][$position])) return new OBFCallbackReturn();
 
     foreach($this->callbacks[$hook][$position] as $cb)
     {
 
-      $cbname_explode = explode('.',$cb->callback);
-      $callback_is_model = (strtolower(substr($cbname_explode[0],-5))=='model' ? true : false);
+      $cbname_explode = explode('.', $cb->callback);
+      $callback_is_model = (strtolower(substr($cbname_explode[0], -5))=='model' ? true : false);
 
       if($callback_is_model)
       {
-        $model = $this->load->model(substr($cbname_explode[0],0,-5));
-        $cb_return = $model->{$cbname_explode[1]}($hook,$position,$args);
+        $model = $this->load->model(substr($cbname_explode[0], 0, -5));
+        $cb_return = $model->{$cbname_explode[1]}($hook, $position, $args);
       }
 
       else
       {
         $controller = $this->load->controller($cbname_explode[0]);
         if($data) $controller->data = &$data;
-        $cb_return = $controller->handle($cbname_explode[1],$hook,$position);
+        $cb_return = $controller->handle($cbname_explode[1], $hook, $position);
       }
 
-      if(isset($cb_return->v)) $this->store_retval($hook,$cb->callback,$cb_return->v);
-      else $this->store_retval($hook,$cb->callback,null);
+      if(isset($cb_return->v)) $this->store_retval($hook, $cb->callback, $cb_return->v);
+      else $this->store_retval($hook, $cb->callback, null);
 
       // callback is forcing an early return.
       if(!empty($cb_return) && $cb_return->r)
@@ -207,7 +206,7 @@ class OBFCallbacks
 
     }
 
-    return new OBFCallbackReturn;
+    return new OBFCallbackReturn();
 
   }
 

@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20190901 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20190901 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = 'Translation tables.';
 
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('CREATE TABLE IF NOT EXISTS `translations_sources` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `string` text NOT NULL,

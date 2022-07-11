@@ -1,8 +1,8 @@
 <?php
 
-class OBUpdate20200817 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200817 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "CASCADE updates to schedules, schedules_media_cache, schedules_permissions, schedules_recurring, and their sub-tables. Clean up tables first.";
     $updates[] = "CASCADE updates to translations tables. Clean up tables first.";
@@ -10,7 +10,7 @@ class OBUpdate20200817 extends OBUpdate {
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // CASCADE updates to schedules, schedules_media_cache, schedules_permissions, schedules_recurring, and their sub-tables. Clean up tables first.

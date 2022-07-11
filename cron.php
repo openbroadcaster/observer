@@ -24,24 +24,24 @@ require('components.php');
 $db = OBFDB::get_instance();
 
 // set cron last run
-$db->where('name','cron_last_run');
+$db->where('name', 'cron_last_run');
 $cron_last_run = $db->get('settings');
 if(!$cron_last_run)
-  $db->insert('settings',array('name'=>'cron_last_run', 'value'=>time()));
+  $db->insert('settings', array('name'=>'cron_last_run', 'value'=>time()));
 else
 {
-  $db->where('name','cron_last_run');
-  $db->update('settings',array('value'=>time()));
+  $db->where('name', 'cron_last_run');
+  $db->update('settings', array('value'=>time()));
 }
 
 // delete expired uploads
-$db->where('expiry',time(),'<');
+$db->where('expiry', time(), '<');
 $uploads = $db->get('uploads');
 
 foreach($uploads as $upload)
 {
   unlink(OB_ASSETS.'/uploads/'.$upload['id']);
-  $db->where('id',$upload['id']);
+  $db->where('id', $upload['id']);
   $db->delete('uploads');
 }
 
@@ -63,9 +63,9 @@ foreach($connect_types as $type)
 
     $id = $player['id'];
 
-    $db->where('player_id',$id);
-    $db->where('event','player_last_connect_'.$type.'_warning');
-    $db->where('toggled',0);
+    $db->where('player_id', $id);
+    $db->where('event', 'player_last_connect_'.$type.'_warning');
+    $db->where('toggled', 0);
     $notices = $db->get('notices');
 
     foreach($notices as $notice)
@@ -81,8 +81,8 @@ Please take steps to ensure this player is functioning properly.';
       $mailer->AddAddress($notice['email']);
       $mailer->Send();
 
-      $db->where('id',$notice['id']);
-      $db->update('notices',array('toggled'=>1));
+      $db->where('id', $notice['id']);
+      $db->update('notices', array('toggled'=>1));
 
     }
 

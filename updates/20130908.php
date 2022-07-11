@@ -17,8 +17,8 @@ class OBUpdate20130908 extends OBUpdate
     foreach($devices as $device)
     {
       $pw_hash = sha1(OB_HASH_SALT.$device['password']);
-      $this->db->where('id',$device['id']);
-      $this->db->update('devices',array('password'=>$pw_hash));
+      $this->db->where('id', $device['id']);
+      $this->db->update('devices', array('password'=>$pw_hash));
     }
 
     // support for child/parent device relationships.

@@ -27,7 +27,6 @@
  */
 class Media extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -92,7 +91,7 @@ class Media extends OBFController
   {
     $this->user->require_authenticated();
 
-    if($this->models->media('search_save_history', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')] )) return array(true,'Search item saved.');
+    if($this->models->media('search_save_history', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')])) return array(true,'Search item saved.');
     else return array(false,'Error saving search item.');
   }
 
@@ -111,7 +110,7 @@ class Media extends OBFController
     $filters = $this->data('filters');
     $description = trim($this->data('description'));
 
-    if($this->models->media('search_edit', ['id' => $id, 'filters' => $filters, 'description' => $description, 'user_id' => $this->user->param('id')] )) return array(true,'Search item edited.');
+    if($this->models->media('search_edit', ['id' => $id, 'filters' => $filters, 'description' => $description, 'user_id' => $this->user->param('id')])) return array(true,'Search item edited.');
     else return array(false,'Error editing search item.');
   }
 
@@ -124,7 +123,7 @@ class Media extends OBFController
   {
     $this->user->require_authenticated();
 
-    if($this->models->media('search_delete_saved', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')] )) return array(true,'Search item deleted.');
+    if($this->models->media('search_delete_saved', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')])) return array(true,'Search item deleted.');
     else return array(false,'Error deleting search item.');
   }
 
@@ -177,7 +176,7 @@ class Media extends OBFController
 
     if($this->user->check_permission('manage_media')) return true;
     if($media['owner_id']==$this->user->param('id') && $this->user->check_permission('create_own_media')) return true;
-    if(array_search($this->user->param('id'), $permissions['users'])!==FALSE) return true;
+    if(array_search($this->user->param('id'), $permissions['users'])!==false) return true;
     if(count(array_intersect($this->user->get_group_ids(), $permissions['groups']))>0) return true;
     return false;
   }
@@ -210,7 +209,7 @@ class Media extends OBFController
     $params['my'] = $this->data('my');
 
     // if we're doing a simple search, we might need to apply some 'default' filters. this is handled by the media model search method.
-    if($params['query']['mode']=='simple' && $default_filters = $this->models->media('search_get_default_filters', ['user_id' => $this->user->param('id')]) )
+    if($params['query']['mode']=='simple' && $default_filters = $this->models->media('search_get_default_filters', ['user_id' => $this->user->param('id')]))
       $params['default_filters']=$default_filters;
 
     $media_result = $this->models->media('search', ['params' => $params, 'player_id' => null]);
@@ -282,7 +281,7 @@ class Media extends OBFController
       if(empty($item['id'])) $this->user->require_permission('create_own_media or manage_media');
       else
       {
-        $this->db->where('id',$item['id']);
+        $this->db->where('id', $item['id']);
         $media_item = $this->db->get_one('media');
 
         // if user can't edit, this will trigger a permission failure in via require_permission.

@@ -26,7 +26,6 @@
  */
 class ApiModel extends OBFModel
 {
-
   private $api_url;
   private $api_user;
   private $api_pass;
@@ -66,15 +65,15 @@ class ApiModel extends OBFModel
     $ch = curl_init($this->api_url.'upload.php');
 
     // we have login information. provide as cookie.  (ob_auth_id, ob_auth_key)
-    curl_setopt($ch,CURLOPT_COOKIE,'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
+    curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
 
-    curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-    curl_setopt($ch,CURLOPT_PUT,true);
-    curl_setopt($ch,CURLOPT_INFILE,fopen($file,'r'));
-    curl_setopt($ch,CURLOPT_INFILESIZE,filesize($file));
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch,CURLOPT_LOW_SPEED_LIMIT,512); // lower speed limit of 0.5KB/s
-    curl_setopt($ch,CURLOPT_LOW_SPEED_TIME,10); // cancels if going this slow for 10s or more.
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_PUT, true);
+    curl_setopt($ch, CURLOPT_INFILE, fopen($file, 'r'));
+    curl_setopt($ch, CURLOPT_INFILESIZE, filesize($file));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 512); // lower speed limit of 0.5KB/s
+    curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 10); // cancels if going this slow for 10s or more.
 
     $response = curl_exec($ch);
     curl_close($ch);
@@ -83,7 +82,7 @@ class ApiModel extends OBFModel
 
   }
 
-  public function call($controller,$action,$data=null,$login_required=true)
+  public function call($controller, $action, $data=null, $login_required=true)
   {
     if(!$this->api_url) return false;
 
@@ -107,13 +106,13 @@ class ApiModel extends OBFModel
     // we have login information. provide as cookie.  (ob_auth_id, ob_auth_key)
     if($this->api_auth_id)
     {
-      curl_setopt($ch,CURLOPT_COOKIE,'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
+      curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
     }
 
-    curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-    curl_setopt($ch,CURLOPT_POST,true);
-    curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($post));
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
     curl_close($ch);
@@ -123,7 +122,7 @@ class ApiModel extends OBFModel
 
   public function login()
   {
-    $response = $this->call('account','login',array('username'=>$this->api_user,'password'=>$this->api_pass),false);
+    $response = $this->call('account', 'login', array('username'=>$this->api_user,'password'=>$this->api_pass), false);
 
     if($response->status==true)
     {

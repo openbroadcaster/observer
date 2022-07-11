@@ -26,7 +26,6 @@
  */
 class Player extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -57,7 +56,7 @@ class Player extends OBFController
 
     if($params['orderby'] == false) $params['orderby'] = 'name';
 
-    $players = $this->models->players('get',$params);
+    $players = $this->models->players('get', $params);
 
     if($players===false) return array(false,'An unknown error occurred while fetching players.');
 
@@ -152,10 +151,10 @@ class Player extends OBFController
       $data['use_parent_emergency'] = 0;
     }
 
-    $validation = $this->models->players('validate',$data,$id);
+    $validation = $this->models->players('validate', $data, $id);
     if($validation[0]==false) return $validation;
 
-    $id = $this->models->players('save',$data,$id);
+    $id = $this->models->players('save', $data, $id);
 
     //T Player saved.
     return array(true, 'Player saved.', $id);
@@ -180,12 +179,12 @@ class Player extends OBFController
 
     if(empty($id)) return array(false,'A player ID is required.');
 
-    $validation = $this->models->players('delete_check_permission',$id);
+    $validation = $this->models->players('delete_check_permission', $id);
     if($validation[0]==false) return $validation;
 
-    if($this->models->players('player_is_parent',$id)) return array(false,'This player is a parent player, and cannot be deleted.');
+    if($this->models->players('player_is_parent', $id)) return array(false,'This player is a parent player, and cannot be deleted.');
 
-    $this->models->players('delete',$id);
+    $this->models->players('delete', $id);
 
     //T player deleted.
     return array(true,'player deleted.');
@@ -207,7 +206,7 @@ class Player extends OBFController
 
     $id = $this->data('id');
 
-    $player = $this->models->players('get_one',$id);
+    $player = $this->models->players('get_one', $id);
 
     if($player)
     {
@@ -271,14 +270,14 @@ class Player extends OBFController
     if(!$data['orderby']) { $data['orderby'] = 'timestamp'; $data['orderdesc'] = true; }
 
     // validate player_id, check permission.
-    if(!preg_match('/^[0-9]+$/',$data['player_id'])) return array(false,'Invalid player ID.');
+    if(!preg_match('/^[0-9]+$/', $data['player_id'])) return array(false,'Invalid player ID.');
     $this->user->require_permission('view_player_monitor:'.$data['player_id']);
 
-    $result = $this->models->players('monitor_search',$data);
+    $result = $this->models->players('monitor_search', $data);
 
     if($result[0] === false) return array(false,'An unknown error occurred while searching the playlog.');
 
-    return array(true,'Playlog search results.',array('results'=>$result[0],'total_rows'=>$result[1], 'csv'=>$this->models->players('monitor_csv',$result[0])));
+    return array(true,'Playlog search results.',array('results'=>$result[0],'total_rows'=>$result[1], 'csv'=>$this->models->players('monitor_csv', $result[0])));
 
   }
 
@@ -292,7 +291,7 @@ class Player extends OBFController
   public function now_playing()
   {
     $player_id = $this->data('id');
-    $return = $this->models->players('now_playing',$player_id);
+    $return = $this->models->players('now_playing', $player_id);
     return array(true,'Now playing.',$return);
   }
 

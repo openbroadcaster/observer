@@ -19,7 +19,7 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if(!defined('TABLE_PREFIX')) define('TABLE_PREFIX','');
+if(!defined('TABLE_PREFIX')) define('TABLE_PREFIX', '');
 
 /**
  * Database class. Manages SQL connections and queries, keeps track of last query
@@ -29,7 +29,6 @@ if(!defined('TABLE_PREFIX')) define('TABLE_PREFIX','');
  */
 class OBFDB
 {
-
   private $connection;
   private $result;
   private $last_query;
@@ -67,14 +66,14 @@ class OBFDB
     $row = mysqli_fetch_assoc($result);
 
     // explode current modes into array and remove strict modes
-    $modes = explode(',',$row['Value']);
+    $modes = explode(',', $row['Value']);
     foreach($modes as $index=>$mode)
     {
       if($mode=='STRICT_TRANS_TABLES' || $mode=='STRICT_ALL_TABLES') unset($modes[$index]);
     }
 
     // set new modes
-    $new_modes = implode(',',$modes);
+    $new_modes = implode(',', $modes);
     mysqli_query($this->connection, "SET SESSION sql_mode = '".mysqli_real_escape_string($this->connection, $new_modes)."'");
   }
 
@@ -83,11 +82,11 @@ class OBFDB
    *
    * @return instance
    */
-  static function &get_instance() {
+  public static function &get_instance() {
 
     static $instance;
 
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
 
@@ -158,9 +157,9 @@ class OBFDB
 
     $start_time = microtime(true);
     $this->result = mysqli_query($this->connection, $sql);
-    $duration = round(((microtime(true)-$start_time)),4);
+    $duration = round(((microtime(true)-$start_time)), 4);
 
-    if(defined('OB_LOG_SLOW_QUERIES') && OB_LOG_SLOW_QUERIES==TRUE && $duration>1)
+    if(defined('OB_LOG_SLOW_QUERIES') && OB_LOG_SLOW_QUERIES==true && $duration>1)
     {
       error_log('SLOW SQL ('.$duration.'s): '.$sql);
     }
@@ -309,7 +308,7 @@ class OBFDB
    * @param as
    * @param escape Escape column string, default TRUE.
    */
-  public function what($column,$as=null,$escape=true)
+  public function what($column, $as=null, $escape=true)
   {
 
     if(!is_array($this->hl_what)) $this->hl_what = array();
@@ -331,16 +330,16 @@ class OBFDB
    * @param value
    * @param operator Comparison operator, default '='.
    */
-  public function where($column,$value,$operator='=')
+  public function where($column, $value, $operator='=')
   {
     if(!is_array($this->hl_where)) $this->hl_where=array();
 
-    if(array_search($operator,array('=','>','<','>=','<=','!='))===FALSE) $operator='=';
+    if(array_search($operator, array('=','>','<','>=','<=','!='))===false) $operator='=';
 
     // handle null
-    if($value===NULL && $operator='=') $where = $this->format_table_column($column).' IS NULL';
-    elseif($value===NULL && $operator='!=') $where = $this->format_table_column($column).' IS NOT NULL';
-    
+    if($value===null && $operator='=') $where = $this->format_table_column($column).' IS NULL';
+    elseif($value===null && $operator='!=') $where = $this->format_table_column($column).' IS NOT NULL';
+
     // default
     else $where = $this->format_table_column($column).$operator.$this->format_value($value);
 
@@ -355,7 +354,7 @@ class OBFDB
    * @param column
    * @param value
    */
-  public function where_like($column,$value)
+  public function where_like($column, $value)
   {
 
     if(!is_array($this->hl_where)) $this->hl_where=array();
@@ -373,7 +372,7 @@ class OBFDB
    * @param column
    * @param value
    */
-  public function where_not_like($column,$value)
+  public function where_not_like($column, $value)
   {
 
     if(!is_array($this->hl_where)) $this->hl_where=array();
@@ -411,11 +410,11 @@ class OBFDB
    * @param value
    * @param operator Comparison operator, default '='.
    */
-  public function where_col($column,$value,$operator='=')
+  public function where_col($column, $value, $operator='=')
   {
     if(!is_array($this->hl_where)) $this->hl_where=array();
 
-    if(array_search($operator,array('=','>','<','>=','<=','!='))===FALSE) $operator = '=';
+    if(array_search($operator, array('=','>','<','>=','<=','!='))===false) $operator = '=';
 
     $where = $this->format_table_column($column).$operator.$this->format_table_column($value);
 
@@ -451,9 +450,9 @@ class OBFDB
    * @param column
    * @param dir Direction, default 'asc'.
    */
-  public function orderby($column,$dir='asc')
+  public function orderby($column, $dir='asc')
   {
-    if(!preg_match('/asc/i',$dir) && !preg_match('/desc/i',$dir)) $dir='asc';
+    if(!preg_match('/asc/i', $dir) && !preg_match('/desc/i', $dir)) $dir='asc';
 
     $this->hl_orderby = $this->format_table_column($column).' '.$dir;
     return true;
@@ -479,7 +478,7 @@ class OBFDB
    */
   public function limit($limit)
   {
-    if(!preg_match('/^[0-9]+$/',$limit)) return false;
+    if(!preg_match('/^[0-9]+$/', $limit)) return false;
     $this->hl_limit = $limit;
     return true;
   }
@@ -493,7 +492,7 @@ class OBFDB
    */
   public function offset($offset)
   {
-    if(!preg_match('/^[0-9]+$/',$offset)) return false;
+    if(!preg_match('/^[0-9]+$/', $offset)) return false;
     $this->hl_offset = $offset;
     return true;
   }
@@ -505,7 +504,7 @@ class OBFDB
    * @param column1
    * @param column2
    */
-  public function leftjoin($table,$column1,$column2)
+  public function leftjoin($table, $column1, $column2)
   {
     $table = $this->format_backticks($table);
     $column1 = $this->format_table_column($column1);
@@ -539,7 +538,7 @@ class OBFDB
    *
    * @return sql_timestamp
    */
-  public function format_datetime( $timestamp = null )
+  public function format_datetime($timestamp = null)
   {
     if(empty($timestamp)) $timestamp = time();
     return date('Y-m-d H:i:s', $timestamp);
@@ -582,13 +581,13 @@ class OBFDB
   public function format_table_column($value)
   {
 
-    $table_column = explode('.',$value);
+    $table_column = explode('.', $value);
 
     if(count($table_column)>1)
     {
       $table = $this->format_backticks($table_column[0]);
       unset($table_column[0]);
-      $column = implode('.',$table_column);
+      $column = implode('.', $table_column);
 
       if($column!='*') $column = $this->format_backticks($column);
 
@@ -627,12 +626,12 @@ class OBFDB
     }
 
     $sql = 'SELECT '.($this->hl_foundrows ? 'SQL_CALC_FOUND_ROWS' : '').
-                      (!empty($this->hl_what) ? ' '.implode(',',$this->hl_what) : ' *').
+                      (!empty($this->hl_what) ? ' '.implode(',', $this->hl_what) : ' *').
                       ' FROM '.TABLE_PREFIX.$table.
                       $leftjoin;
 
     if(!empty($this->hl_where_string)) $sql .= ' WHERE '.$this->hl_where_string;
-    elseif(!empty($this->hl_where)) $sql .= ' WHERE '.implode(' '.$this->hl_where_mode.' ',$this->hl_where);
+    elseif(!empty($this->hl_where)) $sql .= ' WHERE '.implode(' '.$this->hl_where_mode.' ', $this->hl_where);
 
     $sql .= (!empty($this->hl_orderby) ? ' ORDER BY '.$this->hl_orderby : '').
                       (!empty($this->hl_limit) ? ' LIMIT '.$this->hl_limit : '').
@@ -705,18 +704,18 @@ class OBFDB
    *
    * @return insert_id
    */
-  public function insert($table,$data)
+  public function insert($table, $data)
   {
 
     if(!is_array($data) || count($data)==0) return false;
 
     foreach($data as $item=>$value) {
-      if($value===NULL) $setsql[]=$this->format_table_column($item).'=NULL';
+      if($value===null) $setsql[]=$this->format_table_column($item).'=NULL';
       else $setsql[]=$this->format_table_column($item).'='.$this->format_value($value);
     }
 
     $sql='INSERT INTO '.TABLE_PREFIX.$this->format_backticks($table).' SET '.
-                      implode(', ',$setsql);
+                      implode(', ', $setsql);
 
     $this->reset_hlvars(); // resets all higher level variables for the next query data. (hl vars not used, done for consistency)
 
@@ -739,7 +738,7 @@ class OBFDB
    *
    * @return result
    */
-  public function update($table,$data)
+  public function update($table, $data)
   {
 
     // nothing to update, but this isn't an error.
@@ -753,7 +752,7 @@ class OBFDB
     if((!is_array($this->hl_where) || count($this->hl_where)<1) && empty($this->hl_where_string)) return false;
 
     foreach($data as $item=>$value) {
-      if($value===NULL) $setsql[]=$this->format_table_column($item).'=NULL';
+      if($value===null) $setsql[]=$this->format_table_column($item).'=NULL';
       else $setsql[]=$this->format_table_column($item).'='.$this->format_value($value);
     }
 
@@ -767,8 +766,8 @@ class OBFDB
     $query='UPDATE'.
                   ' '.TABLE_PREFIX.$this->format_backticks($table).
                   $leftjoin.
-                  ' SET '.implode(', ',$setsql).
-                  ' WHERE '.(!empty($this->hl_where_string) ? $this->hl_where_string : implode(' '.$this->hl_where_mode.' ',$this->hl_where)).
+                  ' SET '.implode(', ', $setsql).
+                  ' WHERE '.(!empty($this->hl_where_string) ? $this->hl_where_string : implode(' '.$this->hl_where_mode.' ', $this->hl_where)).
                   (!empty($this->hl_orderby) ? ' ORDER BY '.$this->hl_orderby : '').
                   (!empty($this->hl_limit) ? ' LIMIT '.$this->hl_limit : '');
 
@@ -802,7 +801,7 @@ class OBFDB
     $query='DELETE'.
                   ' FROM '.TABLE_PREFIX.$this->format_backticks($table).
                   $leftjoin.
-                  ' WHERE '.(!empty($this->hl_where_string) ? $this->hl_where_string : implode(' '.$this->hl_where_mode.' ',$this->hl_where)).
+                  ' WHERE '.(!empty($this->hl_where_string) ? $this->hl_where_string : implode(' '.$this->hl_where_mode.' ', $this->hl_where)).
                   (!empty($this->hl_orderby) ? ' ORDER BY '.$this->hl_orderby : '').
                   (!empty($this->hl_limit) ? ' LIMIT '.$this->hl_limit : '');
 
@@ -818,9 +817,9 @@ class OBFDB
    * @param table
    * @param id
    */
-  public function id_exists($table,$id)
+  public function id_exists($table, $id)
   {
-    $this->where('id',$id);
+    $this->where('id', $id);
     $test = $this->get_one($table);
     if($test) return true;
     else return false;

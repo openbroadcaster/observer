@@ -15,7 +15,7 @@ class OBUpdate20180322 extends OBUpdate
   `media_id` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`media_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-    
+
     $this->db->query("CREATE TABLE IF NOT EXISTS `media_metadata_columns` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,

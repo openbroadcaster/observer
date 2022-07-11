@@ -46,7 +46,7 @@ if (!is_writable(OB_ASSETS .'/uploads')) {
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
 
-function subsonic_request ($path, $args=[], $decode=true) {
+function subsonic_request($path, $args=[], $decode=true) {
   $auth = [
     'u'=>OB_SUBSONIC_USER,
     't'=>OB_SUBSONIC_HASH,
@@ -100,7 +100,7 @@ if (file_exists('tools/subsonic/artists_remaining.json')) {
   available) to our own artists array. */
   echo "Getting artists from Subsonic API.\n";
   $response = subsonic_request('getIndexes');
-  if ($response['subsonic-response']['status'] != 'ok') die ('Failed to get list of artists from API.');
+  if ($response['subsonic-response']['status'] != 'ok') die('Failed to get list of artists from API.');
 
   $artists = [];
   foreach ($response['subsonic-response']['indexes']['index'] as $index) {
@@ -128,12 +128,12 @@ if (file_exists('tools/subsonic/artists_remaining.json')) {
 /* For each artist, retrieve a listing of all media files. Make sure to process them
 piecewise before moving on, so as to avoid blowing up the amount of data we're
 dealing with at any one time. */
-function get_all_media ($directory_id) {
+function get_all_media($directory_id) {
   // echo 'dir id: ' . $directory_id . PHP_EOL;
   $media = [];
 
   $response = subsonic_request('getMusicDirectory', ['id' => $directory_id]);
-  if ($response['subsonic-response']['status'] != 'ok') die ('Failed to get music directory from API.');
+  if ($response['subsonic-response']['status'] != 'ok') die('Failed to get music directory from API.');
   $items = $response['subsonic-response']['directory']['child'] ?? [];
   // echo 'items found: ' . count($items) . PHP_EOL;
 

@@ -28,7 +28,6 @@
  */
 class OBFController
 {
-
   public $load;
   public $db;
   public $user;
@@ -42,7 +41,7 @@ class OBFController
    * Create a new instance of OBFController. Makes various classes of OB available
    * by default, such as OBFLoad, OBFDB, OBFUser, OBFCallbacks, and OBFHelpers.
    */
-  function __construct()
+  public function __construct()
   {
     $this->load = OBFLoad::get_instance();
     $this->db = OBFDB::get_instance();
@@ -58,7 +57,7 @@ class OBFController
    * @param name Method name.
    * @param args Variable argument list.
    */
-  public function __call($name,$args)
+  public function __call($name, $args)
   {
     if(!isset($this->$name))
     {
@@ -68,7 +67,7 @@ class OBFController
 
     $obj = $this->$name;
 
-    return call_user_func_array($obj,$args);
+    return call_user_func_array($obj, $args);
   }
 
   /**
@@ -79,16 +78,16 @@ class OBFController
    * @param hook Optional hook when handled as callback. Default NULL.
    * @param position Optional position when handled as callback. Default NULL.
    */
-  function handle($action,$hook=null,$position=null)
+  public function handle($action, $hook=null, $position=null)
   {
 
-    if(method_exists($this,$action))
+    if(method_exists($this, $action))
     {
       // call as non-callback
       if(!$hook) return $this->$action();
 
       // call as callback
-      else return $this->$action($hook,$position);
+      else return $this->$action($hook, $position);
     }
 
   }
@@ -101,7 +100,7 @@ class OBFController
    *
    * @return value
    */
-  function data($key)
+  public function data($key)
   {
     if(isset($this->data[$key]) && is_array($this->data)) return $this->data[$key];
     else return false;

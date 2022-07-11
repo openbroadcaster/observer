@@ -1,6 +1,6 @@
 <?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -31,10 +31,10 @@ if(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
 {
   $auth_id = $_COOKIE['ob_auth_id'];
   $auth_key = $_COOKIE['ob_auth_key'];
-} 
+}
 
 // authorize our user (from post data, cookie data, whatever.)
-$user->auth($auth_id,$auth_key);
+$user->auth($auth_id, $auth_key);
 
 if(!$user->is_admin)
 {
@@ -45,13 +45,13 @@ $message = '';
 function ob_caption_upload()
 {
   global $message, $db;
-  
+
   // make sure we have a form submit
   if(!isset($_POST['submit'])) return;
 
   // check media id
-  $db->where('id',trim($_POST['media_id']));
-  $db->where('type','video');
+  $db->where('id', trim($_POST['media_id']));
+  $db->where('type', 'video');
   $media = $db->get_one('media');
 
   if(!$media)
@@ -61,7 +61,7 @@ function ob_caption_upload()
   }
 
   // make sure we have a vtt file
-  if(empty($_FILES['file']['size']) || strtolower(substr($_FILES['file']['name'],-4))!='.vtt')
+  if(empty($_FILES['file']['size']) || strtolower(substr($_FILES['file']['name'], -4))!='.vtt')
   {
     $message = 'Please select a valid VTT caption file.';
     return;

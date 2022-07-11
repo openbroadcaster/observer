@@ -1,14 +1,14 @@
 <?php
 
-class OBUpdate20200706 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200706 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "CASCADE user updates to client_storage table. Clean out any non-existing users first.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // CASCADE user updates to client_storage table. Clean out any non-existing users first.

@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -42,7 +42,7 @@ if(php_sapi_name() === 'cli' && ($argv[1] ?? null)==='run')
   exit(0);
 }
 
-require_once('updates.php'); 
+require_once('updates.php');
 
 if(empty($_GET['run']) || $_GET['run']!=1) $run=false;
 else $run=true;
@@ -183,7 +183,7 @@ else $run=true;
 <?php foreach($u->checker_results as $result) { ?>
 <tr class="check_<?php if($result[2]==0) echo 'ok'; elseif($result[2]==1) echo 'warning'; else echo 'error'; ?>">
   <td><?=htmlspecialchars($result[0])?></td>
-  <td><?php if(is_array($result[1])) { $output = implode("\n\n",$result[1]); echo nl2br(htmlspecialchars($output)); } else echo nl2br(htmlspecialchars($result[1])); ?></td>
+  <td><?php if(is_array($result[1])) { $output = implode("\n\n", $result[1]); echo nl2br(htmlspecialchars($output)); } else echo nl2br(htmlspecialchars($result[1])); ?></td>
 </tr>
 <?php } ?>
 </table>
@@ -193,7 +193,7 @@ else $run=true;
 <?php if($u->checker_status) { ?>
   <h1>OpenBroadcaster Updates</h1>
 
-  <?php $list = $u->updates(); // don't reverse, causes updates to run in wrong order. ?>
+  <?php $list = $u->updates(); // don't reverse, causes updates to run in wrong order.?>
 
   <p>This will complete database and other updates required when upgrading OpenBroadcaster.</p>
 
@@ -203,12 +203,12 @@ else $run=true;
 
 
   <div class="ob-updates">
-  <?php 
-  
+  <?php
+
   $has_error = false;
-  
-  foreach($list as $update) { 
-  
+
+  foreach($list as $update) {
+
   if(!$update->needed) $status='Installed';
   elseif($run && !$has_error)
   {
@@ -217,7 +217,7 @@ else $run=true;
     else { $status='Error'; $has_error = true; }
   }
   else $status='Pending';
-  
+
   ?>
 
   <div class="ob-update ob-update-<?=strtolower($status)?>">

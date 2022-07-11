@@ -33,7 +33,6 @@
  */
 class Account extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -50,12 +49,12 @@ class Account extends OBFController
    * @param password Test description for password parameter
    * @return [id,key,key_expiry]
    */
-  public function login($somearg, $anotherarg,$weirdspacing, $defaultval=null){
+  public function login($somearg, $anotherarg, $weirdspacing, $defaultval=null) {
 
     $username = trim($this->data('username'));
     $password = trim($this->data('password'));
 
-    $login = $this->user->login($username,$password);
+    $login = $this->user->login($username, $password);
 
     if($login==false) return array(false,'Login Failed');
     elseif(is_array($login) && $login[0]===false) return array(false,$login[1]);
@@ -84,7 +83,7 @@ class Account extends OBFController
   public function permissions()
   {
 
-    $permissions = $this->PermissionsModel('get_user_permissions',$this->user->param('id'));
+    $permissions = $this->PermissionsModel('get_user_permissions', $this->user->param('id'));
     //T Permissions
     return array(true,'Permissions',$permissions);
 
@@ -106,7 +105,7 @@ class Account extends OBFController
    */
   public function groups()
   {
-    $groups = $this->PermissionsModel('get_user_groups',$this->user->param('id'));
+    $groups = $this->PermissionsModel('get_user_groups', $this->user->param('id'));
     //T Groups
     return array(true,'Groups',$groups);
   }
@@ -184,11 +183,11 @@ class Account extends OBFController
     $data['dyslexia_friendly_font'] = trim($this->data('dyslexia_friendly_font'));
     $data['sidebar_display_left'] = trim($this->data('sidebar_display_left'));
 
-    $validation = $this->UsersModel('settings_validate',$user_id,$data);
+    $validation = $this->UsersModel('settings_validate', $user_id, $data);
 
     if($validation[0]==false) return [false,$validation[1]];
 
-    $this->UsersModel('settings_update',$user_id,$data);
+    $this->UsersModel('settings_update', $user_id, $data);
 
     //T Settings have been updated. User interface setting changes may require you refresh the application to take effect.
     return [true,'Settings have been updated. User interface setting changes may require you refresh the application to take effect.'];
@@ -207,11 +206,11 @@ class Account extends OBFController
 
     $email = trim($this->data('email'));
 
-    $validation = $this->UsersModel('forgotpass_validate',$email);
+    $validation = $this->UsersModel('forgotpass_validate', $email);
 
     if($validation[0]==false) return $validation;
 
-    $this->UsersModel('forgotpass_process',$email);
+    $this->UsersModel('forgotpass_process', $email);
 
     return array(true,'A new password has been emailed to you.');
 
@@ -238,10 +237,10 @@ class Account extends OBFController
     $data['email'] = trim($this->data('email'));
     $data['username'] = trim($this->data('username'));
 
-    $validation = $this->UsersModel('newaccount_validate',$data);
+    $validation = $this->UsersModel('newaccount_validate', $data);
     if($validation[0]==false) return $validation;
 
-    $this->UsersModel('newaccount_process',$data);
+    $this->UsersModel('newaccount_process', $data);
 
     return array(true,'A new account has been created.  A randomly generated password has been emailed to you.');
 

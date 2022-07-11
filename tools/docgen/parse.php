@@ -5,7 +5,7 @@ get from PHP files a bit. This includes removing empty lines (just in case there
 gaps between DocBlocks and start of class/method definitions), trimming all the
 whitespace, and splitting the lines into an array. */
 
-function parse_clean (string $content) : array {
+function parse_clean(string $content): array {
   $result = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $content);
   $result = preg_split("/\r\n|\n|\r/", $result);
   foreach ($result as $i => $line) {
@@ -23,7 +23,7 @@ a DocBlock can also occur at the end of a regular multi-line comment, which is
 why we're checking specifically for the next occurence of these characters after
 the start of a DocBlock (which necessarily ends it). */
 
-function parse_blocks (array $content) : array {
+function parse_blocks(array $content): array {
   $blocks = array();
 
   $doc_start = array_keys($content, "/**");
@@ -61,7 +61,7 @@ a single file); otherwise, we assume it's a DocBlock description of the current 
 We return the type of declaration in an array with some additional information where
 relevant. */
 
-function parse_decl (string $decl) : array {
+function parse_decl(string $decl): array {
   if (strpos($decl, "function") !== false) {
 
     $args = explode(",", trim(substr($decl, strpos($decl, "(") + 1, strpos($decl, ")") - strpos($decl, "(") - 1)));
@@ -75,7 +75,7 @@ function parse_decl (string $decl) : array {
       'name'       => trim(explode("function", substr($decl, 0, strpos($decl, "(")))[1]),
       'args'       => $args
     ];
-  } else if (strpos($decl, "class") !== false) {
+  } elseif (strpos($decl, "class") !== false) {
     return [
       'type'       => 'class',
       'name'       => explode(" ", trim(explode("class", $decl)[1]))[0]
@@ -92,7 +92,7 @@ can be used later when generating the HTML documentation. Note that parsing the
 DocBlock is tag-unaware, which means that it may parse tags that never show up
 in the actual documentation. */
 
-function parse_doc (array $lines) : array {
+function parse_doc(array $lines): array {
   $doc = [
     'description' => [],
     'tags'        => []

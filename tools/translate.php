@@ -6,13 +6,13 @@
 
 <h1>OpenBroadcaster Translate</h1>
 
-<?php 
+<?php
 
 $tmp = scandir('../strings/default');
 $files = array();
 foreach($tmp as $file)
 {
-  if(preg_match('/\.txt$/',$file)) $files[] = $file;
+  if(preg_match('/\.txt$/', $file)) $files[] = $file;
 }
 
 $input = '';
@@ -20,7 +20,7 @@ $input = '';
 foreach($files as $file)
 {
 
-  $contents = explode("\n",file_get_contents('../strings/default/'.$file));
+  $contents = explode("\n", file_get_contents('../strings/default/'.$file));
   $namespace = false;
 
   foreach($contents as $line)
@@ -31,7 +31,7 @@ foreach($files as $file)
     if($line=='') continue;
 
     $line_split = preg_split("/(?<!\\\):/", $line, 2);
-    
+
     // make sure we have a namespace, otherwise gets ignored by OB. see UIModel::strings().
     if(count($line_split)==1)
     {
@@ -41,7 +41,7 @@ foreach($files as $file)
     elseif(count($line_split)>=2 && $namespace)
     {
       $input.=trim($line_split[1])."\n";
-    } 
+    }
   }
 }
 
@@ -51,8 +51,8 @@ if(!empty($_POST['submit']))
 {
   $error = false;
 
-  $t = explode("\n",trim($_POST['t']));
-  if(count($t)!=count(explode("\n",$input))) $error = 'The number of lines in the output (translation) must match the number of lines in the input.';
+  $t = explode("\n", trim($_POST['t']));
+  if(count($t)!=count(explode("\n", $input))) $error = 'The number of lines in the output (translation) must match the number of lines in the input.';
 
   // echo count($t).' '.count(explode("\n",$input));
 
@@ -68,7 +68,7 @@ if(!empty($_POST['submit']))
 
       $output = array();
 
-      $contents = explode("\n",file_get_contents('../strings/default/'.$file));
+      $contents = explode("\n", file_get_contents('../strings/default/'.$file));
       $namespace = false;
 
       foreach($contents as $line)
@@ -79,7 +79,7 @@ if(!empty($_POST['submit']))
         if($line=='') { $output[] = ''; continue; }
 
         $line_split = preg_split("/(?<!\\\):/", $line, 2);
-        
+
         // make sure we have a namespace, otherwise gets ignored by OB. see UIModel::strings().
         if(count($line_split)==1)
         {
@@ -94,10 +94,10 @@ if(!empty($_POST['submit']))
         }
       }
 
-      $fh = fopen('translate/'.$file,'wb+');
+      $fh = fopen('translate/'.$file, 'wb+');
       // fwrite($fh,"\xef\xbb\xbf");
       // fwrite($fh,"\xEF\xBB\xBF".utf8_encode(implode("\n",$output)));
-      fwrite($fh,implode("\n",$output));
+      fwrite($fh, implode("\n", $output));
       fclose($fh);
     }
 

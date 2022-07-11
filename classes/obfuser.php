@@ -26,7 +26,6 @@
  */
 class OBFUser
 {
-
   private $db;
   private $load;
   private $io;
@@ -51,11 +50,11 @@ class OBFUser
    *
    * @return instance
    */
-  static function &get_instance()
+  public static function &get_instance()
   {
     static $instance;
 
-    if (isset( $instance )) {
+    if (isset($instance)) {
       return $instance;
     }
 
@@ -79,7 +78,7 @@ class OBFUser
     for($i=1;$i<64;$i++)
     {
 
-      $key .= $chars[mt_rand(0,(strlen($chars)-1))];
+      $key .= $chars[mt_rand(0, (strlen($chars)-1))];
 
     }
 
@@ -126,12 +125,12 @@ class OBFUser
    *
    * @return key
    */
-  public function login($user,$pass)
+  public function login($user, $pass)
   {
 
     // check username / password.
-    $this->db->where('username',$user);
-    $this->db->where('enabled',1);
+    $this->db->where('username', $user);
+    $this->db->where('enabled', 1);
     $result = $this->db->get_one('users');
 
     if($result && $result['password']=='')
@@ -147,8 +146,8 @@ class OBFUser
       if(password_needs_rehash($result['password'], PASSWORD_DEFAULT))
       {
         $new_hash = $this->password_hash($pass);
-        $this->db->where('id',$result['id']);
-        $this->db->update('users',array('password'=>$new_hash));
+        $this->db->where('id', $result['id']);
+        $this->db->update('users', array('password'=>$new_hash));
       }
 
       // cache our userdata.
@@ -171,8 +170,8 @@ class OBFUser
       ]);
       $this->userdata['key_id'] = $key_id;
 
-      setcookie('ob_auth_id',$key_id,0,'/',null,false,false);
-      setcookie('ob_auth_key',$key,0,'/',null,false,false);
+      setcookie('ob_auth_id', $key_id, 0, '/', null, false, false);
+      setcookie('ob_auth_key', $key, 0, '/', null, false, false);
 
       // return key data.
       return array(true,'Login successful.',array('id'=>$key_id,'key'=>$key, 'key_expiry'=>$key_expiry));
@@ -194,12 +193,12 @@ class OBFUser
     if($this->param('id')==0) return true;
 
     // remote key and expiry key in database.
-    $this->db->where('id',$this->param('key_id'));
+    $this->db->where('id', $this->param('key_id'));
     $this->db->delete('users_sessions');
 
     // expire cookies in browser.
-    setcookie('ob_auth_id','',time() - 3600,null,null,false,true);
-    setcookie('ob_auth_key','',time() - 3600,null,null,false,true);
+    setcookie('ob_auth_id', '', time() - 3600, null, null, false, true);
+    setcookie('ob_auth_key', '', time() - 3600, null, null, false, true);
 
     return true;
 
@@ -215,15 +214,15 @@ class OBFUser
    *
    * @return is_auth
    */
-  public function auth($id,$key)
+  public function auth($id, $key)
   {
 
     // if anything missing, return false. didn't work.
     if(empty($id) || empty($key)) return false;
 
     // get salted sha1 hash of key, check database with key/user combo
-    $this->db->where('id',$id);
-    $this->db->where('key_expiry',time(),'>=');
+    $this->db->where('id', $id);
+    $this->db->where('key_expiry', time(), '>=');
     $key_results = $this->db->get('users_sessions');
 
     $valid_key = null;
@@ -245,7 +244,7 @@ class OBFUser
       $this->userdata['key_id'] = $valid_key['id'];
 
       // add additional users settings
-      $this->db->where('user_id',$result['id']);
+      $this->db->where('user_id', $result['id']);
       $settings = $this->db->get('users_settings');
       foreach($settings as $setting) $this->userdata[$setting['setting']] = $setting['value'];
 
@@ -262,8 +261,8 @@ class OBFUser
       ]);
 
       // see if user is admin
-      $this->db->where('user_id',$result['id']);
-      $this->db->where('group_id',1);
+      $this->db->where('user_id', $result['id']);
+      $this->db->where('group_id', 1);
       if($this->db->get_one('users_to_groups')) $this->is_admin=true;
 
       return true;
@@ -281,7 +280,7 @@ class OBFUser
    *
    * @return is_auth
    */
-   public function auth_appkey ($appkey, $requests) {
+   public function auth_appkey($appkey, $requests) {
      // Make sure an App Key has been provided.
      if (empty(trim($appkey))) return false;
 
@@ -294,21 +293,21 @@ class OBFUser
 
      // see if we have permission for all requests
      if ($valid) {
-     
+
        // Allow requests from remote locations
        header("Access-Control-Allow-Origin: *");
-       
+
        $permissions = preg_split('/\r\n|\r|\n/', $result['permissions']);
        foreach($requests as $request)
        {
          $controller = $request[0];
          $method = $request[1];
-         
+
          if(!preg_match('/^[A-Z0-9_]+$/i', $controller) || !preg_match('/^[A-Z0-9_]+$/i', $method)) { $valid = false; break; }
 
          $request_valid = false;
          foreach($permissions as $permission) { if($permission==$controller.'/'.$method) $request_valid = true; }
-         
+
          if(!$request_valid) { $valid = false; break; }
        }
      }
@@ -378,7 +377,7 @@ class OBFUser
       die();
     }
   }
-  
+
   /**
    * Deny access if using an API key.
    */
@@ -405,7 +404,7 @@ class OBFUser
 
     $permissions = $this->load->model('Permissions');
 
-    return $permissions('check_permission',$permission,$this->param('id'));
+    return $permissions('check_permission', $permission, $this->param('id'));
   }
 
   /**
@@ -419,7 +418,7 @@ class OBFUser
   {
     if($this->is_admin) return true;
 
-    if($this->check_permission($permission)===FALSE)
+    if($this->check_permission($permission)===false)
     {
       $this->io->error(OB_ERROR_DENIED);
       die();
@@ -437,7 +436,7 @@ class OBFUser
 
     $ids = [];
 
-    $this->db->where('user_id',$this->param('id'));
+    $this->db->where('user_id', $this->param('id'));
     $rows = $this->db->get('users_to_groups');
 
     foreach($rows as $row) $ids[] = (int) $row['group_id'];
@@ -457,8 +456,8 @@ class OBFUser
   {
     if(!$this->param('id')) return false;
 
-    $this->db->where('user_id',$this->param('id'));
-    $this->db->where('setting',$name);
+    $this->db->where('user_id', $this->param('id'));
+    $this->db->where('setting', $name);
     $setting = $this->db->get_one('users_settings');
 
     if(!$setting) return false;
@@ -473,18 +472,18 @@ class OBFUser
    *
    * @return status
    */
-  public function set_setting($name,$value)
+  public function set_setting($name, $value)
   {
     if(!$this->param('id')) return false;
 
-    $this->db->where('user_id',$this->param('id'));
-    $this->db->where('setting',$name);
+    $this->db->where('user_id', $this->param('id'));
+    $this->db->where('setting', $name);
     if($setting = $this->db->get_one('users_settings'))
     {
-      $this->db->where('id',$setting['id']);
-      $this->db->update('users_settings',['value'=>$value]);
+      $this->db->where('id', $setting['id']);
+      $this->db->update('users_settings', ['value'=>$value]);
     }
-    else $this->db->insert('users_settings',[
+    else $this->db->insert('users_settings', [
       'user_id'=>$this->param('id'),
       'setting'=>$name,
       'value'=>$value

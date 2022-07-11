@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20200718 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200718 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "CASCADE device updates to devices table. Clean out any non-existing devices first (this shouldn't be possible in normal use, but make sure anyway so the update runs). Also fix data type inconsistencies.";
     $updates[] = "CASCADE device and media updates to devices_station_ids table. Clean out any rows with device or media IDs that no longer exist first.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // CASCADE device updates to devices table. Clean out any non-existing devices first (this shouldn't be possible in normal use, but make sure anyway so the update runs). Also fix data type inconsistencies.

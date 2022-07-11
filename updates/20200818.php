@@ -1,14 +1,14 @@
 <?php
 
-class OBUpdate20200818 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20200818 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "CASCADE updates to media tables (including genres, metadata*, permissions*, searches, versions). Clean up tables first.";
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // CASCADE updates to media tables (including genres, metadata*, permissions*, searches, versions). Clean up tables first.

@@ -34,10 +34,9 @@ class OBUpdate
 // if error is returned, subsequent methods will not be run.
 class OBFChecker
 {
-
   public function php_version()
   {
-    if(version_compare(phpversion(),'5.4','<')) return array('PHP Version','PHP v5.4 or higher is required (v'.phpversion().' detected).',2);
+    if(version_compare(phpversion(), '5.4', '<')) return array('PHP Version','PHP v5.4 or higher is required (v'.phpversion().' detected).',2);
     return array('PHP Version','PHP v'.phpversion().' detected.',0);
   }
 
@@ -143,20 +142,20 @@ class OBFChecker
       if(!is_dir(OB_CACHE)) $errors[] = 'OB_CACHE (cache directory) is not a valid directory.';
       elseif(!is_writable(OB_CACHE)) $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
 
-      if(stripos(OB_SITE,'http://')!==0 && stripos(OB_SITE,'https://')!==0) $errors[] = 'OB_SITE (installation web address) is not valid.';
+      if(stripos(OB_SITE, 'http://')!==0 && stripos(OB_SITE, 'https://')!==0) $errors[] = 'OB_SITE (installation web address) is not valid.';
       else
       {
         $curl = curl_init(OB_SITE);
-        curl_setopt($curl,CURLOPT_CONNECTTIMEOUT,10);
-        curl_setopt($curl,CURLOPT_HEADER,true);
-        curl_setopt($curl,CURLOPT_NOBODY,true);
-        curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $response = curl_exec($curl);
         curl_close($curl);
 
         if(!$response) $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
-        elseif(stripos($response,'OpenBroadcaster-Application: index')===false) $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
+        elseif(stripos($response, 'OpenBroadcaster-Application: index')===false) $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
       }
 
       if(!PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) $errors[] = 'OB_EMAIL_REPLY (email address used to send emails) is not valid.';
@@ -171,7 +170,7 @@ class OBFChecker
         }
       }
 
-      if(defined('OB_THEME') && OB_THEME!='default' && (!preg_match('/^[a-z0-9]+$/',OB_THEME) || !is_dir('themes/'.OB_THEME)) )
+      if(defined('OB_THEME') && OB_THEME!='default' && (!preg_match('/^[a-z0-9]+$/', OB_THEME) || !is_dir('themes/'.OB_THEME)))
         $errors[] = 'OB_THEME (custom theme) is not a valid theme.';
 
       if(defined('OB_REMOTE_DEBUG') && strlen(OB_REMOTE_DEBUG)<4) $errors[]='OB_REMOTE_DEBUG (remote.php debug code) must be 4 characters or longer.';
@@ -203,7 +202,7 @@ class OBFChecker
   {
     $db = new OBFDB();
 
-    $db->where('name','dbver');
+    $db->where('name', 'dbver');
     $dbver = $db->get_one('settings');
 
     if(!$dbver)
@@ -219,7 +218,6 @@ class OBFChecker
 
 class OBFUpdates
 {
-
   public function __construct()
   {
 
@@ -245,7 +243,7 @@ class OBFUpdates
   {
     // CLI doesn't require auth.
     if(php_sapi_name()==='cli') return;
-    
+
     // no user or password set for updates.
     if(!defined('OB_UPDATES_USER') || !defined('OB_UPDATES_PW'))
     {
@@ -263,18 +261,18 @@ class OBFUpdates
   // get an array of update classes.
   public function updates()
   {
-    $scandir = scandir('./updates',SCANDIR_SORT_ASCENDING);
+    $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
     $updates = array();
     foreach($scandir as $file)
     {
-      if(!preg_match('/^[0-9]{8}\.php$/',$file)) continue;
-      $file_explode = explode('.',$file);
+      if(!preg_match('/^[0-9]{8}\.php$/', $file)) continue;
+      $file_explode = explode('.', $file);
       $version = $file_explode[0];
 
       require($version.'.php');
 
       $class_name = 'OBUpdate'.$version;
-      $update_class = new $class_name;
+      $update_class = new $class_name();
       $update_class->needed = $version>$this->dbver;
       $update_class->version = $version;
 
@@ -293,8 +291,8 @@ class OBFUpdates
     // if update was successful, update our database version number.
     if($result)
     {
-      $this->db->where('name','dbver');
-      $this->db->update('settings',array('value'=>$update->version));
+      $this->db->where('name', 'dbver');
+      $this->db->update('settings', array('value'=>$update->version));
     }
 
     return $result;

@@ -1,15 +1,15 @@
 <?php
 
-class OBUpdate20210312 extends OBUpdate {
-
-  public function items () 
+class OBUpdate20210312 extends OBUpdate
+{
+  public function items()
   {
     $updates   = array();
     $updates[] = 'Clear and update show cache table.';
     return $updates;
   }
 
-  public function run ()
+  public function run()
   {
     $this->db->query('truncate shows_cache;');
     $this->db->query('ALTER TABLE `shows_cache` ADD `created` INT UNSIGNED NOT NULL AFTER `data`;');
@@ -17,5 +17,3 @@ class OBUpdate20210312 extends OBUpdate {
     return true;
   }
 }
-
-

@@ -27,7 +27,6 @@
  */
 class Users extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -45,7 +44,7 @@ class Users extends OBFController
   {
     $this->user->require_permission('manage_users');
 
-    $this->models->users('user_registration_set', $this->data('user_registration') );
+    $this->models->users('user_registration_set', $this->data('user_registration'));
     return array(true,'User registration set.');
   }
 
@@ -87,14 +86,14 @@ class Users extends OBFController
     $sort_desc = $this->data('sort_desc');
 
     // store sort settings for future display.
-    if($sort_col) $this->models->users('user_manage_list_set_sort',$sort_col,$sort_desc);
+    if($sort_col) $this->models->users('user_manage_list_set_sort', $sort_col, $sort_desc);
 
     // get sort settings (even if we already have them since the above will validate)
     $sort = $this->models->users('user_manage_list_get_sort');
     $sort_col = $sort[0];
     $sort_desc = $sort[1];
 
-    $users = $this->models->users('user_manage_list',$sort_col,($sort_desc ? 'desc' : 'asc'));
+    $users = $this->models->users('user_manage_list', $sort_col, ($sort_desc ? 'desc' : 'asc'));
     return array(true,'User list.',[$users,$sort_col,$sort_desc]);
   }
 
@@ -133,10 +132,10 @@ class Users extends OBFController
 
     $data['appkeys'] = $this->data('appkeys');
 
-    $validation = $this->models->users('user_validate',$data,$id);
+    $validation = $this->models->users('user_validate', $data, $id);
     if($validation[0]==false) return $validation;
 
-    $this->models->users('user_save',$data,$id);
+    $this->models->users('user_save', $data, $id);
 
     return array(true,'User has been saved.');
   }
@@ -154,7 +153,7 @@ class Users extends OBFController
 
     if(empty($id)) return array(false,'Invalid User ID.');
 
-    $this->models->users('user_delete',$id);
+    $this->models->users('user_delete', $id);
 
     return array(true,'User deleted.');
   }
@@ -167,7 +166,7 @@ class Users extends OBFController
    *
    * @return [id, name, key]
    */
-   public function user_manage_key_new () {
+   public function user_manage_key_new() {
      $this->user->require_permission('manage_users');
 
      $id = $this->data('id');
@@ -188,7 +187,7 @@ class Users extends OBFController
     *
     * @return is_deleted?
     */
-    public function user_manage_key_delete () {
+    public function user_manage_key_delete() {
       $this->user->require_permission('manage_users');
 
       $id = $this->data('id');
@@ -211,7 +210,7 @@ class Users extends OBFController
      *
      * @return appkeys
      */
-     public function user_manage_key_load () {
+     public function user_manage_key_load() {
        $this->user->require_permission('manage_users');
 
        $id = $this->data('id');
@@ -248,7 +247,7 @@ class Users extends OBFController
 
     if(!empty($id))
     {
-      $this->models->users('group_delete',$id);
+      $this->models->users('group_delete', $id);
     }
 
     return array(true,'Group deleted.');
@@ -269,11 +268,11 @@ class Users extends OBFController
     $id = trim($this->data('id'));
     $data['permissions'] = $this->data('permissions');
 
-    $validation = $this->models->users('group_validate',$data,$id);
+    $validation = $this->models->users('group_validate', $data, $id);
     if($validation[0]==false) return $validation;
 
     // proceed with add/edit.
-    $this->models->users('group_save',$data,$id);
+    $this->models->users('group_save', $data, $id);
 
     return array(true,'Group saved.');
   }

@@ -29,7 +29,6 @@
  */
 class Account extends OBFController
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -47,7 +46,7 @@ class Account extends OBFController
     $username = trim($this->data('username'));
     $password = trim($this->data('password'));
 
-    $login = $this->user->login($username,$password);
+    $login = $this->user->login($username, $password);
 
     if($login==false) return array(false,'Login Failed');
     elseif(is_array($login) && $login[0]===false) return array(false,$login[1]);
@@ -76,8 +75,8 @@ class Account extends OBFController
   public function permissions()
   {
     $this->user->require_authenticated();
-    
-    $permissions = $this->models->permissions('get_user_permissions',$this->user->param('id'));
+
+    $permissions = $this->models->permissions('get_user_permissions', $this->user->param('id'));
     //T Permissions
     return array(true,'Permissions',$permissions);
 
@@ -100,8 +99,8 @@ class Account extends OBFController
   public function groups()
   {
     $this->user->require_authenticated();
-    
-    $groups = $this->models->permissions('get_user_groups',$this->user->param('id'));
+
+    $groups = $this->models->permissions('get_user_groups', $this->user->param('id'));
     //T Groups
     return array(true,'Groups',$groups);
   }
@@ -113,7 +112,7 @@ class Account extends OBFController
   {
     $this->user->require_authenticated();
     $this->user->disallow_appkey();
-    
+
     $logout = $this->user->logout();
 
     //T Logged Out
@@ -172,11 +171,11 @@ class Account extends OBFController
     $data['sidebar_display_left'] = trim($this->data('sidebar_display_left'));
     $data['appkeys'] = $this->data('appkeys');
 
-    $validation = $this->models->users('settings_validate',$user_id,$data);
+    $validation = $this->models->users('settings_validate', $user_id, $data);
 
     if($validation[0]==false) return [false,$validation[1]];
 
-    $this->models->users('settings_update',$user_id,$data);
+    $this->models->users('settings_update', $user_id, $data);
 
     //T Settings have been updated. User interface setting changes may require you refresh the application to take effect.
     return [true,'Settings have been updated. User interface setting changes may require you refresh the application to take effect.'];
@@ -192,11 +191,11 @@ class Account extends OBFController
   {
     $email = trim($this->data('email'));
 
-    $validation = $this->models->users('forgotpass_validate',$email);
+    $validation = $this->models->users('forgotpass_validate', $email);
 
     if($validation[0]==false) return $validation;
 
-    $this->models->users('forgotpass_process',$email);
+    $this->models->users('forgotpass_process', $email);
 
     return array(true,'A new password has been emailed to you.');
   }
@@ -221,10 +220,10 @@ class Account extends OBFController
     $data['email'] = trim($this->data('email'));
     $data['username'] = trim($this->data('username'));
 
-    $validation = $this->models->users('newaccount_validate',$data);
+    $validation = $this->models->users('newaccount_validate', $data);
     if($validation[0]==false) return $validation;
 
-    $this->models->users('newaccount_process',$data);
+    $this->models->users('newaccount_process', $data);
 
     return array(true,'A new account has been created.  A randomly generated password has been emailed to you.');
   }
@@ -235,7 +234,7 @@ class Account extends OBFController
    *
    * @return [id, name, key]
    */
-   public function key_new () {
+   public function key_new() {
      $this->user->require_permission('manage_appkeys');
 
      $id = $this->user->param('id');
@@ -255,7 +254,7 @@ class Account extends OBFController
    *
    * @return is_deleted?
    */
-   public function key_delete () {
+   public function key_delete() {
      $this->user->require_permission('manage_appkeys');
 
      $id = $this->data('id');
@@ -269,10 +268,10 @@ class Account extends OBFController
 
      return array(false, 'Failed to delete App Key.');
    }
-   
+
   /**
    * Save App Key permissions. Requires 'manage_appkeys' permission. Connects to users model.
-   * 
+   *
    * @param id
    * @param permissions
    */
@@ -283,7 +282,7 @@ class Account extends OBFController
      $id = $this->data('id');
      $permissions = trim($this->data('permissions'));
      $user_id = $this->user->param('id');
-     
+
      return $this->models->users('user_manage_key_permissions_save', $id, $permissions, $user_id);
    }
 
@@ -293,9 +292,9 @@ class Account extends OBFController
    *
    * @return appkeys
    */
-   public function key_load () {
+   public function key_load() {
      $this->user->require_permission('manage_appkeys');
-     
+
      $id = $this->user->param('id');
      if (empty($id)) return array(false, 'Invalid user ID.');
 

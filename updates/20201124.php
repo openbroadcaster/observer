@@ -1,8 +1,8 @@
 <?php
 
-class OBUpdate20201124 extends OBUpdate {
-
-  public function items () {
+class OBUpdate20201124 extends OBUpdate
+{
+  public function items() {
     $updates   = array();
     $updates[] = "Update users_permissions with renamed devices (now players).";
     $updates[] = "Rename devices tables to players.";
@@ -11,7 +11,7 @@ class OBUpdate20201124 extends OBUpdate {
     return $updates;
   }
 
-  public function run () {
+  public function run() {
     $this->db->query('START TRANSACTION;');
 
     // Update users_permissions with renamed devices (now players).

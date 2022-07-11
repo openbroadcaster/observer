@@ -1,6 +1,6 @@
 <?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -36,18 +36,18 @@ foreach($db->assoc_list() as $nfo)
   elseif($nfo['is_approved'] == 0) $dir = OB_MEDIA_UPLOADS;
   else $dir = OB_MEDIA;
 
-	$filename = $dir.'/'.$nfo['file_location'][0].'/'.$nfo['file_location'][1].'/'.$nfo['filename'];
-  
-	if(!file_exists($filename)) 
-	{
-		echo $filename.PHP_EOL;
+    $filename = $dir.'/'.$nfo['file_location'][0].'/'.$nfo['file_location'][1].'/'.$nfo['filename'];
+
+    if(!file_exists($filename))
+    {
+        echo $filename.PHP_EOL;
 
     // see if we can find the actual filename in that directory
-    $check_files = scandir($dir.'/'.$nfo['file_location'][0].'/'.$nfo['file_location'][1]);    
+    $check_files = scandir($dir.'/'.$nfo['file_location'][0].'/'.$nfo['file_location'][1]);
     $fix_filename = null;
     foreach($check_files as $check_file)
     {
-      if(preg_match('/'.$nfo['id'].'-/',$check_file)) { $fix_filename = $check_file; break; }
+      if(preg_match('/'.$nfo['id'].'-/', $check_file)) { $fix_filename = $check_file; break; }
     }
     if($fix_filename)
     {
@@ -55,10 +55,10 @@ foreach($db->assoc_list() as $nfo)
       // $db->where('id',$nfo['id']);
       // $db->update('media',['filename'=>$fix_filename]);
     }
-    
+
     echo PHP_EOL;
 
-	}
+    }
 
 
 }
