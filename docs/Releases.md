@@ -21,9 +21,6 @@ Beginning with version 5.2, OpenBroadcaster uses flexible time-based released da
 
 The following chart shows current and upcoming versions and support durations. This is an example only; dates are approximate.
 
-![](C:\Users\brook\OneDrive - PikaLabs\Work\OpenBroadcaster Release Chart.png)
-
-
 | Version | Start Date | Feature Freeze | End-of-Life |
 | ------- | ---------- | -------------- | ----------- |
 | 5.2     |            | May 2022       | May 2023    |
