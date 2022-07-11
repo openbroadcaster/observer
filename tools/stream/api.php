@@ -23,10 +23,9 @@ header("Access-Control-Allow-Origin: *");
 
 require_once('../../components.php');
 
-if(!defined('OB_STREAM_API') || OB_STREAM_API!==true || (empty($_GET['category_id']) && empty($_GET['genre_id']) && empty($_GET['media_id'])))
-{
-  http_response_code(404);
-  die();
+if (!defined('OB_STREAM_API') || OB_STREAM_API!==true || (empty($_GET['category_id']) && empty($_GET['genre_id']) && empty($_GET['media_id']))) {
+    http_response_code(404);
+    die();
 }
 
 $return = [
@@ -49,7 +48,9 @@ $media_id = trim($media_id);
 
 // get metadata columns to add
 $metadata = $db->get('media_metadata_columns');
-foreach($metadata as $metadata_column) $db->what('media_metadata.'.$metadata_column['name'], 'metadata_'.$metadata_column['name']);
+foreach ($metadata as $metadata_column) {
+    $db->what('media_metadata.'.$metadata_column['name'], 'metadata_'.$metadata_column['name']);
+}
 
 // add other columns
 $db->what('media.id');
@@ -77,17 +78,20 @@ $db->where('media.is_approved', 1);
 $db->where('media.is_archived', 0);
 
 // get media by category or genre
-if($category_id) $db->where('media.category_id', $category_id);
-elseif($genre_id) $db->where('media.genre_id', $genre_id);
-elseif($media_id) $db->where('media.id', $media_id);
+if ($category_id) {
+    $db->where('media.category_id', $category_id);
+} elseif ($genre_id) {
+    $db->where('media.genre_id', $genre_id);
+} elseif ($media_id) {
+    $db->where('media.id', $media_id);
+}
 
 // handle limit and offset
 $limit = max(0, (int) $limit);
 $offset = max(0, (int) $offset);
-if($limit)
-{
-  $db->limit($limit);
-  $db->offset($offset);
+if ($limit) {
+    $db->limit($limit);
+    $db->offset($offset);
 }
 
 // the rest
@@ -100,39 +104,32 @@ $db->calc_found_rows();
 $media = $db->get('media');
 $return['media_total'] = $db->found_rows();
 
-foreach($media as $item)
-{
-  $item['download'] = 'download.php?media_id='.$item['id'];
+foreach ($media as $item) {
+    $item['download'] = 'download.php?media_id='.$item['id'];
 
-  // stream available
-  if($item['stream_version'])
-  {
-    $item['mime']='application/x-mpegURL';
-    $item['stream']='streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/'.($item['type']=='audio' ? 'audio.m3u8' : 'prog_index.m3u8');
-  }
-
-  // if image, set stream to download URL. TODO srcset.
-  if($item['type']=='image')
-  {
-    $item['mime'] = $item['type'].'/'.$item['format'];
-    $item['stream'] = $item['download'];
-  }
-
-  $thumbnail_file = 'streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/thumb.jpg';
-  if(file_exists(OB_CACHE.'/'.$thumbnail_file))
-  {
-    $item['thumbnail'] = $thumbnail_file;
-  }
-  else
-  {
-    $thumbnail_file = 'thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg';
-    if(file_exists(OB_CACHE.'/'.$thumbnail_file))
-    {
-      $item['thumbnail'] = 'thumbnail.php?id='.$item['id'];
+    // stream available
+    if ($item['stream_version']) {
+        $item['mime']='application/x-mpegURL';
+        $item['stream']='streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/'.($item['type']=='audio' ? 'audio.m3u8' : 'prog_index.m3u8');
     }
-  }
 
-  $item_return = [
+    // if image, set stream to download URL. TODO srcset.
+    if ($item['type']=='image') {
+        $item['mime'] = $item['type'].'/'.$item['format'];
+        $item['stream'] = $item['download'];
+    }
+
+    $thumbnail_file = 'streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/thumb.jpg';
+    if (file_exists(OB_CACHE.'/'.$thumbnail_file)) {
+        $item['thumbnail'] = $thumbnail_file;
+    } else {
+        $thumbnail_file = 'thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg';
+        if (file_exists(OB_CACHE.'/'.$thumbnail_file)) {
+            $item['thumbnail'] = 'thumbnail.php?id='.$item['id'];
+        }
+    }
+
+    $item_return = [
     'id'=>$item['id'],
     'artist'=>$item['artist'],
     'title'=>$item['title'],
@@ -154,29 +151,37 @@ foreach($media as $item)
     'download'=>$item['download']
   ];
 
-  // add caption file if we have it
-  if(file_exists(__DIR__.'/captions/'.$item['id'].'.vtt')) $item_return['captions']='tools/stream/captions/'.$item['id'].'.vtt';
-  else $item_return['captions']=false;
+    // add caption file if we have it
+    if (file_exists(__DIR__.'/captions/'.$item['id'].'.vtt')) {
+        $item_return['captions']='tools/stream/captions/'.$item['id'].'.vtt';
+    } else {
+        $item_return['captions']=false;
+    }
 
-  foreach($metadata as $metadata_column) $item_return['metadata_'.$metadata_column['name']] = $item['metadata_'.$metadata_column['name']];
+    foreach ($metadata as $metadata_column) {
+        $item_return['metadata_'.$metadata_column['name']] = $item['metadata_'.$metadata_column['name']];
+    }
 
-  // get our genre from this media item if we are just selecting a single media item. used below.
-  if($media_id) $genre_id = $item['genre_id'];
+    // get our genre from this media item if we are just selecting a single media item. used below.
+    if ($media_id) {
+        $genre_id = $item['genre_id'];
+    }
 
-  $return['media'][] = $item_return;
+    $return['media'][] = $item_return;
 }
 
 // get a list of genres. if getting media by genre or media id, this will only return the single genre.
-if($genre_id || $category_id)
-{
-  if($category_id) $db->where('media_category_id', $category_id);
-  else $db->where('id', $genre_id);
-  $genres = $db->get('media_genres');
+if ($genre_id || $category_id) {
+    if ($category_id) {
+        $db->where('media_category_id', $category_id);
+    } else {
+        $db->where('id', $genre_id);
+    }
+    $genres = $db->get('media_genres');
 
-  foreach($genres as $genre)
-  {
-    $return['genres'][] = ['id'=>$genre['id'], 'name'=>$genre['name'], 'description'=>$genre['description']];
-  }
+    foreach ($genres as $genre) {
+        $return['genres'][] = ['id'=>$genre['id'], 'name'=>$genre['name'], 'description'=>$genre['description']];
+    }
 }
 
 

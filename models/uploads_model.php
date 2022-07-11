@@ -27,54 +27,56 @@
  */
 class UploadsModel extends OBFModel
 {
-  /**
-  * Return whether an uploaded file ID and associated key is valid. Returns
-  * FALSE if no ID or key is provided, or if no associated row can be found in
-  * the uploads database.
-  *
-  * @return is_valid
-  */
-  public function is_valid($id, $key)
-  {
+    /**
+    * Return whether an uploaded file ID and associated key is valid. Returns
+    * FALSE if no ID or key is provided, or if no associated row can be found in
+    * the uploads database.
+    *
+    * @return is_valid
+    */
+    public function is_valid($id, $key)
+    {
+        $id = trim($id);
+        $key = trim($key);
 
-    $id = trim($id);
-    $key = trim($key);
+        if (empty($id) || empty($key)) {
+            return false;
+        }
 
-    if(empty($id) || empty($key)) return false;
+        $this->db->where('id', $id);
+        $this->db->where('key', $key);
 
-    $this->db->where('id', $id);
-    $this->db->where('key', $key);
+        if ($this->db->get_one('uploads')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    if($this->db->get_one('uploads')) return true;
-    else return false;
+    /**
+     * Get relevant info about file upload.
+     *
+     * @param id Upload ID.
+     * @param key Upload key.
+     *
+     * @return [type, format, duration]
+     */
+    public function file_info($id, $key)
+    {
+        $id = trim($id);
+        $key = trim($key);
 
-  }
+        if (empty($id) || empty($key)) {
+            return false;
+        }
 
-  /**
-   * Get relevant info about file upload.
-   *
-   * @param id Upload ID.
-   * @param key Upload key.
-   *
-   * @return [type, format, duration]
-   */
-  public function file_info($id, $key)
-  {
+        $this->db->where('id', $id);
+        $this->db->where('key', $key);
 
-    $id = trim($id);
-    $key = trim($key);
+        $this->db->what('type');
+        $this->db->what('format');
+        $this->db->what('duration');
 
-    if(empty($id) || empty($key)) return false;
-
-    $this->db->where('id', $id);
-    $this->db->where('key', $key);
-
-    $this->db->what('type');
-    $this->db->what('format');
-    $this->db->what('duration');
-
-    return $this->db->get_one('uploads');
-
-  }
-
+        return $this->db->get_one('uploads');
+    }
 }

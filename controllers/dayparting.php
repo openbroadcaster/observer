@@ -27,69 +27,69 @@
  */
 class Dayparting extends OBFController
 {
-  public function __construct()
-  {
-    parent::__construct();
-    $this->user->require_permission('manage_media_settings');
-  }
+    public function __construct()
+    {
+        parent::__construct();
+        $this->user->require_permission('manage_media_settings');
+    }
 
-  /**
-   * Get all restriction.
-   *
-   * @return restrictions
-   */
-  public function search()
-  {
-    return $this->models->dayparting('search');
-  }
+    /**
+     * Get all restriction.
+     *
+     * @return restrictions
+     */
+    public function search()
+    {
+        return $this->models->dayparting('search');
+    }
 
-  /**
-   * Get restriction by id.
-   *
-   * @param id
-   *
-   * @return restrction
-   */
-  public function get()
-  {
-    return $this->models->dayparting('get', ['id'=>$this->data('id')]);
-  }
+    /**
+     * Get restriction by id.
+     *
+     * @param id
+     *
+     * @return restrction
+     */
+    public function get()
+    {
+        return $this->models->dayparting('get', ['id'=>$this->data('id')]);
+    }
 
-  /**
-   * Save restriction.
-   *
-   * @param id
-   * @param start_month
-   * @param start_day
-   * @param start_time
-   * @param end_month
-   * @param end_day
-   * @param end_time
-   * @param filters
-   *
-   * @return id
-   */
-  public function save()
-  {
-    $data = [];
-    $data['id'] = $this->data('id');
-    $data['description'] = $this->data('description');
-    $data['type'] = $this->data('type');
-    $data['start'] = $this->data('start');
-    $data['end'] = $this->data('end');
-    $data['dow'] = $this->data('dow');
-    $data['filters'] = $this->data('filters');
+    /**
+     * Save restriction.
+     *
+     * @param id
+     * @param start_month
+     * @param start_day
+     * @param start_time
+     * @param end_month
+     * @param end_day
+     * @param end_time
+     * @param filters
+     *
+     * @return id
+     */
+    public function save()
+    {
+        $data = [];
+        $data['id'] = $this->data('id');
+        $data['description'] = $this->data('description');
+        $data['type'] = $this->data('type');
+        $data['start'] = $this->data('start');
+        $data['end'] = $this->data('end');
+        $data['dow'] = $this->data('dow');
+        $data['filters'] = $this->data('filters');
 
-    return $this->models->dayparting('save', $data);
-  }
+        return $this->models->dayparting('save', $data);
+    }
 
-  /**
-   * Delete restriction.
-   *
-   * @param id
-   */
-  public function delete()
-  {
-    return $this->models->dayparting('delete', ['id'=>$this->data('id')]);
-  }
+    /**
+     * Delete restriction.
+     *
+     * @param id
+     */
+    public function delete()
+    {
+        return $this->models->dayparting('delete', ['id'=>$this->data('id')]);
+    }
 }

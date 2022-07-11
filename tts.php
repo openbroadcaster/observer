@@ -21,7 +21,9 @@
 
 header('Content-type: audio/ogg');
 
-if(!isset($_GET['t'])) die();
+if (!isset($_GET['t'])) {
+    die();
+}
 
 $festival = array(
   array('pipe','r'),

@@ -20,32 +20,31 @@
 */
 
 // experimental functionality to run updates from command line
-if(php_sapi_name() === 'cli' && ($argv[1] ?? null)==='run')
-{
-  define('OB_FORCE_UPDATE', true);
-  require('updates.php');
-  require_once(__DIR__.'/../components.php');
-  $list = $u->updates();
-  foreach($list as $update)
-  {
-    if($update->needed)
-    {
-      if(!$u->run($update))
-      {
-        echo 'Update failed, exiting.'.PHP_EOL;
-        exit(1);
-      }
-      echo 'Update '.$update->version.' installed.'.PHP_EOL;
+if (php_sapi_name() === 'cli' && ($argv[1] ?? null)==='run') {
+    define('OB_FORCE_UPDATE', true);
+    require('updates.php');
+    require_once(__DIR__.'/../components.php');
+    $list = $u->updates();
+    foreach ($list as $update) {
+        if ($update->needed) {
+            if (!$u->run($update)) {
+                echo 'Update failed, exiting.'.PHP_EOL;
+                exit(1);
+            }
+            echo 'Update '.$update->version.' installed.'.PHP_EOL;
+        }
     }
-  }
 
-  exit(0);
+    exit(0);
 }
 
 require_once('updates.php');
 
-if(empty($_GET['run']) || $_GET['run']!=1) $run=false;
-else $run=true;
+if (empty($_GET['run']) || $_GET['run']!=1) {
+    $run=false;
+} else {
+    $run=true;
+}
 
 ?>
 <html>
@@ -180,17 +179,28 @@ else $run=true;
 <h1>OpenBroadcaster Install Checker</h1>
 
 <table id="check_table">
-<?php foreach($u->checker_results as $result) { ?>
-<tr class="check_<?php if($result[2]==0) echo 'ok'; elseif($result[2]==1) echo 'warning'; else echo 'error'; ?>">
+<?php foreach ($u->checker_results as $result) { ?>
+<tr class="check_<?php if ($result[2]==0) {
+    echo 'ok';
+} elseif ($result[2]==1) {
+    echo 'warning';
+} else {
+    echo 'error';
+} ?>">
   <td><?=htmlspecialchars($result[0])?></td>
-  <td><?php if(is_array($result[1])) { $output = implode("\n\n", $result[1]); echo nl2br(htmlspecialchars($output)); } else echo nl2br(htmlspecialchars($result[1])); ?></td>
+  <td><?php if (is_array($result[1])) {
+    $output = implode("\n\n", $result[1]);
+    echo nl2br(htmlspecialchars($output));
+} else {
+    echo nl2br(htmlspecialchars($result[1]));
+} ?></td>
 </tr>
 <?php } ?>
 </table>
 
-<?php if(!$u->checker_status) { ?><p style="font-weight: bold; padding-top: 25px;">Errors above (red) must be corrected before updates can be run.</p><?php } ?>
+<?php if (!$u->checker_status) { ?><p style="font-weight: bold; padding-top: 25px;">Errors above (red) must be corrected before updates can be run.</p><?php } ?>
 
-<?php if($u->checker_status) { ?>
+<?php if ($u->checker_status) { ?>
   <h1>OpenBroadcaster Updates</h1>
 
   <?php $list = $u->updates(); // don't reverse, causes updates to run in wrong order.?>
@@ -207,18 +217,20 @@ else $run=true;
 
   $has_error = false;
 
-  foreach($list as $update) {
-
-  if(!$update->needed) $status='Installed';
-  elseif($run && !$has_error)
-  {
-    $result = $u->run($update);
-    if($result==true) $status='Success';
-    else { $status='Error'; $has_error = true; }
-  }
-  else $status='Pending';
-
-  ?>
+  foreach ($list as $update) {
+      if (!$update->needed) {
+          $status='Installed';
+      } elseif ($run && !$has_error) {
+          $result = $u->run($update);
+          if ($result==true) {
+              $status='Success';
+          } else {
+              $status='Error';
+              $has_error = true;
+          }
+      } else {
+          $status='Pending';
+      } ?>
 
   <div class="ob-update ob-update-<?=strtolower($status)?>">
   
@@ -227,8 +239,8 @@ else $run=true;
     <div class="ob-update-description">
     <?php $items = $update->items(); ?>
       <ul>
-      <?php if($status=='Error') { ?><li><?=htmlspecialchars($update->error)?></li><?php } ?>
-      <?php foreach($items as $item) { ?>
+      <?php if ($status=='Error') { ?><li><?=htmlspecialchars($update->error)?></li><?php } ?>
+      <?php foreach ($items as $item) { ?>
         <li><?=htmlspecialchars($item)?></li>
       <?php } ?>
       </ul>
@@ -236,7 +248,8 @@ else $run=true;
     
     <div class="ob-update-status"><?=$status?></div>
   </div> 
-  <?php } ?>
+  <?php
+  } ?>
 </div>
 <?php } ?>
 

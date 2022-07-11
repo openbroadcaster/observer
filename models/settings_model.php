@@ -28,41 +28,42 @@
  */
 class SettingsModel extends OBFModel
 {
-  /**
-   * Update a setting.
-   *
-   * @param name
-   * @param value
-   *
-   * @return [status, msg, result]
-   */
-  public function setting_set($name, $value) {
-    $this->db->where('name', $name);
-    $this->db->delete('settings');
-    $result = $this->db->insert('settings', array(
+    /**
+     * Update a setting.
+     *
+     * @param name
+     * @param value
+     *
+     * @return [status, msg, result]
+     */
+    public function setting_set($name, $value)
+    {
+        $this->db->where('name', $name);
+        $this->db->delete('settings');
+        $result = $this->db->insert('settings', array(
       'name'  => $name,
       'value' => $value
     ));
 
-    return ($result)
+        return ($result)
       ? [true, 'Successfully set setting.', $result]
       : [false, 'Failed to update setting.'];
-  }
+    }
 
-  /**
-   * Get a setting.
-   *
-   * @param name
-   *
-   * @return [status, msg, value]
-   */
-  public function setting_get($name) {
-    $this->db->where('name', $name);
-    $result = $this->db->get_one('settings');
+    /**
+     * Get a setting.
+     *
+     * @param name
+     *
+     * @return [status, msg, value]
+     */
+    public function setting_get($name)
+    {
+        $this->db->where('name', $name);
+        $result = $this->db->get_one('settings');
 
-    return ($result)
+        return ($result)
       ? [true, 'Successfully loaded setting.', $result['value']]
       : [false, 'Failed to load setting.'];
-  }
-
+    }
 }

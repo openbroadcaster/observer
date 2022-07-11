@@ -2,15 +2,16 @@
 
 class OBUpdate20210118 extends OBUpdate
 {
-  public function items() {
-    $updates   = array();
-    $updates[] = "Dayparting (dynamic selection restrictions) table.";
-    return $updates;
-  }
+    public function items()
+    {
+        $updates   = array();
+        $updates[] = "Dayparting (dynamic selection restrictions) table.";
+        return $updates;
+    }
 
-  public function run() {
-
-    $this->db->query('
+    public function run()
+    {
+        $this->db->query('
       CREATE TABLE IF NOT EXISTS `dayparting` (
         `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
         `description` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT \'\',
@@ -24,7 +25,9 @@ class OBUpdate20210118 extends OBUpdate
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ');
 
-    if ($this->db->error()) return false;
-    return true;
-  }
+        if ($this->db->error()) {
+            return false;
+        }
+        return true;
+    }
 }

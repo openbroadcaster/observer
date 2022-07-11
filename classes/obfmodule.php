@@ -26,41 +26,39 @@
  */
 class OBFModule
 {
-  public $db;
-  public $callback_handler;
+    public $db;
+    public $callback_handler;
 
-  /**
-   * Create instance of OBFModules, makes database (db) and base framwork (ob)
-   * available.
-   */
-  public function __construct()
-  {
-    $this->db = OBFDB::get_instance();
-    $this->callback_handler = OBFCallbacks::get_instance();
-  }
+    /**
+     * Create instance of OBFModules, makes database (db) and base framwork (ob)
+     * available.
+     */
+    public function __construct()
+    {
+        $this->db = OBFDB::get_instance();
+        $this->callback_handler = OBFCallbacks::get_instance();
+    }
 
-  /**
-   * Placeholder for module to override.
-   */
-  public function callbacks()
-  {
+    /**
+     * Placeholder for module to override.
+     */
+    public function callbacks()
+    {
+    }
 
-  }
+    /**
+     * Placeholder for module to override.
+     */
+    public function install()
+    {
+        return true;
+    }
 
-  /**
-   * Placeholder for module to override.
-   */
-  public function install()
-  {
-    return true;
-  }
-
-  /**
-   * Placeholder for module to override.
-   */
-  public function uninstall()
-  {
-    return true;
-  }
-
+    /**
+     * Placeholder for module to override.
+     */
+    public function uninstall()
+    {
+        return true;
+    }
 }

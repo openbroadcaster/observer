@@ -20,15 +20,18 @@
 */
 
 
-if(php_sapi_name()!='cli') die('cli only');
+if (php_sapi_name()!='cli') {
+    die('cli only');
+}
 
 $dirs = scandir(__DIR__.'/../themes/');
 
-foreach($dirs as $dir)
-{
-  $fulldir = realpath(__DIR__.'/../themes/'.$dir);
-  if($dir[0]=='.' || !is_dir($fulldir) || !is_file($fulldir.'/style.scss')) continue;
+foreach ($dirs as $dir) {
+    $fulldir = realpath(__DIR__.'/../themes/'.$dir);
+    if ($dir[0]=='.' || !is_dir($fulldir) || !is_file($fulldir.'/style.scss')) {
+        continue;
+    }
 
-  $command = 'sass -s compressed '.escapeshellarg($fulldir.'/style.scss').' '.escapeshellarg($fulldir.'/style.css');
-  passthru($command);
+    $command = 'sass -s compressed '.escapeshellarg($fulldir.'/style.scss').' '.escapeshellarg($fulldir.'/style.css');
+    passthru($command);
 }

@@ -26,134 +26,134 @@
  */
 class ModulesModel extends OBFModel
 {
-  /**
-   * Get all installed modules.
-   *
-   * @param object Return as module object or information array. Default FALSE.
-   *
-   * @return modules
-   */
-  public function get_installed($object=false)
-  {
-    return $this('get_all', true, $object);
-  }
-
-  /**
-   * Get all available modules.
-   *
-   * @param object Return as module object or information array. Default FALSE.
-   *
-   * @return modules
-   */
-  public function get_not_installed($object=false)
-  {
-    return $this('get_all', false, $object);
-  }
-
-  /**
-   * Get all modules of a certain type.
-   *
-   * @param installed Installed (TRUE) or available (FALSE) modules. Default TRUE.
-   * @param object Return as module object or information array. Default FALSE.
-   *
-   * @return modules
-   */
-  public function get_all($installed=true, $object=false)
-  {
-
-    $modules = scandir('modules');
-
-    $modules_list = array();
-
-    $installed_rows = $this->db->get('modules');
-    $installed_modules = array();
-
-    foreach($installed_rows as $row)
+    /**
+     * Get all installed modules.
+     *
+     * @param object Return as module object or information array. Default FALSE.
+     *
+     * @return modules
+     */
+    public function get_installed($object=false)
     {
-      $installed_modules[] = $row['directory'];
+        return $this('get_all', true, $object);
     }
 
-    foreach($modules as $module)
+    /**
+     * Get all available modules.
+     *
+     * @param object Return as module object or information array. Default FALSE.
+     *
+     * @return modules
+     */
+    public function get_not_installed($object=false)
     {
+        return $this('get_all', false, $object);
+    }
 
-      if($module=='..' || $module=='.' || !is_dir('modules/'.$module)) continue;
+    /**
+     * Get all modules of a certain type.
+     *
+     * @param installed Installed (TRUE) or available (FALSE) modules. Default TRUE.
+     * @param object Return as module object or information array. Default FALSE.
+     *
+     * @return modules
+     */
+    public function get_all($installed=true, $object=false)
+    {
+        $modules = scandir('modules');
 
-      if(is_file('modules/'.$module.'/module.php'))
-      {
-        require_once('modules/'.$module.'/module.php');
-        $module_class_name = $module.'Module';
+        $modules_list = array();
 
-        // remove underscores in name if we need to.
-        if(!class_exists($module_class_name)) $module_class_name = str_replace('_', '', $module_class_name);
+        $installed_rows = $this->db->get('modules');
+        $installed_modules = array();
 
-        $module_instance = new $module_class_name();
-
-        if(($installed && array_search($module, $installed_modules)!==false) || (!$installed && array_search($module, $installed_modules)===false))
-        {
-          $modules_list[$module] = ($object ? $module_instance : array('name'=>$module_instance->name, 'description'=>$module_instance->description, 'dir'=>$module));
+        foreach ($installed_rows as $row) {
+            $installed_modules[] = $row['directory'];
         }
-      }
+
+        foreach ($modules as $module) {
+            if ($module=='..' || $module=='.' || !is_dir('modules/'.$module)) {
+                continue;
+            }
+
+            if (is_file('modules/'.$module.'/module.php')) {
+                require_once('modules/'.$module.'/module.php');
+                $module_class_name = $module.'Module';
+
+                // remove underscores in name if we need to.
+                if (!class_exists($module_class_name)) {
+                    $module_class_name = str_replace('_', '', $module_class_name);
+                }
+
+                $module_instance = new $module_class_name();
+
+                if (($installed && array_search($module, $installed_modules)!==false) || (!$installed && array_search($module, $installed_modules)===false)) {
+                    $modules_list[$module] = ($object ? $module_instance : array('name'=>$module_instance->name, 'description'=>$module_instance->description, 'dir'=>$module));
+                }
+            }
+        }
+
+        return $modules_list;
     }
 
-    return $modules_list;
+    /**
+     * Install a module.
+     *
+     * @param module_name
+     *
+     * @return status
+     */
+    public function install($module_name)
+    {
+        $module_list = $this('get_all', false, true);
 
-  }
+        // module not found?
+        if (!isset($module_list[$module_name])) {
+            return false;
+        }
 
-  /**
-   * Install a module.
-   *
-   * @param module_name
-   *
-   * @return status
-   */
-  public function install($module_name)
-  {
+        $module = $module_list[$module_name];
 
-    $module_list = $this('get_all', false, true);
+        // install the module as per the modules instructions
+        $install = $module->install();
+        if (!$install) {
+            return false;
+        }
 
-    // module not found?
-    if(!isset($module_list[$module_name])) return false;
+        // add the module to our installed module list.
+        $this->db->insert('modules', array('directory'=>$module_name));
 
-    $module = $module_list[$module_name];
+        return true;
+    }
 
-    // install the module as per the modules instructions
-    $install = $module->install();
-    if(!$install) return false;
+    /**
+     * Uninstall a module.
+     *
+     * @param module_name
+     *
+     * @return status
+     */
+    public function uninstall($module_name)
+    {
+        $module_list = $this('get_all', true, true);
 
-    // add the module to our installed module list.
-    $this->db->insert('modules', array('directory'=>$module_name));
+        // module not found?
+        if (!isset($module_list[$module_name])) {
+            return false;
+        }
 
-    return true;
+        $module = $module_list[$module_name];
 
-  }
+        // install the module as per the modules instructions
+        $uninstall = $module->uninstall();
+        if (!$uninstall) {
+            return false;
+        }
 
-  /**
-   * Uninstall a module.
-   *
-   * @param module_name
-   *
-   * @return status
-   */
-  public function uninstall($module_name)
-  {
+        // add the module to our installed module list.
+        $this->db->where('directory', $module_name);
+        $this->db->delete('modules');
 
-    $module_list = $this('get_all', true, true);
-
-    // module not found?
-    if(!isset($module_list[$module_name])) return false;
-
-    $module = $module_list[$module_name];
-
-    // install the module as per the modules instructions
-    $uninstall = $module->uninstall();
-    if(!$uninstall) return false;
-
-    // add the module to our installed module list.
-    $this->db->where('directory', $module_name);
-    $this->db->delete('modules');
-
-    return true;
-
-  }
-
+        return true;
+    }
 }

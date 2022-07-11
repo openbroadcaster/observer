@@ -26,16 +26,16 @@
  */
 class MediaCountriesModel extends OBFModel
 {
-  /**
-   * Get all countries from the database.
-   *
-   * @return countries
-   */
-  public function get_all()
-  {
-    $this->db->orderby('name');
-    $types = $this->db->get('media_countries');
+    /**
+     * Get all countries from the database.
+     *
+     * @return countries
+     */
+    public function get_all()
+    {
+        $this->db->orderby('name');
+        $types = $this->db->get('media_countries');
 
-    return $types;
-  }
+        return $types;
+    }
 }

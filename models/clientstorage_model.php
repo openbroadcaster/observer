@@ -27,79 +27,78 @@
  */
 class ClientStorageModel extends OBFModel
 {
-  /**
-   * Validate data before storing. Make sure the data contains a client name,
-   * actual data, and a valid user ID.
-   *
-   * @param user_id
-   * @param client_name
-   * @param data
-   *
-   * @return status
-   */
-  public function validate($args = [])
-  {
-    OBFHelpers::require_args($args, ['user_id', 'client_name', 'data']);
-
-    if(empty($args['client_name']) || $args['data']===false || !preg_match('/^[0-9]+$/', $args['user_id']))
+    /**
+     * Validate data before storing. Make sure the data contains a client name,
+     * actual data, and a valid user ID.
+     *
+     * @param user_id
+     * @param client_name
+     * @param data
+     *
+     * @return status
+     */
+    public function validate($args = [])
     {
-      return array(false,'Invalid client name, data, or user.');
+        OBFHelpers::require_args($args, ['user_id', 'client_name', 'data']);
+
+        if (empty($args['client_name']) || $args['data']===false || !preg_match('/^[0-9]+$/', $args['user_id'])) {
+            return array(false,'Invalid client name, data, or user.');
+        }
+
+        return array(true,'');
     }
 
-    return array(true,'');
-
-  }
-
-  /**
-   * Store data in client storage. This can update pre-existing data or insert
-   * new values.
-   *
-   * @param user_id
-   * @param client_name
-   * @param data
-   */
-  public function store($args = [])
-  {
-    OBFHelpers::require_args($args, ['user_id', 'client_name', 'data']);
-
-    // see if we already have a row for this client_name / user_id.
-    $this->db->where('user_id', $args['user_id']);
-    $this->db->where('client_name', $args['client_name']);
-    $rows = $this->db->get('client_storage');
-
-    if (!empty($rows) && count($rows) > 0) {
-      $this->db->where('user_id', $args['user_id']);
-      $this->db->where('client_name', $args['client_name']);
-      $this->db->update('client_storage', array('data' => $args['data']));
-    } else
-      $this->db->insert('client_storage', array('user_id' => $args['user_id'], 'client_name' => $args['client_name'], 'data' => $args['data']));
-  }
-
-  /**
-   * Retrieve client storage data.
-   *
-   * @param client_name
-   * @param user_id
-   *
-   * @return data
-   */
-  public function get($args = [])
-  {
-    OBFHelpers::require_args($args, ['client_name', 'user_id']);
-
-    if (empty($args['client_name']) || !preg_match('/^[0-9]+$/', $args['user_id']))
+    /**
+     * Store data in client storage. This can update pre-existing data or insert
+     * new values.
+     *
+     * @param user_id
+     * @param client_name
+     * @param data
+     */
+    public function store($args = [])
     {
-      return array(false,'Invalid client name or user.');
+        OBFHelpers::require_args($args, ['user_id', 'client_name', 'data']);
+
+        // see if we already have a row for this client_name / user_id.
+        $this->db->where('user_id', $args['user_id']);
+        $this->db->where('client_name', $args['client_name']);
+        $rows = $this->db->get('client_storage');
+
+        if (!empty($rows) && count($rows) > 0) {
+            $this->db->where('user_id', $args['user_id']);
+            $this->db->where('client_name', $args['client_name']);
+            $this->db->update('client_storage', array('data' => $args['data']));
+        } else {
+            $this->db->insert('client_storage', array('user_id' => $args['user_id'], 'client_name' => $args['client_name'], 'data' => $args['data']));
+        }
     }
 
-    // see if we already have a row for this client_name / user_id.
-    $this->db->where('user_id', $args['user_id']);
-    $this->db->where('client_name', $args['client_name']);
-    $data = $this->db->get_one('client_storage');
+    /**
+     * Retrieve client storage data.
+     *
+     * @param client_name
+     * @param user_id
+     *
+     * @return data
+     */
+    public function get($args = [])
+    {
+        OBFHelpers::require_args($args, ['client_name', 'user_id']);
 
-    if($data==false) return array(true,'No data found.','');
-    else return array(true,'Stored data found.',$data['data']);
+        if (empty($args['client_name']) || !preg_match('/^[0-9]+$/', $args['user_id'])) {
+            return array(false,'Invalid client name or user.');
+        }
 
-  }
+        // see if we already have a row for this client_name / user_id.
+        $this->db->where('user_id', $args['user_id']);
+        $this->db->where('client_name', $args['client_name']);
+        $data = $this->db->get_one('client_storage');
 
+        if ($data==false) {
+            return array(true,'No data found.','');
+        } else {
+            return array(true,'Stored data found.',$data['data']);
+        }
+    }
 }

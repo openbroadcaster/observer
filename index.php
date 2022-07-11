@@ -24,15 +24,17 @@ header('OpenBroadcaster-Application: index');
 
 require('components.php');
 
-if(is_file('VERSION')) $version = trim(file_get_contents('VERSION'));
-else $version = false;
+if (is_file('VERSION')) {
+    $version = trim(file_get_contents('VERSION'));
+} else {
+    $version = false;
+}
 
 // are we logged in? if not, redirect to welcome page.
 $user = OBFUser::get_instance();
-if(!isset($_COOKIE['ob_auth_id']) || !isset($_COOKIE['ob_auth_key']) || !$user->auth($_COOKIE['ob_auth_id'], $_COOKIE['ob_auth_key']))
-{
-  header('Location: /welcome');
-  die();
+if (!isset($_COOKIE['ob_auth_id']) || !isset($_COOKIE['ob_auth_key']) || !$user->auth($_COOKIE['ob_auth_id'], $_COOKIE['ob_auth_key'])) {
+    header('Location: /welcome');
+    die();
 }
 
 // we're logged in! continue with load.
@@ -72,18 +74,18 @@ $image_files = $models->ui('image_files');
   <link type="text/css" href="extras/jquery-ui-darkness/jquery-ui.min.css?v=<?=filemtime('extras/jquery-ui-darkness/jquery-ui.min.css')?>" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="extras/jquery-ui-timepicker-addon.css?v=<?=filemtime('extras/jquery-ui-timepicker-addon.css')?>">
 
-  <?php foreach($js_files as $file) { ?>
+  <?php foreach ($js_files as $file) { ?>
     <script type="text/javascript" src="<?=$file?>?v=<?=filemtime($file)?>"></script>
   <?php } ?>
 
   <?php /* TODO should have a "last updated" time for strings */ ?>
   <script type="text/javascript" src="strings.php?v=<?=time()?>"></script>
 
-  <?php foreach($css_files as $file) { ?>
+  <?php foreach ($css_files as $file) { ?>
     <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=filemtime($file)?>">
   <?php } ?>
 
-  <?php if(!empty($user->userdata['dyslexia_friendly_font'])) { ?>
+  <?php if (!empty($user->userdata['dyslexia_friendly_font'])) { ?>
     <link rel="stylesheet" type="text/css" href="extras/opendyslexic/opendyslexic.css?v=<?=urlencode($version)?>">
   <?php } ?>
 
@@ -96,7 +98,7 @@ $image_files = $models->ui('image_files');
 <div id="main_container"></div>
 
 <div id="preload_images" style="display: none;">
-  <?php foreach($image_files as $file) { ?>
+  <?php foreach ($image_files as $file) { ?>
     <img src="<?=$file?>?v=<?=filemtime($file)?>">
   <?php } ?>
 </div>

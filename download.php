@@ -25,47 +25,57 @@ date_default_timezone_set('Etc/UTC');
 
 class ObDownload
 {
-  private $db;
+    private $db;
 
-  public function __construct()
-  {
-    $this->db = OBFDB::get_instance();
-    $this->download();
-  }
+    public function __construct()
+    {
+        $this->db = OBFDB::get_instance();
+        $this->download();
+    }
 
-  public function download()
-  {
-    $media_id = $_GET['media_id'];
+    public function download()
+    {
+        $media_id = $_GET['media_id'];
 
-    if(!$media_id) return false;
+        if (!$media_id) {
+            return false;
+        }
 
-    $this->db->where('id', $media_id);
-    $media = $this->db->get_one('media');
-    if(empty($media)) die();
+        $this->db->where('id', $media_id);
+        $media = $this->db->get_one('media');
+        if (empty($media)) {
+            die();
+        }
 
-    if($media['status'] != 'public') die();
+        if ($media['status'] != 'public') {
+            die();
+        }
 
-    if($media['is_archived']==1) $filedir=OB_MEDIA_ARCHIVE;
-    elseif($media['is_approved']==0) $filedir=OB_MEDIA_UPLOADS;
-    else $filedir=OB_MEDIA;
+        if ($media['is_archived']==1) {
+            $filedir=OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved']==0) {
+            $filedir=OB_MEDIA_UPLOADS;
+        } else {
+            $filedir=OB_MEDIA;
+        }
 
-    $filedir.='/'.$media['file_location'][0].'/'.$media['file_location'][1];
+        $filedir.='/'.$media['file_location'][0].'/'.$media['file_location'][1];
 
-    $fullpath=$filedir.'/'.$media['filename'];
+        $fullpath=$filedir.'/'.$media['filename'];
 
-    if(!file_exists($fullpath)) die();
+        if (!file_exists($fullpath)) {
+            die();
+        }
 
-    header("Access-Control-Allow-Origin: *");
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/octet-stream');
-    header("Content-Transfer-Encoding: binary");
-    header("Content-Length: ".filesize($fullpath));
-    header('Content-Disposition: attachment; filename="'.$media['filename'].'"');
+        header("Access-Control-Allow-Origin: *");
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: binary");
+        header("Content-Length: ".filesize($fullpath));
+        header('Content-Disposition: attachment; filename="'.$media['filename'].'"');
 
-    readfile($fullpath);
-
-  }
-
+        readfile($fullpath);
+    }
 }
 
 $download = new ObDownload();

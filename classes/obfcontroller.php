@@ -28,82 +28,84 @@
  */
 class OBFController
 {
-  public $load;
-  public $db;
-  public $user;
-  public $data;
-  public $models;
+    public $load;
+    public $db;
+    public $user;
+    public $data;
+    public $models;
 
-  protected $helpers;
-  protected $callback_handler;
+    protected $helpers;
+    protected $callback_handler;
 
-  /**
-   * Create a new instance of OBFController. Makes various classes of OB available
-   * by default, such as OBFLoad, OBFDB, OBFUser, OBFCallbacks, and OBFHelpers.
-   */
-  public function __construct()
-  {
-    $this->load = OBFLoad::get_instance();
-    $this->db = OBFDB::get_instance();
-    $this->user = OBFUser::get_instance();
-    $this->callback_handler = OBFCallbacks::get_instance();
-    $this->helpers = OBFHelpers::get_instance();
-    $this->models = OBFModels::get_instance();
-  }
-
-  /**
-   * Shortcut to use $this->ModelName('method', arg1, arg2, ...).
-   *
-   * @param name Method name.
-   * @param args Variable argument list.
-   */
-  public function __call($name, $args)
-  {
-    if(!isset($this->$name))
+    /**
+     * Create a new instance of OBFController. Makes various classes of OB available
+     * by default, such as OBFLoad, OBFDB, OBFUser, OBFCallbacks, and OBFHelpers.
+     */
+    public function __construct()
     {
-      $stack = debug_backtrace();
-      trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+        $this->load = OBFLoad::get_instance();
+        $this->db = OBFDB::get_instance();
+        $this->user = OBFUser::get_instance();
+        $this->callback_handler = OBFCallbacks::get_instance();
+        $this->helpers = OBFHelpers::get_instance();
+        $this->models = OBFModels::get_instance();
     }
 
-    $obj = $this->$name;
-
-    return call_user_func_array($obj, $args);
-  }
-
-  /**
-   * Default controller REQUEST handler. $action only used for direct call from
-   * API. Other argument used when called as callback.
-   *
-   * @param action The controller method to be handled.
-   * @param hook Optional hook when handled as callback. Default NULL.
-   * @param position Optional position when handled as callback. Default NULL.
-   */
-  public function handle($action, $hook=null, $position=null)
-  {
-
-    if(method_exists($this, $action))
+    /**
+     * Shortcut to use $this->ModelName('method', arg1, arg2, ...).
+     *
+     * @param name Method name.
+     * @param args Variable argument list.
+     */
+    public function __call($name, $args)
     {
-      // call as non-callback
-      if(!$hook) return $this->$action();
+        if (!isset($this->$name)) {
+            $stack = debug_backtrace();
+            trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+        }
 
-      // call as callback
-      else return $this->$action($hook, $position);
+        $obj = $this->$name;
+
+        return call_user_func_array($obj, $args);
     }
 
-  }
+    /**
+     * Default controller REQUEST handler. $action only used for direct call from
+     * API. Other argument used when called as callback.
+     *
+     * @param action The controller method to be handled.
+     * @param hook Optional hook when handled as callback. Default NULL.
+     * @param position Optional position when handled as callback. Default NULL.
+     */
+    public function handle($action, $hook=null, $position=null)
+    {
+        if (method_exists($this, $action)) {
+            // call as non-callback
+            if (!$hook) {
+                return $this->$action();
+            }
 
-  /**
-   * Grab an argument from the data variable when a controller is called from the
-   * API.
-   *
-   * @param key
-   *
-   * @return value
-   */
-  public function data($key)
-  {
-    if(isset($this->data[$key]) && is_array($this->data)) return $this->data[$key];
-    else return false;
-  }
+            // call as callback
+            else {
+                return $this->$action($hook, $position);
+            }
+        }
+    }
 
+    /**
+     * Grab an argument from the data variable when a controller is called from the
+     * API.
+     *
+     * @param key
+     *
+     * @return value
+     */
+    public function data($key)
+    {
+        if (isset($this->data[$key]) && is_array($this->data)) {
+            return $this->data[$key];
+        } else {
+            return false;
+        }
+    }
 }

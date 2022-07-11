@@ -3,7 +3,12 @@
     <code class="doc-method-code-visibility"><?=$method_visibility?></code>&nbsp;
     <code class="doc-method-code-name"><?=$method_name?></code>
     <code>(</code>
-    <code class="doc-method-code-args"><?php foreach ($method_args as $i => $arg) { echo $arg; if ($i < count($method_args) - 1) echo ", "; } ?></code>
+    <code class="doc-method-code-args"><?php foreach ($method_args as $i => $arg) {
+    echo $arg;
+    if ($i < count($method_args) - 1) {
+        echo ", ";
+    }
+} ?></code>
     <code>)</code>
   </div>
   <div class="doc-method-description">
