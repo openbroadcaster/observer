@@ -27,7 +27,6 @@
  */
 class UploadsModel extends OBFModel
 {
-
   /**
   * Return whether an uploaded file ID and associated key is valid. Returns
   * FALSE if no ID or key is provided, or if no associated row can be found in
@@ -35,7 +34,7 @@ class UploadsModel extends OBFModel
   *
   * @return is_valid
   */
-  public function is_valid($id,$key)
+  public function is_valid($id, $key)
   {
 
     $id = trim($id);
@@ -43,8 +42,8 @@ class UploadsModel extends OBFModel
 
     if(empty($id) || empty($key)) return false;
 
-    $this->db->where('id',$id);
-    $this->db->where('key',$key);
+    $this->db->where('id', $id);
+    $this->db->where('key', $key);
 
     if($this->db->get_one('uploads')) return true;
     else return false;
@@ -52,14 +51,14 @@ class UploadsModel extends OBFModel
   }
 
   /**
-   * Get relevant info about file upload. 
+   * Get relevant info about file upload.
    *
    * @param id Upload ID.
    * @param key Upload key.
    *
    * @return [type, format, duration]
    */
-  public function file_info($id,$key)
+  public function file_info($id, $key)
   {
 
     $id = trim($id);
@@ -67,8 +66,8 @@ class UploadsModel extends OBFModel
 
     if(empty($id) || empty($key)) return false;
 
-    $this->db->where('id',$id);
-    $this->db->where('key',$key);
+    $this->db->where('id', $id);
+    $this->db->where('key', $key);
 
     $this->db->what('type');
     $this->db->what('format');

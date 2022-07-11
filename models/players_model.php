@@ -26,7 +26,6 @@
  */
 class PlayersModel extends OBFModel
 {
-
   /**
    * Retrieve data from a single player. ID passed as parameter, rather than in
    * a data array. Also includes all station IDs for that player.
@@ -38,11 +37,11 @@ class PlayersModel extends OBFModel
   public function get_one($id)
   {
 
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $player = $this->db->get_one('players');
 
     if($player) {
-      $player['station_ids']=$this('get_station_ids',$id);
+      $player['station_ids']=$this('get_station_ids', $id);
     }
 
     return $player;
@@ -77,10 +76,10 @@ class PlayersModel extends OBFModel
       $value = $filter['value'];
       $operator = (empty($filter['operator']) ? '=' : $filter['operator']);
 
-      $this->db->where($column,$value,$operator);
+      $this->db->where($column, $value, $operator);
     }
 
-    if($orderby) $this->db->orderby($orderby,(!empty($orderdesc) ? 'desc' : 'asc'));
+    if($orderby) $this->db->orderby($orderby, (!empty($orderdesc) ? 'desc' : 'asc'));
 
     if($limit) $this->db->limit($limit);
 
@@ -98,7 +97,7 @@ class PlayersModel extends OBFModel
       {
 
         $this->db->what('name');
-        $this->db->where('id',$row['default_playlist_id']);
+        $this->db->where('id', $row['default_playlist_id']);
         $default_playlist = $this->db->get_one('playlists');
 
         $result[$index]['default_playlist_name']=$default_playlist['name'];
@@ -114,10 +113,10 @@ class PlayersModel extends OBFModel
       // get our station ids
       $result[$index]['media_ids']=array();
 
-      $station_ids = $this('get_station_ids',$row['id']);
+      $station_ids = $this('get_station_ids', $row['id']);
       foreach($station_ids as $station_id)
       {
-        $this->db->where('id',$station_id);
+        $this->db->where('id', $station_id);
         $media=$this->db->get_one('media');
 
         if($media) $result[$index]['media_ids'][]=$media;
@@ -140,7 +139,7 @@ class PlayersModel extends OBFModel
   public function get_station_ids($id)
   {
 
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     $station_ids = $this->db->get('players_station_ids');
 
     $media_ids = array();
@@ -189,7 +188,7 @@ class PlayersModel extends OBFModel
    *
    * @return [status, msg]
    */
-  public function validate($data,$id=false)
+  public function validate($data, $id=false)
   {
 
     $error = false;
@@ -202,9 +201,9 @@ class PlayersModel extends OBFModel
 
     elseif(!empty($data['password']) && strlen($data['password'])<6) $error = 'The password must be at least 6 characters long.';
 
-    elseif($id && !$this->db->id_exists('players',$id)) $error = 'The player you are attempted to edit does not exist.';
+    elseif($id && !$this->db->id_exists('players', $id)) $error = 'The player you are attempted to edit does not exist.';
 
-    elseif(!preg_match('/^[0-9]+$/',$data['station_id_image_duration']) || $data['station_id_image_duration']==0) $error = 'Station ID image duration is not valid.  Enter a number to specify duration in seconds.';
+    elseif(!preg_match('/^[0-9]+$/', $data['station_id_image_duration']) || $data['station_id_image_duration']==0) $error = 'Station ID image duration is not valid.  Enter a number to specify duration in seconds.';
 
     // verify timezone
     elseif(empty($data['timezone'])) $error = 'You must set a timezone for each player.';
@@ -212,8 +211,8 @@ class PlayersModel extends OBFModel
     // make sure player name is unique
     if(empty($error))
     {
-      if($id) $this->db->where('id',$id,'!=');
-      $this->db->where('name',$data['name']);
+      if($id) $this->db->where('id', $id, '!=');
+      $this->db->where('name', $data['name']);
       if($this->db->get_one('players')) $error = 'player name must be unique.';
     }
 
@@ -236,7 +235,7 @@ class PlayersModel extends OBFModel
     // make sure parent player is valid.
     if(empty($error) && $data['parent_player_id'])
     {
-      $this->db->where('id',$data['parent_player_id']);
+      $this->db->where('id', $data['parent_player_id']);
       $parent_player = $this->db->get_one('players');
 
       if(!$parent_player) $error = 'The specified parent player no longer exists.';
@@ -248,7 +247,7 @@ class PlayersModel extends OBFModel
     {
       foreach($data['station_ids'] as $station_id)
       {
-        $this->db->where('id',$station_id);
+        $this->db->where('id', $station_id);
         $media_info = $this->db->get_one('media');
         if(!$media_info) { $error = 'A station ID you have selected no longer exists.'; break; }
         if($media_info['is_archived']==1 || $media_info['is_approved']==0) { $error = 'Station IDs may be approved media only.'; break; }
@@ -256,7 +255,7 @@ class PlayersModel extends OBFModel
     }
 
     // verify playlist ID
-    if(!$error && !empty($data['default_playlist_id'])) if(!$this->db->id_exists('playlists',$data['default_playlist_id'])) $error = 'The playlist you have selected no longer exists.';
+    if(!$error && !empty($data['default_playlist_id'])) if(!$this->db->id_exists('playlists', $data['default_playlist_id'])) $error = 'The playlist you have selected no longer exists.';
 
     if($error) return array(false,$error);
 
@@ -271,7 +270,7 @@ class PlayersModel extends OBFModel
    *
    * @return id
    */
-  public function save($data,$id=false)
+  public function save($data, $id=false)
   {
 
     $station_ids = $data['station_ids'];
@@ -283,7 +282,7 @@ class PlayersModel extends OBFModel
     {
       $data['password'] = password_hash($data['password'].OB_HASH_SALT, PASSWORD_DEFAULT);
       $data['owner_id'] = $this->user->param('id');
-      $id = $this->db->insert('players',$data);
+      $id = $this->db->insert('players', $data);
       if(!$id) return false;
     }
 
@@ -291,7 +290,7 @@ class PlayersModel extends OBFModel
     {
 
       // get original player, see if we're updating default playlist.
-      $this->db->where('id',$id);
+      $this->db->where('id', $id);
       $original_player = $this->db->get_one('players');
 
       // do we need to clear out all the cache? (child/parent setting change)
@@ -300,15 +299,15 @@ class PlayersModel extends OBFModel
           || $original_player['use_parent_ids']!=$data['use_parent_ids']
           || $original_player['use_parent_playlist']!=$data['use_parent_playlist'])
       {
-        $this->db->where('player_id',$id);
+        $this->db->where('player_id', $id);
         $this->db->delete('shows_cache');
       }
 
       // if we are changing the default playlist, clear the default playlist schedule cache for this player
       elseif($original_player['default_playlist_id']!=$data['default_playlist_id'])
       {
-        $this->db->where('player_id',$id);
-        $this->db->where('mode','default_playlist');
+        $this->db->where('player_id', $id);
+        $this->db->where('mode', 'default_playlist');
         $this->db->delete('shows_cache');
       }
 
@@ -316,8 +315,8 @@ class PlayersModel extends OBFModel
       if($data['password']=='') unset($data['password']);
       else $data['password'] = password_hash($data['password'].OB_HASH_SALT, PASSWORD_DEFAULT);
 
-      $this->db->where('id',$id);
-      $update = $this->db->update('players',$data);
+      $this->db->where('id', $id);
+      $update = $this->db->update('players', $data);
 
       if(!$update) return false;
 
@@ -328,14 +327,14 @@ class PlayersModel extends OBFModel
     {
 
       // delete all station IDs for this player.
-      $this->db->where('player_id',$id);
+      $this->db->where('player_id', $id);
       $this->db->delete('players_station_ids');
 
       // add all the station IDs we have.
       if(is_array($station_ids)) foreach($station_ids as $station_id)
       {
         $station_id_data['media_id']=$station_id;
-        $this->db->insert('players_station_ids',$station_id_data);
+        $this->db->insert('players_station_ids', $station_id_data);
       }
 
     }
@@ -350,10 +349,10 @@ class PlayersModel extends OBFModel
    * @param id
    * @param version
    */
-  public function update_version($id,$version)
+  public function update_version($id, $version)
   {
-    $this->db->where('id',$id);
-    $this->db->update('players',array('version'=>$version));
+    $this->db->where('id', $id);
+    $this->db->update('players', array('version'=>$version));
   }
 
   /**
@@ -363,10 +362,10 @@ class PlayersModel extends OBFModel
    * @param longitude
    * @param latitude
    */
-  public function update_location($id,$longitude,$latitude)
+  public function update_location($id, $longitude, $latitude)
   {
-    $this->db->where('id',$id);
-    $this->db->update('players',array('longitude'=>$longitude,'latitude'=>$latitude));
+    $this->db->where('id', $id);
+    $this->db->update('players', array('longitude'=>$longitude,'latitude'=>$latitude));
   }
 
 
@@ -383,20 +382,20 @@ class PlayersModel extends OBFModel
   {
 
     // see if there are emergency broadcasts associated with this player.
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     if($this->db->get_one('emergencies') && !$this->user->check_permission('manage_emergency_broadcasts'))
       return array(false,'Unable to remove this player.  It has emergency broadcast content that you do not have permission to delete.');
 
     // this doesn't check 'able to delete own show' ability... not sure it's practically necessary..
     $schedule_fail = false;
 
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     if($this->db->get_one('schedules') && !$this->user->check_permission('manage_timeslots')) $schedule_fail = true;
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     if($this->db->get_one('schedules_recurring') && !$this->user->check_permission('manage_timeslots')) $schedule_fail = true;
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     if($this->db->get_one('timeslots') && !$this->user->check_permission('manage_timeslots')) $schedule_fail = true;
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     if($this->db->get_one('timeslots_recurring') && !$this->user->check_permission('manage_timeslots')) $schedule_fail = true;
 
     if($schedule_fail) return array(false,'Unable to remove this player.  It has schedule data that you do not have permission to delete.');
@@ -414,7 +413,7 @@ class PlayersModel extends OBFModel
    */
   public function player_is_parent($id)
   {
-    $this->db->where('parent_player_id',$id);
+    $this->db->where('parent_player_id', $id);
     $test = $this->db->get_one('players');
 
     if($test) return true;
@@ -428,16 +427,16 @@ class PlayersModel extends OBFModel
    */
   public function delete($id)
   {
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $this->db->delete('players');
 
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     $this->db->delete('schedules');
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     $this->db->delete('schedules_recurring');
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     $this->db->delete('timeslots');
-    $this->db->where('player_id',$id);
+    $this->db->where('player_id', $id);
     $this->db->delete('timeslots_recurring');
   }
 
@@ -454,22 +453,22 @@ class PlayersModel extends OBFModel
     foreach($params as $name=>$value) $$name=$value;
 
     // get timestamps based on player timezone
-    $player = $this('get_one',$player_id);
+    $player = $this('get_one', $player_id);
     if(!$player) return [false];
 
-    $player_timezone = new DateTimeZone( $player['timezone'] );
+    $player_timezone = new DateTimeZone($player['timezone']);
     if(!$player_timezone) return [false];
 
-    $start_datetime = new DateTime($date_start,$player_timezone);
-    $end_datetime = new DateTime($date_end,$player_timezone);
+    $start_datetime = new DateTime($date_start, $player_timezone);
+    $end_datetime = new DateTime($date_end, $player_timezone);
     if(!$start_datetime || !$end_datetime) return [false];
 
     // db lookup
-    $this->db->where('player_id',$player_id);
-    $this->db->where('timestamp',$start_datetime->getTimestamp(),'>=');
-    $this->db->where('timestamp',$end_datetime->getTimestamp(),'<');
+    $this->db->where('player_id', $player_id);
+    $this->db->where('timestamp', $start_datetime->getTimestamp(), '>=');
+    $this->db->where('timestamp', $end_datetime->getTimestamp(), '<');
 
-    if($orderby) $this->db->orderby($orderby,(!empty($orderdesc) ? 'desc' : 'asc'));
+    if($orderby) $this->db->orderby($orderby, (!empty($orderdesc) ? 'desc' : 'asc'));
     if($limit) $this->db->limit($limit);
     if($offset) $this->db->offset($offset);
 
@@ -479,12 +478,12 @@ class PlayersModel extends OBFModel
       $value = $filter['value'];
       $operator = $filter['operator'];
 
-      if(array_search($column,array('media_id','artist','title'))===false) return array(false,null);
-      if(array_search($operator,array('is','not','like','not_like'))===false) return array(false,null);
+      if(array_search($column, array('media_id','artist','title'))===false) return array(false,null);
+      if(array_search($operator, array('is','not','like','not_like'))===false) return array(false,null);
 
-      if($operator=='like') $this->db->where_like($column,$value);
-      elseif($operator=='not_like') $this->db->where_not_like($column,$value);
-      else $this->db->where($column,$value,($operator=='is' ? '=' : '!='));
+      if($operator=='like') $this->db->where_like($column, $value);
+      elseif($operator=='not_like') $this->db->where_not_like($column, $value);
+      else $this->db->where($column, $value, ($operator=='is' ? '=' : '!='));
 
     }
 
@@ -516,11 +515,11 @@ class PlayersModel extends OBFModel
   {
     if(empty($results)) return false;
 
-    $fh = fopen('php://temp','w+');
+    $fh = fopen('php://temp', 'w+');
 
     // get our timezone from the player id
     $player_id = $results[0]['player_id'];
-    $player = $this('get_one',$player_id);
+    $player = $this('get_one', $player_id);
 
     // add our heading row
     fputcsv($fh, ['Media ID','Artist','Title','Date/Time','Context','Notes']);
@@ -563,7 +562,7 @@ class PlayersModel extends OBFModel
     $this->db->what('current_media_end');
     $this->db->what('current_show_name');
 
-    $this->db->where('id',$player_id);
+    $this->db->where('id', $player_id);
     $player = $this->db->get_one('players');
 
     if(!$player) return false;
@@ -574,7 +573,7 @@ class PlayersModel extends OBFModel
 
     $this->models->media('get_init');
 
-    $this->db->where('media.id',$player['current_media_id']);
+    $this->db->where('media.id', $player['current_media_id']);
     $media = $this->db->get_one('media');
 
     $media_data = array();

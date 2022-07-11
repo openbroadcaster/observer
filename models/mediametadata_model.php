@@ -26,7 +26,6 @@
  */
 class MediaMetadataModel extends OBFModel
 {
-
   /**
    * Get all metadata columns.
    *
@@ -44,7 +43,7 @@ class MediaMetadataModel extends OBFModel
       // attach all available tags to tag settings
       if($field['type']=='tags')
       {
-        $field['settings']->all = $this('tag_search',['id'=>$field['id'],'search'=>'']);
+        $field['settings']->all = $this('tag_search', ['id'=>$field['id'],'search'=>'']);
       }
     }
     return $fields;
@@ -59,7 +58,7 @@ class MediaMetadataModel extends OBFModel
    */
   public function get_one($id)
   {
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $field = $this->db->get_one('media_metadata_columns');
     if($field['settings']) $field['settings'] = json_decode($field['settings']);
     return $field;
@@ -74,7 +73,7 @@ class MediaMetadataModel extends OBFModel
    */
   public function get_by_name($name)
   {
-    $this->db->where('name',$name);
+    $this->db->where('name', $name);
     $field = $this->db->get_one('media_metadata_columns');
     if($field['settings']) $field['settings'] = json_decode($field['settings']);
     return $field;
@@ -102,8 +101,8 @@ class MediaMetadataModel extends OBFModel
     // save
     foreach($order as $order_id=>$field_id)
     {
-      $this->db->where('id',$field_id);
-      $this->db->update('media_metadata_columns',['order_id'=>$order_id]);
+      $this->db->where('id', $field_id);
+      $this->db->update('media_metadata_columns', ['order_id'=>$order_id]);
     }
 
     return true;
@@ -130,7 +129,7 @@ class MediaMetadataModel extends OBFModel
     //T All fields are required.
     if(!$data['name'] || !$data['description'] || !$data['type'] || ($data['type']=='select' && !$data['select_options'])) return [false,'All fields are required.'];
     //T Field name must contain only letters, numbers, and underscores.
-    if(!preg_match('/^[0-9a-z_]+$/',$data['name'])) return [false,'Field name must contain only letters, numbers, and underscores.'];
+    if(!preg_match('/^[0-9a-z_]+$/', $data['name'])) return [false,'Field name must contain only letters, numbers, and underscores.'];
     //T Field name maximum length is 32 characters.
     if(strlen($data['name'])>32) return [false,'Field name maximum length is 32 characters.'];
     //T This field name is reserved and cannot be used.
@@ -138,7 +137,7 @@ class MediaMetadataModel extends OBFModel
 
     if(!$id)
     {
-      $this->db->where('name',$data['name']);
+      $this->db->where('name', $data['name']);
       //T This field name is already in use.
       if($this->db->get_one('media_metadata_columns')) return [false,'This field name is already in use'];
     }
@@ -174,7 +173,7 @@ class MediaMetadataModel extends OBFModel
     // some extra things for select field
     if($data['type']=='select')
     {
-      $options = explode(PHP_EOL,$data['select_options']);
+      $options = explode(PHP_EOL, $data['select_options']);
       $save_options = [];
       foreach($options as $option)
       {
@@ -203,8 +202,8 @@ class MediaMetadataModel extends OBFModel
 
     if($id)
     {
-      $this->db->where('id',$id);
-      return $this->db->update('media_metadata_columns',$save);
+      $this->db->where('id', $id);
+      return $this->db->update('media_metadata_columns', $save);
     }
 
     else
@@ -212,7 +211,7 @@ class MediaMetadataModel extends OBFModel
       $save['name'] = $data['name'];
       $save['type'] = $data['type'];
 
-      $id = $this->db->insert('media_metadata_columns',$save);
+      $id = $this->db->insert('media_metadata_columns', $save);
 
       if($save['type']=='bool')
       {
@@ -228,12 +227,12 @@ class MediaMetadataModel extends OBFModel
       {
         $this->db->query('ALTER TABLE '.$this->db->format_backticks('media_metadata').' ADD '.$this->db->format_backticks($data['name']).' TEXT NULL DEFAULT NULL');
       }
-      
+
       elseif($save['type']=='integer')
       {
         $this->db->query('ALTER TABLE '.$this->db->format_backticks('media_metadata').' ADD '.$this->db->format_backticks($data['name']).' BIGINT NULL DEFAULT NULL');
       }
-      
+
       elseif($save['type']=='hidden')
       {
         $this->db->query('ALTER TABLE '.$this->db->format_backticks('media_metadata').' ADD '.$this->db->format_backticks($data['name']).' LONGTEXT NULL DEFAULT NULL');
@@ -255,7 +254,7 @@ class MediaMetadataModel extends OBFModel
     $field = $this->get_one($id);
     if(!$field) return false;
 
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $this->db->delete('media_metadata_columns');
     $this->db->query('ALTER TABLE '.$this->db->format_backticks('media_metadata').' DROP COLUMN '.$this->db->format_backticks($field['name']));
 
@@ -268,7 +267,7 @@ class MediaMetadataModel extends OBFModel
    *
    * @param data
    */
-  public function validate_fields ($data) {
+  public function validate_fields($data) {
     if (!array_key_exists('artist', $data) ||
         !array_key_exists('album', $data) ||
         !array_key_exists('year', $data) ||
@@ -296,7 +295,7 @@ class MediaMetadataModel extends OBFModel
    *
    * @return field_settings
    */
-  public function get_fields () {
+  public function get_fields() {
     $this->db->where('name', 'core_metadata');
     $data = $this->db->get_one('settings');
 
@@ -328,7 +327,7 @@ class MediaMetadataModel extends OBFModel
    *
    * @param data
    */
-  public function required_fields ($data) {
+  public function required_fields($data) {
 
     // handle dynamic content settings first
     $dynamic_content = [];
@@ -367,14 +366,14 @@ class MediaMetadataModel extends OBFModel
     $data['search'] = trim($data['search']);
     $data['id'] = trim($data['id']);
 
-    $this->db->where('id',$data['id'] ?? 0);
-    $this->db->where('type','tags');
+    $this->db->where('id', $data['id'] ?? 0);
+    $this->db->where('type', 'tags');
     $this->db->what('settings');
     $tag = $this->db->get_one('media_metadata_columns');
 
     if($tag)
     {
-      $settings = json_decode($tag['settings'],true);
+      $settings = json_decode($tag['settings'], true);
 
       foreach($settings['suggestions'] as $suggestion)
       {
@@ -393,7 +392,7 @@ class MediaMetadataModel extends OBFModel
     sort($results);
 
     // return max 25 results
-    return array_splice($results,0,25);
+    return array_splice($results, 0, 25);
   }
 
 }

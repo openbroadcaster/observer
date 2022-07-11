@@ -26,7 +26,6 @@
  */
 class MediaCategoriesModel extends OBFModel
 {
-
   /**
    * Search media categories.
    *
@@ -39,11 +38,11 @@ class MediaCategoriesModel extends OBFModel
    * @return [id, name]
    */
 
-  public function search($filters,$orderby,$orderdesc,$limit,$offset)
+  public function search($filters, $orderby, $orderdesc, $limit, $offset)
   {
 
-    $this->db->what('media_categories.id','id');
-    $this->db->what('media_categories.name','name');
+    $this->db->what('media_categories.id', 'id');
+    $this->db->what('media_categories.name', 'name');
 
     if($filters) foreach($filters as $filter)
     {
@@ -51,11 +50,11 @@ class MediaCategoriesModel extends OBFModel
       $value = $filter['value'];
       $operator = (empty($filter['operator']) ? '=' : $filter['operator']);
 
-      $this->db->where($column,$value,$operator);
+      $this->db->where($column, $value, $operator);
     }
 
-    if($orderby) $this->db->orderby($orderby,(!empty($orderdesc) ? 'desc' : 'asc'));
-    else $this->db->orderby('name','asc');
+    if($orderby) $this->db->orderby($orderby, (!empty($orderdesc) ? 'desc' : 'asc'));
+    else $this->db->orderby('name', 'asc');
 
     if($limit) $this->db->limit($limit);
     if($offset) $this->db->offset($offset);
@@ -82,21 +81,21 @@ class MediaCategoriesModel extends OBFModel
    *
    * @return id
    */
-  public function save($data,$id=false)
+  public function save($data, $id=false)
   {
     $set_default = $data['is_default']==1;
     unset($data['is_default']);
 
     if(empty($id))
     {
-      $id = $this->db->insert('media_categories',$data);
+      $id = $this->db->insert('media_categories', $data);
     }
 
     else
     {
-      if(!$this->db->id_exists('media_categories',$id)) return false;
-      $this->db->where('id',$id);
-      $this->db->update('media_categories',$data);
+      if(!$this->db->id_exists('media_categories', $id)) return false;
+      $this->db->where('id', $id);
+      $this->db->update('media_categories', $data);
     }
 
     $current_default = $this->get_default();
@@ -105,17 +104,17 @@ class MediaCategoriesModel extends OBFModel
     if($set_default)
     {
       // remove any existing default
-      $this->db->where('name','media_category_default');
+      $this->db->where('name', 'media_category_default');
       $this->db->delete('settings');
 
       // set this as default
-      $this->db->insert('settings',['name'=>'media_category_default','value'=>$id]);
+      $this->db->insert('settings', ['name'=>'media_category_default','value'=>$id]);
     }
 
     // remove default value if necessary
     elseif($current_default==$id)
     {
-      $this->db->where('name','media_category_default');
+      $this->db->where('name', 'media_category_default');
       $this->db->delete('settings');
     }
 
@@ -129,7 +128,7 @@ class MediaCategoriesModel extends OBFModel
    */
   public function get_default()
   {
-    $this->db->where('name','media_category_default');
+    $this->db->where('name', 'media_category_default');
     $setting = $this->db->get_one('settings');
     if($setting) return $setting['value'];
     else return false;
@@ -143,7 +142,7 @@ class MediaCategoriesModel extends OBFModel
    *
    * @return is_valid
    */
-  public function validate($data,$id=false)
+  public function validate($data, $id=false)
   {
     //T A category name is required.
     if(!$data['name']) return array(false,['Category Edit','A category name is required.']);
@@ -161,7 +160,7 @@ class MediaCategoriesModel extends OBFModel
   public function can_delete($id)
   {
 
-    $this->db->where('media_category_id',$id);
+    $this->db->where('media_category_id', $id);
     $genres = $this->db->get('media_genres');
 
     //T You must remove the genres within this category before deleting the category.
@@ -177,7 +176,7 @@ class MediaCategoriesModel extends OBFModel
    */
   public function delete($id)
   {
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $delete = $this->db->delete('media_categories');
 
     return $delete;
@@ -192,9 +191,9 @@ class MediaCategoriesModel extends OBFModel
    */
   public function get_by_id($id)
   {
-    $this->db->where('media_categories.id',$id);
-    $this->db->what('media_categories.id','id');
-    $this->db->what('media_categories.name','name');
+    $this->db->where('media_categories.id', $id);
+    $this->db->what('media_categories.id', 'id');
+    $this->db->what('media_categories.name', 'name');
 
     $category = $this->db->get_one('media_categories');
 

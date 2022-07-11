@@ -26,8 +26,7 @@
  */
 class PermissionsModel extends OBFModel
 {
-
-  var $permission_cache=FALSE;
+  public $permission_cache=false;
 
   /**
    * Get group permissions from group ID.
@@ -36,7 +35,7 @@ class PermissionsModel extends OBFModel
    *
    * @return permissions
    */
-  function get_group_permissions($id) {
+  public function get_group_permissions($id) {
 
     $r = array();
 
@@ -49,10 +48,10 @@ class PermissionsModel extends OBFModel
     }
 
     // handling for non-admin groups..
-    $this->db->what('users_permissions_to_groups.item_id','item_id');
-    $this->db->what('users_permissions.name','name');
-    $this->db->leftjoin('users_permissions','users_permissions_to_groups.permission_id','users_permissions.id');
-    $this->db->where('users_permissions_to_groups.group_id',$id);
+    $this->db->what('users_permissions_to_groups.item_id', 'item_id');
+    $this->db->what('users_permissions.name', 'name');
+    $this->db->leftjoin('users_permissions', 'users_permissions_to_groups.permission_id', 'users_permissions.id');
+    $this->db->where('users_permissions_to_groups.group_id', $id);
 
     $permissions = $this->db->get('users_permissions_to_groups');
 
@@ -71,12 +70,12 @@ class PermissionsModel extends OBFModel
    *
    * @return permissions
    */
-  function get_user_permissions($id) {
+  public function get_user_permissions($id) {
 
     if(!isset($this->permission_cache[$id])) {
 
       $this->db->what('group_id');
-      $this->db->where('user_id',$id);
+      $this->db->where('user_id', $id);
       $groups = $this->db->get('users_to_groups');
 
       // everyone should be considered part of base (new user, no assigned groups)...
@@ -85,7 +84,7 @@ class PermissionsModel extends OBFModel
       $result = array();
 
       foreach($groups as $group) {
-        $p=$this('get_group_permissions',$group['group_id']);
+        $p=$this('get_group_permissions', $group['group_id']);
         foreach($p as $pname) $result[]=$pname;
       }
 
@@ -104,12 +103,12 @@ class PermissionsModel extends OBFModel
    *
    * @return group_names
    */
-  function get_user_groups($id)
+  public function get_user_groups($id)
   {
 
-    $this->db->what('users_groups.name','name');
-    $this->db->where('users_to_groups.user_id',$id);
-    $this->db->leftjoin('users_groups','users_to_groups.group_id','users_groups.id');
+    $this->db->what('users_groups.name', 'name');
+    $this->db->where('users_to_groups.user_id', $id);
+    $this->db->leftjoin('users_groups', 'users_to_groups.group_id', 'users_groups.id');
     $groups = $this->db->get('users_to_groups');
 
     $return = array();
@@ -128,19 +127,19 @@ class PermissionsModel extends OBFModel
    * @param userid
    *
    * @return permission
-   */ 
-  function check_permission($permission,$userid)
+   */
+  public function check_permission($permission, $userid)
   {
 
-    $p=$this('get_user_permissions',$userid);
+    $p=$this('get_user_permissions', $userid);
 
-    $permission_array=explode(' or ',$permission);
+    $permission_array=explode(' or ', $permission);
 
     foreach($permission_array as $check_permission) {
 
       // if we are looking for an item specific permission, then we will also accept the permission without the item id specified.
       // in this case the permission is valid for all items.
-      $check_permission_array = explode(':',$check_permission);
+      $check_permission_array = explode(':', $check_permission);
       if(count($check_permission_array)>1)
       {
         if(array_search($check_permission_array[0], $p)!==false) return true;
@@ -148,7 +147,7 @@ class PermissionsModel extends OBFModel
         // in this case we will accept any item ID.
         if($check_permission_array[1]=='*') foreach($p as $pname)
         {
-          $pname_array = explode(':',$pname);
+          $pname_array = explode(':', $pname);
           if($pname_array[0]==$check_permission_array[0]) return true;
         }
 
@@ -159,7 +158,7 @@ class PermissionsModel extends OBFModel
 
     }
 
-    return FALSE;
+    return false;
 
   }
 

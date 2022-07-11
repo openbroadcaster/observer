@@ -26,7 +26,6 @@
  */
 class ShowsModel extends OBFModel
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -42,11 +41,11 @@ class ShowsModel extends OBFModel
    *
    * @return shows
    */
-  public function get_shows($start,$end,$player,$not_entry=false)
+  public function get_shows($start, $end, $player, $not_entry=false)
   {
 
     // get player (for timezone)
-    $this->db->where('id',$player);
+    $this->db->where('id', $player);
     $player_data = $this->db->get_one('players');
 
     // set our timezone based on player settings.  this makes sure 'strtotime' advancing by days, weeks, months will account for DST propertly.
@@ -129,7 +128,7 @@ class ShowsModel extends OBFModel
 
       if($item['item_type']=='playlist')
       {
-        $playlist = $this->models->playlists('get_by_id',$item['item_id']);
+        $playlist = $this->models->playlists('get_by_id', $item['item_id']);
         $data[$index]['name']=$playlist['name'];
         $data[$index]['description']=$playlist['description'];
         $data[$index]['owner'] = $playlist['owner_name'];
@@ -165,7 +164,7 @@ class ShowsModel extends OBFModel
    *
    * @return show
    */
-  public function get_show_by_id($id,$recurring=false)
+  public function get_show_by_id($id, $recurring=false)
   {
 
     /* $this->db->where('id',$id);
@@ -211,7 +210,7 @@ class ShowsModel extends OBFModel
    * @param id
    * @param recurring Boolean for recurring shows. Default FALSE.
    */
-  public function delete_show($id,$recurring=false)
+  public function delete_show($id, $recurring=false)
   {
 
     // get show information, start time and player id needed for liveassist cache delete
@@ -256,22 +255,22 @@ class ShowsModel extends OBFModel
    *
    * @return [is_valid, msg]
    */
-  public function validate_show($data,$id=false,$skip_permission_check=false)
+  public function validate_show($data, $id=false, $skip_permission_check=false)
   {
     // return [true, 'Temporary valid TODO'];
 
     // make sure data is valid.
     if(empty($data['player_id']) || empty($data['mode']) || empty($data['start'])
-        || (       empty($data['x_data']) && ( $data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths' )     )
-        || (       $data['mode']!='once' && empty($data['stop'])     )
-        || (       empty($id) && (empty($data['item_type']) || ($data['item_type']!='linein' && empty($data['item_id'])))          )
+        || (empty($data['x_data']) && ($data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths'))
+        || ($data['mode']!='once' && empty($data['stop']))
+        || (empty($id) && (empty($data['item_type']) || ($data['item_type']!='linein' && empty($data['item_id']))))
     )
 
     //T One or more required fields were not filled.
     return array(false,'One or more required fields were not filled.');
 
     // check if player is valid.
-    $this->db->where('id',$data['player_id']);
+    $this->db->where('id', $data['player_id']);
     $player_data = $this->db->get_one('players');
 
     //T This player no longer exists.
@@ -291,7 +290,7 @@ class ShowsModel extends OBFModel
 
       if($data['item_type']=='playlist')
       {
-        $this->db->where('id',$data['item_id']);
+        $this->db->where('id', $data['item_id']);
         $playlist = $this->db->get_one('playlists');
 
         //T The item you are attempting to schedule does not exist.
@@ -304,7 +303,7 @@ class ShowsModel extends OBFModel
       elseif($data['item_type']=='media')
       {
 
-        $this->db->where('id',$data['item_id']);
+        $this->db->where('id', $data['item_id']);
         $media = $this->db->get_one('media');
 
         //T The item you are attempting to schedule does not exist.
@@ -331,7 +330,7 @@ class ShowsModel extends OBFModel
 
     // check valid scheduling mode
     //T The selected scheduling mode is not valid.
-    if(array_search($data['mode'],array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false)
+    if(array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false)
       return array(false,'The selected scheduling mode is not valid.');
 
     // check if start date is valid.
@@ -355,7 +354,7 @@ class ShowsModel extends OBFModel
 
     // check if x data is valid.
     //T The recurring frequency is not valid.
-    if(!empty($data['x_data']) && (!preg_match('/^[0-9]+$/',$data['x_data']) || $data['x_data']>65535))
+    if(!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data']>65535))
       return array(false,'The recurring frequency is not valid.');
 
     return array(true,'Valid.');
@@ -467,7 +466,7 @@ class ShowsModel extends OBFModel
       $this->db->where('shows_expanded.end', $start, '>');
       $this->db->where('shows_expanded.start', $end, '<');
       $this->db->where('shows.player_id', $data['player_id']);
-      $this->db->leftjoin('shows','shows_expanded.show_id','shows.id');
+      $this->db->leftjoin('shows', 'shows_expanded.show_id', 'shows.id');
       if ($not_entry) $this->db->where('show_id', $not_entry['id'], '!=');
       $result = $this->db->get('shows_expanded');
       if (count($result) > 0) {
@@ -484,10 +483,10 @@ class ShowsModel extends OBFModel
       {
         $check = strtotime($check); // TODO: temporarily using strtotime since timeslots table still uses timestamps.
 
-        $timeslots = $this->models->timeslots('get_timeslots',$check,$check + $duration, $data['player_id'], false, $this->user->param('id'));
+        $timeslots = $this->models->timeslots('get_timeslots', $check, $check + $duration, $data['player_id'], false, $this->user->param('id'));
 
         // put our timeslots in order so we can make sure they are adequate.
-        usort($timeslots,array($this,'order_schedule'));
+        usort($timeslots, array($this,'order_schedule'));
 
         // make sure there are no gaps in the timeslot between this start and end timestamp.
         $timeslot_check_failed = false;
@@ -496,7 +495,7 @@ class ShowsModel extends OBFModel
         if($timeslots[0]['start'] > $check) $timeslot_check_failed = true;
 
         // the last timeslot must end at the end of our timeslot or later.
-        if( ($timeslots[count($timeslots)-1]['start'] + $timeslots[count($timeslots)-1]['duration']) < ($check + $duration) ) $timeslot_check_failed = true;
+        if(($timeslots[count($timeslots)-1]['start'] + $timeslots[count($timeslots)-1]['duration']) < ($check + $duration)) $timeslot_check_failed = true;
 
         // make sure there are no gaps...
         foreach($timeslots as $index=>$timeslot)
@@ -535,7 +534,7 @@ class ShowsModel extends OBFModel
    * @param id Set when updating an existing show. Unset by default.
    * @param edit_recurring Whether editing a recurring show. Unset by default.
    */
-  public function save_show($data,$id = false,$edit_recurring = false)
+  public function save_show($data, $id = false, $edit_recurring = false)
   {
 
     // if editing, we delete our existing show then add a new one.  (might be another type).
@@ -558,9 +557,9 @@ class ShowsModel extends OBFModel
       $this->db->delete('shows');
 
       // delete from cache
-      $this->db->where('schedule_id',$id);
-      if($edit_recurring) $this->db->where('mode','recurring');
-      else $this->db->where('mode','once');
+      $this->db->where('schedule_id', $id);
+      if($edit_recurring) $this->db->where('mode', 'recurring');
+      else $this->db->where('mode', 'once');
       $this->db->delete('shows_cache');
 
       // delete from expanded
@@ -696,7 +695,7 @@ class ShowsModel extends OBFModel
    *
    * @return 1|-1
    */
-  private function order_schedule($a,$b)
+  private function order_schedule($a, $b)
   {
     if($a['start']>$b['start']) return 1;
     else return -1;

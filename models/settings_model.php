@@ -26,8 +26,8 @@
  *
  * @package Model
  */
-class SettingsModel extends OBFModel {
-
+class SettingsModel extends OBFModel
+{
   /**
    * Update a setting.
    *
@@ -36,7 +36,7 @@ class SettingsModel extends OBFModel {
    *
    * @return [status, msg, result]
    */
-  public function setting_set ($name, $value) {
+  public function setting_set($name, $value) {
     $this->db->where('name', $name);
     $this->db->delete('settings');
     $result = $this->db->insert('settings', array(
@@ -56,7 +56,7 @@ class SettingsModel extends OBFModel {
    *
    * @return [status, msg, value]
    */
-  public function setting_get ($name) {
+  public function setting_get($name) {
     $this->db->where('name', $name);
     $result = $this->db->get_one('settings');
 

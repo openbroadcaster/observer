@@ -122,7 +122,7 @@ class DaypartingModel extends OBFModel
         if(!isset($data[$column])) $data[$column] = null;
       }
 
-      $this->db->where('id',$args['id']);
+      $this->db->where('id', $args['id']);
       $this->db->update('dayparting', $data);
     }
     else $this->db->insert('dayparting', $data);
@@ -134,7 +134,7 @@ class DaypartingModel extends OBFModel
   {
     OBFHelpers::default_args($args, ['id' => 0]);
 
-    $this->db->where('id',$args['id']);
+    $this->db->where('id', $args['id']);
     $row = $this->db->get_one('dayparting');
 
     if($row)
@@ -150,20 +150,20 @@ class DaypartingModel extends OBFModel
   {
     OBFHelpers::default_args($args, ['id' => 0]);
 
-    $this->db->where('id',$args['id']);
+    $this->db->where('id', $args['id']);
     $this->db->delete('dayparting');
     return [true,'Dayparting row deleted.'];
   }
 
   private function format_row(&$row)
   {
-    if($row['start_doy']!==NULL)
+    if($row['start_doy']!==null)
     {
       $row['type'] = 'date';
       $row['start'] = $row['start_doy'];
       $row['end'] = $row['end_doy'];
     }
-    elseif($row['start_time']!==NULL)
+    elseif($row['start_time']!==null)
     {
       $row['type'] = 'time';
       $row['start'] = $row['start_time'];

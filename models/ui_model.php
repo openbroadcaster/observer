@@ -27,7 +27,6 @@
  */
 class UIModel extends OBFModel
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -43,8 +42,8 @@ class UIModel extends OBFModel
   public function image_files($args = [])
   {
     $image_files = $this->find_files('images');
-    if($this->theme) $image_files = array_merge($image_files,$this->find_files('themes/'.$this->theme.'/images')); // add our custom theme images.
-    foreach($this->modules as $module) $image_files = array_merge($image_files,$this->find_files('modules/'.$module['dir'].'/images'));
+    if($this->theme) $image_files = array_merge($image_files, $this->find_files('themes/'.$this->theme.'/images')); // add our custom theme images.
+    foreach($this->modules as $module) $image_files = array_merge($image_files, $this->find_files('modules/'.$module['dir'].'/images'));
     return $image_files;
   }
 
@@ -58,8 +57,8 @@ class UIModel extends OBFModel
     if($this->theme && file_exists('themes/'.$this->theme.'/style.css')) $css_files[] = 'themes/'.$this->theme.'/style.css';
     else $css_files[] = 'themes/default/style.css';
 
-    if($this->theme) $css_files = array_merge($css_files,$this->find_files('themes/'.$this->theme.'/css_theme','css'));
-    foreach($this->modules as $module) $css_files = array_merge($css_files,$this->find_files('modules/'.$module['dir'].'/css','css'));
+    if($this->theme) $css_files = array_merge($css_files, $this->find_files('themes/'.$this->theme.'/css_theme', 'css'));
+    foreach($this->modules as $module) $css_files = array_merge($css_files, $this->find_files('modules/'.$module['dir'].'/css', 'css'));
     return $css_files;
   }
 
@@ -70,8 +69,8 @@ class UIModel extends OBFModel
    */
   public function js_files($args = [])
   {
-    $js_files = $this->find_files('js','js');
-    foreach($this->modules as $module) $js_files = array_merge($js_files,$this->find_files('modules/'.$module['dir'].'/js','js'));
+    $js_files = $this->find_files('js', 'js');
+    foreach($this->modules as $module) $js_files = array_merge($js_files, $this->find_files('modules/'.$module['dir'].'/js', 'js'));
 
     return $js_files;
   }
@@ -96,19 +95,19 @@ class UIModel extends OBFModel
       $comment = [];
 
       // https://www.w3.org/TR/CSS2/grammar.html#scanner
-      if(!preg_match('#\/\*[^*]*\*+([^/*][^*]*\*+)*\/#',$css,$comment)) continue;
+      if(!preg_match('#\/\*[^*]*\*+([^/*][^*]*\*+)*\/#', $css, $comment)) continue;
 
       // remove /*, */
-      $comment = trim(preg_replace(['#^/\*#','#\*/$#'],'',trim($comment[0])));
+      $comment = trim(preg_replace(['#^/\*#','#\*/$#'], '', trim($comment[0])));
 
       // get theme data
       $data = [];
-      $rows = explode("\n",$comment);
+      $rows = explode("\n", $comment);
       foreach($rows as $row)
       {
-        $tmp = explode(':',$row);
+        $tmp = explode(':', $row);
         $key = strtolower(trim(array_shift($tmp)));
-        $value = trim(implode(':',$tmp));
+        $value = trim(implode(':', $tmp));
         $data[$key] = $value;
       }
 
@@ -150,10 +149,10 @@ class UIModel extends OBFModel
   public function get_user_language($args = [])
   {
     $all_languages = $this->get_languages();
-  
+
     // no language set?
     if(!$this->user->userdata || empty($this->user->userdata['language'])) return false;
-    
+
     // loop and return language if code match
     foreach($all_languages as $language) if($language['code'] == $this->user->userdata['language']) return $language;
     return false;
@@ -189,7 +188,7 @@ class UIModel extends OBFModel
 
       return $strings;
     }
-    
+
     // language not found
     return [];
   }
@@ -203,7 +202,7 @@ class UIModel extends OBFModel
    * @param ext File extension to filter for.
    * @param array Reference to array to update with results. Results will be added to already existing array.
    */
-  private function find_files($dir,$ext=false,&$array=[])
+  private function find_files($dir, $ext=false, &$array=[])
   {
     if(!is_dir($dir)) return $array;
 
@@ -214,7 +213,7 @@ class UIModel extends OBFModel
       $dirfile = $dir.'/'.$file;
 
       // scan if directory
-      if(is_dir($dirfile) && $file[0]!='.') $this->find_files($dirfile,$ext,$array);
+      if(is_dir($dirfile) && $file[0]!='.') $this->find_files($dirfile, $ext, $array);
 
       // or add file if file
       elseif(is_file($dirfile)) $array[]=$dirfile;

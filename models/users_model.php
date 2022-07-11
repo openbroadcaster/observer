@@ -27,7 +27,6 @@
  */
 class UsersModel extends OBFModel
 {
-
   /**
    * Set to TRUE or FALSE in the settings table depending on whether new users
    * can be registered.
@@ -37,19 +36,19 @@ class UsersModel extends OBFModel
   public function user_registration_set($value)
   {
     // figure out if we have the setting row already
-    $this->db->where('name','new_user_registration');
+    $this->db->where('name', 'new_user_registration');
     $setting = $this->db->get_one('settings');
 
     $value = $value ? 1 : 0;
 
     if($setting)
     {
-      $this->db->where('name','new_user_registration');
-      $this->db->update('settings',['value'=>$value]);
+      $this->db->where('name', 'new_user_registration');
+      $this->db->update('settings', ['value'=>$value]);
     }
     else
     {
-      $this->db->insert('settings',['name'=>'new_user_registration','value'=>$value]);
+      $this->db->insert('settings', ['name'=>'new_user_registration','value'=>$value]);
     }
 
     return true;
@@ -62,7 +61,7 @@ class UsersModel extends OBFModel
    */
   public function user_registration_get()
   {
-    $this->db->where('name','new_user_registration');
+    $this->db->where('name', 'new_user_registration');
     $setting = $this->db->get_one('settings');
 
     // default is true/enabled if not set.
@@ -93,7 +92,7 @@ class UsersModel extends OBFModel
    *
    * @return users
    */
-  public function user_manage_list($sort_col='display_name',$sort_dir='asc')
+  public function user_manage_list($sort_col='display_name', $sort_dir='asc')
   {
 
     $this->db->what('id');
@@ -105,7 +104,7 @@ class UsersModel extends OBFModel
     $this->db->what('created');
     $this->db->what('last_access');
 
-    $this->db->orderby($sort_col,$sort_dir);
+    $this->db->orderby($sort_col, $sort_dir);
 
     $rows = $this->db->get('users');
 
@@ -115,8 +114,8 @@ class UsersModel extends OBFModel
 
       $rows[$index]['groups']=array();
 
-      $this->db->where('user_id',$row['id']);
-      $this->db->leftjoin('users_groups','users_to_groups.group_id','users_groups.id');
+      $this->db->where('user_id', $row['id']);
+      $this->db->leftjoin('users_groups', 'users_to_groups.group_id', 'users_groups.id');
       $groups = $this->db->get('users_to_groups');
 
       foreach($groups as $group)
@@ -136,16 +135,16 @@ class UsersModel extends OBFModel
    * @param sort_col Column to sort users list by.
    * @param sort_dir Direction to sort users list.
    */
-  public function user_manage_list_set_sort($sort_col,$sort_dir)
+  public function user_manage_list_set_sort($sort_col, $sort_dir)
   {
     // make sure sort col is value.
-    if(array_search($sort_col,array('display_name','email','created','last_access'))===false) return false;
+    if(array_search($sort_col, array('display_name','email','created','last_access'))===false) return false;
 
     // force sort dir to be value
     $sort_dir = (bool) $sort_dir;
 
     $setting_value = json_encode([$sort_col,$sort_dir]);
-    $this->user->set_setting('user_manage_list_sort',$setting_value);
+    $this->user->set_setting('user_manage_list_sort', $setting_value);
     return true;
   }
 
@@ -168,7 +167,7 @@ class UsersModel extends OBFModel
    *
    * @return [id, name, key, created, last_access]
    */
-   public function user_manage_key_new ($id) {
+   public function user_manage_key_new($id) {
      $name    = 'new key';
      $key     = base64_encode(openssl_random_pseudo_bytes(32));
      $created = time();
@@ -247,7 +246,7 @@ class UsersModel extends OBFModel
   *
   * @return is_deleted?
   */
-  public function user_manage_key_delete ($id, $user_id) {
+  public function user_manage_key_delete($id, $user_id) {
     $this->db->where('id', $id);
     $this->db->where('user_id', $user_id);
     if (!$this->db->get_one('users_appkeys')) return false;
@@ -266,7 +265,7 @@ class UsersModel extends OBFModel
    *
    * @return appkeys
    */
-   public function user_manage_key_load ($id) {
+   public function user_manage_key_load($id) {
      $this->db->where('user_id', $id);
      $this->db->what('id');
      $this->db->what('user_id');
@@ -285,7 +284,7 @@ class UsersModel extends OBFModel
    *
    * @return [is_valid, msg]
    */
-  public function user_validate($data,$id=null)
+  public function user_validate($data, $id=null)
   {
 
     foreach($data as $key=>$value) $$key=$value;
@@ -302,14 +301,14 @@ class UsersModel extends OBFModel
     if(!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) return array(false,['User Edit', 'The email address you have provided is not valid.']);
 
     // make sure email not in use
-    $this->db->where('email',$email);
-    if(!empty($id)) $this->db->where('id',$id,'!=');
+    $this->db->where('email', $email);
+    if(!empty($id)) $this->db->where('id', $id, '!=');
     //T The email address you have provided is already in use by another account.
     if($this->db->get_one('users')) return array(false,['User Edit', 'The email address you have provided is already in use by another account.']);
 
     // make sure username not in use.
-    $this->db->where('username',$username);
-    if(!empty($id)) $this->db->where('id',$id,'!=');
+    $this->db->where('username', $username);
+    if(!empty($id)) $this->db->where('id', $id, '!=');
     //T The username you have selected is already in use.
     if($this->db->get_one('users')) return array(false,['User Edit', 'The username you have selected is already in use.']);
 
@@ -341,7 +340,7 @@ class UsersModel extends OBFModel
    * @param data
    * @param id User ID. NULL by default if inserting a new user.
    */
-  public function user_save($data,$id=null)
+  public function user_save($data, $id=null)
   {
     // add/edit now.
     $dbdata['name']=$data['name'];
@@ -353,20 +352,20 @@ class UsersModel extends OBFModel
 
     if(!empty($id))
     {
-      $this->db->where('id',$id);
-      $this->db->update('users',$dbdata);
+      $this->db->where('id', $id);
+      $this->db->update('users', $dbdata);
     }
 
     else
     {
       $dbdata['created']=time();
-      $insert_id = $this->db->insert('users',$dbdata);
+      $insert_id = $this->db->insert('users', $dbdata);
     }
 
     // handle groups
     if(!empty($id))
     {
-      $this->db->where('user_id',$id);
+      $this->db->where('user_id', $id);
       $this->db->delete('users_to_groups');
     }
 
@@ -378,7 +377,7 @@ class UsersModel extends OBFModel
     foreach($data['group_ids'] as $group_id)
     {
       $group_data['group_id']=$group_id;
-      $this->db->insert('users_to_groups',$group_data);
+      $this->db->insert('users_to_groups', $group_data);
     }
 
     foreach ($data['appkeys'] as $appkey) {
@@ -399,7 +398,7 @@ class UsersModel extends OBFModel
   public function user_delete($id)
   {
 
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $this->db->delete('users');
 
     return true;
@@ -427,9 +426,9 @@ class UsersModel extends OBFModel
       $this->db->what('users_permissions.category');
       $this->db->what('users_permissions_to_groups.item_id');
 
-      $this->db->where('group_id',$group['id']);
+      $this->db->where('group_id', $group['id']);
 
-      $this->db->leftjoin('users_permissions','users_permissions_to_groups.permission_id','users_permissions.id');
+      $this->db->leftjoin('users_permissions', 'users_permissions_to_groups.permission_id', 'users_permissions.id');
 
       $permissions = $this->db->get('users_permissions_to_groups');
 
@@ -491,13 +490,13 @@ class UsersModel extends OBFModel
    */
   public function group_delete($id)
   {
-    $this->db->where('id',$id);
+    $this->db->where('id', $id);
     $this->db->delete('users_groups');
 
-    $this->db->where('group_id',$id);
+    $this->db->where('group_id', $id);
     $this->db->delete('users_permissions_to_groups');
 
-    $this->db->where('group_id',$id);
+    $this->db->where('group_id', $id);
     $this->db->delete('users_to_groups');
 
     return true;
@@ -511,7 +510,7 @@ class UsersModel extends OBFModel
    *
    * @return [is_valid, msg]
    */
-  public function group_validate($data,$id=null)
+  public function group_validate($data, $id=null)
   {
 
     foreach($data as $key=>$value) $$key=$value;
@@ -526,8 +525,8 @@ class UsersModel extends OBFModel
 
     foreach($permissions as $pname)
     {
-      $pname_array = explode(':',$pname);
-      $this->db->where('name',$pname_array[0]);
+      $pname_array = explode(':', $pname);
+      $this->db->where('name', $pname_array[0]);
       //T One or more permissions is invalid.
       if(!$this->db->get_one('users_permissions')) return array(false,['Permissions Edit','One or more permissions is invalid.']);
     }
@@ -546,26 +545,26 @@ class UsersModel extends OBFModel
    * @param data
    * @param id Group ID. NULL by default when inserting a new group.
    */
-  public function group_save($data,$id=null)
+  public function group_save($data, $id=null)
   {
 
     $dbdata['name']=$data['name'];
 
     if(!empty($id))
     {
-      $this->db->where('id',$id);
-      $this->db->update('users_groups',$dbdata);
+      $this->db->where('id', $id);
+      $this->db->update('users_groups', $dbdata);
     }
 
     else
     {
-      $id = $this->db->insert('users_groups',$dbdata);
+      $id = $this->db->insert('users_groups', $dbdata);
     }
 
     if(empty($id)) return false;
 
     // handle our permissions.  first deleting existing permissions for this group, then adding new permissions.
-    $this->db->where('group_id',$id);
+    $this->db->where('group_id', $id);
     $this->db->delete('users_permissions_to_groups');
 
     $pdata = array();
@@ -575,9 +574,9 @@ class UsersModel extends OBFModel
     foreach($data['permissions'] as $pname)
     {
 
-      $pname_array = explode(':',$pname);
+      $pname_array = explode(':', $pname);
 
-      $this->db->where('name',$pname_array[0]);
+      $this->db->where('name', $pname_array[0]);
       $permission_info = $this->db->get_one('users_permissions');
       if(!$permission_info) continue;
 
@@ -587,7 +586,7 @@ class UsersModel extends OBFModel
       if(count($pname_array)>1) $pdata['item_id'] = $pname_array[1];
       else $pdata['item_id']=null;
 
-      $this->db->insert('users_permissions_to_groups',$pdata);
+      $this->db->insert('users_permissions_to_groups', $pdata);
 
     }
 
@@ -603,7 +602,7 @@ class UsersModel extends OBFModel
    *
    * @return [is_valid, msg]
    */
-  public function settings_validate($user_id,$data)
+  public function settings_validate($user_id, $data)
   {
 
     //T One or more required fields were not filled.
@@ -612,8 +611,8 @@ class UsersModel extends OBFModel
     if(!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($data['email'])) return array(false,'The email address you have provided is not valid.');
 
     // make sure email not in use
-    $this->db->where('id',$user_id,'!=');
-    $this->db->where('email',$data['email']);
+    $this->db->where('id', $user_id, '!=');
+    $this->db->where('email', $data['email']);
     //T The email address you have provided is already in use by another account.
     if($this->db->get_one('users')) return array(false,'The email address you have provided is already in use by another account.');
 
@@ -629,14 +628,14 @@ class UsersModel extends OBFModel
     $languages = $this->models->ui('get_languages');
     $language_codes = [];
     foreach($languages as $language) $language_codes[] = $language['code'];
-    
+
     //T The language selected is not valid.
-    if($data['language']!=='' && array_search($data['language'],$language_codes)===false) return array(false,'The language selected is not valid.');
+    if($data['language']!=='' && array_search($data['language'], $language_codes)===false) return array(false,'The language selected is not valid.');
 
     // make sure theme is valid
     $themes = array_keys($this->models->ui('get_themes'));
     //T The theme selected is not valid.
-    if(array_search($data['theme'],$themes)===false) return array(false,'The theme selected is not valid.');
+    if(array_search($data['theme'], $themes)===false) return array(false,'The theme selected is not valid.');
 
     return array(true,'');
 
@@ -648,7 +647,7 @@ class UsersModel extends OBFModel
    * @param user_id
    * @param data
    */
-  public function settings_update($user_id,$data)
+  public function settings_update($user_id, $data)
   {
 
     if(isset($data['password']) && $data['password']!='') $data['password']=$this->user->password_hash($data['password']);
@@ -674,20 +673,20 @@ class UsersModel extends OBFModel
     }
     unset($data['appkeys']);
 
-    $this->db->where('id',$user_id);
-    $this->db->update('users',$data);
+    $this->db->where('id', $user_id);
+    $this->db->update('users', $data);
 
     foreach($settings as $setting=>$value)
     {
-      $this->db->where('user_id',$user_id);
-      $this->db->where('setting',$setting);
+      $this->db->where('user_id', $user_id);
+      $this->db->where('setting', $setting);
       $this->db->delete('users_settings');
 
       $data = array();
       $data['user_id'] = $user_id;
       $data['setting'] = $setting;
       $data['value'] = $value;
-      $this->db->insert('users_settings',$data);
+      $this->db->insert('users_settings', $data);
 
       /*
       $this->db->query('INSERT INTO users_settings (user_id, setting, value)
@@ -712,7 +711,7 @@ class UsersModel extends OBFModel
 
     if(!$email) return array(false,'Email address is required.');
 
-    $this->db->where('email',$email);
+    $this->db->where('email', $email);
     $user=$this->db->get_one('users');
 
     if(!$user) return array(false,'The email address you have provided was not found.');
@@ -733,13 +732,13 @@ class UsersModel extends OBFModel
 
     $password_hash = $this->user->password_hash($password);
 
-    $this->db->where('email',$email);
+    $this->db->where('email', $email);
     $user=$this->db->get_one('users');
 
-    $this->db->where('id',$user['id']);
-    $this->db->update('users',array('password'=>$password_hash));
+    $this->db->where('id', $user['id']);
+    $this->db->update('users', array('password'=>$password_hash));
 
-    $this('email_username_password',$email,$user['username'],$password);
+    $this('email_username_password', $email, $user['username'], $password);
 
   }
 
@@ -762,11 +761,11 @@ class UsersModel extends OBFModel
     if(!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) return array(false,'The email address you have provided is not valid.');
 
     // make sure email not in use
-    $this->db->where('email',$email);
+    $this->db->where('email', $email);
     if($this->db->get_one('users')) return array(false,'The email address you have provided is already in use.  Use the <a href="javascript: account.forgotpass_window();">forgot password</a> function to get a new password.');
 
     // make sure username not in use.
-    $this->db->where('username',$username);
+    $this->db->where('username', $username);
     if($this->db->get_one('users')) return array(false,'The username you have selected is already in use.');
 
     return array(true,'');
@@ -789,9 +788,9 @@ class UsersModel extends OBFModel
     $data['display_name']=$data['username'];
     $data['created']=time();
 
-    $this->db->insert('users',$data);
+    $this->db->insert('users', $data);
 
-    $this('email_username_password',$data['email'],$data['username'],$password);
+    $this('email_username_password', $data['email'], $data['username'], $password);
 
   }
 
@@ -806,7 +805,7 @@ class UsersModel extends OBFModel
     $password_chars = 'abcdefghijkmnopqrstuvwxyz23456789';
     $password = '';
 
-    while(strlen($password)<8) $password.=$password_chars[rand(0,(strlen($password_chars)-1))];
+    while(strlen($password)<8) $password.=$password_chars[rand(0, (strlen($password_chars)-1))];
 
     return $password;
 
@@ -819,9 +818,9 @@ class UsersModel extends OBFModel
    * @param username
    * @param password
    */
-  public function email_username_password($email,$username,$password)
+  public function email_username_password($email, $username, $password)
   {
-  
+
     $mailer = new PHPMailer\PHPMailer\PHPMailer();
 
     if(defined('OB_EMAIL_HOST') && defined('OB_EMAIL_USER') && defined('OB_EMAIL_PASS') && defined('OB_EMAIL_TYPE') && defined('OB_EMAIL_PORT'))
@@ -863,7 +862,7 @@ Login at '.OB_SITE;
    *
    * @return user
    */
-  public function get_by_id ($id) {
+  public function get_by_id($id) {
     $this->db->where('users.id', $id);
     return $this->db->get_one('users');
   }

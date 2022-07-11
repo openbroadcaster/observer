@@ -26,7 +26,6 @@
  */
 class TimeslotsModel extends OBFModel
 {
-
   public function __construct()
   {
     parent::__construct();
@@ -43,11 +42,11 @@ class TimeslotsModel extends OBFModel
    *
    * @return timeslots
    */
-  public function get_timeslots($start,$end,$player,$not_entry=false,$user_id=false)
+  public function get_timeslots($start, $end, $player, $not_entry=false, $user_id=false)
   {
 
     // get player (for timezone)
-    $this->db->where('id',$player);
+    $this->db->where('id', $player);
     $player_data = $this->db->get_one('players');
 
     // set our timezone based on player settings.  this makes sure 'strtotime' advancing by days, weeks, months will account for DST propertly.
@@ -91,7 +90,7 @@ class TimeslotsModel extends OBFModel
    *
    * @return timeslot
    */
-  public function get_timeslot_by_id($id,$recurring=false)
+  public function get_timeslot_by_id($id, $recurring=false)
   {
     $this->db->where('id', $id);
     if (!$recurring)
@@ -113,7 +112,7 @@ class TimeslotsModel extends OBFModel
    * @param id
    * @param recurring Boolean for recurring item. Default FALSE.
    */
-  public function delete_timeslot($id,$recurring=false)
+  public function delete_timeslot($id, $recurring=false)
   {
     $this->db->where('id', $id);
     $this->db->delete('timeslots');
@@ -129,21 +128,21 @@ class TimeslotsModel extends OBFModel
    *
    * @return [is_valid, msg]
    */
-  public function validate_timeslot($data,$id=false)
+  public function validate_timeslot($data, $id=false)
   {
 
     // make sure data is valid.
     if($data['description']=='' || empty($data['player_id']) || empty($data['user_id']) || empty($data['mode']) || empty($data['start']) ||
-        ( empty($data['x_data']) && ( $data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths' )) || ($data['mode']!='once' && empty($data['stop'])))
+        (empty($data['x_data']) && ($data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths')) || ($data['mode']!='once' && empty($data['stop'])))
         //T One or more required fields were not filled.
         return array(false, 'One or more required fields were not filled.');
 
     // check if user is valid.
     //T The user you have selected does not exist.
-    if(!$this->db->id_exists('users',$data['user_id'])) return array(false,'The user you have selected does not exist.');
+    if(!$this->db->id_exists('users', $data['user_id'])) return array(false,'The user you have selected does not exist.');
 
     // check if player is valid.
-    $this->db->where('id',$data['player_id']);
+    $this->db->where('id', $data['player_id']);
     $player_data = $this->db->get_one('players');
 
     //T The player you have selected does not exist.
@@ -153,7 +152,7 @@ class TimeslotsModel extends OBFModel
     date_default_timezone_set($player_data['timezone']);
 
     // check valid scheduling mode
-    if(array_search($data['mode'],array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false)
+    if(array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false)
       //T The selected scheduling mode is not valid.
       return array(false,'The selected scheduling mode is not valid.');
 
@@ -178,7 +177,7 @@ class TimeslotsModel extends OBFModel
     //if($data['mode']!='once' && $data['start']>=$data['stop']) return array(false,'The stop (last) date is not valid and must come after the start date/time.');
 
     // check if x data is valid.
-    if(!empty($data['x_data']) && (!preg_match('/^[0-9]+$/',$data['x_data']) || $data['x_data']>65535))
+    if(!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data']>65535))
       //T The recurring frequency is not valid.
       return array(false,'The recurring frequency is not valid.');
 
@@ -195,7 +194,7 @@ class TimeslotsModel extends OBFModel
    *
    * @return [is_colliding, msg]
    */
-  public function collision_check($data,$id=false,$edit_recurring=false)
+  public function collision_check($data, $id=false, $edit_recurring=false)
   {
 
     $duration = $data['duration'];
@@ -317,7 +316,7 @@ class TimeslotsModel extends OBFModel
    * @param id Updating an existing timeslot. Default FALSE.
    * @param edit_recurring Whether editing a recurring item. Default FALSE.
    */
-  public function save_timeslot($data,$id=false,$edit_recurring=false)
+  public function save_timeslot($data, $id=false, $edit_recurring=false)
   {
 
     $duration = $data['duration'];
@@ -408,7 +407,7 @@ class TimeslotsModel extends OBFModel
       $dbdata['mode'] = 'once';
       $dbdata['recurring_interval'] = 0;
       $dbdata['recurring_end'] = $timeslot_end->format('Y-m-d');
-      $timeslot_id = $this->db->insert('timeslots',$dbdata);
+      $timeslot_id = $this->db->insert('timeslots', $dbdata);
 
       $expanded_data = [];
       $expanded_data['timeslot_id'] = $timeslot_id;

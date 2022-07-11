@@ -27,7 +27,6 @@
  */
 class EmergenciesModel extends OBFModel
 {
-
   /**
    * Set up the initial parts of a database query, selecting media and
    * emergency items from the tables, and joining media items on the item ID
@@ -36,20 +35,20 @@ class EmergenciesModel extends OBFModel
   public function get_init($args = [])
   {
 
-    $this->db->what('media.title','title');
-    $this->db->what('media.artist','artist');
-    $this->db->what('media.type','item_type');
-    $this->db->what('media.duration','item_duration');
-    $this->db->what('emergencies.id','id');
-    $this->db->what('emergencies.item_id','item_id');
-    $this->db->what('emergencies.duration','duration');
-    $this->db->what('emergencies.frequency','frequency');
-    $this->db->what('emergencies.name','name');
-    $this->db->what('emergencies.start','start');
-    $this->db->what('emergencies.stop','stop');
-    $this->db->what('emergencies.player_id','player_id');
+    $this->db->what('media.title', 'title');
+    $this->db->what('media.artist', 'artist');
+    $this->db->what('media.type', 'item_type');
+    $this->db->what('media.duration', 'item_duration');
+    $this->db->what('emergencies.id', 'id');
+    $this->db->what('emergencies.item_id', 'item_id');
+    $this->db->what('emergencies.duration', 'duration');
+    $this->db->what('emergencies.frequency', 'frequency');
+    $this->db->what('emergencies.name', 'name');
+    $this->db->what('emergencies.start', 'start');
+    $this->db->what('emergencies.stop', 'stop');
+    $this->db->what('emergencies.player_id', 'player_id');
 
-    $this->db->leftjoin('media','emergencies.item_id','media.id');
+    $this->db->leftjoin('media', 'emergencies.item_id', 'media.id');
 
   }
 
@@ -66,7 +65,7 @@ class EmergenciesModel extends OBFModel
 
     $this('get_init');
 
-    $this->db->where('emergencies.id',$args['id']);
+    $this->db->where('emergencies.id', $args['id']);
 
     $emergency = $this->db->get_one('emergencies');
 
@@ -137,16 +136,16 @@ class EmergenciesModel extends OBFModel
     if(!empty($args['id']))
     {
       //T The item you are attempting to edit does not appear to exist.
-      if(!$this->db->id_exists('emergencies',$args['id'])) return array(false,'The item you are attempting to edit does not appear to exist.');
+      if(!$this->db->id_exists('emergencies', $args['id'])) return array(false,'The item you are attempting to edit does not appear to exist.');
     }
 
     // check if player ID is valid
     //T This player does not appear to exist.
-    if(!$this->db->id_exists('players',$player_id)) return array(false,'This player does not appear to exist.');
+    if(!$this->db->id_exists('players', $player_id)) return array(false,'This player does not appear to exist.');
 
     // check if media ID is valid
     if(empty($item_id)) return array(false,'Media Invalid');
-    $this->db->where('id',$item_id);
+    $this->db->where('id', $item_id);
     $media = $this->db->get_one('media');
     if(!$media) return array(false,'Media Invalid');
     //T Media must be approved.
@@ -156,16 +155,16 @@ class EmergenciesModel extends OBFModel
 
     // is frequency valid?
     //T The frequency is invalid.
-    if(!preg_match('/^[0-9]+$/',$frequency) || $frequency < 1) return array(false,'The frequency is invalid.');
+    if(!preg_match('/^[0-9]+$/', $frequency) || $frequency < 1) return array(false,'The frequency is invalid.');
 
     // is duration valid? only needed for images...
-    if($media['type']=='image' && (!preg_match('/^[0-9]+$/',$duration) || $duration < 1)) return array(false,'Duration Invalid');
+    if($media['type']=='image' && (!preg_match('/^[0-9]+$/', $duration) || $duration < 1)) return array(false,'Duration Invalid');
 
     // is start/stop valid?
     //T The start date/time is invalid.
-    if(!preg_match('/^[0-9]+$/',$start)) return array(false,'The start date/time is invalid.');
+    if(!preg_match('/^[0-9]+$/', $start)) return array(false,'The start date/time is invalid.');
     //T The stop date/time is invalid.
-    if(!preg_match('/^[0-9]+$/',$stop)) return array(false,'The stop date/time is invalid.');
+    if(!preg_match('/^[0-9]+$/', $stop)) return array(false,'The stop date/time is invalid.');
     //T The stop date/time must occur after the start date/time.
     if($start >= $stop) return array(false,'The stop date/time must occur after the start date/time.');
 
@@ -184,7 +183,7 @@ class EmergenciesModel extends OBFModel
     OBFHelpers::require_args($args, ['data']);
     OBFHelpers::default_args($args, ['id' => false]);
 
-    $this->db->where('id',$args['data']['item_id']);
+    $this->db->where('id', $args['data']['item_id']);
     $media = $this->db->get_one('media');
     if($media['type']!='image') unset($args['data']['duration']); // duration not needed unless this is an image.
 
