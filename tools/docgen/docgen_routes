@@ -1,0 +1,67 @@
+#!/usr/bin/env php
+
+<?php
+
+require_once('parse.php');
+require_once('data.php');
+require_once('output.php');
+
+if (php_sapi_name() != 'cli') {
+  exit("[E] Script cannot be run from web environment.\n");
+}
+
+if (count($argv) < 3) {
+  exit("Usage: " . $argv[0] . " target.json source_dir [source_dirs]\n");
+}
+
+$target_json = $argv[1];
+$source_dir = array_slice($argv, 2);
+
+foreach ($source_dir as $dir) {
+  if (!is_readable($dir)) {
+    exit("[E] Source directory isn't readable: " . $dir . "\n");
+  }
+}
+
+$pages = [];
+$doc_files = [];
+foreach ($source_dir as $dir) {
+  foreach (new FilesystemIterator($dir) as $file) {
+    if ($file->isDir()) continue;
+
+    if (!$file->isReadable()) {
+      echo "[W] File '" . $file->getFilename() . "' isn't readable. Ignoring.\n";
+      continue;
+    }
+
+    /* Ignore HTML files. */
+    if ($file->getExtension() == 'html') {
+      continue;
+    }
+
+    /* Otherwise, we're assuming it's a PHP file with DocGen strings, and we use
+    our custom parsing functions. */
+    $content = parse_clean(file_get_contents($file->getPathname()));
+    $blocks = parse_blocks($content);
+
+    $doc_files[] = generate_tree($blocks, $file->getFilename(), basename($dir));
+  }
+}
+
+/* Generate JSON file with all routes. Also output to console. */
+$routes = [];
+foreach ($doc_files as $file) {
+  foreach ($file->getClass()->getMethods() as $method) {
+    if (count($method->route) > 0) {
+      $routes[$method->route[0]][] = [$method->route[1], strtolower($file->getClass()->name), $method->name];
+    }
+  }
+}
+
+$routes = json_encode($routes, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+
+if (file_put_contents($target_json, $routes) === false) {
+  exit("[E] Failed to write to file: " . $target_json . ".\n");
+}
+echo($routes);
+echo("\n");

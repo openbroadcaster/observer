@@ -1,0 +1,139 @@
+#!/usr/bin/env php
+
+<?php
+
+require_once('parse.php');
+require_once('data.php');
+require_once('output.php');
+
+/* Take command-line arguments. To keep things simple, the first arg will be the
+target directory, and every argument after that should be a source directory.
+This saves us the trouble of having to deal with different parameters. */
+
+if (php_sapi_name() != 'cli') {
+  exit("[E] Script cannot be run from web environment.\n");
+}
+
+if (count($argv) < 3) {
+  exit("Usage: " . $argv[0] . " target_dir source_dir [source_dirs]\n");
+}
+
+$target_dir = $argv[1];
+$source_dir = array_slice($argv, 2);
+
+/* Check permissions for all source and target directories, making sure we're
+not going to run into any errors from the start. There's no point iterating over
+all the files if we're already seeing any problems here, better to catch those
+early. */
+
+if (!is_dir($target_dir)) {
+  mkdir($target_dir, 0777, true);
+}
+
+if (!is_writable($target_dir)) {
+  exit("[E] Target directory isn't writable.\n");
+}
+
+if (count(scandir($target_dir)) > 2) {
+  exit("[E] Target directory isn't empty. Script won't overwrite previous documentation automatically.\n");
+}
+
+foreach ($source_dir as $dir) {
+  if (!is_readable($dir)) {
+    exit("[E] Source directory isn't readable: " . $dir . "\n");
+  }
+}
+
+/* Iterate over source directories and their files (don't do so recursively,
+the OpenBroadcaster framework doesn't support this for the core files anyway,
+so each directory with source code has to be added to the source directories
+array). Make sure all files are parsed before outputting any HTML, as we need
+to know about all the files to be able to output the navigation sidebar. */
+
+echo "Parsing PHP files and generating documentation structure.\n";
+$pages = [];
+$doc_files = [];
+foreach ($source_dir as $dir) {
+  foreach (new FilesystemIterator($dir) as $file) {
+    if ($file->isDir()) continue;
+
+    if (!$file->isReadable()) {
+      echo "[W] File '" . $file->getFilename() . "' isn't readable. Ignoring.\n";
+      continue;
+    }
+
+    /* Check if it's a HTML file, and if so, save it as one of the general
+    documentation files to be inserted later. */
+    if ($file->getExtension() == 'html') {
+      $pages[$file->getFilename()] = file_get_contents($file->getPathname());
+
+      continue;
+    }
+
+    /* Otherwise, we're assuming it's a PHP file with DocGen strings, and we use
+    our custom parsing functions. */
+    $content = parse_clean(file_get_contents($file->getPathname()));
+    $blocks = parse_blocks($content);
+
+    $doc_files[] = generate_tree($blocks, $file->getFilename(), basename($dir));
+  }
+}
+
+echo "Generating navigation tree for HTML output.\n";
+$nav_tree = [];
+foreach ($pages as $index => $page) {
+  $nav_tree['pages'][] = explode(".", $index)[0];
+}
+foreach ($doc_files as $doc_file) {
+  $nav_tree[$doc_file->getClass()->package][] =
+    ($doc_file->getClass()->name != null) ? $doc_file->getClass()->name : $doc_file->name;
+}
+
+echo "Outputting documentation as HTML.\n";
+foreach ($pages as $index => $page) {
+  $doc_file_path = $target_dir . "/pages." . $index;
+  file_put_contents($doc_file_path, html_page($page, $nav_tree));
+}
+foreach ($doc_files as $doc_file) {
+  $doc_file_path = $target_dir . "/" . $doc_file->getClass()->package . "."
+  . (($doc_file->getClass()->name != null) ? $doc_file->getClass()->name : $doc_file->name)
+  . ".html";
+  file_put_contents($doc_file_path, html_file($doc_file, $nav_tree));
+}
+file_put_contents($target_dir . "/index.html", html_index($nav_tree));
+echo "Successfully generated documentation HTML.\n\n";
+
+/* Copy style files and other general data needed for the documentation
+to function. */
+
+echo "Copying style and script files over to target directory.\n";
+mkdir($target_dir . "/style");
+foreach (new FilesystemIterator(__DIR__ . '/style/') as $style) {
+  if ($style->isDir()) continue;
+
+  if (!$style->isReadable()) {
+    echo "[W] Stylesheet '" . $style->getFilename() . "' isn't readable. Ignoring.\n";
+    continue;
+  }
+
+  copy($style->getPathname(), $target_dir . "/style/" . $style->getFilename());
+}
+
+mkdir($target_dir . "/js");
+foreach (new FilesystemIterator(__DIR__ . '/js/') as $script) {
+  if ($script->isDir()) continue;
+
+  if (!$script->isReadable()) {
+    echo "[W] Javascript file '" . $script->getFilename() . "' isn't readable. Ignoring.\n";
+    continue;
+  }
+
+  copy($script->getPathname(), $target_dir . "/js/" . $script->getFilename());
+}
+echo "Successfully copied style and script files.\n\n";
+
+echo "Successfully generated documentation. Statistics:\n";
+echo "Packages:\t" . count($nav_tree) . "\n";
+echo "Classes:\t" . count($doc_files) . "\n";
+echo "CSS Files:\t" . (count(scandir($target_dir . "/style/")) - 2) . "\n";
+echo "JS Files:\t" . (count(scandir($target_dir . "/js/")) - 2) . "\n\n";
