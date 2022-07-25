@@ -20,12 +20,12 @@
 */
 
 /**
- * Manages emergency broadcasts, also commonly referred to as priorities or
- * priority broadcasts.
+ * Manages alerts, also commonly referred to as emergency broadcasts, priorities,
+ * or priority broadcasts.
  *
  * @package Controller
  */
-class Emergency extends OBFController
+class Alerts extends OBFController
 {
     public function __construct()
     {
@@ -35,37 +35,37 @@ class Emergency extends OBFController
     }
 
     /**
-     * Return data about a specific emergency ID. 'manage_emergency_broadcasts' is
+     * Return data about a specific alert ID. 'manage_emergency_broadcasts' is
      * a required permission.
      *
      * @param id
      *
-     * @return emergency
+     * @return alert
      */
     public function get()
     {
         $id = trim($this->data('id'));
 
         if (!empty($id)) {
-            $emergency = $this->models->emergencies('get_one', ['id' => $id]);
+            $alert = $this->models->emergencies('get_one', ['id' => $id]);
             //T Priority
             //T Priority broadcast not found.
-            if (!$emergency) {
+            if (!$alert) {
                 return array(false, 'Priority broadcast not found.');
             }
-            $this->user->require_permission('manage_emergency_broadcasts:' . $emergency['player_id']);
+            $this->user->require_permission('manage_emergency_broadcasts:' . $alert['player_id']);
             //T Priority Broadcast
-            return array(true, 'Priority Broadcast', $emergency);
+            return array(true, 'Priority Broadcast', $alert);
         }
     }
 
     /**
-     * Get all priority broadcasts for a specific player ID. 'manage_emergency_broadcasts'
+     * Get all alerts for a specific player ID. 'manage_emergency_broadcasts'
      * is a required permission.
      *
      * @param player_id
      *
-     * @return emergencies
+     * @return alerts
      */
     public function search()
     {
@@ -79,8 +79,8 @@ class Emergency extends OBFController
     }
 
     /**
-     * Set the last selected player so we can view emergency broadcasts for that
-     * player immediately when loading the page again some other time. This will
+     * Set the last selected player so we can view alerts for that player
+     * immediately when loading the page again some other time. This will
      * have to be generalized for other UI elements at some point. This is a
      * user-specific setting, so no special permissions are necessary.
      *
@@ -120,12 +120,12 @@ class Emergency extends OBFController
     }
 
     /**
-     * Save a new emergency broadcast. The 'user_id' is set to the currently logged
+     * Save a new alert. The 'user_id' is set to the currently logged
      * in user for the new broadcast. Requires the 'manage_emergency_broadcasts'
      * permission.
      *
-     * @param id ID of emergency broadcast. Update a pre-existing emergency if set.
-     * @param item_id ID of the media item linked to the emergency broadcast.
+     * @param id ID of alert. Update a pre-existing alert if set.
+     * @param item_id ID of the media item linked to the alert.
      * @param player_id
      * @param name
      * @param frequency
@@ -160,11 +160,11 @@ class Emergency extends OBFController
 
         $this->models->emergencies('save', ['data' => $data, 'id' => $id]);
 
-        return array(true,'Emergency broadcast saved.');
+        return array(true,'Alert saved.');
     }
 
     /**
-     * Delete an emergency broadcast. Requries the 'manage_emergency_broadcasts'
+     * Delete an alert. Requries the 'manage_emergency_broadcasts'
      * permission.
      *
      * @param id
@@ -173,16 +173,16 @@ class Emergency extends OBFController
     {
         $id = trim($this->data('id'));
 
-        $emergency = $this->models->emergencies('get_one', ['id' => $id]);
-        if (!$emergency) {
-            return array(false,'Emergency broadcast not found.');
+        $alert = $this->models->emergencies('get_one', ['id' => $id]);
+        if (!$alert) {
+            return array(false,'Alert not found.');
         }
 
         // check permission on appropriate player.
-        $this->user->require_permission('manage_emergency_broadcasts:'.$emergency['player_id']);
+        $this->user->require_permission('manage_emergency_broadcasts:'.$alert['player_id']);
 
         $this->models->emergencies('delete', ['id' => $id]);
 
-        return array(true,'Emergency deleted.');
+        return array(true,'Alert deleted.');
     }
 }
