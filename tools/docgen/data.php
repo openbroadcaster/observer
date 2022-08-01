@@ -136,7 +136,11 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
               $method->return = $tag[1];
             break;
             case 'route':
-              $method->route = [substr($tag[1], 0, strpos($tag[1], " ")), '/api' . substr($tag[1], strpos($tag[1], " ") + 1)];
+              $route_method = substr($tag[1], 0, strpos($tag[1], " "));
+              $route_url = substr($tag[1], strpos($tag[1], " ") + 1);
+              if ($route_url[0] != '/') $route_url = '/' . $route_url;
+              
+              $method->route = [$route_method, $route_url];
             break;
             default:
               echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";
