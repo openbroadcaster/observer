@@ -41,6 +41,8 @@ class Alerts extends OBFController
      * @param id
      *
      * @return alert
+     *
+     * @route GET /alerts/(:id:)
      */
     public function get()
     {
@@ -66,6 +68,8 @@ class Alerts extends OBFController
      * @param player_id
      *
      * @return alerts
+     *
+     * @route GET /alerts/search/(:id:)
      */
     public function search()
     {
@@ -85,6 +89,8 @@ class Alerts extends OBFController
      * user-specific setting, so no special permissions are necessary.
      *
      * @param player
+     *
+     * @route PUT /alerts/last/(:id:)
      */
     public function set_last_player()
     {
@@ -108,6 +114,8 @@ class Alerts extends OBFController
      * current user.
      *
      * @return player
+     *
+     * @route GET /alerts/last
      */
     public function get_last_player()
     {
@@ -132,6 +140,8 @@ class Alerts extends OBFController
      * @param duration
      * @param start
      * @param stop
+     *
+     * @route POST /alerts
      */
     public function save()
     {
@@ -168,6 +178,8 @@ class Alerts extends OBFController
      * permission.
      *
      * @param id
+     *
+     * @route DELETE /alerts/(:id:)
      */
     public function delete()
     {

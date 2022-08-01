@@ -40,6 +40,8 @@ class Account extends OBFController
      * @param username
      * @param password
      * @return [id, key, key_expiry]
+     *
+     * @route POST /account/login
      */
     public function login()
     {
@@ -61,6 +63,8 @@ class Account extends OBFController
      * Return currently logged in username and user id.
      *
      * @return [id, username]
+     *
+     * @route GET /account/uid
      */
     public function uid()
     {
@@ -74,6 +78,8 @@ class Account extends OBFController
      * Return currently logged in user permissions.
      *
      * @return permission_array
+     *
+     * @route GET /account/permissions
      */
     public function permissions()
     {
@@ -97,6 +103,8 @@ class Account extends OBFController
      * Return currently logged in user groups.
      *
      * @return group_names_array
+     *
+     * @route GET /account/groups
      */
     public function groups()
     {
@@ -109,6 +117,8 @@ class Account extends OBFController
 
     /**
      * Logout currently logged in user.
+     *
+     * @route POST /account/logout
      */
     public function logout()
     {
@@ -130,6 +140,8 @@ class Account extends OBFController
      * user.
      *
      * @return user_fields_array
+     *
+     * @route GET /account/settings
      */
     public function settings()
     {
@@ -156,6 +168,8 @@ class Account extends OBFController
      * @param theme
      * @param dyslexia_friendly_font Boolean set to TRUE for using a dyslexia-friendly font.
      * @param sidebar_display_left Boolean set to TRUE when displaying the sidebar on the left side.
+     *
+     * @route PUT /account/settings
      */
     public function update_settings()
     {
@@ -192,6 +206,8 @@ class Account extends OBFController
      * password.
      *
      * @param email
+     *
+     * @route POST /account/forgot
      */
     public function forgotpass()
     {
@@ -215,6 +231,8 @@ class Account extends OBFController
      * @param name
      * @param email
      * @param username
+     *
+     * @route POST /account/new
      */
     public function newaccount()
     {
@@ -242,6 +260,8 @@ class Account extends OBFController
      * permission. Connects to the users model.
      *
      * @return [id, name, key]
+     *
+     * @route POST /account/key
      */
     public function key_new()
     {
@@ -267,6 +287,8 @@ class Account extends OBFController
      * @param id
      *
      * @return is_deleted?
+     *
+     * @route DELETE /account/key/(:id:)
      */
     public function key_delete()
     {
@@ -295,6 +317,8 @@ class Account extends OBFController
      *
      * @param id
      * @param permissions
+     *
+     * @route PUT /account/key/(:id:)
      */
     public function key_permissions_save()
     {
@@ -312,6 +336,8 @@ class Account extends OBFController
      * permission. Connects to users model.
      *
      * @return appkeys
+     *
+     * @route GET /account/key
      */
     public function key_load()
     {
