@@ -22,7 +22,7 @@ OB.Playlist.newPage = function()
 
   OB.Playlist.advanced_items = [];
 
-  OB.API.post('player','station_id_avg_duration', {}, function(data) {
+  OB.API.post('players','station_id_avg_duration', {}, function(data) {
     OB.Playlist.station_id_avg_duration=data.data;
 
     OB.UI.replaceMain('playlist/addedit.html');
@@ -66,8 +66,8 @@ OB.Playlist.editPage = function(id)
   }
 
   var post = [];
-  post.push(['player','station_id_avg_duration', {}]);
-  post.push(['playlist','get', { 'id': id }]);
+  post.push(['players','station_id_avg_duration', {}]);
+  post.push(['playlists','get', { 'id': id }]);
 
   OB.API.multiPost(post, function(response)
   {
@@ -337,7 +337,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
       $('#item_properties_message').hide();
 
-      OB.API.post('playlist','validate_dynamic_properties', { 'selection_name': selection_name, 'num_items': num_items, 'num_items_all': num_items_all, 'image_duration': image_duration, 'search_query': $.parseJSON(search_query) }, function(data) {
+      OB.API.post('playlists','validate_dynamic_properties', { 'selection_name': selection_name, 'num_items': num_items, 'num_items_all': num_items_all, 'image_duration': image_duration, 'search_query': $.parseJSON(search_query) }, function(data) {
 
         if(data.status==false)
         {
@@ -434,7 +434,7 @@ OB.Playlist.save = function()
 
   $('#playlist_addedit_message').hide();
 
-  OB.API.post('playlist','save', {
+  OB.API.post('playlists','save', {
     'id': id,
     'name': playlist_name,
     'description': description,

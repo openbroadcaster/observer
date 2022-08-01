@@ -20,12 +20,12 @@
 */
 
 /**
- * The playlist controller manages all playlists on the server, including dynamic
+ * The playlists controller manages all playlists on the server, including dynamic
  * selections.
  *
  * @package Controller
  */
-class Playlist extends OBFController
+class Playlists extends OBFController
 {
     public function __construct()
     {

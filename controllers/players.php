@@ -24,7 +24,7 @@
  *
  * @package Controller
  */
-class Player extends OBFController
+class Players extends OBFController
 {
     public function __construct()
     {

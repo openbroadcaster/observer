@@ -120,12 +120,12 @@ OB.UI.domChangeCallback = function()
   {
     OB.UI.datetimeInputInit(input);
   });
-  
+
   $('ob-date-input').each(function(index, input)
   {
     OB.UI.dateInputInit(input);
   });
-  
+
   $('ob-time-input').each(function(index, input)
   {
     OB.UI.timeInputInit(input);
@@ -162,12 +162,12 @@ OB.UI.domChangeCallback = function()
 }
 
 OB.UI.tabsInit = function (container) {
-  
+
   if($(container).attr('data-ready')) return true;
-  
+
   var tabs = $(container).find('> ob-tab');
   var $select = $('<ob-tab-select></ob-tab-select>');
-  
+
   $(tabs).each(function(index, tab)
   {
     var name = $(tab).attr('data-name');
@@ -205,7 +205,7 @@ OB.UI.formVal = function (form, value) {
           var values = (value[name] ?? '').split(',');
           if(values.indexOf($(input).val())!=-1) $(input).prop('checked', true);
         }
-  
+
         // non-checkbox value set
         else
         {
@@ -248,13 +248,13 @@ OB.UI.formVal = function (form, value) {
 
 OB.UI.durationInputInit = function (input) {
   if($(input).attr('data-ready')) return true;
-  
+
   $(input).html('<input type="text" placeholder="e.g. &quot;90 minutes&quot;" />');
   $(input).find('input').change(function() {
-  
+
     var duration = null;
     var string = $(this).val().trim();
-    
+
     // try to parse as hh:mm:ss
     var string_split = string.split(':');
     var digits = /^[0-9]+$/;
@@ -264,37 +264,37 @@ OB.UI.durationInputInit = function (input) {
 
     // if not yet parsed, try string parse
     if(duration===null) duration = parseDuration(string);
-    
+
     // still nothing, clear value to restore placeholder
     if(duration===null)
     {
      $(this).val('');
      $(this).parent().removeAttr('data-duration');
     }
-    
+
     // set duration
     else
     {
       duration = Math.floor(duration/1000);
-      
+
       var tmp = duration;
       var seconds = tmp%60;
       tmp = (tmp-seconds)/60;
       var minutes = tmp%60;
       tmp = (tmp-minutes)/60;
       var hours = tmp;
-      
+
       seconds = seconds.toString().padStart(2,'0');
       minutes = minutes.toString().padStart(2,'0');
       hours = hours.toString().padStart(2,'0');
-      
+
       $(this).val(hours+':'+minutes+':'+seconds);
       $(this).parent().attr('data-duration', duration);
     }
   });
-  
+
   $(input).attr('data-ready',true);
-  
+
   if($(input).attr('data-value')) { $(input).val($(input).attr('data-value')); $(input).removeAttr('data-value'); }
 }
 
@@ -313,7 +313,7 @@ OB.UI.durationInputVal = function (input, value) {
 
 OB.UI.datetimeInputInit = function (input) {
   if($(input).attr('data-ready')) return true;
-  
+
   $(input).html('<input type="text" placeholder="e.g. &quot;Dec 16 5pm&quot;" />');
   $(input).find('input').change(function() {
     var string = $(this).val();
@@ -332,9 +332,9 @@ OB.UI.datetimeInputInit = function (input) {
       $(this).parent().attr('data-time', datetime.format('HH:mm:ss'));
     }
   });
-  
+
   $(input).attr('data-ready',true);
-  
+
   if($(input).attr('data-value')) { $(input).val($(input).attr('data-value')); $(input).removeAttr('data-value'); }
 }
 
@@ -358,10 +358,10 @@ OB.UI.datetimeInputVal = function(input, value) {
 
 OB.UI.dateInputInit = function (input) {
   if($(input).attr('data-ready')) return true;
-  
+
   var placeholder = $(input).attr('data-placeholder') ?? 'e.g. "Mar 2, 2021"';
   var display = $(input).attr('data-format') ?? 'YYYY-MM-DD';
-  
+
   $(input).html( $('<input type="text" />').attr('placeholder', placeholder) );
   $(input).find('input').change(function() {
     var string = $(this).val();
@@ -378,9 +378,9 @@ OB.UI.dateInputInit = function (input) {
       $(this).parent().attr('data-date', datetime.format('YYYY-MM-DD'));
     }
   });
-  
+
   $(input).attr('data-ready',true);
-  
+
   if($(input).attr('data-value')) { $(input).val($(input).attr('data-value')); $(input).removeAttr('data-value'); }
 }
 
@@ -403,7 +403,7 @@ OB.UI.dateInputVal = function(input, value) {
 
 OB.UI.timeInputInit = function (input) {
   if($(input).attr('data-ready')) return true;
-  
+
   $(input).html('<input type="text" placeholder="e.g. &quot;11:30am&quot;" />');
   $(input).find('input').change(function() {
     var string = $(this).val();
@@ -420,9 +420,9 @@ OB.UI.timeInputInit = function (input) {
       $(this).parent().attr('data-time', datetime.format('HH:mm:ss'));
     }
   });
-  
+
   $(input).attr('data-ready',true);
-  
+
   if($(input).attr('data-value')) { $(input).val($(input).attr('data-value')); $(input).removeAttr('data-value'); }
 }
 
@@ -549,13 +549,13 @@ OB.UI.mediaInputVal = function (input, value) {
     value.forEach(function (media_id) {
       post.push(['media', 'get', {'id': media_id}]);
     })
-    
+
     $(input).attr('data-loading','true');
-    
+
     OB.API.multiPost(post, function (data) {
-      
+
       $(input).removeAttr('data-loading');
-    
+
       data.forEach(function (response) {
         if (response.status != true) return false;
         var media_item = $('<ob-media/>').attr('data-id', response.data.id);
@@ -642,15 +642,15 @@ OB.UI.playlistInputVal = function (input, value) {
 
     var post = [];
     value.forEach(function (playlist_id) {
-      post.push(['playlist', 'get', {'id': playlist_id}]);
+      post.push(['playlists', 'get', {'id': playlist_id}]);
     })
 
     $(input).attr('data-loading','true');
 
     OB.API.multiPost(post, function (data) {
-    
+
       $(input).removeAttr('data-loading');
-      
+
       data.forEach(function (response) {
         if (response.status != true) return false;
         var playlist_item = $('<ob-playlist/>').attr('data-id', response.data.id);
@@ -1210,7 +1210,7 @@ OB.UI.replaceMain = function(file, attrs)
 
   // form tag is used for layout information, but we never do a regular form submit.
   $('#layout_main form').submit(function() { event.preventDefault(); });
-  
+
   // add attributes if we have them
   if(attrs) $.each(attrs, function(key,value) { $('#layout_main').attr(key,value); });
 
@@ -1255,7 +1255,7 @@ OB.UI.openModalWindow = function(file)
 
   // reset/init simplebar
   new SimpleBar(document.getElementById('layout_modal_window'));
-  
+
   // trigger dom callback, mutation observer not always called in time.
   OB.UI.domChangeCallback();
 }

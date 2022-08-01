@@ -83,7 +83,7 @@ OB.Playlist.advancedInit = function()
 
           $('.sidebar_search_playlist_selected').each(function(index,element) {
 
-            OB.API.post('playlist','get', { 'id': $(element).attr('data-id') }, function(data) {
+            OB.API.post('playlists','get', { 'id': $(element).attr('data-id') }, function(data) {
 
               if(data.status==false) return;
 

@@ -35,7 +35,7 @@ OB.Sidebar.sidebarInit = function()
   {
     $('body').addClass('sidebar-right');
   }
-  
+
   OB.Sidebar.mediaDetails();
 
   $('#sidebar_player').droppable({
@@ -501,7 +501,7 @@ OB.Sidebar.mediaSearch = function(more)
           media_type_symbol = '<i class="fas fa-image"></i>';
         break;
       }
-      
+
       var thumbnail = media[i]['thumbnail'] ? '<img loading="lazy" src="/thumbnail.php?id='+media[i]['id']+'" />' : '';
 
       $('#sidebar_search_media_results tbody').append('\
@@ -518,7 +518,7 @@ OB.Sidebar.mediaSearch = function(more)
           <td class="sidebar_search_media_detailed_column hidden" data-column="language">'+htmlspecialchars(media[i]['language_name'])+'</td>\
           <td class="sidebar_search_media_time" data-column="time">'+duration+'</td>\
         </tr>');
-        
+
       if(OB.Settings.media_required_fields.artist=='disabled') $('.sidebar_search_media_artist').hide();
 
       $('#sidebar_search_media_result_'+media[i]['id']).click(function(e) {
@@ -854,7 +854,7 @@ OB.Sidebar.playlistSearch = function(more)
   $('#sidebar_search_playlist_loading').show();
   $('#sidebar_search_playlist_loadmore').hide();
 
-  OB.API.post('playlist','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: OB.ClientStorage.get('results_per_page'), o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
+  OB.API.post('playlists','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: OB.ClientStorage.get('results_per_page'), o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
 
     var playlist = data.data.playlists;
     var num_results = data.data.num_results;
@@ -1251,7 +1251,7 @@ OB.Sidebar.advancedSearchWindowInit = function()
     {
       // skip hidden metadata
       if(metadata.type=='hidden') return;
-    
+
       $metadata = $('<option></option>').text(metadata.description).attr('value','metadata_'+metadata.name);
 
       if(metadata.type=='text' || metadata.type=='textarea') $metadata.attr('data-compare','text').attr('data-value','text');

@@ -79,7 +79,7 @@ OB.Emergency.emergencyInit = function()
 {
 
   var post = [];
-  post.push(['player','search', {}]);
+  post.push(['players','search', {}]);
   post.push(['alerts','get_last_player', {}]);
 
   OB.API.multiPost(post, function(responses)

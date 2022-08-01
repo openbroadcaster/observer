@@ -56,7 +56,7 @@ OB.Playlist.addeditInit = function()
 
           $('.sidebar_search_playlist_selected').each(function(index,element) {
 
-            OB.API.post('playlist','get', { 'id': $(element).attr('data-id') }, function(data) {
+            OB.API.post('playlists','get', { 'id': $(element).attr('data-id') }, function(data) {
 
               if(data.status==false) return;
 
@@ -339,7 +339,7 @@ OB.Playlist.addeditGetItems = function()
     else if($(element).attr('data-type')=='station_id') items.push( { 'type': 'station_id' });
     else if($(element).attr('data-type')=='breakpoint') items.push( { 'type': 'breakpoint' });
     else if($(element).attr('data-type')=='custom') items.push( { 'type': 'custom', 'query': {'name': $(element).attr('data-name')}} );
-    else items.push({ 
+    else items.push({
       'type': 'media',
       'id': $(element).attr('data-id'),
       'duration': $(element).attr('data-duration'),
@@ -354,9 +354,9 @@ OB.Playlist.addeditGetItems = function()
 OB.Playlist.addeditItemUnselect = function(e)
 {
   if(e && (
-    $(e.target).hasClass('playlist_addedit_item') || 
-    $(e.target).parents('.playlist_addedit_item').length || 
-    $(e.target).hasClass('playlist_addedit_liveassist_item') || 
+    $(e.target).hasClass('playlist_addedit_item') ||
+    $(e.target).parents('.playlist_addedit_item').length ||
+    $(e.target).hasClass('playlist_addedit_liveassist_item') ||
     $(e.target).parents('.playlist_addedit_liveassist_item').length
   )) return;
   $('.playlist_addedit_item').removeClass('selected');

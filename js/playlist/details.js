@@ -21,8 +21,8 @@
 OB.Playlist.detailsPage = function(id)
 {
   var post = [];
-  post.push(['player','station_id_avg_duration', {}]);
-  post.push(['playlist', 'get', {'id': id, 'where_used': true}]);
+  post.push(['players','station_id_avg_duration', {}]);
+  post.push(['playlists', 'get', {'id': id, 'where_used': true}]);
 
   OB.API.multiPost(post, function(response)
   {
