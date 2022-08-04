@@ -139,7 +139,12 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
               $route_method = substr($tag[1], 0, strpos($tag[1], " "));
               $route_url = substr($tag[1], strpos($tag[1], " ") + 1);
               if ($route_url[0] != '/') $route_url = '/' . $route_url;
-              
+
+              if (!in_array($route_method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+                echo '[E] Unsupported HTTP method used in @route tag: ' . $tag[1] . ".\n";
+                break;
+              }
+
               $method->route = [$route_method, $route_url];
             break;
             default:

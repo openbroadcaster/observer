@@ -63,5 +63,6 @@ $routes = json_encode($routes, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
 if (file_put_contents($target_json, $routes) === false) {
   exit("[E] Failed to write to file: " . $target_json . ".\n");
 }
-echo($routes);
-echo("\n");
+//echo($routes);
+//echo("\n");
+echo "Routes written to specified JSON file. Please make sure to check any errors.\n";

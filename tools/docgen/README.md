@@ -20,14 +20,14 @@ Tag | Description
 
 # API Routes JSON File
 
-DocGen is also responsible for generating a JSON file showing all the API routes. These routes can be created in the OpenBroadcaster code with the `@route` tag. For example, creating a route to the delete method in the player controller could be written as `@route DELETE /players/(:id:)`. This creates a route to the players controller taking a DELETE HTTP request, with the player id as the argument in the URL. Note that the URL provided in the route tag does not have to match the controller name (players vs player, for example). This example tag will generate the following JSON:
+DocGen is also responsible for generating a JSON file showing all the API routes. These routes can be created in the OpenBroadcaster code with the `@route` tag. For example, creating a route to the delete method in the players controller could be written as `@route DELETE /players/(:id:)`. This creates a route to the players controller taking a DELETE HTTP request, with the player id as the argument in the URL. Note that the URL provided in the route tag does not have to match the controller name (players vs player, for example), although it is recommended that they do. This example tag will generate the following JSON:
 
 ```json
 {
     "DELETE": [
         [
             "/api/players/(:id:)",
-            "player",
+            "players",
             "delete"
         ]
     ]
