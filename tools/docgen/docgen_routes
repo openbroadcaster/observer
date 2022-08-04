@@ -5,6 +5,7 @@
 require_once('parse.php');
 require_once('data.php');
 require_once('output.php');
+require_once('routes.php');
 
 if (php_sapi_name() != 'cli') {
   exit("[E] Script cannot be run from web environment.\n");
@@ -58,11 +59,14 @@ foreach ($doc_files as $file) {
   }
 }
 
+if (routes_contain_duplicates($routes, $method->route)) {
+  exit("[E] Duplicate routes found. Quitting.\n");
+}
+
 $routes = json_encode($routes, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
 
 if (file_put_contents($target_json, $routes) === false) {
   exit("[E] Failed to write to file: " . $target_json . ".\n");
 }
-//echo($routes);
-//echo("\n");
-echo "Routes written to specified JSON file. Please make sure to check any errors.\n";
+
+echo "Routes written to specified JSON file. Please make sure to check any warnings or errors.\n";

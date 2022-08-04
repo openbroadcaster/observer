@@ -34,6 +34,8 @@ DocGen is also responsible for generating a JSON file showing all the API routes
 }
 ```
 
+The routes script will also trim any trailing slashes, and check for duplicate routes across all methods that can cause ambiguity. 
+
 ## Usage
 
 Invocation: `./docgen_routes target.json source_dir [source_dirs]`
