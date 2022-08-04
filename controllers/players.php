@@ -42,6 +42,8 @@ class Players extends OBFController
      * @param offset Get only the player after offset, useful for paging.
      *
      * @return players_array
+     *
+     * @route GET /players
      */
     public function search()
     {
@@ -100,6 +102,8 @@ class Players extends OBFController
      * @param use_parent_emergency
      *
      * @return player_id
+     *
+     * @route POST /players
      */
     public function save()
     {
@@ -200,6 +204,8 @@ class Players extends OBFController
      * @param id
      *
      * @return player_data
+     *
+     * @route GET /players/(:id:)
      */
     public function get()
     {
@@ -229,6 +235,8 @@ class Players extends OBFController
      * Estimate the average duration of station IDs. Not tied to a particular player.
      *
      * @return average
+     *
+     * @route GET /players/avg_duration
      */
     public function station_id_avg_duration()
     {
@@ -251,6 +259,8 @@ class Players extends OBFController
      * @param offset Get only the player after offset, useful for paging.
      *
      * @return [results, total_rows, csv_results]
+     *
+     * @route GET /players/monitor
      */
     public function monitor_search()
     {
@@ -292,6 +302,8 @@ class Players extends OBFController
      * @param id
      *
      * @return [show_name, show_time_left, media_data]
+     *
+     * @route GET /players/playing/(:id:)
      */
     public function now_playing()
     {

@@ -37,6 +37,8 @@
       * @param id
       *
       * @return show
+      *
+      * @route GET /shows/(:id:)
       */
      public function get()
      {
@@ -59,7 +61,9 @@
       *
       * @param id
       *
-      * @return show.
+      * @return show
+      *
+      * @route GET /shows/recurring/(:id:)
       */
      public function get_recurring()
      {
@@ -86,6 +90,8 @@
       * @param player
       *
       * @return shows
+      *
+      * @route GET /shows
       */
      public function search()
      {
@@ -129,6 +135,8 @@
       * user-specific setting, so no special permissions are necessary.
       *
       * @param player
+      *
+      * @route PUT /shows/last_player
       */
      public function set_last_player()
      {
@@ -150,6 +158,8 @@
       * Get the last selected player on the schedules page for the current user.
       *
       * @return player
+      *
+      * @route GET /shows/last_player
       */
      public function get_last_player()
      {
@@ -168,6 +178,8 @@
       *
       * @param id
       * @param recurring
+      *
+      * @route DELETE /shows/(:id:)/(:recurring:)
       */
      public function delete()
      {
@@ -201,6 +213,8 @@
       * @param stop
       * @param item_type
       * @param item_id
+      *
+      * @route POST /shows
       */
      public function save()
      {

@@ -39,6 +39,8 @@ class UI extends OBFController
      * List all UI themes.
      *
      * @return themes
+     *
+     * @route GET /ui/themes
      */
     public function get_themes()
     {
@@ -49,6 +51,8 @@ class UI extends OBFController
      * List all languages
      *
      * @return languages
+     *
+     * @route GET /ui/languages
      */
     public function get_languages()
     {
@@ -60,6 +64,8 @@ class UI extends OBFController
    * the views for all installed modules.
    *
    * @return [html_file => html]
+   *
+   * @route GET /ui/html
    */
     public function html()
     {

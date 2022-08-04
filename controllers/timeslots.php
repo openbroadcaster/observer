@@ -37,6 +37,8 @@
       * @param id
       *
       * @return timeslot
+      *
+      * @route GET /timeslots/(:id:)
       */
      public function get()
      {
@@ -60,6 +62,8 @@
       * @param id
       *
       * @return timeslot
+      *
+      * @route GET /timeslots/recurring/(:id:)
       */
      public function get_recurring()
      {
@@ -90,6 +94,8 @@
       * @param user_id
       *
       * @return timeslots
+      *
+      * @route GET /timeslots
       */
      public function search()
      {
@@ -148,6 +154,8 @@
       * user-specific setting, so no special permissions are necessary.
       *
       * @param player
+      *
+      * @route PUT /timeslots/last_player
       */
      public function set_last_player()
      {
@@ -169,6 +177,8 @@
       * Get the last selected player on the timeslots page for the current user.
       *
       * @return player
+      *
+      * @route GET /timeslots/last_player
       */
      public function get_last_player()
      {
@@ -188,6 +198,8 @@
       *
       * @param id
       * @param recurring
+      *
+      * @route DELETE /timeslots/(:id:)/(:recurring:)
       */
      public function delete()
      {
@@ -226,6 +238,8 @@
       * @param start
       * @param duration
       * @param stop
+      *
+      * @route POST /timeslots
       */
      public function save()
      {

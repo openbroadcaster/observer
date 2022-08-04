@@ -39,6 +39,8 @@ class ClientSettings extends OBFController
      * @param client_login_message
      *
      * @return setting_result
+     *
+     * @route POST /clientsettings/login_message
      */
     public function set_login_message()
     {
@@ -51,6 +53,8 @@ class ClientSettings extends OBFController
      * Get the login message.
      *
      * @return client_login_message
+     *
+     * @route GET /clientsettings/login_message
      */
     public function get_login_message()
     {
@@ -63,6 +67,8 @@ class ClientSettings extends OBFController
      * @param client_welcome_page The HTML welcome page to display.
      *
      * @return setting_result
+     *
+     * @route POST /clientsettings/welcome_page
      */
     public function set_welcome_page()
     {
@@ -75,6 +81,8 @@ class ClientSettings extends OBFController
     * Get the welcome page. Returns a string in HTML format.
     *
     * @return client_welcome_page
+    *
+    * @route GET /clientsettings/welcome_page
     */
     public function get_welcome_page()
     {

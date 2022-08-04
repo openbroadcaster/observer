@@ -39,6 +39,8 @@ class Users extends OBFController
      * if not. Requires 'manage_users' permission.
      *
      * @param user_registration
+     *
+     * @route PUT /users/can_register
      */
     public function user_registration_set()
     {
@@ -52,6 +54,8 @@ class Users extends OBFController
      * Return the user registration settings.
      *
      * @return user_registration
+     *
+     * @route GET /users/can_register
      */
     public function user_registration_get()
     {
@@ -62,6 +66,8 @@ class Users extends OBFController
      * Return a list of all users.
      *
      * @return [display_name, id, email]
+     *
+     * @route GET /users/all
      */
     public function user_list()
     {
@@ -77,6 +83,8 @@ class Users extends OBFController
      * @param sort_desc Whether or not to sort descendingly.
      *
      * @return users
+     *
+     * @route GET /users
      */
     public function user_manage_list()
     {
@@ -100,7 +108,7 @@ class Users extends OBFController
     }
 
     /**
-     * Update a user. Requires the 'manage_users' permission.
+     * Update or save a new user. Requires the 'manage_users' permission.
      *
      * @param id
      * @param name
@@ -112,6 +120,8 @@ class Users extends OBFController
      * @param password_confirm
      * @param group_ids
      * @param appkeys
+     *
+     * @route POST /users
      */
     public function user_manage_addedit()
     {
@@ -148,6 +158,8 @@ class Users extends OBFController
      * Delete a user. Requires the 'manager_users' permission.
      *
      * @param id
+     *
+     * @route DELETE /users/(:id:)
      */
     public function user_manage_delete()
     {
@@ -171,6 +183,8 @@ class Users extends OBFController
      * @param id
      *
      * @return [id, name, key]
+     *
+     * @route POST /users/appkeys
      */
     public function user_manage_key_new()
     {
@@ -197,6 +211,8 @@ class Users extends OBFController
      * @param user_id
      *
      * @return is_deleted?
+     *
+     * @route DELETE /users/appkeys/(:user_id:)/(:id:)
      */
     public function user_manage_key_delete()
     {
@@ -227,6 +243,8 @@ class Users extends OBFController
      * @param id
      *
      * @return appkeys
+     *
+     * @route GET /users/appkeys/(:id:)
      */
     public function user_manage_key_load()
     {
@@ -246,6 +264,8 @@ class Users extends OBFController
      * to show more than the basic set of permissions.
      *
      * @return groups
+     *
+     * @route GET /users/groups
      */
     public function group_list()
     {
@@ -259,6 +279,8 @@ class Users extends OBFController
      * Delete a user permissions group. Requires 'manage_permissions' permission.
      *
      * @param id
+     *
+     * @route DELETE /users/permissions/(:id:)
      */
     public function permissions_manage_delete()
     {
@@ -274,11 +296,13 @@ class Users extends OBFController
     }
 
     /**
-     * Edit a user permissions group. Requires 'manage_permissions' permission.
+     * Edit or create a new user permissions group. Requires 'manage_permissions' permission.
      *
      * @param name
      * @param id
      * @param permissions
+     *
+     * @route POST /users/permissions
      */
     public function permissions_manage_addedit()
     {
@@ -304,6 +328,8 @@ class Users extends OBFController
      * player. Requires 'manage_permissions' permission.
      *
      * @return permissions
+     *
+     * @route GET /users/permissions
      */
     public function permissions_manage_list()
     {

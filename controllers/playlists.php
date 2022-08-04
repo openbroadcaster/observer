@@ -48,6 +48,8 @@ class Playlists extends OBFController
      * @param playlist
      *
      * @return can_edit
+     *
+     * @route GET /playlists/editable
      */
     private function user_can_edit($playlist)
     {
@@ -75,6 +77,8 @@ class Playlists extends OBFController
      * @param id
      *
      * @return playlist
+     *
+     * @route GET /playlists/(:id:)
      */
     public function get()
     {
@@ -124,6 +128,8 @@ class Playlists extends OBFController
      * @param my Ownership. Set to filter for playlists owned by user.
      *
      * @return [num_results, playlists]
+     *
+     * @route GET /playlists
      */
     public function search()
     {
@@ -160,6 +166,8 @@ class Playlists extends OBFController
      * @param liveassist_button_items
      *
      * @return id
+     *
+     * @route POST /playlists
      */
     public function save()
     {
@@ -354,6 +362,8 @@ class Playlists extends OBFController
      * @param image_duration Duration static images are displayed in seconds.
      *
      * @return [duration]
+     *
+     * @route GET /playlists/validate
      */
     public function validate_dynamic_properties()
     {
@@ -384,6 +394,8 @@ class Playlists extends OBFController
      * Delete a playlist. Requires the usual 'user_can_edit()' permissions.
      *
      * @param id An array of playlist IDs. Can be a single ID.
+     *
+     * @route DELETE /playlists
      */
     public function delete()
     {

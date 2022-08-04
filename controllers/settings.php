@@ -41,6 +41,8 @@ class Settings extends OBFController
      * Change metadata field order. Requires 'manage_media_settings' permission.
      *
      * @param order
+     *
+     * @route PUT /settings/metadata/order
      */
     public function metadata_order()
     {
@@ -60,6 +62,8 @@ class Settings extends OBFController
      * @param select_options Options in dropdown when selected as type.
      * @param default
      * @param tag_suggestions
+     *
+     * @route POST /settings/metadata
      */
     public function metadata_save()
     {
@@ -105,6 +109,8 @@ class Settings extends OBFController
      * Delete a metadata field. Requires 'manage_media_settings' permission.
      *
      * @param id
+     *
+     * @route DELETE /settings/metadata/(:id:)
      */
     public function metadata_delete()
     {
@@ -126,6 +132,8 @@ class Settings extends OBFController
      * @param search
      *
      * @return [tag]
+     *
+     * @route GET /settings/metadata/tags
      */
     public function metadata_tag_search()
     {
@@ -146,6 +154,8 @@ class Settings extends OBFController
      * @param offset
      *
      * @return categories
+     *
+     * @route GET /settings/categories
      */
     public function category_list()
     {
@@ -170,6 +180,8 @@ class Settings extends OBFController
      * @param id Optional when editing already existing category.
      * @param name
      * @param default Set as default category for new media.
+     *
+     * @route POST /settings/categories
      */
     public function category_save()
     {
@@ -200,6 +212,8 @@ class Settings extends OBFController
      * Delete a media category. Requires 'manage_media_settings' permission.
      *
      * @param id
+     *
+     * @route DELETE /settings/categories/(:id:)
      */
     public function category_delete()
     {
@@ -227,6 +241,8 @@ class Settings extends OBFController
      * @param id
      *
      * @return [id, name, is_default]
+     *
+     * @route GET /settings/categories/(:id:)
      */
     public function category_get()
     {
@@ -251,6 +267,8 @@ class Settings extends OBFController
      * @param offset
      *
      * @return genres
+     *
+     * @route GET /settings/genres
      */
     public function genre_list()
     {
@@ -277,6 +295,8 @@ class Settings extends OBFController
      * @param description
      * @param media_category_id
      * @param default Set as default genre for new media.
+     *
+     * @route POST /settings/genres
      */
     public function genre_save()
     {
@@ -305,6 +325,8 @@ class Settings extends OBFController
      * Delete a media genre. Requires 'manage_media_settings' permission.
      *
      * @param id
+     *
+     * @route DELETE /settings/genres/(:id:)
      */
     public function genre_delete()
     {
@@ -327,6 +349,8 @@ class Settings extends OBFController
      * @param id
      *
      * @return [id, name, description, media_category_id]
+     *
+     * @route GET /settings/genres/(:id:)
      */
     public function genre_get()
     {
@@ -345,6 +369,8 @@ class Settings extends OBFController
      * List all media countries.
      *
      * @return countries
+     *
+     * @route GET /settings/countries
      */
     public function country_list()
     {
@@ -361,6 +387,8 @@ class Settings extends OBFController
      * List all media languages.
      *
      * @return languages.
+     *
+     * @route GET /settings/languages
      */
     public function language_list()
     {
@@ -377,6 +405,8 @@ class Settings extends OBFController
      * Return OpenBroadcaster version information.
      *
      * @return version
+     *
+     * @route GET /settings/version
      */
     public function get_ob_version()
     {
@@ -393,6 +423,8 @@ class Settings extends OBFController
      * List all media metadata fields.
      *
      * @return metadata_fields
+     *
+     * @route GET /settings/metadata
      */
     public function media_metadata_fields()
     {
@@ -404,6 +436,8 @@ class Settings extends OBFController
      * List all media core metadata fields defined in the settings table.
      *
      * @return metadata_fields
+     *
+     * @route GET /settings/metadata/core
      */
     public function media_get_fields()
     {
@@ -423,6 +457,8 @@ class Settings extends OBFController
      * @param comments
      * @param dynamic_content_default
      * @param dynamic_content_hidden
+     *
+     * @route PUT /settings/metadata/required
      */
     public function media_required_fields()
     {

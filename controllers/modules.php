@@ -36,6 +36,8 @@ class Modules extends OBFController
      * Return a list of currently installed and available (= uninstalled) modules.
      *
      * @return [installed, available]
+     *
+     * @route GET /modules
      */
     public function search()
     {
@@ -50,6 +52,8 @@ class Modules extends OBFController
      * Install a module. Requires a page refresh after installation.
      *
      * @param name
+     *
+     * @route PUT /modules/(:name:)
      */
     public function install()
     {
@@ -68,6 +72,8 @@ class Modules extends OBFController
      * Uninstall a module. Requires a page refresh after uninstallation.
      *
      * @param name
+     *
+     * @route DELETE /modules/(:name:)
      */
     public function uninstall()
     {

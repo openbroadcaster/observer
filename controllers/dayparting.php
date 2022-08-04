@@ -34,9 +34,11 @@ class Dayparting extends OBFController
     }
 
     /**
-     * Get all restriction.
+     * Get all restrictions.
      *
      * @return restrictions
+     *
+     * @route GET /dayparting/search
      */
     public function search()
     {
@@ -49,6 +51,8 @@ class Dayparting extends OBFController
      * @param id
      *
      * @return restrction
+     *
+     * @route GET /dayparting/(:id:)
      */
     public function get()
     {
@@ -68,6 +72,8 @@ class Dayparting extends OBFController
      * @param filters
      *
      * @return id
+     *
+     * @route PUT /dayparting/(:id:)
      */
     public function save()
     {
@@ -87,6 +93,8 @@ class Dayparting extends OBFController
      * Delete restriction.
      *
      * @param id
+     *
+     * @route DELETE /dayparting/(:id:)
      */
     public function delete()
     {
