@@ -88,6 +88,9 @@ foreach ($doc_files as $doc_file) {
   $nav_tree[$doc_file->getClass()->package][] =
     ($doc_file->getClass()->name != null) ? $doc_file->getClass()->name : $doc_file->name;
 }
+foreach ($nav_tree as &$tree) {
+  sort($tree);
+}
 
 echo "Outputting documentation as HTML.\n";
 foreach ($pages as $index => $page) {
