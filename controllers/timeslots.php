@@ -95,7 +95,7 @@
       *
       * @return timeslots
       *
-      * @route GET /v2/timeslots
+      * @route GET /v2/players/(:player:)/timeslots
       */
      public function search()
      {

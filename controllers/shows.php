@@ -91,7 +91,7 @@
       *
       * @return shows
       *
-      * @route GET /v2/shows
+      * @route GET /v2/players/(:player:)/shows
       */
      public function search()
      {
