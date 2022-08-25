@@ -42,7 +42,7 @@ class Alerts extends OBFController
      *
      * @return alert
      *
-     * @route GET /alerts/(:id:)
+     * @route GET /v2/alerts/(:id:)
      */
     public function get()
     {
@@ -69,7 +69,7 @@ class Alerts extends OBFController
      *
      * @return alerts
      *
-     * @route GET /alerts/search/(:id:)
+     * @route GET /v2/alerts/search/(:id:)
      */
     public function search()
     {
@@ -90,7 +90,7 @@ class Alerts extends OBFController
      *
      * @param player
      *
-     * @route PUT /alerts/last/(:id:)
+     * @route PUT /v2/alerts/last/(:id:)
      */
     public function set_last_player()
     {
@@ -115,7 +115,7 @@ class Alerts extends OBFController
      *
      * @return player
      *
-     * @route GET /alerts/last
+     * @route GET /v2/alerts/last
      */
     public function get_last_player()
     {
@@ -141,7 +141,7 @@ class Alerts extends OBFController
      * @param start
      * @param stop
      *
-     * @route POST /alerts
+     * @route POST /v2/alerts
      */
     public function save()
     {
@@ -179,7 +179,7 @@ class Alerts extends OBFController
      *
      * @param id
      *
-     * @route DELETE /alerts/(:id:)
+     * @route DELETE /v2/alerts/(:id:)
      */
     public function delete()
     {

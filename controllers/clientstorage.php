@@ -41,7 +41,7 @@ class ClientStorage extends OBFController
      * @param data The data being stored.
      * @param global A boolean set to TRUE if trying to store global data. Requires the manage_global_client_storage permission.
      *
-     * @route PUT /clientstorage
+     * @route PUT /v2/clientstorage
      */
     public function store()
     {
@@ -77,7 +77,7 @@ class ClientStorage extends OBFController
     *
     * @return storage_data_array
     *
-    * @route GET /clientstorage/(:client_name:)/(:global:)
+    * @route GET /v2/clientstorage/(:client_name:)/(:global:)
     */
     public function get()
     {

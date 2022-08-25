@@ -37,7 +37,7 @@ class Media extends OBFController
      *
      * @return formats
      *
-     * @route GET /media/formats
+     * @route GET /v2/media/formats
      */
     public function formats_get()
     {
@@ -54,7 +54,7 @@ class Media extends OBFController
      * @param image_formats
      * @param audio_formats
      *
-     * @route POST /media/formats
+     * @route POST /v2/media/formats
      */
     public function formats_save()
     {
@@ -81,7 +81,7 @@ class Media extends OBFController
      *
      * @return [saved, history]
      *
-     * @route GET /media/searches
+     * @route GET /v2/media/searches
      */
     public function media_my_searches()
     {
@@ -95,7 +95,7 @@ class Media extends OBFController
      *
      * @param id
      *
-     * @route POST /media/searches
+     * @route POST /v2/media/searches
      */
     public function media_my_searches_save()
     {
@@ -115,7 +115,7 @@ class Media extends OBFController
      * @param filters
      * @param description
      *
-     * @route PUT /media/searches/(:id:)
+     * @route PUT /v2/media/searches/(:id:)
      */
     public function media_my_searches_edit()
     {
@@ -137,7 +137,7 @@ class Media extends OBFController
      *
      * @param id
      *
-     * @route DELETE /media/searches/(:id:)
+     * @route DELETE /v2/media/searches/(:id:)
      */
     public function media_my_searches_delete()
     {
@@ -157,7 +157,7 @@ class Media extends OBFController
      *
      * @param id
      *
-     * @route POST /media/searches/default
+     * @route POST /v2/media/searches/default
      */
     public function media_my_searches_default()
     {
@@ -175,7 +175,7 @@ class Media extends OBFController
      *
      * @param id
      *
-     * @route DELETE /media/searches/default/(:id:)
+     * @route DELETE /v2/media/searches/default/(:id:)
      */
     public function media_my_searches_unset_default()
     {
@@ -236,7 +236,7 @@ class Media extends OBFController
      *
      * @return [num_results, media]
      *
-     * @route GET /media/search
+     * @route GET /v2/media/search
      */
     public function search()
     {
@@ -284,7 +284,7 @@ class Media extends OBFController
      *
      * @param media The media items to update.
      *
-     * @route PUT /media
+     * @route PUT /v2/media
      */
     public function save()
     {
@@ -384,7 +384,7 @@ class Media extends OBFController
      *
      * @return [versions, media]
      *
-     * @route GET /media/versions/(:media_id:)
+     * @route GET /v2/media/versions/(:media_id:)
      */
     public function versions()
     {
@@ -411,7 +411,7 @@ class Media extends OBFController
      * @param file_id
      * @param file_key
      *
-     * @route POST /media/versions
+     * @route POST /v2/media/versions
      */
     public function version_add()
     {
@@ -433,7 +433,7 @@ class Media extends OBFController
      * @param created Version timestamp
      * @param notes
      *
-     * @route PUT /media/versions/(:media_id:)/(:created:)
+     * @route PUT /v2/media/versions/(:media_id:)/(:created:)
      */
     public function version_edit()
     {
@@ -454,7 +454,7 @@ class Media extends OBFController
      * @param media_id
      * @param created Version timestamp
      *
-     * @route DELETE /media/versions/(:media_id:)/(:created:)
+     * @route DELETE /v2/media/versions/(:media_id:)/(:created:)
      */
     public function version_delete()
     {
@@ -474,7 +474,7 @@ class Media extends OBFController
      * @param media_id
      * @param created Version timestamp
      *
-     * @route PATCH /media/versions/(:media_id:)
+     * @route PATCH /v2/media/versions/(:media_id:)
      */
     public function version_set()
     {
@@ -493,7 +493,7 @@ class Media extends OBFController
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route POST /media/archive
+     * @route POST /v2/media/archive
      */
     public function archive()
     {
@@ -528,7 +528,7 @@ class Media extends OBFController
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route POST /media/archive/undo
+     * @route POST /v2/media/archive/undo
      */
     public function unarchive()
     {
@@ -554,7 +554,7 @@ class Media extends OBFController
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route DELETE /media/archive
+     * @route DELETE /v2/media/archive
      */
     public function delete()
     {
@@ -581,7 +581,7 @@ class Media extends OBFController
      *
      * @return media
      *
-     * @route GET /media/(:id:)
+     * @route GET /v2/media/(:id:)
      */
     public function get()
     {

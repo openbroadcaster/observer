@@ -49,7 +49,7 @@ class Playlists extends OBFController
      *
      * @return can_edit
      *
-     * @route GET /playlists/editable
+     * @route GET /v2/playlists/editable
      */
     private function user_can_edit($playlist)
     {
@@ -78,7 +78,7 @@ class Playlists extends OBFController
      *
      * @return playlist
      *
-     * @route GET /playlists/(:id:)
+     * @route GET /v2/playlists/(:id:)
      */
     public function get()
     {
@@ -129,7 +129,7 @@ class Playlists extends OBFController
      *
      * @return [num_results, playlists]
      *
-     * @route GET /playlists
+     * @route GET /v2/playlists
      */
     public function search()
     {
@@ -167,7 +167,7 @@ class Playlists extends OBFController
      *
      * @return id
      *
-     * @route POST /playlists
+     * @route POST /v2/playlists
      */
     public function save()
     {
@@ -363,7 +363,7 @@ class Playlists extends OBFController
      *
      * @return [duration]
      *
-     * @route GET /playlists/validate
+     * @route GET /v2/playlists/validate
      */
     public function validate_dynamic_properties()
     {
@@ -395,7 +395,7 @@ class Playlists extends OBFController
      *
      * @param id An array of playlist IDs. Can be a single ID.
      *
-     * @route DELETE /playlists
+     * @route DELETE /v2/playlists
      */
     public function delete()
     {

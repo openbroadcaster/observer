@@ -43,7 +43,7 @@ class Players extends OBFController
      *
      * @return players_array
      *
-     * @route GET /players
+     * @route GET /v2/players
      */
     public function search()
     {
@@ -103,7 +103,7 @@ class Players extends OBFController
      *
      * @return player_id
      *
-     * @route POST /players
+     * @route POST /v2/players
      */
     public function save()
     {
@@ -170,7 +170,7 @@ class Players extends OBFController
      *
      * @param id
      *
-     * @route DELETE /players/(:id:)
+     * @route DELETE /v2/players/(:id:)
      */
     public function delete()
     {
@@ -205,7 +205,7 @@ class Players extends OBFController
      *
      * @return player_data
      *
-     * @route GET /players/(:id:)
+     * @route GET /v2/players/(:id:)
      */
     public function get()
     {
@@ -236,7 +236,7 @@ class Players extends OBFController
      *
      * @return average
      *
-     * @route GET /players/avg_duration
+     * @route GET /v2/players/avg_duration
      */
     public function station_id_avg_duration()
     {
@@ -260,7 +260,7 @@ class Players extends OBFController
      *
      * @return [results, total_rows, csv_results]
      *
-     * @route GET /players/monitor
+     * @route GET /v2/players/monitor
      */
     public function monitor_search()
     {
@@ -303,7 +303,7 @@ class Players extends OBFController
      *
      * @return [show_name, show_time_left, media_data]
      *
-     * @route GET /players/playing/(:id:)
+     * @route GET /v2/players/playing/(:id:)
      */
     public function now_playing()
     {

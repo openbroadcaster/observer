@@ -40,7 +40,7 @@ class Users extends OBFController
      *
      * @param user_registration
      *
-     * @route PUT /users/can_register
+     * @route PUT /v2/users/can_register
      */
     public function user_registration_set()
     {
@@ -55,7 +55,7 @@ class Users extends OBFController
      *
      * @return user_registration
      *
-     * @route GET /users/can_register
+     * @route GET /v2/users/can_register
      */
     public function user_registration_get()
     {
@@ -67,7 +67,7 @@ class Users extends OBFController
      *
      * @return [display_name, id, email]
      *
-     * @route GET /users/all
+     * @route GET /v2/users/all
      */
     public function user_list()
     {
@@ -84,7 +84,7 @@ class Users extends OBFController
      *
      * @return users
      *
-     * @route GET /users
+     * @route GET /v2/users
      */
     public function user_manage_list()
     {
@@ -121,7 +121,7 @@ class Users extends OBFController
      * @param group_ids
      * @param appkeys
      *
-     * @route POST /users
+     * @route POST /v2/users
      */
     public function user_manage_addedit()
     {
@@ -159,7 +159,7 @@ class Users extends OBFController
      *
      * @param id
      *
-     * @route DELETE /users/(:id:)
+     * @route DELETE /v2/users/(:id:)
      */
     public function user_manage_delete()
     {
@@ -184,7 +184,7 @@ class Users extends OBFController
      *
      * @return [id, name, key]
      *
-     * @route POST /users/appkeys
+     * @route POST /v2/users/appkeys
      */
     public function user_manage_key_new()
     {
@@ -212,7 +212,7 @@ class Users extends OBFController
      *
      * @return is_deleted?
      *
-     * @route DELETE /users/appkeys/(:user_id:)/(:id:)
+     * @route DELETE /v2/users/appkeys/(:user_id:)/(:id:)
      */
     public function user_manage_key_delete()
     {
@@ -244,7 +244,7 @@ class Users extends OBFController
      *
      * @return appkeys
      *
-     * @route GET /users/appkeys/(:id:)
+     * @route GET /v2/users/appkeys/(:id:)
      */
     public function user_manage_key_load()
     {
@@ -265,7 +265,7 @@ class Users extends OBFController
      *
      * @return groups
      *
-     * @route GET /users/groups
+     * @route GET /v2/users/groups
      */
     public function group_list()
     {
@@ -280,7 +280,7 @@ class Users extends OBFController
      *
      * @param id
      *
-     * @route DELETE /users/permissions/(:id:)
+     * @route DELETE /v2/users/permissions/(:id:)
      */
     public function permissions_manage_delete()
     {
@@ -302,7 +302,7 @@ class Users extends OBFController
      * @param id
      * @param permissions
      *
-     * @route POST /users/permissions
+     * @route POST /v2/users/permissions
      */
     public function permissions_manage_addedit()
     {
@@ -329,7 +329,7 @@ class Users extends OBFController
      *
      * @return permissions
      *
-     * @route GET /users/permissions
+     * @route GET /v2/users/permissions
      */
     public function permissions_manage_list()
     {

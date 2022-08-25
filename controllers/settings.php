@@ -42,7 +42,7 @@ class Settings extends OBFController
      *
      * @param order
      *
-     * @route PUT /settings/metadata/order
+     * @route PUT /v2/settings/metadata/order
      */
     public function metadata_order()
     {
@@ -63,7 +63,7 @@ class Settings extends OBFController
      * @param default
      * @param tag_suggestions
      *
-     * @route POST /settings/metadata
+     * @route POST /v2/settings/metadata
      */
     public function metadata_save()
     {
@@ -110,7 +110,7 @@ class Settings extends OBFController
      *
      * @param id
      *
-     * @route DELETE /settings/metadata/(:id:)
+     * @route DELETE /v2/settings/metadata/(:id:)
      */
     public function metadata_delete()
     {
@@ -133,7 +133,7 @@ class Settings extends OBFController
      *
      * @return [tag]
      *
-     * @route GET /settings/metadata/tags
+     * @route GET /v2/settings/metadata/tags
      */
     public function metadata_tag_search()
     {
@@ -155,7 +155,7 @@ class Settings extends OBFController
      *
      * @return categories
      *
-     * @route GET /settings/categories
+     * @route GET /v2/settings/categories
      */
     public function category_list()
     {
@@ -181,7 +181,7 @@ class Settings extends OBFController
      * @param name
      * @param default Set as default category for new media.
      *
-     * @route POST /settings/categories
+     * @route POST /v2/settings/categories
      */
     public function category_save()
     {
@@ -213,7 +213,7 @@ class Settings extends OBFController
      *
      * @param id
      *
-     * @route DELETE /settings/categories/(:id:)
+     * @route DELETE /v2/settings/categories/(:id:)
      */
     public function category_delete()
     {
@@ -242,7 +242,7 @@ class Settings extends OBFController
      *
      * @return [id, name, is_default]
      *
-     * @route GET /settings/categories/(:id:)
+     * @route GET /v2/settings/categories/(:id:)
      */
     public function category_get()
     {
@@ -268,7 +268,7 @@ class Settings extends OBFController
      *
      * @return genres
      *
-     * @route GET /settings/genres
+     * @route GET /v2/settings/genres
      */
     public function genre_list()
     {
@@ -296,7 +296,7 @@ class Settings extends OBFController
      * @param media_category_id
      * @param default Set as default genre for new media.
      *
-     * @route POST /settings/genres
+     * @route POST /v2/settings/genres
      */
     public function genre_save()
     {
@@ -326,7 +326,7 @@ class Settings extends OBFController
      *
      * @param id
      *
-     * @route DELETE /settings/genres/(:id:)
+     * @route DELETE /v2/settings/genres/(:id:)
      */
     public function genre_delete()
     {
@@ -350,7 +350,7 @@ class Settings extends OBFController
      *
      * @return [id, name, description, media_category_id]
      *
-     * @route GET /settings/genres/(:id:)
+     * @route GET /v2/settings/genres/(:id:)
      */
     public function genre_get()
     {
@@ -370,7 +370,7 @@ class Settings extends OBFController
      *
      * @return countries
      *
-     * @route GET /settings/countries
+     * @route GET /v2/settings/countries
      */
     public function country_list()
     {
@@ -388,7 +388,7 @@ class Settings extends OBFController
      *
      * @return languages.
      *
-     * @route GET /settings/languages
+     * @route GET /v2/settings/languages
      */
     public function language_list()
     {
@@ -406,7 +406,7 @@ class Settings extends OBFController
      *
      * @return version
      *
-     * @route GET /settings/version
+     * @route GET /v2/settings/version
      */
     public function get_ob_version()
     {
@@ -424,7 +424,7 @@ class Settings extends OBFController
      *
      * @return metadata_fields
      *
-     * @route GET /settings/metadata
+     * @route GET /v2/settings/metadata
      */
     public function media_metadata_fields()
     {
@@ -437,7 +437,7 @@ class Settings extends OBFController
      *
      * @return metadata_fields
      *
-     * @route GET /settings/metadata/core
+     * @route GET /v2/settings/metadata/core
      */
     public function media_get_fields()
     {
@@ -458,7 +458,7 @@ class Settings extends OBFController
      * @param dynamic_content_default
      * @param dynamic_content_hidden
      *
-     * @route PUT /settings/metadata/required
+     * @route PUT /v2/settings/metadata/required
      */
     public function media_required_fields()
     {

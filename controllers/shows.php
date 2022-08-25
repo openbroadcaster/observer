@@ -38,7 +38,7 @@
       *
       * @return show
       *
-      * @route GET /shows/(:id:)
+      * @route GET /v2/shows/(:id:)
       */
      public function get()
      {
@@ -63,7 +63,7 @@
       *
       * @return show
       *
-      * @route GET /shows/recurring/(:id:)
+      * @route GET /v2/shows/recurring/(:id:)
       */
      public function get_recurring()
      {
@@ -91,7 +91,7 @@
       *
       * @return shows
       *
-      * @route GET /shows
+      * @route GET /v2/shows
       */
      public function search()
      {
@@ -136,7 +136,7 @@
       *
       * @param player
       *
-      * @route PUT /shows/last_player
+      * @route PUT /v2/shows/last_player
       */
      public function set_last_player()
      {
@@ -159,7 +159,7 @@
       *
       * @return player
       *
-      * @route GET /shows/last_player
+      * @route GET /v2/shows/last_player
       */
      public function get_last_player()
      {
@@ -179,7 +179,7 @@
       * @param id
       * @param recurring
       *
-      * @route DELETE /shows/(:id:)/(:recurring:)
+      * @route DELETE /v2/shows/(:id:)/(:recurring:)
       */
      public function delete()
      {
@@ -214,7 +214,7 @@
       * @param item_type
       * @param item_id
       *
-      * @route POST /shows
+      * @route POST /v2/shows
       */
      public function save()
      {

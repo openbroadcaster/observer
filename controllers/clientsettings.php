@@ -40,7 +40,7 @@ class ClientSettings extends OBFController
      *
      * @return setting_result
      *
-     * @route POST /clientsettings/login_message
+     * @route POST /v2/clientsettings/login_message
      */
     public function set_login_message()
     {
@@ -54,7 +54,7 @@ class ClientSettings extends OBFController
      *
      * @return client_login_message
      *
-     * @route GET /clientsettings/login_message
+     * @route GET /v2/clientsettings/login_message
      */
     public function get_login_message()
     {
@@ -68,7 +68,7 @@ class ClientSettings extends OBFController
      *
      * @return setting_result
      *
-     * @route POST /clientsettings/welcome_page
+     * @route POST /v2/clientsettings/welcome_page
      */
     public function set_welcome_page()
     {
@@ -82,7 +82,7 @@ class ClientSettings extends OBFController
     *
     * @return client_welcome_page
     *
-    * @route GET /clientsettings/welcome_page
+    * @route GET /v2/clientsettings/welcome_page
     */
     public function get_welcome_page()
     {

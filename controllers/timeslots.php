@@ -38,7 +38,7 @@
       *
       * @return timeslot
       *
-      * @route GET /timeslots/(:id:)
+      * @route GET /v2/timeslots/(:id:)
       */
      public function get()
      {
@@ -63,7 +63,7 @@
       *
       * @return timeslot
       *
-      * @route GET /timeslots/recurring/(:id:)
+      * @route GET /v2/timeslots/recurring/(:id:)
       */
      public function get_recurring()
      {
@@ -95,7 +95,7 @@
       *
       * @return timeslots
       *
-      * @route GET /timeslots
+      * @route GET /v2/timeslots
       */
      public function search()
      {
@@ -155,7 +155,7 @@
       *
       * @param player
       *
-      * @route PUT /timeslots/last_player
+      * @route PUT /v2/timeslots/last_player
       */
      public function set_last_player()
      {
@@ -178,7 +178,7 @@
       *
       * @return player
       *
-      * @route GET /timeslots/last_player
+      * @route GET /v2/timeslots/last_player
       */
      public function get_last_player()
      {
@@ -199,7 +199,7 @@
       * @param id
       * @param recurring
       *
-      * @route DELETE /timeslots/(:id:)/(:recurring:)
+      * @route DELETE /v2/timeslots/(:id:)/(:recurring:)
       */
      public function delete()
      {
@@ -239,7 +239,7 @@
       * @param duration
       * @param stop
       *
-      * @route POST /timeslots
+      * @route POST /v2/timeslots
       */
      public function save()
      {

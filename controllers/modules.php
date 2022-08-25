@@ -37,7 +37,7 @@ class Modules extends OBFController
      *
      * @return [installed, available]
      *
-     * @route GET /modules
+     * @route GET /v2/modules
      */
     public function search()
     {
@@ -53,7 +53,7 @@ class Modules extends OBFController
      *
      * @param name
      *
-     * @route PUT /modules/(:name:)
+     * @route PUT /v2/modules/(:name:)
      */
     public function install()
     {
@@ -73,7 +73,7 @@ class Modules extends OBFController
      *
      * @param name
      *
-     * @route DELETE /modules/(:name:)
+     * @route DELETE /v2/modules/(:name:)
      */
     public function uninstall()
     {

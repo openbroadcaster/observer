@@ -40,7 +40,7 @@ class UI extends OBFController
      *
      * @return themes
      *
-     * @route GET /ui/themes
+     * @route GET /v2/ui/themes
      */
     public function get_themes()
     {
@@ -52,7 +52,7 @@ class UI extends OBFController
      *
      * @return languages
      *
-     * @route GET /ui/languages
+     * @route GET /v2/ui/languages
      */
     public function get_languages()
     {
@@ -65,7 +65,7 @@ class UI extends OBFController
    *
    * @return [html_file => html]
    *
-   * @route GET /ui/html
+   * @route GET /v2/ui/html
    */
     public function html()
     {

@@ -38,7 +38,7 @@ class Dayparting extends OBFController
      *
      * @return restrictions
      *
-     * @route GET /dayparting/search
+     * @route GET /v2/dayparting/search
      */
     public function search()
     {
@@ -52,7 +52,7 @@ class Dayparting extends OBFController
      *
      * @return restrction
      *
-     * @route GET /dayparting/(:id:)
+     * @route GET /v2/dayparting/(:id:)
      */
     public function get()
     {
@@ -73,7 +73,7 @@ class Dayparting extends OBFController
      *
      * @return id
      *
-     * @route PUT /dayparting/(:id:)
+     * @route PUT /v2/dayparting/(:id:)
      */
     public function save()
     {
@@ -94,7 +94,7 @@ class Dayparting extends OBFController
      *
      * @param id
      *
-     * @route DELETE /dayparting/(:id:)
+     * @route DELETE /v2/dayparting/(:id:)
      */
     public function delete()
     {
