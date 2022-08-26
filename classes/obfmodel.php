@@ -138,4 +138,49 @@ class OBFModel
     else $this->error=$error;
   }
 
+  /**
+  * Validation helper.
+  * 
+  * @param array data
+  * @param array required
+  *
+  * @return bool valid
+  */
+  /*
+  public function validate_required(array $data, array $required)
+  {
+    foreach($required as $search)
+    {   
+      if(array_search($search, array_keys($data))===false)
+      {
+        $this->error('Required field'.(count($required)>0 ? 's' : '').' ('.implode(', ', $required).') not found.');
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  */
+
+  /**
+  * Extract the specified keys from an array.
+  * 
+  * @param array data
+  * @param array keys
+  *
+  * @return bool filteredArray
+  */
+  /*
+  public function filter_keys(array $data, array $keys)
+  {
+    $return = [];
+    
+    foreach($keys as $key)
+    {
+      if(isset($data[$key])) $return[$key] = $data[$key];
+    }
+    
+    return $return;
+  }
+  */
 }
