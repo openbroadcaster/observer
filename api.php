@@ -31,8 +31,21 @@ class OBFAPI
 
   public function __construct()
   {
+    // handle rewrite API (v2)
+    // we consider v1 to be the previous method via api.php.
+    if(!(isset($_POST['m']) && is_array($_POST['m'])) && str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/'))
+    {
+      if(preg_match('#^/api/v2/ping/?$#',$_SERVER['REQUEST_URI']))
+      {
+        echo json_encode('pong');
+        exit();
+      }
 
-
+      $request = explode('/', substr($_SERVER['REQUEST_URI'], 8), 2);
+      $_POST['c'] = $request[0] ?? null; // controller
+      $_POST['a'] = $request[1] ?? null; // action/method
+    }
+  
     $this->io = OBFIO::get_instance();
     $this->load = OBFLoad::get_instance();
     $this->user = OBFUser::get_instance();

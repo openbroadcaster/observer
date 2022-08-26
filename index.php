@@ -72,6 +72,17 @@ $image_files = $models->ui('image_files');
   <link type="text/css" href="extras/jquery-ui-darkness/jquery-ui.min.css?v=<?=filemtime('extras/jquery-ui-darkness/jquery-ui.min.css')?>" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="extras/jquery-ui-timepicker-addon.css?v=<?=filemtime('extras/jquery-ui-timepicker-addon.css')?>">
 
+  <script>
+  OB_API_REWRITE = false;
+  jQuery.ajax({
+      url: '/api/v2/ping',
+      success: function (result) {
+        if(result=='"pong"') OB_API_REWRITE = true;
+      },
+      async: false
+  });
+  </script>
+
   <?php foreach($js_files as $file) { ?>
     <script type="text/javascript" src="<?=$file?>?v=<?=filemtime($file)?>"></script>
   <?php } ?>
