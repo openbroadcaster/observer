@@ -42,7 +42,7 @@ OB.Playlist.deletePage = function(ids)
   if(ids.length < 1) { return; }
 
   var post = [];
-  ids.forEach(function(id) { post.push(['playlist','get',{'id':id,'where_used':true}]); });
+  ids.forEach(function(id) { post.push(['playlists','get',{'id':id,'where_used':true}]); });
 
   OB.API.multiPost(post, function(response) {
 
@@ -104,7 +104,7 @@ OB.Playlist.delete = function()
     delete_ids.push($(element).attr('data-id'));
   });
 
-  OB.API.post('playlist','delete',{ 'id': delete_ids },function(data) {
+  OB.API.post('playlists','delete',{ 'id': delete_ids },function(data) {
 
     if(data.status==true)
     {

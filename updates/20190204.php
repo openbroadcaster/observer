@@ -2,16 +2,16 @@
 
 class OBUpdate20190204 extends OBUpdate
 {
-  public function items()
-  {
-    $updates = array();
-    $updates[] = 'Media version system and metadata tag field type.';
-    return $updates;
-  }
+    public function items()
+    {
+        $updates = array();
+        $updates[] = 'Media version system and metadata tag field type.';
+        return $updates;
+    }
 
-  public function run()
-  {    
-    $this->db->query("
+    public function run()
+    {
+        $this->db->query("
 CREATE TABLE IF NOT EXISTS `media_versions` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `media_id` int(10) UNSIGNED NOT NULL,
@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS `media_versions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ");
-    
-    $this->db->query("INSERT INTO `users_permissions` (`id`, `name`, `description`, `category`) VALUES (NULL, 'manage_media_versions', 'manage media versions', 'media');");
-    
-    return true;
-  }
+
+        $this->db->query("INSERT INTO `users_permissions` (`id`, `name`, `description`, `category`) VALUES (NULL, 'manage_media_versions', 'manage media versions', 'media');");
+
+        return true;
+    }
 }

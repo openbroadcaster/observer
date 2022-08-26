@@ -1,6 +1,6 @@
 <?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -20,26 +20,44 @@
 */
 
 // set some constants
-if(!defined('OB_ERROR_BAD_POSTDATA')) define('OB_ERROR_BAD_POSTDATA',1);
-if(!defined('OB_ERROR_BAD_CONTROLLER')) define('OB_ERROR_BAD_CONTROLLER',2);
-if(!defined('OB_ERROR_BAD_DATA')) define('OB_ERROR_BAD_DATA',3);
-if(!defined('OB_ERROR_DENIED')) define('OB_ERROR_DENIED',4);
-if(!defined('OB_LOCAL')) define('OB_LOCAL',__DIR__);
+if (!defined('OB_ERROR_BAD_POSTDATA')) {
+    define('OB_ERROR_BAD_POSTDATA', 1);
+}
+if (!defined('OB_ERROR_BAD_CONTROLLER')) {
+    define('OB_ERROR_BAD_CONTROLLER', 2);
+}
+if (!defined('OB_ERROR_BAD_DATA')) {
+    define('OB_ERROR_BAD_DATA', 3);
+}
+if (!defined('OB_ERROR_DENIED')) {
+    define('OB_ERROR_DENIED', 4);
+}
+if (!defined('OB_LOCAL')) {
+    define('OB_LOCAL', __DIR__);
+}
 
 // use same working directory regardless of where our script is.
-chdir(OB_LOCAL); 
+chdir(OB_LOCAL);
 
 // load config
-if(!file_exists('config.php')) die('Settings file (config.php) not found.');
+if (!file_exists('config.php')) {
+    die('Settings file (config.php) not found.');
+}
 require('config.php');
 
 // set defaults if not set
-if(!defined('OB_ASSETS')) define('OB_ASSETS',OB_LOCAL.'/assets');
-if(!defined('OB_MEDIA_FILESIZE_LIMIT')) define('OB_MEDIA_FILESIZE_LIMIT',1024);
-if(!defined('OB_MEDIA_VERIFY')) define('OB_MEDIA_VERIFY',true);
+if (!defined('OB_ASSETS')) {
+    define('OB_ASSETS', OB_LOCAL.'/assets');
+}
+if (!defined('OB_MEDIA_FILESIZE_LIMIT')) {
+    define('OB_MEDIA_FILESIZE_LIMIT', 1024);
+}
+if (!defined('OB_MEDIA_VERIFY')) {
+    define('OB_MEDIA_VERIFY', true);
+}
 
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.
-date_default_timezone_set('Etc/UTC'); 
+date_default_timezone_set('Etc/UTC');
 
 // load core components
 require('classes/obfdb.php');

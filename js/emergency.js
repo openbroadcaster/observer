@@ -79,8 +79,8 @@ OB.Emergency.emergencyInit = function()
 {
 
   var post = [];
-  post.push(['player','search', {}]);
-  post.push(['emergency','get_last_player', {}]);
+  post.push(['players','search', {}]);
+  post.push(['alerts','get_last_player', {}]);
 
   OB.API.multiPost(post, function(responses)
   {
@@ -125,8 +125,8 @@ OB.Emergency.loadEmergencies = function()
 {
 
   var post = [];
-  post.push(['emergency','search',{ 'player_id': OB.Emergency.player_id }]);
-  post.push(['emergency','set_last_player', { 'player': OB.Emergency.player_id}]);
+  post.push(['alerts','search',{ 'player_id': OB.Emergency.player_id }]);
+  post.push(['alerts','set_last_player', { 'player': OB.Emergency.player_id}]);
 
   OB.API.multiPost(post, function(responses)
   {
@@ -191,7 +191,7 @@ OB.Emergency.saveEmergency = function()
   fields.id = $('#emergency_id').val();
   fields.item_id = $('#emergency_item_id').val();
 
-  OB.API.post('emergency','save',fields,function(data)
+  OB.API.post('alerts','save',fields,function(data)
   {
 
     if (data.status == true)
@@ -216,7 +216,7 @@ OB.Emergency.addeditEmergencyWindow = function()
 OB.Emergency.editEmergency = function(id)
 {
 
-  OB.API.post('emergency','get',{ 'id': id }, function(data)
+  OB.API.post('alerts','get',{ 'id': id }, function(data)
   {
 
     if(data.status==true)
@@ -276,7 +276,7 @@ OB.Emergency.deleteEmergency = function(confirm)
   if(confirm)
   {
 
-    OB.API.post('emergency','delete',{ 'id': $('#emergency_id').val() }, function(data)
+    OB.API.post('alerts','delete',{ 'id': $('#emergency_id').val() }, function(data)
     {
 
       if(data.status==true)

@@ -1,0 +1,33 @@
+<h2>App Key Requests</h2>
+<p>OpenBroadcaster supports making requests to controllers from remote locations
+as well, using App Keys. These can be defined by in the user management model,
+in the account management screen of anyone with the 'manage_appkeys' permission.</p>
+<p>An example of an App Keys request to OpenBroadcaster with jQuery can be found
+below:</p>
+<p><code><pre>var xhr = $.ajax( {
+  'async': true,
+  'type': 'POST',
+  'url': 'https://openbroadcaster-server-location.com/api.php',
+  'dataType': 'json',
+  'data': {
+    "c": "media",
+    "a": "media_search",
+    "d": JSON.stringify({
+      "save_history": true,
+      "sort_by": "updated",
+      "sort_dir":"desc",
+      "q": {"mode": "simple", "string": "xyz"},
+      "s": "approved",
+      "l": 250,
+      "o": 0,
+      "my": false
+    }),
+    "appkey": "BASE64ENCODEDAPPKEYHERE"
+  },
+  'success': function (response) {
+    console.log(response);
+  }
+});</pre></code></p>
+<p>Note that the above requires a working jQuery installation, and the 'url' and
+'appkey' parameters need to be replaced with ones set up for the OpenBroadcaster
+installation.</p>

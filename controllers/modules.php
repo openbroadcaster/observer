@@ -26,61 +26,65 @@
  */
 class Modules extends OBFController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->user->require_permission('manage_modules');
+    }
 
-  public function __construct()
-  {
-    parent::__construct();
-    $this->user->require_permission('manage_modules');
-  }
+    /**
+     * Return a list of currently installed and available (= uninstalled) modules.
+     *
+     * @return [installed, available]
+     *
+     * @route GET /v2/modules
+     */
+    public function search()
+    {
+        $modules = array();
+        $modules['installed'] = $this->models->modules('get_installed');
+        $modules['available'] = $this->models->modules('get_not_installed');
 
-  /**
-   * Return a list of currently installed and available (= uninstalled) modules.
-   *
-   * @return [installed, available]
-   */
-  public function search()
-  {
+        return array(true,'Modules',$modules);
+    }
 
-    $modules = array();
-    $modules['installed'] = $this->models->modules('get_installed');
-    $modules['available'] = $this->models->modules('get_not_installed');
+    /**
+     * Install a module. Requires a page refresh after installation.
+     *
+     * @param name
+     *
+     * @route PUT /v2/modules/(:name:)
+     */
+    public function install()
+    {
+        $module = $this->data('name');
 
-    return array(true,'Modules',$modules);
+        $install = $this->models->modules('install', $module);
 
-  }
+        if ($install) {
+            return array(true,'Module installed. Refreshing the page may be required to update the user interface.');
+        } else {
+            return array(false,'An error occurred while attempting to install this module.');
+        }
+    }
 
-  /**
-   * Install a module. Requires a page refresh after installation.
-   *
-   * @param name
-   */
-  public function install()
-  {
+    /**
+     * Uninstall a module. Requires a page refresh after uninstallation.
+     *
+     * @param name
+     *
+     * @route DELETE /v2/modules/(:name:)
+     */
+    public function uninstall()
+    {
+        $module = $this->data('name');
 
-    $module = $this->data('name');
+        $uninstall = $this->models->modules('uninstall', $module);
 
-    $install = $this->models->modules('install',$module);
-
-    if($install) return array(true,'Module installed. Refreshing the page may be required to update the user interface.');
-    else return array(false,'An error occurred while attempting to install this module.');
-
-  }
-
-  /**
-   * Uninstall a module. Requires a page refresh after uninstallation.
-   *
-   * @param name
-   */
-  public function uninstall()
-  {
-
-    $module = $this->data('name');
-
-    $uninstall = $this->models->modules('uninstall',$module);
-
-    if($uninstall) return array(true,'Module uninstalled. Refreshing the page may be required to update the user interface.');
-    else return array(false,'An error occurred while attempting to uninstall this module.');
-
-  }
-
+        if ($uninstall) {
+            return array(true,'Module uninstalled. Refreshing the page may be required to update the user interface.');
+        } else {
+            return array(false,'An error occurred while attempting to uninstall this module.');
+        }
+    }
 }

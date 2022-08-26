@@ -2,17 +2,16 @@
 
 class OBUpdate20140322 extends OBUpdate
 {
-  public function items()
-  {
-    $updates = array();
-    $updates[] = 'Live assist button playlists.';
-    return $updates;
-  }
+    public function items()
+    {
+        $updates = array();
+        $updates[] = 'Live assist button playlists.';
+        return $updates;
+    }
 
-  public function run()
-  {
-
-    $this->db->query("CREATE TABLE IF NOT EXISTS `playlists_liveassist_buttons` (
+    public function run()
+    {
+        $this->db->query("CREATE TABLE IF NOT EXISTS `playlists_liveassist_buttons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `playlist_id` int(10) unsigned NOT NULL,
   `order_id` int(10) unsigned NOT NULL,
@@ -21,7 +20,7 @@ class OBUpdate20140322 extends OBUpdate
   KEY `playlist_id` (`playlist_id`,`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
-    $this->db->query("CREATE TABLE IF NOT EXISTS `schedules_media_cache` (
+        $this->db->query("CREATE TABLE IF NOT EXISTS `schedules_media_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `mode` enum('once','recurring','default_playlist') NOT NULL,
   `schedule_id` int(10) unsigned DEFAULT NULL,
@@ -36,7 +35,6 @@ class OBUpdate20140322 extends OBUpdate
   KEY `device_id` (`device_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
-    return true;
-
-  }
+        return true;
+    }
 }

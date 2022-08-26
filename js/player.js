@@ -46,7 +46,7 @@ OB.Player.playerOverview = function (orderby = 'name', orderdesc = null) {
   post.orderby = orderby;
   if (orderdesc != null) post.orderdesc = 'desc';
 
-  OB.API.post('player', 'search', post, function (response) {
+  OB.API.post('players', 'search', post, function (response) {
     if (!response.status) {
       $('#player_main_message').obWidget('error', response.msg);
       return false;
@@ -141,7 +141,7 @@ OB.Player.editPlayer = function (player_id) {
 
   var post = {};
   post.id = player_id;
-  OB.API.post('player', 'get', post, function (response) {
+  OB.API.post('players', 'get', post, function (response) {
     if (!response.status) {
       OB.UI.closeModalWindow();
       $('#player_main_message').obWidget('error', response.msg);
@@ -258,7 +258,7 @@ OB.Player.savePlayer = function () {
   post.use_parent_playlist = $('#player_settings_parent_playlist').is(':checked');
   post.use_parent_emergency = $('#player_settings_parent_priority').is(':checked');
 
-  OB.API.post('player', 'save', post, function (response) {
+  OB.API.post('players', 'save', post, function (response) {
     if (!response.status) {
       $('#player_edit_message').obWidget('error', response.msg);
     } else {
@@ -287,7 +287,7 @@ OB.Player.deletePlayerConfirm = function (player_id) {
   var post = {};
   post.id = player_id;
 
-  OB.API.post('player', 'delete', post, function (response) {
+  OB.API.post('players', 'delete', post, function (response) {
     OB.UI.closeModalWindow();
     OB.Player.settings();
 
@@ -308,7 +308,7 @@ OB.Player.monitor = function()
   $('#monitor_date_start').attr('data-value',moment().subtract(1, 'days'));
   $('#monitor_date_end').attr('data-value',moment());
 
-  OB.API.post('player','search', {}, function(data)
+  OB.API.post('players','search', {}, function(data)
   {
     var players = data.data;
     $.each(players,function(index,item) {
@@ -425,7 +425,7 @@ OB.Player.monitorSearch = function()
 
   $('#monitor_message').hide();
 
-  OB.API.post('player','monitor_search',fields,function(data) {
+  OB.API.post('players','monitor_search',fields,function(data) {
 
     if(data.status==false)
     {

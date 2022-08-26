@@ -1,6 +1,6 @@
 <?php
 
-/*     
+/*
     Copyright 2012-2020 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
@@ -21,7 +21,9 @@
 
 header('Content-type: audio/ogg');
 
-if(!isset($_GET['t'])) die();
+if (!isset($_GET['t'])) {
+    die();
+}
 
 $festival = array(
   array('pipe','r'),
@@ -31,9 +33,8 @@ $festival = array(
 
 $process = proc_open('text2wave | oggenc - -o -', $festival, $pipes);
 
-fwrite($pipes[0],$_GET['t']);
+fwrite($pipes[0], $_GET['t']);
 fclose($pipes[0]);
 
 echo stream_get_contents($pipes[1]);
 fclose($pipes[1]);
-

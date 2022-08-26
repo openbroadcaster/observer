@@ -26,16 +26,16 @@
  */
 class MediaLanguagesModel extends OBFModel
 {
-  /**
-   * Get all media languages.
-   *
-   * @return languages
-   */
-  public function get_all()
-  {
-    $this->db->orderby('name');
-    $types = $this->db->get('media_languages');
+    /**
+     * Get all media languages.
+     *
+     * @return languages
+     */
+    public function get_all()
+    {
+        $this->db->orderby('name');
+        $types = $this->db->get('media_languages');
 
-    return $types;
-  }
+        return $types;
+    }
 }

@@ -1,29 +1,31 @@
 <?php
 
-class OBUpdate20190901 extends OBUpdate {
+class OBUpdate20190901 extends OBUpdate
+{
+    public function items()
+    {
+        $updates   = array();
+        $updates[] = 'Translation tables.';
 
-  public function items () {
-    $updates   = array();
-    $updates[] = 'Translation tables.';
+        return $updates;
+    }
 
-    return $updates;
-  }
-
-  public function run () {
-    $this->db->query('CREATE TABLE IF NOT EXISTS `translations_sources` (
+    public function run()
+    {
+        $this->db->query('CREATE TABLE IF NOT EXISTS `translations_sources` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `string` text NOT NULL,
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
 
-    $this->db->query('CREATE TABLE IF NOT EXISTS `translations_languages` (
+        $this->db->query('CREATE TABLE IF NOT EXISTS `translations_languages` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) NOT NULL,
       `code` varchar(50) NOT NULL UNIQUE,
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
 
-    $this->db->query('CREATE TABLE IF NOT EXISTS `translations_values` (
+        $this->db->query('CREATE TABLE IF NOT EXISTS `translations_values` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `language_id` int(10) unsigned NOT NULL,
       `source_str` text NOT NULL,
@@ -31,6 +33,6 @@ class OBUpdate20190901 extends OBUpdate {
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
 
-    return true;
-  }
+        return true;
+    }
 }

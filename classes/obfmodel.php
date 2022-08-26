@@ -26,104 +26,109 @@
  */
 class OBFModel
 {
+    public $load;
+    public $db;
+    public $user;
+    public $error;
+    public $models;
 
-  public $load;
-  public $db;
-  public $user;
-  public $error;
-  public $models;
+    protected $helpers;
+    protected $callback_handler;
 
-  protected $helpers;
-  protected $callback_handler;
-
-  /**
-   * Create an instance of OBFModel, make database (db) and base framwork (ob)
-   * available.
-   */
-  public function __construct()
-  {
-    $this->load = OBFLoad::get_instance();
-    $this->db = OBFDB::get_instance();
-    $this->user = OBFUser::get_instance();
-    $this->callback_handler = OBFCallbacks::get_instance();
-    $this->helpers = OBFHelpers::get_instance();
-    $this->models = OBFModels::get_instance();
-  }
-
-  /**
-   * Shortcut to use $this->ModelName('method', arg1, arg2, ...).
-   *
-   * @param name
-   * @param args
-   *
-   * @return return_value
-   */
-  public function __call($name,$args)
-  {
-    if(!isset($this->$name))
+    /**
+     * Create an instance of OBFModel, make database (db) and base framwork (ob)
+     * available.
+     */
+    public function __construct()
     {
-      $stack = debug_backtrace();
-      trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+        $this->load = OBFLoad::get_instance();
+        $this->db = OBFDB::get_instance();
+        $this->user = OBFUser::get_instance();
+        $this->callback_handler = OBFCallbacks::get_instance();
+        $this->helpers = OBFHelpers::get_instance();
+        $this->models = OBFModels::get_instance();
     }
 
-    $obj = $this->$name;
+    /**
+     * Shortcut to use $this->ModelName('method', arg1, arg2, ...).
+     *
+     * @param name
+     * @param args
+     *
+     * @return return_value
+     */
+    public function __call($name, $args)
+    {
+        if (!isset($this->$name)) {
+            $stack = debug_backtrace();
+            trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+        }
 
-    return call_user_func_array($obj,$args);
-  }
+        $obj = $this->$name;
 
-  /**
-   * Invoke is used for all method calls in order to handle callbacks appropriately.
-   */
-  public function __invoke()
-  {
+        return call_user_func_array($obj, $args);
+    }
+
+    /**
+     * Invoke is used for all method calls in order to handle callbacks appropriately.
+     */
+    public function __invoke()
+    {
 
     // copied/modified from: http://drupal.org/node/353494 ... this is ugly.
-    // hopefully the future will bring a more elegant solution.
-    $stack = debug_backtrace();
-    $args = array();
-    $eval_args = array();
+        // hopefully the future will bring a more elegant solution.
+        $stack = debug_backtrace();
+        $args = array();
+        $eval_args = array();
 
-    // make sure our method name is specified.  determine our method name.
-    if(!isset($stack[0]['args']) || count($stack[0]['args'])<1) return;
-    $method = $stack[0]['args'][0];
+        // make sure our method name is specified.  determine our method name.
+        if (!isset($stack[0]['args']) || count($stack[0]['args'])<1) {
+            return;
+        }
+        $method = $stack[0]['args'][0];
 
-    // make sure method exists.
-    if(!method_exists($this,$method)) return;
+        // make sure method exists.
+        if (!method_exists($this, $method)) {
+            return;
+        }
 
-    // get our args by reference.
-    if(count($stack[0]['args'])>1){
-      for($i=1; $i < count($stack[0]["args"]); $i++){
-        $args[] = &$stack[0]["args"][$i];
-        $eval_args[] = '$args['.($i-1).']';
-      }
+        // get our args by reference.
+        if (count($stack[0]['args'])>1) {
+            for ($i=1; $i < count($stack[0]["args"]); $i++) {
+                $args[] = &$stack[0]["args"][$i];
+                $eval_args[] = '$args['.($i-1).']';
+            }
+        }
+
+        $eval_args = implode(',', $eval_args);
+
+        // call our 'init' callbacks.
+        $retval = null;
+        $cb_name = get_class($this).'.'.$method;
+        $cb_return = $this->callback_handler->fire($cb_name, 'init', $args);
+
+        // a callback is forcing an early return.
+        if (!empty($cb_return->r)) {
+            return $cb_return->v;
+        }
+
+        // call our requested method
+        eval('$retval = $this->$method('.$eval_args.');');
+        $this->callback_handler->store_retval($cb_name, $cb_name, $retval);
+
+        // call our 'return' callbacks;
+        $cb_return = $this->callback_handler->fire($cb_name, 'return', $args);
+
+        // reset our return value list for this process chain
+        $this->callback_handler->reset_retvals($cb_name);
+
+        // a callback is forcing an early return (taking over return value)
+        if (!empty($cb_return->r)) {
+            return $cb_return->v;
+        }
+
+        return $retval;
     }
-
-    $eval_args = implode(',',$eval_args);
-
-    // call our 'init' callbacks.
-    $retval = null;
-    $cb_name = get_class($this).'.'.$method;
-    $cb_return = $this->callback_handler->fire($cb_name,'init',$args);
-
-    // a callback is forcing an early return.
-    if(!empty($cb_return->r)) return $cb_return->v;
-
-    // call our requested method
-    eval('$retval = $this->$method('.$eval_args.');');
-    $this->callback_handler->store_retval($cb_name,$cb_name,$retval);
-
-    // call our 'return' callbacks;
-    $cb_return = $this->callback_handler->fire($cb_name,'return',$args);
-
-    // reset our return value list for this process chain
-    $this->callback_handler->reset_retvals($cb_name);
-
-    // a callback is forcing an early return (taking over return value)
-    if(!empty($cb_return->r)) return $cb_return->v;
-
-    return $retval;
-
-  }
 
   /**
    * Get or set error.  If error is set to NULL (the default value), this will

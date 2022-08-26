@@ -1,0 +1,18 @@
+#!/bin/bash
+
+pwd
+echo 'Running php-cs-fixer';
+
+# Gets list of all staged files that haven't been changed. Can be used 
+# to pass to php-cs-fixer (...somehow) if not wanting to rely on its 
+# own cache (probably not needed). 
+# 
+# git diff --cached --name-status | awk '$1 != "D" { print $2 }'
+
+tools/php-cs-fixer/vendor/bin/php-cs-fixer fix ./ --diff --dry-run
+if [ $? -ne 0 ]; then
+	echo "Linting rule violations found. Please fix the errors before committing."
+	exit 1
+fi
+
+exit 0

@@ -27,180 +27,213 @@
  */
 class Users extends OBFController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->user->require_authenticated();
+    }
 
-  public function __construct()
-  {
-    parent::__construct();
-    $this->user->require_authenticated();
-  }
+    /**
+     * Set user registration in the global settings. This is set to
+     * 1 (or TRUE) when users can register from the login screen, or to 0 (FALSE)
+     * if not. Requires 'manage_users' permission.
+     *
+     * @param user_registration
+     *
+     * @route PUT /v2/users/can_register
+     */
+    public function user_registration_set()
+    {
+        $this->user->require_permission('manage_users');
 
-  /**
-   * Set user registration in the global settings. This is set to
-   * 1 (or TRUE) when users can register from the login screen, or to 0 (FALSE)
-   * if not. Requires 'manage_users' permission.
-   *
-   * @param user_registration
-   */
-  public function user_registration_set()
-  {
-    $this->user->require_permission('manage_users');
+        $this->models->users('user_registration_set', $this->data('user_registration'));
+        return array(true,'User registration set.');
+    }
 
-    $this->models->users('user_registration_set', $this->data('user_registration') );
-    return array(true,'User registration set.');
-  }
+    /**
+     * Return the user registration settings.
+     *
+     * @return user_registration
+     *
+     * @route GET /v2/users/can_register
+     */
+    public function user_registration_get()
+    {
+        return array(true,'User registration.',$this->models->users('user_registration_get'));
+    }
 
-  /**
-   * Return the user registration settings.
-   *
-   * @return user_registration
-   */
-  public function user_registration_get()
-  {
-    return array(true,'User registration.',$this->models->users('user_registration_get'));
-  }
+    /**
+     * Return a list of all users.
+     *
+     * @return [display_name, id, email]
+     *
+     * @route GET /v2/users/all
+     */
+    public function user_list()
+    {
+        $users = $this->models->users('user_list');
+        return array(true,'User list.',$users);
+    }
 
-  /**
-   * Return a list of all users.
-   *
-   * @return [display_name, id, email]
-   */
-  public function user_list()
-  {
-    $users = $this->models->users('user_list');
-    return array(true,'User list.',$users);
-  }
+    /**
+     * Return a sorted list of all users with more detailed information. Unlike
+     * user_list(), this requires the 'manage_users' permission.
+     *
+     * @param sort_col Column to sort by.
+     * @param sort_desc Whether or not to sort descendingly.
+     *
+     * @return users
+     *
+     * @route GET /v2/users
+     */
+    public function user_manage_list()
+    {
+        $this->user->require_permission('manage_users');
 
-  /**
-   * Return a sorted list of all users with more detailed information. Unlike
-   * user_list(), this requires the 'manage_users' permission.
-   *
-   * @param sort_col Column to sort by.
-   * @param sort_desc Whether or not to sort descendingly.
-   *
-   * @return users
-   */
-  public function user_manage_list()
-  {
-    $this->user->require_permission('manage_users');
+        $sort_col = $this->data('sort_col');
+        $sort_desc = $this->data('sort_desc');
 
-    $sort_col = $this->data('sort_col');
-    $sort_desc = $this->data('sort_desc');
+        // store sort settings for future display.
+        if ($sort_col) {
+            $this->models->users('user_manage_list_set_sort', $sort_col, $sort_desc);
+        }
 
-    // store sort settings for future display.
-    if($sort_col) $this->models->users('user_manage_list_set_sort',$sort_col,$sort_desc);
+        // get sort settings (even if we already have them since the above will validate)
+        $sort = $this->models->users('user_manage_list_get_sort');
+        $sort_col = $sort[0];
+        $sort_desc = $sort[1];
 
-    // get sort settings (even if we already have them since the above will validate)
-    $sort = $this->models->users('user_manage_list_get_sort');
-    $sort_col = $sort[0];
-    $sort_desc = $sort[1];
+        $users = $this->models->users('user_manage_list', $sort_col, ($sort_desc ? 'desc' : 'asc'));
+        return array(true,'User list.',[$users,$sort_col,$sort_desc]);
+    }
 
-    $users = $this->models->users('user_manage_list',$sort_col,($sort_desc ? 'desc' : 'asc'));
-    return array(true,'User list.',[$users,$sort_col,$sort_desc]);
-  }
+    /**
+     * Update or save a new user. Requires the 'manage_users' permission.
+     *
+     * @param id
+     * @param name
+     * @param username
+     * @param email
+     * @param display_name
+     * @param enabled
+     * @param password
+     * @param password_confirm
+     * @param group_ids
+     * @param appkeys
+     *
+     * @route POST /v2/users
+     */
+    public function user_manage_addedit()
+    {
+        $this->user->require_permission('manage_users');
 
-  /**
-   * Update a user. Requires the 'manage_users' permission.
-   *
-   * @param id
-   * @param name
-   * @param username
-   * @param email
-   * @param display_name
-   * @param enabled
-   * @param password
-   * @param password_confirm
-   * @param group_ids
-   * @param appkeys
-   */
-  public function user_manage_addedit()
-  {
-    $this->user->require_permission('manage_users');
+        $data = array();
 
-    $data = array();
+        $data['name'] = trim($this->data('name'));
+        $data['username'] = trim($this->data('username'));
+        $data['email'] = trim($this->data('email'));
+        $data['display_name'] = trim($this->data('display_name'));
+        $data['enabled'] = trim($this->data('enabled'));
 
-    $data['name'] = trim($this->data('name'));
-    $data['username'] = trim($this->data('username'));
-    $data['email'] = trim($this->data('email'));
-    $data['display_name'] = trim($this->data('display_name'));
-    $data['enabled'] = trim($this->data('enabled'));
+        $data['password'] = trim($this->data('password'));
+        $data['password_confirm'] = trim($this->data('password_confirm'));
 
-    $data['password'] = trim($this->data('password'));
-    $data['password_confirm'] = trim($this->data('password_confirm'));
+        $id = trim($this->data('id'));
 
-    $id = trim($this->data('id'));
+        $data['group_ids'] = $this->data('group_ids');
 
-    $data['group_ids'] = $this->data('group_ids');
+        $data['appkeys'] = $this->data('appkeys');
 
-    $data['appkeys'] = $this->data('appkeys');
+        $validation = $this->models->users('user_validate', $data, $id);
+        if ($validation[0]==false) {
+            return $validation;
+        }
 
-    $validation = $this->models->users('user_validate',$data,$id);
-    if($validation[0]==false) return $validation;
+        $this->models->users('user_save', $data, $id);
 
-    $this->models->users('user_save',$data,$id);
+        return array(true,'User has been saved.');
+    }
 
-    return array(true,'User has been saved.');
-  }
+    /**
+     * Delete a user. Requires the 'manager_users' permission.
+     *
+     * @param id
+     *
+     * @route DELETE /v2/users/(:id:)
+     */
+    public function user_manage_delete()
+    {
+        $this->user->require_permission('manage_users');
 
-  /**
-   * Delete a user. Requires the 'manager_users' permission.
-   *
-   * @param id
-   */
-  public function user_manage_delete()
-  {
-    $this->user->require_permission('manage_users');
+        $id = $this->data('id');
 
-    $id = $this->data('id');
+        if (empty($id)) {
+            return array(false,'Invalid User ID.');
+        }
 
-    if(empty($id)) return array(false,'Invalid User ID.');
+        $this->models->users('user_delete', $id);
 
-    $this->models->users('user_delete',$id);
+        return array(true,'User deleted.');
+    }
 
-    return array(true,'User deleted.');
-  }
+    /**
+     * Generate a new App Key for the user. Done through the addedit modal, and
+     * requires the 'manager_users' permission for that reason.
+     *
+     * @param id
+     *
+     * @return [id, name, key]
+     *
+     * @route POST /v2/users/appkeys
+     */
+    public function user_manage_key_new()
+    {
+        $this->user->require_permission('manage_users');
 
-  /**
-   * Generate a new App Key for the user. Done through the addedit modal, and
-   * requires the 'manager_users' permission for that reason.
-   *
-   * @param id
-   *
-   * @return [id, name, key]
-   */
-   public function user_manage_key_new () {
-     $this->user->require_permission('manage_users');
+        $id = $this->data('id');
+        if (empty($id)) {
+            return array(false, 'Invalid user ID.');
+        }
 
-     $id = $this->data('id');
-     if (empty($id)) return array(false, 'Invalid user ID.');
+        $result = $this->models->users('user_manage_key_new', $id);
+        if ($result) {
+            return array(true, 'Created new user App Key.', $result);
+        }
 
-     $result = $this->models->users('user_manage_key_new', $id);
-     if ($result) return array(true, 'Created new user App Key.', $result);
+        return array(false, 'Failed to create new user App Key.');
+    }
 
-     return array(false, 'Failed to create new user App Key.');
-   }
+    /**
+     * Delete an App Key associated with a user. Done through the addedit modal,
+     * and requires the 'manager_users' permission for that reason.
+     *
+     * @param id
+     * @param user_id
+     *
+     * @return is_deleted?
+     *
+     * @route DELETE /v2/users/appkeys/(:user_id:)/(:id:)
+     */
+    public function user_manage_key_delete()
+    {
+        $this->user->require_permission('manage_users');
 
-   /**
-    * Delete an App Key associated with a user. Done through the addedit modal,
-    * and requires the 'manager_users' permission for that reason.
-    *
-    * @param id
-    * @param user_id
-    *
-    * @return is_deleted?
-    */
-    public function user_manage_key_delete () {
-      $this->user->require_permission('manage_users');
+        $id = $this->data('id');
+        $user_id = $this->data('user_id');
 
-      $id = $this->data('id');
-      $user_id = $this->data('user_id');
+        if (empty($id)) {
+            return array(false, 'Invalid key ID.');
+        }
+        if (empty($user_id)) {
+            return array(false, 'Invalid user ID.');
+        }
 
-      if (empty($id)) return array(false, 'Invalid key ID.');
-      if (empty($user_id)) return array(false, 'Invalid user ID.');
+        $result = $this->models->users('user_manage_key_delete', $id, $user_id);
+        if ($result) {
+            return array(true, 'Successfully deleted App Key.');
+        }
 
-      $result = $this->models->users('user_manage_key_delete', $id, $user_id);
-      if ($result) return array(true, 'Successfully deleted App Key.');
-
-      return array(false, 'Failed to delete App Key.');
+        return array(false, 'Failed to delete App Key.');
     }
 
     /**
@@ -210,85 +243,98 @@ class Users extends OBFController
      * @param id
      *
      * @return appkeys
+     *
+     * @route GET /v2/users/appkeys/(:id:)
      */
-     public function user_manage_key_load () {
-       $this->user->require_permission('manage_users');
-
-       $id = $this->data('id');
-       if (empty($id)) return array(false, 'Invalid user ID.');
-
-       $result = $this->models->users('user_manage_key_load', $id);
-       return array(true, 'Successfully loaded App Keys', $result);
-     }
-
-  /**
-   * List all groups. Requires 'manage_users' or 'manage_permissions' permissions
-   * to show more than the basic set of permissions.
-   *
-   * @return groups
-   */
-  public function group_list()
-  {
-    $hide_permissions = !$this->user->check_permission('manage_users or manage_permissions');
-    $groups = $this->models->users('group_list', $hide_permissions);
-    return array(true,'Group list.',$groups);
-  }
-
-
-  /**
-   * Delete a user permissions group. Requires 'manage_permissions' permission.
-   *
-   * @param id
-   */
-  public function permissions_manage_delete()
-  {
-    $this->user->require_permission('manage_permissions');
-
-    $id = trim($this->data('id'));
-
-    if(!empty($id))
+    public function user_manage_key_load()
     {
-      $this->models->users('group_delete',$id);
+        $this->user->require_permission('manage_users');
+
+        $id = $this->data('id');
+        if (empty($id)) {
+            return array(false, 'Invalid user ID.');
+        }
+
+        $result = $this->models->users('user_manage_key_load', $id);
+        return array(true, 'Successfully loaded App Keys', $result);
     }
 
-    return array(true,'Group deleted.');
-  }
+    /**
+     * List all groups. Requires 'manage_users' or 'manage_permissions' permissions
+     * to show more than the basic set of permissions.
+     *
+     * @return groups
+     *
+     * @route GET /v2/users/groups
+     */
+    public function group_list()
+    {
+        $hide_permissions = !$this->user->check_permission('manage_users or manage_permissions');
+        $groups = $this->models->users('group_list', $hide_permissions);
+        return array(true,'Group list.',$groups);
+    }
 
-  /**
-   * Edit a user permissions group. Requires 'manage_permissions' permission.
-   *
-   * @param name
-   * @param id
-   * @param permissions
-   */
-  public function permissions_manage_addedit()
-  {
-    $this->user->require_permission('manage_permissions');
 
-    $data['name'] = trim($this->data('name'));
-    $id = trim($this->data('id'));
-    $data['permissions'] = $this->data('permissions');
+    /**
+     * Delete a user permissions group. Requires 'manage_permissions' permission.
+     *
+     * @param id
+     *
+     * @route DELETE /v2/users/permissions/(:id:)
+     */
+    public function permissions_manage_delete()
+    {
+        $this->user->require_permission('manage_permissions');
 
-    $validation = $this->models->users('group_validate',$data,$id);
-    if($validation[0]==false) return $validation;
+        $id = trim($this->data('id'));
 
-    // proceed with add/edit.
-    $this->models->users('group_save',$data,$id);
+        if (!empty($id)) {
+            $this->models->users('group_delete', $id);
+        }
 
-    return array(true,'Group saved.');
-  }
+        return array(true,'Group deleted.');
+    }
 
-  /**
-   * List all permissions by category as well as the permissions linked to each
-   * player. Requires 'manage_permissions' permission.
-   *
-   * @return permissions
-   */
-  public function permissions_manage_list()
-  {
-    $this->user->require_permission('manage_permissions');
-    $permissions = $this->models->users('permissions_list');
-    return array(true,'Permisisons list.',$permissions);
-  }
+    /**
+     * Edit or create a new user permissions group. Requires 'manage_permissions' permission.
+     *
+     * @param name
+     * @param id
+     * @param permissions
+     *
+     * @route POST /v2/users/permissions
+     */
+    public function permissions_manage_addedit()
+    {
+        $this->user->require_permission('manage_permissions');
 
+        $data['name'] = trim($this->data('name'));
+        $id = trim($this->data('id'));
+        $data['permissions'] = $this->data('permissions');
+
+        $validation = $this->models->users('group_validate', $data, $id);
+        if ($validation[0]==false) {
+            return $validation;
+        }
+
+        // proceed with add/edit.
+        $this->models->users('group_save', $data, $id);
+
+        return array(true,'Group saved.');
+    }
+
+    /**
+     * List all permissions by category as well as the permissions linked to each
+     * player. Requires 'manage_permissions' permission.
+     *
+     * @return permissions
+     *
+     * @route GET /v2/users/permissions
+     */
+    public function permissions_manage_list()
+    {
+        $this->user->require_permission('manage_permissions');
+        $permissions = $this->models->users('permissions_list');
+        return array(true,'Permisisons list.',$permissions);
+    }
 }

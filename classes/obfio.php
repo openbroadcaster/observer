@@ -26,46 +26,40 @@
  */
 class OBFIO
 {
-
-  public function __construct()
-  {
-
-  }
-
-  /**
-   * Create an instance of OBFIO or return the already-created instance.
-   *
-   * @return instance
-   */
-  static function &get_instance()
-  {
-
-    static $instance;
-
-    if (isset( $instance )) {
-      return $instance;
+    public function __construct()
+    {
     }
 
-    $instance = new OBFIO();
-
-    return $instance;
-
-  }
-
-  /**
-   * Echo JSON encoded error message based on the error code. Errors include
-   * OB_ERROR_BAD_POSTDATA, OB_ERROR_BAD_CONTROLLER, OB_ERROR_BAD_DATA, and
-   * OB_ERROR_DENIED.
-   *
-   * @param error_no
-   */
-  public function error($error_no)
-  {
-
-    $user = OBFUser::get_instance();
-
-    switch($error_no)
+    /**
+     * Create an instance of OBFIO or return the already-created instance.
+     *
+     * @return instance
+     */
+    public static function &get_instance()
     {
+        static $instance;
+
+        if (isset($instance)) {
+            return $instance;
+        }
+
+        $instance = new OBFIO();
+
+        return $instance;
+    }
+
+    /**
+     * Echo JSON encoded error message based on the error code. Errors include
+     * OB_ERROR_BAD_POSTDATA, OB_ERROR_BAD_CONTROLLER, OB_ERROR_BAD_DATA, and
+     * OB_ERROR_DENIED.
+     *
+     * @param error_no
+     */
+    public function error($error_no)
+    {
+        $user = OBFUser::get_instance();
+
+        switch ($error_no) {
       case OB_ERROR_BAD_POSTDATA:
         $msg = 'Invalid POST data.';
         break;
@@ -84,21 +78,16 @@ class OBFIO
 
     }
 
-    $this->output( array('error'=> array('no'=>$error_no,'msg'=>$msg,'uid'=>$user->param('id'))) );
+        $this->output(array('error'=> array('no'=>$error_no,'msg'=>$msg,'uid'=>$user->param('id'))));
+    }
 
-  }
-
-  /**
-   * JSON-encode data and echo it.
-   *
-   * @param data
-   */
-  public function output($data)
-  {
-
-    echo json_encode($data);
-
-  }
-
-
+    /**
+     * JSON-encode data and echo it.
+     *
+     * @param data
+     */
+    public function output($data)
+    {
+        echo json_encode($data);
+    }
 }

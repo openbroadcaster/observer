@@ -21,13 +21,12 @@
 
 require('components.php');
 
-if(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
-{
-  $auth_id = $_COOKIE['ob_auth_id'];
-  $auth_key = $_COOKIE['ob_auth_key'];
+if (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
+    $auth_id = $_COOKIE['ob_auth_id'];
+    $auth_key = $_COOKIE['ob_auth_key'];
 
-  $user = OBFUser::get_instance();
-  $user->auth($auth_id,$auth_key);
+    $user = OBFUser::get_instance();
+    $user->auth($auth_id, $auth_key);
 }
 
 $models = OBFModels::get_instance();
@@ -38,4 +37,6 @@ header('Content-type: text/javascript');
 
 echo 'OB.UI.strings = '.json_encode($strings).';';
 
-if(!empty($language['code'])) echo "\n$(document).ready(function() { $('html').attr('lang','".$language['code']."'); });";
+if (!empty($language['code'])) {
+    echo "\n$(document).ready(function() { $('html').attr('lang','".$language['code']."'); });";
+}
