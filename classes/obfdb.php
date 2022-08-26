@@ -825,5 +825,34 @@ class OBFDB
     if($test) return true;
     else return false;
   }
-
+  
+  /**
+   * Enable or disable autocommit. Useful for limiting model methods to validation only, or otherwise testing before writing changes to the database.
+   * 
+   * @param bool value
+   */
+  public function autocommit(bool $value)
+  {
+    $value = $value ? '1' : '0';
+    $this->query('SET autocommit='.$value);
+  }
+  
+  /**
+   * Commit changes and re-enable autocommit.
+   */ 
+  public function commit()
+  {
+    $this->query('COMMIT();');
+    $this->autocommit(true);
+  }
+  
+  /**
+   *
+   * Cancel database updates and re-enable autocommit.
+   */
+  public function rollback()
+  {
+    $this->query('ROLLBACK();');
+    $this->autocommit(true);
+  }
 }
