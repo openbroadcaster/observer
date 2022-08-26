@@ -302,4 +302,27 @@ class Account extends OBFController
      $result = $this->models->users('user_manage_key_load', $id);
      return array(true, 'Successfully loaded App Keys.', $result);
    }
+   
+   /**
+    * Get or save arbitrary string data associated with the logged in account. Used for UI/client settings, etc.
+    *
+    * @param key
+    * @param value
+    */
+    /*
+    public function store()
+    {
+      $data['user_id'] = $this->user->param('id');
+      if (empty($data['user_id'])) return array(false, 'Invalid user ID.');
+      
+      $data['name'] = $this->data('name');
+      $data['value'] = $this->data('value');
+      $data['user_id'] = $this->user->param('id');
+      
+      var_dump($data);  
+        
+      if($data['value']) return $this->models->userstorage('save', $data);
+      else return $this->models->userstorage('save', $data);
+    }
+    */
 }
