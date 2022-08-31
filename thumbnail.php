@@ -61,17 +61,17 @@ class MediaThumbnail extends OBFController
         }
 
         // check permissions
-        if ($media['status']!='public') {
+        if ($media['status'] != 'public') {
             $user->require_authenticated();
-            $is_media_owner = $media['owner_id']==$user->param('id');
-            if ($media['status']=='private' && !$is_media_owner) {
+            $is_media_owner = $media['owner_id'] == $user->param('id');
+            if ($media['status'] == 'private' && !$is_media_owner) {
                 $user->require_permission('manage_media');
             }
         }
 
         $l0 = $media['file_location'][0];
         $l1 = $media['file_location'][1];
-        $file = OB_CACHE.'/thumbnails/'.$l0.'/'.$l1.'/'.$media['id'].'.jpg';
+        $file = OB_CACHE . '/thumbnails/' . $l0 . '/' . $l1 . '/' . $media['id'] . '.jpg';
         if (!file_exists($file)) {
             $this->not_found();
         }

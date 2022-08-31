@@ -17,7 +17,7 @@
     <?php
     $load = OBFLoad::get_instance();
     $user_model = $load->model('users');
-    if($user_model->user_registration_get()) { ?>
+    if ($user_model->user_registration_get()) { ?>
       <a href="javascript: OB.Welcome.show('newaccount');">Create New Account</a>
     <?php } ?>
   </div>

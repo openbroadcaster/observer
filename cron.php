@@ -27,10 +27,10 @@ $db = OBFDB::get_instance();
 $db->where('name', 'cron_last_run');
 $cron_last_run = $db->get('settings');
 if (!$cron_last_run) {
-    $db->insert('settings', array('name'=>'cron_last_run', 'value'=>time()));
+    $db->insert('settings', array('name' => 'cron_last_run', 'value' => time()));
 } else {
     $db->where('name', 'cron_last_run');
-    $db->update('settings', array('value'=>time()));
+    $db->update('settings', array('value' => time()));
 }
 
 // delete expired uploads
@@ -38,43 +38,43 @@ $db->where('expiry', time(), '<');
 $uploads = $db->get('uploads');
 
 foreach ($uploads as $upload) {
-    unlink(OB_ASSETS.'/uploads/'.$upload['id']);
+    unlink(OB_ASSETS . '/uploads/' . $upload['id']);
     $db->where('id', $upload['id']);
     $db->delete('uploads');
 }
 
 // remove cached schedule data for shows which stopped longer than 1 week ago (+/- some variablity due to timezones)
-$db->query('DELETE FROM shows_cache where DATE_ADD(start, INTERVAL duration SECOND) < "'.date('Y-m-d H:i:s', strtotime('-1 week')).'"');
+$db->query('DELETE FROM shows_cache where DATE_ADD(start, INTERVAL duration SECOND) < "' . date('Y-m-d H:i:s', strtotime('-1 week')) . '"');
 
 // send out player-last-connect warnings if appropriate. will not send out warnings if player has never connected.
 // TODO maybe put this into a notice model for similar re-use elsewhere.
 $cutoff = strtotime('-1 hour'); // connection must be made at least once/hour. this should be a setting at some point, maybe in player settings?
 $connect_types = array('schedule','playlog','emergency');
 foreach ($connect_types as $type) {
-    $db->where('last_connect_'.$type, $cutoff, '<=');
+    $db->where('last_connect_' . $type, $cutoff, '<=');
     $players = $db->get('players');
 
     foreach ($players as $player) {
         $id = $player['id'];
 
         $db->where('player_id', $id);
-        $db->where('event', 'player_last_connect_'.$type.'_warning');
+        $db->where('event', 'player_last_connect_' . $type . '_warning');
         $db->where('toggled', 0);
         $notices = $db->get('notices');
 
         foreach ($notices as $notice) {
             $mailer = new PHPMailer\PHPMailer\PHPMailer();
-            $mailer->Body='This is a warning that player "'.$player['name'].'" has not connected for "'.$type.'" in the last hour.
+            $mailer->Body = 'This is a warning that player "' . $player['name'] . '" has not connected for "' . $type . '" in the last hour.
 
 Please take steps to ensure this player is functioning properly.';
-            $mailer->From=OB_EMAIL_REPLY;
-            $mailer->FromName=OB_EMAIL_FROM;
-            $mailer->Subject='Player Warning';
+            $mailer->From = OB_EMAIL_REPLY;
+            $mailer->FromName = OB_EMAIL_FROM;
+            $mailer->Subject = 'Player Warning';
             $mailer->AddAddress($notice['email']);
             $mailer->Send();
 
             $db->where('id', $notice['id']);
-            $db->update('notices', array('toggled'=>1));
+            $db->update('notices', array('toggled' => 1));
         }
     }
 }
@@ -87,10 +87,10 @@ if (!empty($tables)) {
         if (empty($nfo['Data_free'])) {
             continue;
         }
-        $fragmentation = $nfo['Data_free']*100 / $nfo['Data_length'];
+        $fragmentation = $nfo['Data_free'] * 100 / $nfo['Data_length'];
 
-        if ($fragmentation>10) {
-            $db->query('OPTIMIZE TABLE `'.$nfo['Name'].'`');
+        if ($fragmentation > 10) {
+            $db->query('OPTIMIZE TABLE `' . $nfo['Name'] . '`');
         }
     }
 }

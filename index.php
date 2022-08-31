@@ -85,7 +85,7 @@ $image_files = $models->ui('image_files');
   });
   </script>
 
-  <?php foreach($js_files as $file) { ?>
+  <?php foreach ($js_files as $file) { ?>
     <script type="text/javascript" src="<?=$file?>?v=<?=filemtime($file)?>"></script>
   <?php } ?>
 

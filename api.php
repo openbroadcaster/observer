@@ -28,30 +28,28 @@ class OBFAPI
     private $io;
     private $callback_handler;
 
-  public function __construct()
-  {
-    // handle rewrite API (v2)
-    // we consider v1 to be the previous method via api.php.
-    if(!(isset($_POST['m']) && is_array($_POST['m'])) && str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/'))
+    public function __construct()
     {
-      if(preg_match('#^/api/v2/ping/?$#',$_SERVER['REQUEST_URI']))
-      {
-        echo json_encode('pong');
-        exit();
-      }
+      // handle rewrite API (v2)
+      // we consider v1 to be the previous method via api.php.
+        if (!(isset($_POST['m']) && is_array($_POST['m'])) && str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+            if (preg_match('#^/api/v2/ping/?$#', $_SERVER['REQUEST_URI'])) {
+                echo json_encode('pong');
+                exit();
+            }
 
-      $request = explode('/', substr($_SERVER['REQUEST_URI'], 8), 2);
-      $_POST['c'] = $request[0] ?? null; // controller
-      $_POST['a'] = $request[1] ?? null; // action/method
-    }
-  
-    $this->io = OBFIO::get_instance();
-    $this->load = OBFLoad::get_instance();
-    $this->user = OBFUser::get_instance();
-    $this->callback_handler = OBFCallbacks::get_instance();
+            $request = explode('/', substr($_SERVER['REQUEST_URI'], 8), 2);
+            $_POST['c'] = $request[0] ?? null; // controller
+            $_POST['a'] = $request[1] ?? null; // action/method
+        }
 
-    $auth_id = null;
-    $auth_key = null;
+        $this->io = OBFIO::get_instance();
+        $this->load = OBFLoad::get_instance();
+        $this->user = OBFUser::get_instance();
+        $this->callback_handler = OBFCallbacks::get_instance();
+
+        $auth_id = null;
+        $auth_key = null;
 
         // we might get a post, or multi-post. standardize to multi-post.
         if (isset($_POST['m']) && is_array($_POST['m'])) {
@@ -65,7 +63,7 @@ class OBFAPI
 
         // preliminary request validity check
         foreach ($requests as $request) {
-            if (!is_array($request) || count($request)!=3) {
+            if (!is_array($request) || count($request) != 3) {
                 $this->io->error(OB_ERROR_BAD_POSTDATA);
                 return;
             }
@@ -105,10 +103,10 @@ class OBFAPI
             $this->controller->data = json_decode($request[2], true, 512);
 
             // launch callbacks to be run before requested main process.
-      // this is not passed to the main process (might be later if it turns out that would be useful...)
-      $cb_name = get_class($this->controller).'.'.$action; // get Cased contrller name (get_class)
-      $this->callback_handler->reset_retvals($cb_name); // reset any retvals stored from last request.
-      $cb_return = $this->callback_handler->fire($cb_name, 'init', $null, $this->controller->data);
+            // this is not passed to the main process (might be later if it turns out that would be useful...)
+            $cb_name = get_class($this->controller) . '.' . $action; // get Cased contrller name (get_class)
+            $this->callback_handler->reset_retvals($cb_name); // reset any retvals stored from last request.
+            $cb_return = $this->callback_handler->fire($cb_name, 'init', $null, $this->controller->data);
 
             // do callbacks all main process to be run?
             if (empty($cb_return->r)) {
@@ -133,10 +131,10 @@ class OBFAPI
 
             // output our response from the controller.
             if (!isset($output[2])) {
-                $output[2]=null;
+                $output[2] = null;
             }
             // $this->io->output(array('status'=>$output[0],'msg'=>$output[1],'data'=>$output[2]));
-            $responses[] = array('status'=>$output[0],'msg'=>$output[1],'data'=>$output[2]);
+            $responses[] = array('status' => $output[0],'msg' => $output[1],'data' => $output[2]);
         }
 
         // return first responce if we just had a single request. if multi-request, we return array of responses.

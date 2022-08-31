@@ -31,7 +31,7 @@ date_default_timezone_set('Etc/UTC');
 
 function openbroadcaster_show_times_sort($a, $b)
 {
-    if ($a['start']==$b['start']) {
+    if ($a['start'] == $b['start']) {
         return 0;
     }
     return ($a['start'] < $b['start']) ? -1 : 1;
@@ -71,11 +71,11 @@ class Remote
         $this->PlaylistsModel = $this->load->model('Playlists');
 
         // development/testing mode
-        if (!empty($_GET['devmode']) && defined('OB_REMOTE_DEBUG') && $_GET['devmode']==OB_REMOTE_DEBUG) {
-            $_POST=$_GET;
-            $this->devmode=true;
+        if (!empty($_GET['devmode']) && defined('OB_REMOTE_DEBUG') && $_GET['devmode'] == OB_REMOTE_DEBUG) {
+            $_POST = $_GET;
+            $this->devmode = true;
         } else {
-            $this->devmode=false;
+            $this->devmode = false;
         }
 
         // get our action
@@ -121,10 +121,10 @@ class Remote
         // see if password matches (using old/bad hashing or new/good hashing).
         if (!empty($this->player['password'])) {
             $password_info = password_get_info($this->player['password']);
-            if ($password_info['algo']==0) {
-                $password_match = $this->player['password']==sha1(OB_HASH_SALT.$_POST['pw']);
+            if ($password_info['algo'] == 0) {
+                $password_match = $this->player['password'] == sha1(OB_HASH_SALT . $_POST['pw']);
             } else {
-                $password_match = password_verify($_POST['pw'].OB_HASH_SALT, $this->player['password']);
+                $password_match = password_verify($_POST['pw'] . OB_HASH_SALT, $this->player['password']);
             }
         } else {
             $password_match = false;
@@ -132,37 +132,37 @@ class Remote
 
         // if password is correct but needs rehashing, do that now and store in db.
         if ($password_match && password_needs_rehash($this->player['password'], PASSWORD_DEFAULT)) {
-            $new_password_hash = password_hash($_POST['pw'].OB_HASH_SALT, PASSWORD_DEFAULT);
+            $new_password_hash = password_hash($_POST['pw'] . OB_HASH_SALT, PASSWORD_DEFAULT);
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('password'=>$new_password_hash));
+            $this->db->update('players', array('password' => $new_password_hash));
         }
 
-        if (!$this->devmode && (!$this->player || !$password_match || ($_SERVER['REMOTE_ADDR']!=$this->player['ip_address'] && $this->player['ip_address']!=''))) {
+        if (!$this->devmode && (!$this->player || !$password_match || ($_SERVER['REMOTE_ADDR'] != $this->player['ip_address'] && $this->player['ip_address'] != ''))) {
             $this->send_xml_error('invalid id/password/ip combination');
         }
 
-        if ($action=='schedule' || $action=='emerg') {
+        if ($action == 'schedule' || $action == 'emerg') {
             if (isset($_POST['buffer'])) {
-                $this->buffer = $_POST['buffer']*86400;
+                $this->buffer = $_POST['buffer'] * 86400;
             } elseif (isset($_POST['hbuffer'])) {
-                $this->buffer = $_POST['hbuffer']*3600;
+                $this->buffer = $_POST['hbuffer'] * 3600;
             }
         }
 
-        if (($action=='schedule' || $action=='emerg') && empty($this->buffer)) {
+        if (($action == 'schedule' || $action == 'emerg') && empty($this->buffer)) {
             $this->send_xml_error('required information missing');
         }
 
-        $this->localtime=time();
+        $this->localtime = time();
 
         // update our 'last connect' date
         $this->db->where('id', $this->player['id']);
-        $this->db->update('players', array('last_connect'=>$this->localtime,'last_ip_address'=>$_SERVER['REMOTE_ADDR']));
+        $this->db->update('players', array('last_connect' => $this->localtime,'last_ip_address' => $_SERVER['REMOTE_ADDR']));
 
         // initialize xml stuff.
-        $this->xml=new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
+        $this->xml = new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
 
-        if ($action=='version') {
+        if ($action == 'version') {
             if (!empty($_POST['version'])) {
                 $this->PlayersModel('update_version', $this->player['id'], $_POST['version']);
                 //add function to update location
@@ -176,51 +176,51 @@ class Remote
                 header("content-type: application/json");
                 echo json_encode($version);
             }
-        } elseif ($action=='schedule') {
+        } elseif ($action == 'schedule') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_schedule'=>$this->localtime));
+            $this->db->update('players', array('last_connect_schedule' => $this->localtime));
             $this->schedule();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_schedule_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled'=>0));
-        } elseif ($action=='emerg') {
+            $this->db->update('notices', array('toggled' => 0));
+        } elseif ($action == 'emerg') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_emergency'=>$this->localtime));
+            $this->db->update('players', array('last_connect_emergency' => $this->localtime));
             $this->emergency();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_emergency_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled'=>0));
-        } elseif ($action=='playlog_status') {
+            $this->db->update('notices', array('toggled' => 0));
+        } elseif ($action == 'playlog_status') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_playlog'=>$this->localtime));
+            $this->db->update('players', array('last_connect_playlog' => $this->localtime));
             $this->playlog_status();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_playlog_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled'=>0));
-        } elseif ($action=='playlog_post') {
+            $this->db->update('notices', array('toggled' => 0));
+        } elseif ($action == 'playlog_post') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_playlog'=>$this->localtime));
+            $this->db->update('players', array('last_connect_playlog' => $this->localtime));
             $this->playlog_post();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_playlog_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled'=>0));
-        } elseif ($action=='media') {
+            $this->db->update('notices', array('toggled' => 0));
+        } elseif ($action == 'media') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_media'=>$this->localtime));
+            $this->db->update('players', array('last_connect_media' => $this->localtime));
             $this->media();
-        } elseif ($action=='thumbnail') {
+        } elseif ($action == 'thumbnail') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_media'=>$this->localtime));
+            $this->db->update('players', array('last_connect_media' => $this->localtime));
             $this->thumbnail();
-        } elseif ($action=='now_playing') {
+        } elseif ($action == 'now_playing') {
             $this->update_now_playing();
         }
     }
@@ -230,7 +230,7 @@ class Remote
     {
         if (!isset($this->$name)) {
             $stack = debug_backtrace();
-            trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+            trigger_error('Call to undefined method ' . $name . ' (' . $stack[0]['file'] . ':' . $stack[0]['line'] . ')', E_USER_ERROR);
         }
 
         $obj = $this->$name;
@@ -241,12 +241,12 @@ class Remote
     private function schedule()
     {
         // a little buffer...
-        $localtime=strtotime("-1 minute", $this->localtime);
+        $localtime = strtotime("-1 minute", $this->localtime);
 
         // build the schedule XML
-        $schedxml=$this->xml->addChild('schedule');
+        $schedxml = $this->xml->addChild('schedule');
 
-        $end_timestamp=$localtime + $this->buffer + 60;
+        $end_timestamp = $localtime + $this->buffer + 60;
 
         $shows = $this->ShowsModel('get_shows', $localtime, $end_timestamp, $this->schedule_player_id);
 
@@ -254,11 +254,11 @@ class Remote
 
         foreach ($shows as $show) {
             // create start datetime object (used for playlist resolve)
-            $show_start = new DateTime('@'.$show['start'], new DateTimeZone('UTC'));
+            $show_start = new DateTime('@' . $show['start'], new DateTimeZone('UTC'));
             $show_start->setTimezone(new DateTimeZone($this->player['timezone']));
 
             // skip this show if linein but not supported (will get default playlist instead later if available)
-            if ($show['item_type']=='linein' && empty($this->player['support_linein'])) {
+            if ($show['item_type'] == 'linein' && empty($this->player['support_linein'])) {
                 continue;
             }
 
@@ -273,7 +273,7 @@ class Remote
             // determine show name (timeslot name) for this playlist.
             // TODO this only considers the start of the timeslot... what if playlist overlaps timeslots?
             // best option might be to not allow playlist to overlap timeslots (which might be useful in itself).
-            $timeslot = $this->TimeslotsModel('get_permissions', $show['start'], $show['start']+1, $this->schedule_player_id);
+            $timeslot = $this->TimeslotsModel('get_permissions', $show['start'], $show['start'] + 1, $this->schedule_player_id);
             // $timeslot = $timeslot[2];
             if (!empty($timeslot)) {
                 $showxml->addChild('name', $timeslot[0]['description']);
@@ -281,14 +281,14 @@ class Remote
 
             $mediaxml = $showxml->addChild('media');
 
-            if ($show['item_type']=='linein') {
-                $media_items = array(array('type'=>'linein','duration'=>$show['duration']));
-            } elseif ($show['item_type']=='media') {
+            if ($show['item_type'] == 'linein') {
+                $media_items = array(array('type' => 'linein','duration' => $show['duration']));
+            } elseif ($show['item_type'] == 'media') {
                 $this->db->where('id', $show['item_id']);
                 $media = $this->db->get_one('media');
                 $media['item_type'] = $media['type'];
                 $media['type'] = 'media';
-                if ($media['item_type']=='image') {
+                if ($media['item_type'] == 'image') {
                     $media['duration'] = $show['duration'];
                 }
                 $media['context'] = 'Media';
@@ -297,12 +297,12 @@ class Remote
                     if (empty($timeslot)) {
                         $showxml->addChild('name', '');
                     }
-                    $showxml->addChild('description', $media['artist'].' - '.$media['title']);
+                    $showxml->addChild('description', $media['artist'] . ' - ' . $media['title']);
                     $showxml->addChild('last_updated', $media['updated']);
 
-                    $media_items=array($media);
+                    $media_items = array($media);
                 }
-            } elseif ($show['item_type']=='playlist') {
+            } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
                 $playlist = $this->db->get_one('playlists');
                 $showxml->addChild('description', $playlist['description']);
@@ -331,83 +331,83 @@ class Remote
 
                 if ($cache) {
                     $media_items = json_decode($cache['data']);
-                    foreach ($media_items as $index=>$tmp) {
-                        $media_items[$index]=get_object_vars($tmp);
+                    foreach ($media_items as $index => $tmp) {
+                        $media_items[$index] = get_object_vars($tmp);
                     } // convert object to assoc. array
                     $showxml->addChild('last_updated', $cache['created']);
                 }
 
                 // are we using a parent player for cache?
-        elseif ($this->cache_player_id != $this->player['id']) { // this was set to $this->player['player_id'] which i'm quite sure was wrong... (fyi in case i broke something).
-          /*
-          $this->db->where('schedule_id',$show['id']);
-          if(!empty($show['recurring_start']))
-          {
-            $this->db->where('mode','recurring');
-            $this->db->where('start',$show['start']);
-          }
-          else $this->db->where('mode','once');
-          $this->db->where('player_id',$this->cache_player_id);
-          */
-            $this->db->where('show_expanded_id', $show['exp_id']);
-            $this->db->where('start', $show['start']);
-            $this->db->where('player_id', $this->cache_player_id);
+                elseif ($this->cache_player_id != $this->player['id']) { // this was set to $this->player['player_id'] which i'm quite sure was wrong... (fyi in case i broke something).
+                  /*
+                  $this->db->where('schedule_id',$show['id']);
+                  if(!empty($show['recurring_start']))
+                  {
+                    $this->db->where('mode','recurring');
+                    $this->db->where('start',$show['start']);
+                  }
+                  else $this->db->where('mode','once');
+                  $this->db->where('player_id',$this->cache_player_id);
+                  */
+                    $this->db->where('show_expanded_id', $show['exp_id']);
+                    $this->db->where('start', $show['start']);
+                    $this->db->where('player_id', $this->cache_player_id);
 
-            $cache = $this->db->get_one('shows_cache');
+                    $cache = $this->db->get_one('shows_cache');
 
-            // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet.
-            if (!$cache) {
-                $media_items = $this->PlaylistsModel('resolve', $playlist['id'], $this->schedule_player_id, $player['parent_player_id'], $show_start, $show['duration']);
-                $cache_created = time();
-                $this->db->insert('shows_cache', [
-              'player_id'=>$this->cache_player_id,
-              'show_expanded_id'=>$show['exp_id'],
-              'start'=>$show['start'],
-              'duration'=>$show['duration'],
-              'data'=>json_encode($media_items),
-              'created'=>$cache_created
-            ]);
-            }
+                    // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet.
+                    if (!$cache) {
+                        $media_items = $this->PlaylistsModel('resolve', $playlist['id'], $this->schedule_player_id, $player['parent_player_id'], $show_start, $show['duration']);
+                        $cache_created = time();
+                        $this->db->insert('shows_cache', [
+                        'player_id' => $this->cache_player_id,
+                        'show_expanded_id' => $show['exp_id'],
+                        'start' => $show['start'],
+                        'duration' => $show['duration'],
+                        'data' => json_encode($media_items),
+                        'created' => $cache_created
+                        ]);
+                    }
 
-            // oh, we do have cache from parent... let's get media items from it.
-            else {
-                $media_items = json_decode($cache['data']);
-                foreach ($media_items as $index=>$tmp) {
-                    $media_items[$index]=get_object_vars($tmp);
-                } // convert object to assoc. array
-            }
+                    // oh, we do have cache from parent... let's get media items from it.
+                    else {
+                        $media_items = json_decode($cache['data']);
+                        foreach ($media_items as $index => $tmp) {
+                            $media_items[$index] = get_object_vars($tmp);
+                        } // convert object to assoc. array
+                    }
 
-            // now we should really have parent player cache ... copy to our main (child) player.
-            $media_items = $this->convert_station_ids($media_items);
+                    // now we should really have parent player cache ... copy to our main (child) player.
+                    $media_items = $this->convert_station_ids($media_items);
 
-            $cache_created = time();
-            $showxml->addChild('last_updated', $cache_created);
+                    $cache_created = time();
+                    $showxml->addChild('last_updated', $cache_created);
 
-            $this->db->insert('shows_cache', [
-            'player_id'=>$this->player['id'],
-            'show_expanded_id'=>$show['exp_id'],
-            'start'=>$show['start'],
-            'duration'=>$show['duration'],
-            'data'=>json_encode($media_items),
-            'created'=>$cache_created
-          ]);
-        }
+                    $this->db->insert('shows_cache', [
+                    'player_id' => $this->player['id'],
+                    'show_expanded_id' => $show['exp_id'],
+                    'start' => $show['start'],
+                    'duration' => $show['duration'],
+                    'data' => json_encode($media_items),
+                    'created' => $cache_created
+                    ]);
+                }
 
                 // do we still not have media items for some reason? no cache, no parent cache, or something went wrong...
-                if ($media_items===false) {
+                if ($media_items === false) {
                     $media_items = $this->PlaylistsModel('resolve', $playlist['id'], $this->schedule_player_id, false, $show_start, $show['duration']);
 
                     $cache_created = time();
                     $showxml->addChild('last_updated', $cache_created);
 
                     $this->db->insert('shows_cache', [
-            'player_id'=>$this->player['id'],
-            'show_expanded_id'=>$show['exp_id'],
-            'start'=>$show['start'],
-            'duration'=>$show['duration'],
-            'data'=>json_encode($media_items),
-            'created'=>$cache_created
-          ]);
+                    'player_id' => $this->player['id'],
+                    'show_expanded_id' => $show['exp_id'],
+                    'start' => $show['start'],
+                    'duration' => $show['duration'],
+                    'data' => json_encode($media_items),
+                    'created' => $cache_created
+                    ]);
                 }
             }
 
@@ -417,19 +417,19 @@ class Remote
             $media_image_offset = 0.0;
 
             foreach ($media_items as $media_item) {
-                if ($show['type']=='standard' && $media_offset > $show['duration']) {
+                if ($show['type'] == 'standard' && $media_offset > $show['duration']) {
                     break;
                 }
 
-                if ($show['type']=='advanced') {
+                if ($show['type'] == 'advanced') {
                     if (max($media_audio_offset, $media_image_offset) > $show['duration']) {
                         break;
                     }
 
-                    if ($media_item['type']=='audio') {
+                    if ($media_item['type'] == 'audio') {
                         $media_offset = $media_audio_offset;
                         $media_audio_offset += $media_item['duration'] - ($media_item['crossfade'] ?? 0);
-                    } elseif ($media_item['type']=='image') {
+                    } elseif ($media_item['type'] == 'image') {
                         $media_offset = $media_image_offset;
                         $media_image_offset += $media_item['duration'];
                     } else {
@@ -439,10 +439,10 @@ class Remote
                     }
                 }
 
-                $itemxml=$mediaxml->addChild('item');
+                $itemxml = $mediaxml->addChild('item');
                 $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
 
-                if ($show['type']=='standard' || $show['type']=='live_assist') {
+                if ($show['type'] == 'standard' || $show['type'] == 'live_assist') {
                     $media_offset += ($media_item['duration'] ?? 0) - ($media_item['crossfade'] ?? 0);
                 }
 
@@ -450,7 +450,7 @@ class Remote
             }
 
             // live assist shows always use specified show duration (total media duration means nothing because of breakpoints)
-            if ($show['type']=='live_assist') {
+            if ($show['type'] == 'live_assist') {
                 $show_actual_duration = $show['duration'];
             } else {
                 $show_actual_duration = $media_offset;
@@ -460,16 +460,16 @@ class Remote
             // otherwise, use the actual duration (shorter) so that we can fill in the rest with 'default playlist' material.
             $showxml->addChild('duration', $show['duration'] < $show_actual_duration ? $show['duration'] : $show_actual_duration);
 
-            $show_times[]=array('start'=>$show['start'],'end'=>$show['start'] + min($show['duration'], $show_actual_duration));
+            $show_times[] = array('start' => $show['start'],'end' => $show['start'] + min($show['duration'], $show_actual_duration));
 
 
-            if ($show['item_type']=='playlist' && $show['type']=='live_assist') {
+            if ($show['item_type'] == 'playlist' && $show['type'] == 'live_assist') {
                 $this->add_liveassist_buttons($playlist['id'], $show, $showxml);
             }
 
             // make sure we have media items and if not remove the show
-            if ($show['type']!='live_assist' && empty($showxml->media)) {
-                unset($schedxml->show[count($schedxml->show)-1]);
+            if ($show['type'] != 'live_assist' && empty($showxml->media)) {
+                unset($schedxml->show[count($schedxml->show) - 1]);
             }
         }
 
@@ -477,22 +477,21 @@ class Remote
 
         // fill in blank spots with default playlist, if we have one.
         if (!empty($this->default_playlist_id)) {
-
       // default starting time is now. but we'll check to see whether there is an earlier starting time from a cached default playlist which is still playing.
             $timestamp_pointer = time();
-            $this->db->query('SELECT start FROM shows_cache WHERE show_expanded_id IS NULL AND start < '.$this->db->escape($timestamp_pointer).' AND start+duration > '.$this->db->escape($timestamp_pointer));
-            if ($this->db->num_rows()>0) {
+            $this->db->query('SELECT start FROM shows_cache WHERE show_expanded_id IS NULL AND start < ' . $this->db->escape($timestamp_pointer) . ' AND start+duration > ' . $this->db->escape($timestamp_pointer));
+            if ($this->db->num_rows() > 0) {
                 $cached_default_playlist = $this->db->assoc_row();
                 $timestamp_pointer = $cached_default_playlist['start'];
             }
 
             $default_playlist_finished = false;
 
-            for ($default_playlist_counter=0;$timestamp_pointer < $end_timestamp;$default_playlist_counter++) {
-                if ($default_playlist_counter==0 && (count($show_times)==0 || $show_times[0]['start']>$timestamp_pointer)) {
+            for ($default_playlist_counter = 0; $timestamp_pointer < $end_timestamp; $default_playlist_counter++) {
+                if ($default_playlist_counter == 0 && (count($show_times) == 0 || $show_times[0]['start'] > $timestamp_pointer)) {
                     $default_start = $timestamp_pointer;
 
-                    if (count($show_times)==0) {
+                    if (count($show_times) == 0) {
                         $default_end = $end_timestamp;
                     } else {
                         $default_end = $show_times[0]['start'];
@@ -509,8 +508,8 @@ class Remote
                         $showxml = $schedxml->addChild('show');
 
                         // add default playlist as a show. (this function returns duration, so we add it to our time).
-                        $show_duration = $this->default_playlist_show_xml($showxml, $default_start_tmp, ($default_end-$default_start_tmp));
-                        if ($show_duration<=0) {
+                        $show_duration = $this->default_playlist_show_xml($showxml, $default_start_tmp, ($default_end - $default_start_tmp));
+                        if ($show_duration <= 0) {
                             break(2);
                         } // no show duration, cancel.
                         $default_start_tmp = $default_start_tmp + $show_duration;
@@ -520,14 +519,14 @@ class Remote
                 if (!empty($show_times[$default_playlist_counter])) {
                     $default_start = ceil($show_times[$default_playlist_counter]['end']); // need ceiling since we store start times in whole numbers.
 
-                    if (count($show_times)>($default_playlist_counter+1)) {
-                        $default_end = $show_times[$default_playlist_counter+1]['start'];
+                    if (count($show_times) > ($default_playlist_counter + 1)) {
+                        $default_end = $show_times[$default_playlist_counter + 1]['start'];
                     } else {
                         $default_end = $end_timestamp;
                     }
 
                     // this will be false if there is no gap between shows, or at the end where a show goes over our end timestamp.
-                    if ($default_start<$default_end) {
+                    if ($default_start < $default_end) {
                         $default_start_tmp = $default_start;
 
                         while ($default_start_tmp < $default_end) {
@@ -539,8 +538,8 @@ class Remote
                             $showxml = $schedxml->addChild('show');
 
                             // add default playlist as a show. (this function returns duration, so we add it to our time).
-                            $show_duration = $this->default_playlist_show_xml($showxml, $default_start_tmp, ($default_end-$default_start_tmp));
-                            if ($show_duration<=0) {
+                            $show_duration = $this->default_playlist_show_xml($showxml, $default_start_tmp, ($default_end - $default_start_tmp));
+                            if ($show_duration <= 0) {
                                 break(2);
                             } // no show duration, cancel.
                             $default_start_tmp = $default_start_tmp + $show_duration;
@@ -560,7 +559,7 @@ class Remote
     {
 
     // create start datetime object (used for playlist resolve)
-        $show_start = new DateTime('@'.$show['start'], new DateTimeZone('UTC'));
+        $show_start = new DateTime('@' . $show['start'], new DateTimeZone('UTC'));
         $show_start->setTimezone(new DateTimeZone($this->player['timezone']));
 
         $buttons_xml = $show_xml->addChild('liveassist_buttons');
@@ -590,7 +589,7 @@ class Remote
                 $items = $this->PlaylistsModel('resolve', $button['button_playlist_id'], $this->player['id'], false, $show_start);
                 $cache_created = time();
                 // $showxml->addChild('last_updated',$cache_created);
-                $this->db->insert('schedules_liveassist_buttons_cache', array('player_id'=>$this->player['id'],'start'=>$show['start'],'playlists_liveassist_button_id'=>$button['id'],'data'=>json_encode($items),'created'=>$cache_created));
+                $this->db->insert('schedules_liveassist_buttons_cache', array('player_id' => $this->player['id'],'start' => $show['start'],'playlists_liveassist_button_id' => $button['id'],'data' => json_encode($items),'created' => $cache_created));
             }
 
             $group_xml = $buttons_xml->addChild('group');
@@ -600,7 +599,7 @@ class Remote
 
             foreach ($items as $item) {
                 $item = (array) $item;
-                if ($item['type']=='breakpoint') {
+                if ($item['type'] == 'breakpoint') {
                     continue;
                 }
                 $item_xml = $media_xml->addChild('item');
@@ -618,22 +617,21 @@ class Remote
 
         // swap out station IDs from parent, with station IDs for child.
         $new_items = array();
-        foreach ($media_items as $index=>$item) {
-
+        foreach ($media_items as $index => $item) {
       // this item is a station ID. get a station id from our child player instead.
             if (!empty($item['is_station_id'])) {
-                $this->db->query('SELECT media.* FROM players_station_ids LEFT JOIN media ON players_station_ids.media_id = media.id WHERE player_id="'.$this->db->escape($this->player['id']).'" order by rand() limit 1;');
+                $this->db->query('SELECT media.* FROM players_station_ids LEFT JOIN media ON players_station_ids.media_id = media.id WHERE player_id="' . $this->db->escape($this->player['id']) . '" order by rand() limit 1;');
                 $rows = $this->db->assoc_list();
-                if (count($rows)>0) {
+                if (count($rows) > 0) {
                     // if this station id is an image, how long should we display it for? check player settings.
-                    if ($rows[0]['type']=='image') {
+                    if ($rows[0]['type'] == 'image') {
                         $rows[0]['duration'] = $this->player['station_id_image_duration'];
                     }
 
                     $rows[0]['is_station_id'] = true;
 
                     // add to our media items.
-                    $new_items[]=$rows[0];
+                    $new_items[] = $rows[0];
                 }
             } else {
                 $new_items[] = $item;
@@ -643,14 +641,14 @@ class Remote
         return $new_items;
     }
 
-    private function media_item_xml(&$itemxml, $track, $ord=false, $offset=false)
+    private function media_item_xml(&$itemxml, $track, $ord = false, $offset = false)
     {
         // special handling for 'breakpoint' (not really a media item, more of an instruction).
-        if ($track['type']=='breakpoint') {
-            if ($ord!==false) {
+        if ($track['type'] == 'breakpoint') {
+            if ($ord !== false) {
                 $itemxml->addChild('order', $ord);
             }
-            if ($offset!==false) {
+            if ($offset !== false) {
                 $itemxml->addChild('offset', $offset);
             } // offset is replacing 'order' to allow multiple media to play at once.
             $itemxml->addChild('duration', 0);
@@ -659,7 +657,7 @@ class Remote
         }
 
         // get full media metadata
-        if ($track['type']=='media') {
+        if ($track['type'] == 'media') {
             $media = $this->MediaModel('get_by_id', ['id' => $track['id']]);
             if (!$media) {
                 return false;
@@ -667,29 +665,29 @@ class Remote
         }
 
         $itemxml->addChild('duration', $track['duration']);
-        $itemxml->addChild('type', $track['type']=='media' ? $media['type'] : $track['type']);
-        if ($ord!==false) {
+        $itemxml->addChild('type', $track['type'] == 'media' ? $media['type'] : $track['type']);
+        if ($ord !== false) {
             $itemxml->addChild('order', $ord);
         }
-        if ($offset!==false) {
+        if ($offset !== false) {
             $itemxml->addChild('offset', $offset);
         } // offset is replacing 'order' to allow multiple media to play at once.
 
-        if ($track['type']=='media') {
+        if ($track['type'] == 'media') {
             if (!empty($media['is_archived'])) {
-                $filerootdir=OB_MEDIA_ARCHIVE;
+                $filerootdir = OB_MEDIA_ARCHIVE;
             } elseif (!empty($media['is_approved'])) {
-                $filerootdir=OB_MEDIA;
+                $filerootdir = OB_MEDIA;
             } else {
-                $filerootdir=OB_MEDIA_UPLOADS;
+                $filerootdir = OB_MEDIA_UPLOADS;
             }
-            $fullfilepath=$filerootdir.'/'.$media['file_location'][0].'/'.$media['file_location'][1].'/'.$media['filename'];
+            $fullfilepath = $filerootdir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
 
             // missing media file
             // TODO should remove entirely
             // if(!file_exists($fullfilepath)) return false;
 
-            $filesize=filesize($fullfilepath);
+            $filesize = filesize($fullfilepath);
             $itemxml->addChild('id', $track['id']);
             $itemxml->addChild('filename', htmlspecialchars($media['filename']));
             $itemxml->addChild('title', htmlspecialchars($media['title']));
@@ -720,15 +718,15 @@ class Remote
         }
 
         // create start datetime object (used for playlist resolve)
-        $show_start = new DateTime('@'.$start, new DateTimeZone('UTC'));
+        $show_start = new DateTime('@' . $start, new DateTimeZone('UTC'));
         $show_start->setTimezone(new DateTimeZone($this->player['timezone']));
 
         // get our playlist name to report as the show name (below)
         $this->db->where('id', $this->default_playlist_id);
         $playlist = $this->db->get_one('playlists');
 
-        if ($playlist['type']=='live_assist') {
-            $playlist['type']='standard';
+        if ($playlist['type'] == 'live_assist') {
+            $playlist['type'] = 'standard';
         } // live_assist converted to standard for default playlist.
 
         $show_media_items = array();
@@ -743,15 +741,15 @@ class Remote
 
         if ($cache) {
             $show_media_items = json_decode($cache['data']);
-            foreach ($show_media_items as $index=>$tmp) {
-                $show_media_items[$index]=get_object_vars($tmp);
+            foreach ($show_media_items as $index => $tmp) {
+                $show_media_items[$index] = get_object_vars($tmp);
             } // convert object to assoc. array
             $showxml->addChild('last_updated', $cache['created']);
             $duration = $cache['duration'];
         }
 
         // are we using a parent player for cache (and playlist)?
-        elseif ($this->cache_player_id!=$this->player['id'] && $this->player['use_parent_playlist']) {
+        elseif ($this->cache_player_id != $this->player['id'] && $this->player['use_parent_playlist']) {
             // see if parent has a cache entry.
             $this->db->where('player_id', $this->cache_player_id);
             $this->db->where('show_expanded_id', null);
@@ -764,60 +762,60 @@ class Remote
             if (!$cache) {
                 $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start, $max_duration);
                 $cache_created = time();
-                $duration = $this->total_items_duration($show_media_items, $playlist['type']=='advanced');
+                $duration = $this->total_items_duration($show_media_items, $playlist['type'] == 'advanced');
                 $this->db->insert('shows_cache', [
-          'show_expanded_id'=>null,
-          'player_id'=>$this->cache_player_id,
-          'start'=>$start,
-          'duration'=>$duration,
-          'data'=>json_encode($show_media_items),
-          'created'=>$cache_created
-        ]);
+                'show_expanded_id' => null,
+                'player_id' => $this->cache_player_id,
+                'start' => $start,
+                'duration' => $duration,
+                'data' => json_encode($show_media_items),
+                'created' => $cache_created
+                ]);
             }
 
             // oh, we do have cache from parent... let's get media items from it.
             else {
                 $show_media_items = json_decode($cache['data']);
-                foreach ($show_media_items as $index=>$tmp) {
-                    $show_media_items[$index]=get_object_vars($tmp);
+                foreach ($show_media_items as $index => $tmp) {
+                    $show_media_items[$index] = get_object_vars($tmp);
                 } // convert object to assoc. array
             }
 
             // now we should really have parent player cache ... copy to our main (child) player.
             $show_media_items = $this->convert_station_ids($show_media_items);
 
-            $duration = $this->total_items_duration($show_media_items, $playlist['type']=='advanced');
+            $duration = $this->total_items_duration($show_media_items, $playlist['type'] == 'advanced');
 
             $cache_created = time();
             $showxml->addChild('last_updated', $cache_created);
 
             $this->db->insert('shows_cache', [
-        'show_expanded_id'=>null,
-        'player_id'=>$this->player['id'],
-        'start'=>$start,
-        'duration'=>$duration,
-        'data'=>json_encode($show_media_items),
-        'created'=>$cache_created
-      ]);
+            'show_expanded_id' => null,
+            'player_id' => $this->player['id'],
+            'start' => $start,
+            'duration' => $duration,
+            'data' => json_encode($show_media_items),
+            'created' => $cache_created
+            ]);
         }
 
         // still don't have media items?
         if (empty($show_media_items)) {
             $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start, $max_duration);
 
-            $duration = $this->total_items_duration($show_media_items, $playlist['type']=='advanced');
+            $duration = $this->total_items_duration($show_media_items, $playlist['type'] == 'advanced');
 
             $cache_created = time();
             $showxml->addChild('last_updated', $cache_created);
 
             $this->db->insert('shows_cache', [
-        'show_expanded_id'=>null,
-        'player_id'=>$this->player['id'],
-        'start'=>$start,
-        'duration'=>$duration,
-        'data'=>json_encode($show_media_items),
-        'created'=>$cache_created
-      ]);
+            'show_expanded_id' => null,
+            'player_id' => $this->player['id'],
+            'start' => $start,
+            'duration' => $duration,
+            'data' => json_encode($show_media_items),
+            'created' => $cache_created
+            ]);
         }
 
         // generate XML for show/media items.
@@ -839,12 +837,12 @@ class Remote
         $media_image_offset = 0.0;
 
         foreach ($show_media_items as $media_item) {
-            if ($media_item['type']=='breakpoint') {
+            if ($media_item['type'] == 'breakpoint') {
                 continue;
             } // completely ignore breakpoints. (live assist converted to standard playlist).
 
-            if ($playlist['type']=='advanced') {
-                if ($media_item['type']=='audio') {
+            if ($playlist['type'] == 'advanced') {
+                if ($media_item['type'] == 'audio') {
                     // if our audio offset is already past the max duration, we don't want to add more audio.
                     if ($media_audio_offset >= $max_duration) {
                         continue;
@@ -852,7 +850,7 @@ class Remote
 
                     $media_offset = $media_audio_offset;
                     $media_audio_offset += $media_item['duration'] - ($media_item['crossfade'] ?? 0);
-                } elseif ($media_item['type']=='image') {
+                } elseif ($media_item['type'] == 'image') {
                     // if our image offset is already past the max duration, we don't want to add more images.
                     if ($media_image_offset >= $max_duration) {
                         continue;
@@ -873,10 +871,10 @@ class Remote
                 }
             }
 
-            $itemxml=$mediaxml->addChild('item');
+            $itemxml = $mediaxml->addChild('item');
             $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
 
-            if ($playlist['type']=='standard') {
+            if ($playlist['type'] == 'standard') {
                 $media_offset += $media_item['duration'] - ($media_item['crossfade'] ?? 0);
                 ;
                 if ($media_offset > $max_duration) {
@@ -898,9 +896,9 @@ class Remote
 
         if ($advanced) {
             foreach ($media_items as $media_item) {
-                if ($media_item['type']=='audio') {
+                if ($media_item['type'] == 'audio') {
                     $media_audio_offset += $media_item['duration'] - ($media_item['crossfade'] ?? 0);
-                } elseif ($media_item['type']=='image') {
+                } elseif ($media_item['type'] == 'image') {
                     $media_image_offset += $media_item['duration'];
                 } else {
                     $media_offset = max($media_audio_offset, $media_image_offset);
@@ -921,42 +919,42 @@ class Remote
     private function emergency()
     {
         if ($this->player['parent_player_id'] && $this->player['use_parent_emergency']) {
-            $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['parent_player_id'], time()+$this->buffer);
+            $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['parent_player_id'], time() + $this->buffer);
         } else {
-            $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['id'], time()+$this->buffer);
+            $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['id'], time() + $this->buffer);
         }
 
-        $schedxml=$this->xml->addChild('emergency_broadcasts');
+        $schedxml = $this->xml->addChild('emergency_broadcasts');
 
         if (!empty($broadcasts)) {
             foreach ($broadcasts as $broadcast) {
                 $this->db->where('id', $broadcast['item_id']);
-                $mediaInfo=$this->db->get_one('media');
+                $mediaInfo = $this->db->get_one('media');
 
                 if (empty($broadcast['duration'])) {
-                    $broadcast_duration=$mediaInfo['duration'];
+                    $broadcast_duration = $mediaInfo['duration'];
                 } else {
-                    $broadcast_duration=$broadcast['duration'];
+                    $broadcast_duration = $broadcast['duration'];
                 }
 
                 if (!empty($mediaInfo['is_archived'])) {
-                    $filerootdir=OB_MEDIA_ARCHIVE;
+                    $filerootdir = OB_MEDIA_ARCHIVE;
                 } elseif (!empty($mediaInfo['is_approved'])) {
-                    $filerootdir=OB_MEDIA;
+                    $filerootdir = OB_MEDIA;
                 } else {
-                    $filerootdir=OB_MEDIA_UPLOADS;
+                    $filerootdir = OB_MEDIA_UPLOADS;
                 }
-                $fullfilepath=$filerootdir.'/'.$mediaInfo['file_location'][0].'/'.$mediaInfo['file_location'][1].'/'.$mediaInfo['filename'];
-                $filesize=filesize($fullfilepath);
+                $fullfilepath = $filerootdir . '/' . $mediaInfo['file_location'][0] . '/' . $mediaInfo['file_location'][1] . '/' . $mediaInfo['filename'];
+                $filesize = filesize($fullfilepath);
 
                 // set start if we don't have one... (starts immediately).  remote wants something here.
                 if (empty($broadcast['start'])) {
-                    $broadcast['start']='0';
+                    $broadcast['start'] = '0';
                 }
 
                 // set end if we don't have one... (plays indefiniteyl).  remote wants something here.
                 if (empty($broadcast['stop'])) {
-                    $broadcast['stop']='2147483647';
+                    $broadcast['stop'] = '2147483647';
                 }
 
                 $broadcastxml = $schedxml->addChild('broadcast');
@@ -990,12 +988,12 @@ class Remote
         $last_entry = $this->db->get_one('playlog');
 
         if (empty($last_entry)) {
-            $last_timestamp=0;
+            $last_timestamp = 0;
         } else {
-            $last_timestamp=$last_entry['timestamp'];
+            $last_timestamp = $last_entry['timestamp'];
         }
 
-        $replyxml=$this->xml->addChild('playlog_status');
+        $replyxml = $this->xml->addChild('playlog_status');
 
         $replyxml->addChild('last_timestamp', $last_timestamp);
 
@@ -1010,31 +1008,31 @@ class Remote
             die();
         }
 
-        $data=new SimpleXMLElement($_POST['data']);
-        $playlog=$data->playlog;
+        $data = new SimpleXMLElement($_POST['data']);
+        $playlog = $data->playlog;
 
         foreach ($playlog->entry as $entry) {
-            $entryArray=(array) $entry;
+            $entryArray = (array) $entry;
 
             // if a value is an object, that is because it has no value
             // in this case, it is left as a SimpleXMLElement object (empty) instead of being converted to a string.
             // so here we convert to a empty string
-            foreach ($entryArray as $index=>$value) {
+            foreach ($entryArray as $index => $value) {
                 if (is_object($value)) {
-                    $entryArray[$index]='';
+                    $entryArray[$index] = '';
                 }
             }
 
             // db inconsistency between web app and remote.
-            $entryArray['timestamp']=$entryArray['datetime'];
+            $entryArray['timestamp'] = $entryArray['datetime'];
             unset($entryArray['datetime']);
 
-            $entryArray['player_id']=$this->player['id'];
+            $entryArray['player_id'] = $this->player['id'];
 
             $this->addedit_playlog($entryArray);
         }
 
-        $replyxml=$this->xml->addChild('playlog_post');
+        $replyxml = $this->xml->addChild('playlog_post');
 
         $replyxml->addChild('status', 'success');
 
@@ -1054,17 +1052,17 @@ class Remote
             die();
         }
 
-        if ($media['is_archived']==1) {
-            $filedir=OB_MEDIA_ARCHIVE;
-        } elseif ($media['is_approved']==0) {
-            $filedir=OB_MEDIA_UPLOADS;
+        if ($media['is_archived'] == 1) {
+            $filedir = OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved'] == 0) {
+            $filedir = OB_MEDIA_UPLOADS;
         } else {
-            $filedir=OB_MEDIA;
+            $filedir = OB_MEDIA;
         }
 
-        $filedir.='/'.$media['file_location'][0].'/'.$media['file_location'][1];
+        $filedir .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
-        $fullpath=$filedir.'/'.$media['filename'];
+        $fullpath = $filedir . '/' . $media['filename'];
 
         if (!file_exists($fullpath)) {
             die();
@@ -1073,7 +1071,7 @@ class Remote
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: binary");
-        header("Content-Length: ".filesize($fullpath));
+        header("Content-Length: " . filesize($fullpath));
 
         readfile($fullpath);
     }
@@ -1090,22 +1088,22 @@ class Remote
             die();
         }
 
-        $filedir = '/'.$media['file_location'][0].'/'.$media['file_location'][1];
-        $fullpath = OB_CACHE.'/thumbnails/'.$filedir.'/'.$media['id'].'.jpg';
+        $filedir = '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $fullpath = OB_CACHE . '/thumbnails/' . $filedir . '/' . $media['id'] . '.jpg';
 
         if (!file_exists($fullpath)) {
             die();
         }
 
         header('Content-Type: image/jpeg');
-        header("Content-Length: ".filesize($fullpath));
+        header("Content-Length: " . filesize($fullpath));
 
         readfile($fullpath);
     }
 
     private function send_xml_error($message)
     {
-        $xml=new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
+        $xml = new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
         $xml->addChild('error', $message);
 
         header("content-type: text/xml");
@@ -1116,22 +1114,22 @@ class Remote
 
     private function get_upcoming_emergency_broadcasts($player, $timelimit)
     {
-        $now=time();
+        $now = time();
 
-        $addsql=' where player_id='.$player.' and (start<='.$timelimit.' or start IS NULL) and (stop>'.$now.' or stop IS NULL ) ';
-        $sql='select *,TIME_TO_SEC(duration) as duration from emergencies'.$addsql.' order by start';
+        $addsql = ' where player_id=' . $player . ' and (start<=' . $timelimit . ' or start IS NULL) and (stop>' . $now . ' or stop IS NULL ) ';
+        $sql = 'select *,TIME_TO_SEC(duration) as duration from emergencies' . $addsql . ' order by start';
 
         $this->db->query($sql);
-        $r=$this->db->assoc_list();
+        $r = $this->db->assoc_list();
 
         return $r;
     }
 
     private function addedit_playlog($datatmp)
     {
-        $useVals=array('player_id','media_id','artist','title','timestamp','context','emerg_id','notes');
+        $useVals = array('player_id','media_id','artist','title','timestamp','context','emerg_id','notes');
         foreach ($useVals as $val) {
-            $data[$val]=$datatmp[$val];
+            $data[$val] = $datatmp[$val];
         }
 
         // convert timestamp to mysql format
@@ -1144,30 +1142,30 @@ class Remote
 
     private function verify_playlog($data)
     {
-        foreach ($data as $key=>$value) {
-            $$key=$value;
-            $dbcheck[]='`'.$key.'`="'.$this->db->escape($value).'"';
+        foreach ($data as $key => $value) {
+            $$key = $value;
+            $dbcheck[] = '`' . $key . '`="' . $this->db->escape($value) . '"';
         }
 
         if (empty($player_id) || !isset($media_id) || empty($timestamp)) {
-            $error="Required field is missing.";
-        } elseif ($context!='show' && $context!='emerg' && $context!='fallback') {
-            $error="Context is invalid.";
-        } elseif ($context=='emerg' && !preg_match('/^[0-9]+$/', $emerg_id)) {
-            $error="Emergency broadcast ID is invalid or missing.";
+            $error = "Required field is missing.";
+        } elseif ($context != 'show' && $context != 'emerg' && $context != 'fallback') {
+            $error = "Context is invalid.";
+        } elseif ($context == 'emerg' && !preg_match('/^[0-9]+$/', $emerg_id)) {
+            $error = "Emergency broadcast ID is invalid or missing.";
         } elseif (!preg_match('/^[0-9]+$/', $player_id)) {
-            $error="Player ID is invalid.";
+            $error = "Player ID is invalid.";
         } elseif (!preg_match('/^[0-9]+$/', $media_id)) {
-            $error="Media ID is invalid.";
+            $error = "Media ID is invalid.";
         } else {
-            $sql='select id from playlog where '.implode($dbcheck, ' and ');
+            $sql = 'select id from playlog where ' . implode($dbcheck, ' and ');
 
             $this->db->query($sql);
 
             // echo $this->db->error();
 
-            if ($this->db->num_rows()>0) {
-                $error='This log entry already exists.';
+            if ($this->db->num_rows() > 0) {
+                $error = 'This log entry already exists.';
             }
         }
 
@@ -1199,7 +1197,7 @@ class Remote
             $current_media_end = null;
         }
 
-        if ($current_show_name=='') {
+        if ($current_show_name == '') {
             $current_show_name = null;
         }
 

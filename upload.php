@@ -76,29 +76,29 @@ class Upload extends OBFController
         $models = OBFModels::get_instance();
 
         $key = $this->randKey();
-        $id = $this->db->insert('uploads', array('key'=>$key, 'expiry'=>strtotime('+24 hours')));
+        $id = $this->db->insert('uploads', array('key' => $key, 'expiry' => strtotime('+24 hours')));
 
         $input = fopen("php://input", "r");
-        $target = fopen(OB_ASSETS.'/uploads/'.$id, "w");
+        $target = fopen(OB_ASSETS . '/uploads/' . $id, "w");
         $realSize = stream_copy_to_stream($input, $target);
         fclose($input);
         fclose($target);
 
         if ($realSize != (int) $_SERVER["CONTENT_LENGTH"]) {
-            echo json_encode(array('error'=>'File upload was not successful.  Please try again.'));
-            unlink(OB_ASSETS.'/uploads/'.$id);
+            echo json_encode(array('error' => 'File upload was not successful.  Please try again.'));
+            unlink(OB_ASSETS . '/uploads/' . $id);
             return;
         }
 
         // make sure not too big. filesize limit in MB, default 1024.
-        if (($realSize/1024/1024) > OB_MEDIA_FILESIZE_LIMIT) {
-            echo json_encode(array('error'=>'File too large (max size 1GB).'));
-            unlink(OB_ASSETS.'/uploads/'.$id);
+        if (($realSize / 1024 / 1024) > OB_MEDIA_FILESIZE_LIMIT) {
+            echo json_encode(array('error' => 'File too large (max size 1GB).'));
+            unlink(OB_ASSETS . '/uploads/' . $id);
             return;
         }
 
-        $result['file_id']=$id;
-        $result['file_key']=$key;
+        $result['file_id'] = $id;
+        $result['file_key'] = $key;
 
         // get ID3 data.
         $id3_data = $models->media('getid3', ['filename' => OB_ASSETS . '/uploads/' . $id]);
@@ -111,16 +111,16 @@ class Upload extends OBFController
         if(isset($id3['comments']['album'])) $id3_data['album'] = $id3['comments']['album'];
         if(isset($id3['comments']['title'])) $id3_data['title'] = $id3['comments']['title'];
         if(isset($id3['comments']['comments'])) $id3_data['comments'] = $id3['comments']['comments'];*/
-        if (count($id3_data)>0) {
-            $result['info'] = array('comments'=>$id3_data);
+        if (count($id3_data) > 0) {
+            $result['info'] = array('comments' => $id3_data);
         } else {
             $result['info'] = array();
         }
 
         // get some useful media information, insert it into the db with our file id/key.
-        $media_info = $this->media_info(OB_ASSETS.'/uploads/'.$id);
+        $media_info = $this->media_info(OB_ASSETS . '/uploads/' . $id);
         $this->db->where('id', $id);
-        $this->db->update('uploads', array('format'=>$media_info['format'], 'type'=>$media_info['type'], 'duration'=>$media_info['duration']));
+        $this->db->update('uploads', array('format' => $media_info['format'], 'type' => $media_info['type'], 'duration' => $media_info['duration']));
 
         $result['media_info'] = $media_info;
 
@@ -134,8 +134,8 @@ class Upload extends OBFController
     {
         $chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789';
         $key = '';
-        for ($i=0;$i<16;$i++) {
-            $key.=$chars[rand(0, (strlen($chars)-1))];
+        for ($i = 0; $i < 16; $i++) {
+            $key .= $chars[rand(0, (strlen($chars) - 1))];
         }
         return $key;
     }

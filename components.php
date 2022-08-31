@@ -47,7 +47,7 @@ require('config.php');
 
 // set defaults if not set
 if (!defined('OB_ASSETS')) {
-    define('OB_ASSETS', OB_LOCAL.'/assets');
+    define('OB_ASSETS', OB_LOCAL . '/assets');
 }
 if (!defined('OB_MEDIA_FILESIZE_LIMIT')) {
     define('OB_MEDIA_FILESIZE_LIMIT', 1024);

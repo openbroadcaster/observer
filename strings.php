@@ -35,8 +35,8 @@ $language = $models->ui('get_user_language');
 
 header('Content-type: text/javascript');
 
-echo 'OB.UI.strings = '.json_encode($strings).';';
+echo 'OB.UI.strings = ' . json_encode($strings) . ';';
 
 if (!empty($language['code'])) {
-    echo "\n$(document).ready(function() { $('html').attr('lang','".$language['code']."'); });";
+    echo "\n$(document).ready(function() { $('html').attr('lang','" . $language['code'] . "'); });";
 }

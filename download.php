@@ -51,17 +51,17 @@ class ObDownload
             die();
         }
 
-        if ($media['is_archived']==1) {
-            $filedir=OB_MEDIA_ARCHIVE;
-        } elseif ($media['is_approved']==0) {
-            $filedir=OB_MEDIA_UPLOADS;
+        if ($media['is_archived'] == 1) {
+            $filedir = OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved'] == 0) {
+            $filedir = OB_MEDIA_UPLOADS;
         } else {
-            $filedir=OB_MEDIA;
+            $filedir = OB_MEDIA;
         }
 
-        $filedir.='/'.$media['file_location'][0].'/'.$media['file_location'][1];
+        $filedir .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
-        $fullpath=$filedir.'/'.$media['filename'];
+        $fullpath = $filedir . '/' . $media['filename'];
 
         if (!file_exists($fullpath)) {
             die();
@@ -71,8 +71,8 @@ class ObDownload
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: binary");
-        header("Content-Length: ".filesize($fullpath));
-        header('Content-Disposition: attachment; filename="'.$media['filename'].'"');
+        header("Content-Length: " . filesize($fullpath));
+        header('Content-Disposition: attachment; filename="' . $media['filename'] . '"');
 
         readfile($fullpath);
     }
