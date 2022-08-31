@@ -11,3 +11,4 @@ tools/stream/transcode.log
 tools/subsonic/*.json
 **/.sass-cache
 phpmyadmin
+vendor
