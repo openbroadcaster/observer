@@ -29,7 +29,7 @@ class UpdatesModel extends OBFModel
     // get an array of update classes.
     public function update_required()
     {
-        $update_files = scandir(OB_LOCAL.'/updates', SCANDIR_SORT_DESCENDING);
+        $update_files = scandir(OB_LOCAL . '/updates', SCANDIR_SORT_DESCENDING);
         $latest_version = null;
         foreach ($update_files as $update_file) {
             if (preg_match('/^[0-9]{8}\.php$/', $update_file)) {

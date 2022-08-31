@@ -61,7 +61,7 @@ class OBFController
     {
         if (!isset($this->$name)) {
             $stack = debug_backtrace();
-            trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+            trigger_error('Call to undefined method ' . $name . ' (' . $stack[0]['file'] . ':' . $stack[0]['line'] . ')', E_USER_ERROR);
         }
 
         $obj = $this->$name;
@@ -77,7 +77,7 @@ class OBFController
      * @param hook Optional hook when handled as callback. Default NULL.
      * @param position Optional position when handled as callback. Default NULL.
      */
-    public function handle($action, $hook=null, $position=null)
+    public function handle($action, $hook = null, $position = null)
     {
         if (method_exists($this, $action)) {
             // call as non-callback

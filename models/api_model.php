@@ -93,15 +93,15 @@ class ApiModel extends OBFModel
         // login required for file upload
         if (!$this->api_auth_id) {
             $login_response = $this->login();
-            if ($login_response->status==false) {
+            if ($login_response->status == false) {
                 return $login_response;
             }
         }
 
-        $ch = curl_init($this->api_url.'upload.php');
+        $ch = curl_init($this->api_url . 'upload.php');
 
         // we have login information. provide as cookie.  (ob_auth_id, ob_auth_key)
-        curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
+        curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id=' . $this->api_auth_id . '; ob_auth_key=' . $this->api_auth_key);
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_PUT, true);
@@ -109,8 +109,8 @@ class ApiModel extends OBFModel
         curl_setopt($ch, CURLOPT_INFILESIZE, filesize($args['file']));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 512); // lower speed limit of 0.5KB/s
-    curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 10); // cancels if going this slow for 10s or more.
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Expect:  "));
+        curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 10); // cancels if going this slow for 10s or more.
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Expect:  "));
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -140,7 +140,7 @@ class ApiModel extends OBFModel
 
         if ($args['login_required'] && !$this->api_auth_id) {
             $login_response = $this->login();
-            if ($login_response->status==false) {
+            if ($login_response->status == false) {
                 return $login_response;
             }
         }
@@ -154,11 +154,11 @@ class ApiModel extends OBFModel
         $post['i'] = $this->api_auth_id;
         $post['k'] = $this->api_auth_key;
 
-        $ch = curl_init($this->api_url.'api.php');
+        $ch = curl_init($this->api_url . 'api.php');
 
         // we have login information. provide as cookie.  (ob_auth_id, ob_auth_key)
         if ($this->api_auth_id) {
-            curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id='.$this->api_auth_id.'; ob_auth_key='.$this->api_auth_key);
+            curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id=' . $this->api_auth_id . '; ob_auth_key=' . $this->api_auth_key);
         }
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -184,7 +184,7 @@ class ApiModel extends OBFModel
     {
         $response = $this->call(['controller' => 'account', 'action' => 'login', 'data' => ['username' => $this->api_user, 'password' => $this->api_pass], 'login_required' => false]);
 
-        if ($response->status==true) {
+        if ($response->status == true) {
             $this->api_auth_id = $response->data->id;
             $this->api_auth_key = $response->data->key;
         }

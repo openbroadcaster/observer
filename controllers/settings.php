@@ -92,7 +92,7 @@ class Settings extends OBFController
         }
 
         $validation = $this->models->mediametadata('validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -138,9 +138,9 @@ class Settings extends OBFController
     public function metadata_tag_search()
     {
         $results = $this->models->mediametadata('tag_search', [
-      'id' => $this->data('id'),
-      'search' => $this->data('search')
-    ]);
+        'id' => $this->data('id'),
+        'search' => $this->data('search')
+        ]);
         return [true,'Tag search.',$results];
     }
 
@@ -195,7 +195,7 @@ class Settings extends OBFController
         $data['is_default'] = $this->data('default');
 
         $validation = $this->models->mediacategories('validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -222,7 +222,7 @@ class Settings extends OBFController
         $id = trim($this->data['id']);
 
         $can_delete = $this->models->mediacategories('can_delete', $id);
-        if ($can_delete[0]==false) {
+        if ($can_delete[0] == false) {
             return $can_delete;
         }
 
@@ -310,7 +310,7 @@ class Settings extends OBFController
         $data['is_default'] = $this->data('default');
 
         $validation = $this->models->mediagenres('validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -471,16 +471,16 @@ class Settings extends OBFController
         }
 
         $data = array(
-      'artist'                  => $this->data['artist'],
-      'album'                   => $this->data['album'],
-      'year'                    => $this->data['year'],
-      'category_id'             => $this->data['category_id'],
-      'country_id'              => $this->data['country_id'],
-      'language_id'             => $this->data['language_id'],
-      'comments'                => $this->data['comments'],
-      'dynamic_content_default' => $this->data['dynamic_content_default'],
-      'dynamic_content_hidden'  => $this->data['dynamic_content_hidden']
-    );
+        'artist'                  => $this->data['artist'],
+        'album'                   => $this->data['album'],
+        'year'                    => $this->data['year'],
+        'category_id'             => $this->data['category_id'],
+        'country_id'              => $this->data['country_id'],
+        'language_id'             => $this->data['language_id'],
+        'comments'                => $this->data['comments'],
+        'dynamic_content_default' => $this->data['dynamic_content_default'],
+        'dynamic_content_hidden'  => $this->data['dynamic_content_hidden']
+        );
 
         $result = $this->models->mediametadata('required_fields', $data);
 

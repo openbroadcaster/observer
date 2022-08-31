@@ -108,7 +108,7 @@ class OBFCallbacks
      * @param weight Lower numbers are run first. Can be negative. Default 0.
      *
      */
-    public function register_callback($callback, $hook, $position, $weight=0)
+    public function register_callback($callback, $hook, $position, $weight = 0)
     {
 
     /*
@@ -133,10 +133,10 @@ class OBFCallbacks
     */
 
         if (!isset($this->callbacks[$hook])) {
-            $this->callbacks[$hook]=array();
+            $this->callbacks[$hook] = array();
         }
         if (!isset($this->callbacks[$hook][$position])) {
-            $this->callbacks[$hook][$position]=array();
+            $this->callbacks[$hook][$position] = array();
         }
 
         $cb = new stdClass();
@@ -145,7 +145,7 @@ class OBFCallbacks
         $cb->position = $position;
         $cb->weight = $weight;
 
-        $this->callbacks[$hook][$position][]=$cb;
+        $this->callbacks[$hook][$position][] = $cb;
 
         usort($this->callbacks[$hook][$position], array($this,'callbacks_sort'));
 
@@ -176,7 +176,7 @@ class OBFCallbacks
      *
      * @return obfcallback_return
      */
-    public function fire($hook, $position, &$args=null, &$data=null)
+    public function fire($hook, $position, &$args = null, &$data = null)
     {
 
     // get our OBFLoader.  (Loading in construct creates a loop/php-crash).
@@ -194,7 +194,7 @@ class OBFCallbacks
 
         foreach ($this->callbacks[$hook][$position] as $cb) {
             $cbname_explode = explode('.', $cb->callback);
-            $callback_is_model = (strtolower(substr($cbname_explode[0], -5))=='model' ? true : false);
+            $callback_is_model = (strtolower(substr($cbname_explode[0], -5)) == 'model' ? true : false);
 
             if ($callback_is_model) {
                 $model = $this->load->model(substr($cbname_explode[0], 0, -5));

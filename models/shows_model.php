@@ -41,7 +41,7 @@ class ShowsModel extends OBFModel
      *
      * @return shows
      */
-    public function get_shows($start, $end, $player, $not_entry=false)
+    public function get_shows($start, $end, $player, $not_entry = false)
     {
 
     // get player (for timezone)
@@ -125,22 +125,21 @@ class ShowsModel extends OBFModel
 
 
         // get media/playlist name for each item.
-        foreach ($data as $index=>$item) {
-
+        foreach ($data as $index => $item) {
       // $this->db->where('id',$item['item_id']);
 
-            if ($item['item_type']=='playlist') {
+            if ($item['item_type'] == 'playlist') {
                 $playlist = $this->models->playlists('get_by_id', $item['item_id']);
-                $data[$index]['name']=$playlist['name'];
-                $data[$index]['description']=$playlist['description'];
+                $data[$index]['name'] = $playlist['name'];
+                $data[$index]['description'] = $playlist['description'];
                 $data[$index]['owner'] = $playlist['owner_name'];
                 $data[$index]['type'] = $playlist['type'];
-            } elseif ($item['item_type']=='media') {
+            } elseif ($item['item_type'] == 'media') {
                 $media = $this->models->media('get_by_id', ['id' => $item['item_id']]);
                 $data[$index]['name'] = $media['title'];
                 $data[$index]['owner'] = $media['owner_name'];
                 $data[$index]['type'] = 'standard';
-            } elseif ($item['item_type']=='linein') {
+            } elseif ($item['item_type'] == 'linein') {
                 $data[$index]['name'] = 'Line-In';
                 $data[$index]['type'] = 'standard';
                 $data[$index]['owner'] = 'n/a';
@@ -158,7 +157,7 @@ class ShowsModel extends OBFModel
      *
      * @return show
      */
-    public function get_show_by_id($id, $recurring=false)
+    public function get_show_by_id($id, $recurring = false)
     {
 
     /* $this->db->where('id',$id);
@@ -209,7 +208,7 @@ class ShowsModel extends OBFModel
      * @param id
      * @param recurring Boolean for recurring shows. Default FALSE.
      */
-    public function delete_show($id, $recurring=false)
+    public function delete_show($id, $recurring = false)
     {
 
     // get show information, start time and player id needed for liveassist cache delete
@@ -261,17 +260,17 @@ class ShowsModel extends OBFModel
      *
      * @return [is_valid, msg]
      */
-    public function validate_show($data, $id=false, $skip_permission_check=false)
+    public function validate_show($data, $id = false, $skip_permission_check = false)
     {
         // return [true, 'Temporary valid TODO'];
 
         // make sure data is valid.
-        if (empty($data['player_id']) || empty($data['mode']) || empty($data['start'])
-        || (empty($data['x_data']) && ($data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths'))
-        || ($data['mode']!='once' && empty($data['stop']))
-        || (empty($id) && (empty($data['item_type']) || ($data['item_type']!='linein' && empty($data['item_id']))))
-    ) {
-
+        if (
+            empty($data['player_id']) || empty($data['mode']) || empty($data['start'])
+            || (empty($data['x_data']) && ($data['mode'] == 'xdays' || $data['mode'] == 'xweeks' || $data['mode'] == 'xmonths'))
+            || ($data['mode'] != 'once' && empty($data['stop']))
+            || (empty($id) && (empty($data['item_type']) || ($data['item_type'] != 'linein' && empty($data['item_id']))))
+        ) {
     //T One or more required fields were not filled.
             return array(false,'One or more required fields were not filled.');
         }
@@ -290,16 +289,16 @@ class ShowsModel extends OBFModel
 
         // make sure item type/id is valid (if not editing)
         if (empty($id)) {
-            if ($data['item_type']!='playlist' && $data['item_type']!='media' && $data['item_type']!='linein') {
+            if ($data['item_type'] != 'playlist' && $data['item_type'] != 'media' && $data['item_type'] != 'linein') {
                 return array(false,'Item Invalid');
             }
 
             //T The item you are attempting to schedule is  .
-            if (empty($data['item_id']) && $data['item_type']!='linein') {
+            if (empty($data['item_id']) && $data['item_type'] != 'linein') {
                 return array(false,'The item you are attempting to schedule is not valid.');
             }
 
-            if ($data['item_type']=='playlist') {
+            if ($data['item_type'] == 'playlist') {
                 $this->db->where('id', $data['item_id']);
                 $playlist = $this->db->get_one('playlists');
 
@@ -309,10 +308,10 @@ class ShowsModel extends OBFModel
                 }
 
                 // don't allow use of private playlist unless playlist manager or owner of this playlist.
-                if (!$skip_permission_check && $playlist['status']=='private' && $playlist['owner_id']!=$this->user->param('id')) {
+                if (!$skip_permission_check && $playlist['status'] == 'private' && $playlist['owner_id'] != $this->user->param('id')) {
                     $this->user->require_permission('manage_playlists');
                 }
-            } elseif ($data['item_type']=='media') {
+            } elseif ($data['item_type'] == 'media') {
                 $this->db->where('id', $data['item_id']);
                 $media = $this->db->get_one('media');
 
@@ -322,19 +321,19 @@ class ShowsModel extends OBFModel
                 }
 
                 // don't allow use of private media unless media manage or owner of this media.
-                if (!$skip_permission_check && $media['status']=='private' && $media['owner_id']!=$this->user->param('id')) {
+                if (!$skip_permission_check && $media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
                     $this->user->require_premission('manage_media');
                 }
 
                 //T The media must be approved.
-                if ($media['is_approved']==0) {
+                if ($media['is_approved'] == 0) {
                     return array(false,'The media must be approved.');
                 }
                 //T The media must not be archived.
-                if ($media['is_archived']==1) {
+                if ($media['is_archived'] == 1) {
                     return array(false,'The media must not be archived.');
                 }
-            } elseif ($data['item_type']=='linein') {
+            } elseif ($data['item_type'] == 'linein') {
                 // make sure linein scheduling is supported by this player.
                 //T The item you are attempting to schedule is not valid.
                 if (empty($player_data['support_linein'])) {
@@ -345,7 +344,7 @@ class ShowsModel extends OBFModel
 
         // check valid scheduling mode
         //T The selected scheduling mode is not valid.
-        if (array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false) {
+        if (array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths')) === false) {
             return array(false,'The selected scheduling mode is not valid.');
         }
 
@@ -370,7 +369,7 @@ class ShowsModel extends OBFModel
 
         // check if x data is valid.
         //T The recurring frequency is not valid.
-        if (!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data']>65535)) {
+        if (!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data'] > 65535)) {
             return array(false,'The recurring frequency is not valid.');
         }
 
@@ -386,10 +385,10 @@ class ShowsModel extends OBFModel
      *
      * @return [is_colliding, msg]
      */
-    public function collision_timeslot_check($data, $id=false, $edit_recurring=false, $skip_timeslot_check = false)
+    public function collision_timeslot_check($data, $id = false, $edit_recurring = false, $skip_timeslot_check = false)
     {
         if (!empty($id)) {
-            $not_entry = array('id'=>$id,'recurring'=>$edit_recurring);
+            $not_entry = array('id' => $id,'recurring' => $edit_recurring);
         } else {
             $not_entry = false;
         }
@@ -398,10 +397,9 @@ class ShowsModel extends OBFModel
 
         $duration = $data['duration'];
 
-        if ($data['mode']=='once') {
-            $collision_check[]=$data['start'];
+        if ($data['mode'] == 'once') {
+            $collision_check[] = $data['start'];
         } else {
-
       //T Recurring shows cannot be longer than 28 days.
             if ($duration > 2419200) {
                 return array(false,'Recurring shows cannot be longer than 28 days.');
@@ -409,36 +407,36 @@ class ShowsModel extends OBFModel
 
             // this is a recurring item.  make sure we don't collide with ourselves.
             //T A show scheduled daily cannot be longer than a day.
-            if ($data['mode']=='daily' && $duration > 86400) {
+            if ($data['mode'] == 'daily' && $duration > 86400) {
                 return array(false,'A show scheduled daily cannot be longer than a day.');
             }
             //T A show scheduled weekly cannot be longer than a week.
-            if ($data['mode']=='weekly' && $duration > 604800) {
+            if ($data['mode'] == 'weekly' && $duration > 604800) {
                 return array(false,'A show scheduled weekly cannot be longer than a week.');
             }
             //T A show cannot be longer than its frequency.
-            if ($data['mode']=='xdays' && $duration > 86400*$data['x_data']) {
+            if ($data['mode'] == 'xdays' && $duration > 86400 * $data['x_data']) {
                 return array(false,'A show cannot be longer than its frequency.');
             }
             //T A show cannot be longer than its frequency.
-            if ($data['mode']=='xweeks' && $duration > 604800*$data['x_data']) {
+            if ($data['mode'] == 'xweeks' && $duration > 604800 * $data['x_data']) {
                 return array(false,'A show cannot be longer than its frequency.');
             }
 
 
             // this is a recurring item.  set up times to check for collisions
-            if ($data['mode']=='daily' || $data['mode']=='weekly' || $data['mode']=='monthly') {
+            if ($data['mode'] == 'daily' || $data['mode'] == 'weekly' || $data['mode'] == 'monthly') {
                 $interval = '+1';
             } else {
-                $interval = '+'.$data['x_data'];
+                $interval = '+' . $data['x_data'];
             }
 
-            if ($data['mode']=='daily' || $data['mode']=='xdays') {
-                $interval.=' days';
-            } elseif ($data['mode']=='weekly' || $data['mode']=='xweeks') {
-                $interval.=' weeks';
+            if ($data['mode'] == 'daily' || $data['mode'] == 'xdays') {
+                $interval .= ' days';
+            } elseif ($data['mode'] == 'weekly' || $data['mode'] == 'xweeks') {
+                $interval .= ' weeks';
             } else {
-                $interval.=' months';
+                $interval .= ' months';
             }
 
             /*$tmp_time = $data['start'];
@@ -459,27 +457,27 @@ class ShowsModel extends OBFModel
                 $collision_check[] = $tmp_time->format('Y-m-d H:i:s');
 
                 switch ($data['mode']) {
-          case 'daily':
-            $tmp_time->add(new DateInterval('P1D'));
-            break;
-          case 'weekly':
-            $tmp_time->add(new DateInterval('P7D'));
-            break;
-          case 'monthly':
-            $tmp_time->add(new DateInterval('P1M'));
-            break;
-          case 'xdays':
-            $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'D'));
-            break;
-          case 'xweeks':
-            $tmp_time->add(new DateInterval('P' . ($data['x_data'] * 7) . 'D'));
-            break;
-          case 'xmonths':
-            $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'M'));
-            break;
-          default:
-            trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
-        }
+                    case 'daily':
+                        $tmp_time->add(new DateInterval('P1D'));
+                        break;
+                    case 'weekly':
+                        $tmp_time->add(new DateInterval('P7D'));
+                        break;
+                    case 'monthly':
+                        $tmp_time->add(new DateInterval('P1M'));
+                        break;
+                    case 'xdays':
+                        $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'D'));
+                        break;
+                    case 'xweeks':
+                        $tmp_time->add(new DateInterval('P' . ($data['x_data'] * 7) . 'D'));
+                        break;
+                    case 'xmonths':
+                        $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'M'));
+                        break;
+                    default:
+                        trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
+                }
             }
         }
 
@@ -526,13 +524,13 @@ class ShowsModel extends OBFModel
                 }
 
                 // the last timeslot must end at the end of our timeslot or later.
-                if (($timeslots[count($timeslots)-1]['start'] + $timeslots[count($timeslots)-1]['duration']) < ($check + $duration)) {
+                if (($timeslots[count($timeslots) - 1]['start'] + $timeslots[count($timeslots) - 1]['duration']) < ($check + $duration)) {
                     $timeslot_check_failed = true;
                 }
 
                 // make sure there are no gaps...
-                foreach ($timeslots as $index=>$timeslot) {
-                    if ($index==0) {
+                foreach ($timeslots as $index => $timeslot) {
+                    if ($index == 0) {
                         $timeslot_last_end = $timeslot['start'] + $timeslot['duration'];
                         continue;
                     }
@@ -609,8 +607,8 @@ class ShowsModel extends OBFModel
 
         $dbdata = array();
 
-        $dbdata['player_id']=$data['player_id'];
-        $dbdata['start']=$data['start'];
+        $dbdata['player_id'] = $data['player_id'];
+        $dbdata['start'] = $data['start'];
         // $dbdata['duration']=$data['duration'];
         $show_end = new DateTime($data['start'], new DateTimeZone('UTC'));
         $show_end->add(new DateInterval('PT' . $data['duration'] . 'S'));
@@ -623,15 +621,15 @@ class ShowsModel extends OBFModel
         } // zero should be null (default)
 
         if (!empty($id)) {
-            $dbdata['item_id']=$show_data['item_id'];
-            $dbdata['item_type']=$show_data['item_type'];
+            $dbdata['item_id'] = $show_data['item_id'];
+            $dbdata['item_type'] = $show_data['item_type'];
         } else {
-            $dbdata['item_id']=$data['item_id'];
-            $dbdata['item_type']=$data['item_type'];
+            $dbdata['item_id'] = $data['item_id'];
+            $dbdata['item_type'] = $data['item_type'];
         }
 
-        if ($data['mode']!='once') {
-            $dbdata['mode']=$data['mode'];
+        if ($data['mode'] != 'once') {
+            $dbdata['mode'] = $data['mode'];
             //$dbdata['x_data']=$data['x_data'];
             $dbdata['recurring_interval'] = $data['x_data'];
             //$dbdata['stop']=$data['stop'];
@@ -658,27 +656,27 @@ class ShowsModel extends OBFModel
                 $this->db->insert('shows_expanded', $expanded_data);
 
                 switch ($dbdata['mode']) {
-          case 'daily':
-            $tmp_time->add(new DateInterval('P1D'));
-            break;
-          case 'weekly':
-            $tmp_time->add(new DateInterval('P7D'));
-            break;
-          case 'monthly':
-            $tmp_time->add(new DateInterval('P1M'));
-            break;
-          case 'xdays':
-            $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'D'));
-            break;
-          case 'xweeks':
-            $tmp_time->add(new DateInterval('P' . ($dbdata['recurring_interval'] * 7) . 'D'));
-            break;
-          case 'xmonths':
-            $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'M'));
-            break;
-          default:
-            trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
-        }
+                    case 'daily':
+                        $tmp_time->add(new DateInterval('P1D'));
+                        break;
+                    case 'weekly':
+                        $tmp_time->add(new DateInterval('P7D'));
+                        break;
+                    case 'monthly':
+                        $tmp_time->add(new DateInterval('P1M'));
+                        break;
+                    case 'xdays':
+                        $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'D'));
+                        break;
+                    case 'xweeks':
+                        $tmp_time->add(new DateInterval('P' . ($dbdata['recurring_interval'] * 7) . 'D'));
+                        break;
+                    case 'xmonths':
+                        $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'M'));
+                        break;
+                    default:
+                        trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
+                }
             }
 
             /*while($tmp_time < $dbdata['stop'])
@@ -722,7 +720,7 @@ class ShowsModel extends OBFModel
      */
     private function order_schedule($a, $b)
     {
-        if ($a['start']>$b['start']) {
+        if ($a['start'] > $b['start']) {
             return 1;
         } else {
             return -1;

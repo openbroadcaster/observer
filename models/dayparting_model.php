@@ -45,21 +45,21 @@ class DaypartingModel extends OBFModel
         $type = $args['type'];
 
         //T A valid type is required.
-        if ($type!='time' && $type!='date' && $type!='dow') {
+        if ($type != 'time' && $type != 'date' && $type != 'dow') {
             return [false,'A valid type is required.'];
         }
 
         //T A valid filter must be provided.
-        if (json_decode($args['filters'])===null) {
+        if (json_decode($args['filters']) === null) {
             return [false,'A valid filter must be provided.'];
         }
         $data['filters'] = $args['filters'];
 
         // we accept either doy (non-leap year) or Y-m-d.
-        if ($type=='date') {
+        if ($type == 'date') {
             if (is_numeric($args['start'])) {
                 $start = (int) $args['start'];
-                if ($start<0 || $start>364) {
+                if ($start < 0 || $start > 364) {
                     return [false, 'A valid start date is required.'];
                 }
                 $data['start_doy'] = $start;
@@ -77,7 +77,7 @@ class DaypartingModel extends OBFModel
 
             if (is_numeric($args['end'])) {
                 $end = (int) $args['end'];
-                if ($end<0 || $end>364) {
+                if ($end < 0 || $end > 364) {
                     return [false, 'A valid end date is required.'];
                 }
                 $data['end_doy'] = $end;
@@ -94,7 +94,7 @@ class DaypartingModel extends OBFModel
             }
         }
 
-        if ($type=='time') {
+        if ($type == 'time') {
             $start = DateTime::createFromFormat('H:i:s', $args['start']);
             $end = DateTime::createFromFormat('H:i:s', $args['end']);
 
@@ -107,10 +107,10 @@ class DaypartingModel extends OBFModel
             $data['end_time'] = $end->format('H:i:s');
         }
 
-        if ($type=='dow') {
+        if ($type == 'dow') {
             $data['dow'] = implode(',', $args['dow'] ? $args['dow'] : []);
             //T At least one day of week is required.
-            if ($args['dow']=='') {
+            if ($args['dow'] == '') {
                 return [false, 'At least one day of week is required.'];
             }
         }
@@ -118,7 +118,7 @@ class DaypartingModel extends OBFModel
         $data['description'] = trim($args['description']);
 
         //T A description is required.
-        if ($data['description']=='') {
+        if ($data['description'] == '') {
             return [false,'A description is required.'];
         }
 
@@ -165,11 +165,11 @@ class DaypartingModel extends OBFModel
 
     private function format_row(&$row)
     {
-        if ($row['start_doy']!==null) {
+        if ($row['start_doy'] !== null) {
             $row['type'] = 'date';
             $row['start'] = $row['start_doy'];
             $row['end'] = $row['end_doy'];
-        } elseif ($row['start_time']!==null) {
+        } elseif ($row['start_time'] !== null) {
             $row['type'] = 'time';
             $row['start'] = $row['start_time'];
             $row['end'] = $row['end_time'];
@@ -181,7 +181,7 @@ class DaypartingModel extends OBFModel
         unset($row['end_doy']);
         unset($row['start_time']);
         unset($row['end_time']);
-        if ($row['type']!='dow') {
+        if ($row['type'] != 'dow') {
             unset($row['dow']);
         }
     }
@@ -198,8 +198,8 @@ class DaypartingModel extends OBFModel
             // consider feb 29 to be feb 28 for dayparting purposes
             $month = $start_time->format('n');
             $day = $start_time->format('j');
-            if ($month==2 && $day==29) {
-                $day=28;
+            if ($month == 2 && $day == 29) {
+                $day = 28;
             }
             $start_time->setDate(2021, $month, $day);
 
@@ -214,34 +214,34 @@ class DaypartingModel extends OBFModel
         (
           `start_time` IS NOT NULL &&
           `start_time` < `end_time` &&
-          "'.$this->db->escape($dayparting_time).'" >= `start_time` &&
-          "'.$this->db->escape($dayparting_time).'" < `end_time`
+          "' . $this->db->escape($dayparting_time) . '" >= `start_time` &&
+          "' . $this->db->escape($dayparting_time) . '" < `end_time`
         ) ||
         (
           `start_time` IS NOT NULL &&
           `start_time` > `end_time` &&
           (
-            "'.$this->db->escape($dayparting_time).'" >= `start_time` ||
-            "'.$this->db->escape($dayparting_time).'" < `end_time`
+            "' . $this->db->escape($dayparting_time) . '" >= `start_time` ||
+            "' . $this->db->escape($dayparting_time) . '" < `end_time`
           )
         ) ||
         (
           `start_doy` IS NOT NULL &&
           `start_doy` <= `end_doy` &&
-          '.(int) $this->db->escape($dayparting_doy).' >= `start_doy` &&
-          '.(int) $this->db->escape($dayparting_doy).' <= `end_doy`
+          ' . (int) $this->db->escape($dayparting_doy) . ' >= `start_doy` &&
+          ' . (int) $this->db->escape($dayparting_doy) . ' <= `end_doy`
         ) ||
         (
           `start_doy` IS NOT NULL &&
           `start_doy` > `end_doy` &&
           (
-            '.(int) $this->db->escape($dayparting_doy).' >= `start_doy` ||
-            '.(int) $this->db->escape($dayparting_doy).' <= `end_doy`
+            ' . (int) $this->db->escape($dayparting_doy) . ' >= `start_doy` ||
+            ' . (int) $this->db->escape($dayparting_doy) . ' <= `end_doy`
           )
         ) ||
         (
           `dow` IS NOT NULL &&
-          FIND_IN_SET("'.$this->db->escape($dayparting_dow).'", `dow`)
+          FIND_IN_SET("' . $this->db->escape($dayparting_dow) . '", `dow`)
         )');
 
             $dayparting_rows = $this->db->assoc_list();

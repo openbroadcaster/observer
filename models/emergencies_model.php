@@ -71,12 +71,12 @@ class EmergenciesModel extends OBFModel
             return false;
         }
 
-        $emergency['item_name']=$emergency['artist'].' - '.$emergency['title'];
+        $emergency['item_name'] = $emergency['artist'] . ' - ' . $emergency['title'];
         unset($emergency['artist']);
         unset($emergency['title']);
 
-        if ($emergency['item_type']!='image') {
-            $emergency['duration']=$emergency['item_duration'];
+        if ($emergency['item_type'] != 'image') {
+            $emergency['duration'] = $emergency['item_duration'];
         }
         unset($emergency['item_duration']);
 
@@ -100,13 +100,13 @@ class EmergenciesModel extends OBFModel
 
         $emergencies = $this->db->get('emergencies');
 
-        foreach ($emergencies as $index=>$emergency) {
-            $emergencies[$index]['item_name']=$emergency['artist'].' - '.$emergency['title'];
+        foreach ($emergencies as $index => $emergency) {
+            $emergencies[$index]['item_name'] = $emergency['artist'] . ' - ' . $emergency['title'];
             unset($emergencies[$index]['artist']);
             unset($emergencies[$index]['title']);
 
-            if ($emergencies[$index]['item_type']!='image') {
-                $emergencies[$index]['duration']=$emergencies[$index]['item_duration'];
+            if ($emergencies[$index]['item_type'] != 'image') {
+                $emergencies[$index]['duration'] = $emergencies[$index]['item_duration'];
             }
             unset($emergencies[$index]['item_duration']);
         }
@@ -127,8 +127,8 @@ class EmergenciesModel extends OBFModel
         OBFHelpers::require_args($args, ['data']);
         OBFHelpers::default_args($args, ['id' => false]);
 
-        foreach ($args['data'] as $key=>$value) {
-            $$key=$value;
+        foreach ($args['data'] as $key => $value) {
+            $$key = $value;
         }
 
         // required fields?
@@ -161,11 +161,11 @@ class EmergenciesModel extends OBFModel
             return array(false,'Media Invalid');
         }
         //T Media must be approved.
-        if ($media['is_approved']==0) {
+        if ($media['is_approved'] == 0) {
             return array(false,'Media must be approved.');
         }
         //T Media must not be archived.
-        if ($media['is_archived']==1) {
+        if ($media['is_archived'] == 1) {
             return array(false,'Media must not be archived.');
         }
 
@@ -176,7 +176,7 @@ class EmergenciesModel extends OBFModel
         }
 
         // is duration valid? only needed for images...
-        if ($media['type']=='image' && (!preg_match('/^[0-9]+$/', $duration) || $duration < 1)) {
+        if ($media['type'] == 'image' && (!preg_match('/^[0-9]+$/', $duration) || $duration < 1)) {
             return array(false,'Duration Invalid');
         }
 
@@ -210,7 +210,7 @@ class EmergenciesModel extends OBFModel
 
         $this->db->where('id', $args['data']['item_id']);
         $media = $this->db->get_one('media');
-        if ($media['type']!='image') {
+        if ($media['type'] != 'image') {
             unset($args['data']['duration']);
         } // duration not needed unless this is an image.
 

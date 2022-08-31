@@ -157,16 +157,16 @@ class Alerts extends OBFController
         $data['start'] = trim($this->data('start'));
         $data['stop'] = trim($this->data('stop'));
 
-        $data['user_id']=$this->user->param('id');
+        $data['user_id'] = $this->user->param('id');
 
         $validation = $this->models->emergencies('validate', ['data' => $data, 'id' => $id]);
         //T Priority
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return array(false,$validation[1]);
         }
 
         // check permission on this player.
-        $this->user->require_permission('manage_emergency_broadcasts:'.$data['player_id']);
+        $this->user->require_permission('manage_emergency_broadcasts:' . $data['player_id']);
 
         $this->models->emergencies('save', ['data' => $data, 'id' => $id]);
 
@@ -191,7 +191,7 @@ class Alerts extends OBFController
         }
 
         // check permission on appropriate player.
-        $this->user->require_permission('manage_emergency_broadcasts:'.$alert['player_id']);
+        $this->user->require_permission('manage_emergency_broadcasts:' . $alert['player_id']);
 
         $this->models->emergencies('delete', ['id' => $id]);
 

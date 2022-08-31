@@ -50,9 +50,9 @@ class Account extends OBFController
 
         $login = $this->user->login($username, $password);
 
-        if ($login==false) {
+        if ($login == false) {
             return array(false,'Login Failed');
-        } elseif (is_array($login) && $login[0]===false) {
+        } elseif (is_array($login) && $login[0] === false) {
             return array(false,$login[1]);
         } else {
             return array(true,'Login Successful',$login[2]);
@@ -68,8 +68,8 @@ class Account extends OBFController
      */
     public function uid()
     {
-        $data['id']=$this->user->param('id');
-        $data['username']=$this->user->param('username');
+        $data['id'] = $this->user->param('id');
+        $data['username'] = $this->user->param('username');
 
         return array(true,'UID/Username',$data);
     }
@@ -191,7 +191,7 @@ class Account extends OBFController
 
         $validation = $this->models->users('settings_validate', $user_id, $data);
 
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return [false,$validation[1]];
         }
 
@@ -215,7 +215,7 @@ class Account extends OBFController
 
         $validation = $this->models->users('forgotpass_validate', $email);
 
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -246,7 +246,7 @@ class Account extends OBFController
         $data['username'] = trim($this->data('username'));
 
         $validation = $this->models->users('newaccount_validate', $data);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -348,10 +348,10 @@ class Account extends OBFController
             return array(false, 'Invalid user ID.');
         }
 
-     $result = $this->models->users('user_manage_key_load', $id);
-     return array(true, 'Successfully loaded App Keys.', $result);
-   }
-   
+        $result = $this->models->users('user_manage_key_load', $id);
+        return array(true, 'Successfully loaded App Keys.', $result);
+    }
+
    /**
     * Get or save arbitrary string data associated with the logged in account. Used for UI/client settings, etc.
     *
@@ -363,13 +363,13 @@ class Account extends OBFController
     {
       $data['user_id'] = $this->user->param('id');
       if (empty($data['user_id'])) return array(false, 'Invalid user ID.');
-      
+
       $data['name'] = $this->data('name');
       $data['value'] = $this->data('value');
       $data['user_id'] = $this->user->param('id');
-      
-      var_dump($data);  
-        
+
+      var_dump($data);
+
       if($data['value']) return $this->models->userstorage('save', $data);
       else return $this->models->userstorage('save', $data);
     }

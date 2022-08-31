@@ -42,7 +42,7 @@ class TimeslotsModel extends OBFModel
      *
      * @return timeslots
      */
-    public function get_timeslots($start, $end, $player, $not_entry=false, $user_id=false)
+    public function get_timeslots($start, $end, $player, $not_entry = false, $user_id = false)
     {
 
     // get player (for timezone)
@@ -93,7 +93,7 @@ class TimeslotsModel extends OBFModel
      *
      * @return timeslot
      */
-    public function get_timeslot_by_id($id, $recurring=false)
+    public function get_timeslot_by_id($id, $recurring = false)
     {
         $this->db->where('id', $id);
         if (!$recurring) {
@@ -118,7 +118,7 @@ class TimeslotsModel extends OBFModel
      * @param id
      * @param recurring Boolean for recurring item. Default FALSE.
      */
-    public function delete_timeslot($id, $recurring=false)
+    public function delete_timeslot($id, $recurring = false)
     {
         $this->db->where('id', $id);
         $this->db->delete('timeslots');
@@ -134,12 +134,14 @@ class TimeslotsModel extends OBFModel
      *
      * @return [is_valid, msg]
      */
-    public function validate_timeslot($data, $id=false)
+    public function validate_timeslot($data, $id = false)
     {
 
     // make sure data is valid.
-        if ($data['description']=='' || empty($data['player_id']) || empty($data['user_id']) || empty($data['mode']) || empty($data['start']) ||
-        (empty($data['x_data']) && ($data['mode']=='xdays' || $data['mode']=='xweeks' || $data['mode']=='xmonths')) || ($data['mode']!='once' && empty($data['stop']))) {
+        if (
+            $data['description'] == '' || empty($data['player_id']) || empty($data['user_id']) || empty($data['mode']) || empty($data['start']) ||
+            (empty($data['x_data']) && ($data['mode'] == 'xdays' || $data['mode'] == 'xweeks' || $data['mode'] == 'xmonths')) || ($data['mode'] != 'once' && empty($data['stop']))
+        ) {
             //T One or more required fields were not filled.
             return array(false, 'One or more required fields were not filled.');
         }
@@ -163,7 +165,7 @@ class TimeslotsModel extends OBFModel
         date_default_timezone_set($player_data['timezone']);
 
         // check valid scheduling mode
-        if (array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths'))===false) {
+        if (array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths')) === false) {
             //T The selected scheduling mode is not valid.
             return array(false,'The selected scheduling mode is not valid.');
         }
@@ -179,7 +181,7 @@ class TimeslotsModel extends OBFModel
         // check if the stop date is valid.
         //T The stop (last) date is not valid and must come after the start date/time.
         //if($data['mode']!='once' && !preg_match('/^[0-9]+$/',$data['stop'])) return array(false,'The stop (last) date is not valid and must come after the start date/time.');
-        $dt_stop = DateTime::createFromFormat('Y-m-d H:i:s', $data['stop'].' 00:00:00', new DateTimeZone('UTC'));
+        $dt_stop = DateTime::createFromFormat('Y-m-d H:i:s', $data['stop'] . ' 00:00:00', new DateTimeZone('UTC'));
         if ($dt_stop) {
             $dt_stop->add(new DateInterval('P1D'));
         } // include stop date as last date
@@ -191,7 +193,7 @@ class TimeslotsModel extends OBFModel
         //if($data['mode']!='once' && $data['start']>=$data['stop']) return array(false,'The stop (last) date is not valid and must come after the start date/time.');
 
         // check if x data is valid.
-        if (!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data']>65535)) {
+        if (!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data'] > 65535)) {
             //T The recurring frequency is not valid.
             return array(false,'The recurring frequency is not valid.');
         }
@@ -208,23 +210,22 @@ class TimeslotsModel extends OBFModel
      *
      * @return [is_colliding, msg]
      */
-    public function collision_check($data, $id=false, $edit_recurring=false)
+    public function collision_check($data, $id = false, $edit_recurring = false)
     {
         $duration = $data['duration'];
 
         // does this collide with another timeslot?
         if (!empty($id)) {
-            $not_entry = array('id'=>$id,'recurring'=>$edit_recurring);
+            $not_entry = array('id' => $id,'recurring' => $edit_recurring);
         } else {
             $not_entry = false;
         }
 
         $collision_check = array();
 
-        if ($data['mode']=='once') {
-            $collision_check[]=$data['start'];
+        if ($data['mode'] == 'once') {
+            $collision_check[] = $data['start'];
         } else {
-
       //T Recurring timeslots cannot be longer than 28 days.
             if ($duration > 2419200) {
                 return array(false,'Recurring timeslots cannot be longer than 28 days.');
@@ -232,35 +233,35 @@ class TimeslotsModel extends OBFModel
 
             // this is a recurring item.  make sure we don't collide with ourselves.
             //T A timeslot scheduled daily cannot be longer than a day.
-            if ($data['mode']=='daily' && $duration > 86400) {
+            if ($data['mode'] == 'daily' && $duration > 86400) {
                 return array(false,'A timeslot scheduled daily cannot be longer than a day.');
             }
             //T A timeslot scheduled weekly cannot be longer than a week.
-            if ($data['mode']=='weekly' && $duration > 604800) {
+            if ($data['mode'] == 'weekly' && $duration > 604800) {
                 return array(false,'A timeslot scheduled weekly cannot be longer than a week.');
             }
             //T A scheduled timeslot cannot be longer than its frequency.
-            if ($data['mode']=='xdays' && $duration > 86400*$data['x_data']) {
+            if ($data['mode'] == 'xdays' && $duration > 86400 * $data['x_data']) {
                 return array(false,'A scheduled timeslot cannot be longer than its frequency.');
             }
             //T A scheduled timeslot cannot be longer than its frequency.
-            if ($data['mode']=='xweeks' && $duration > 604800*$data['x_data']) {
+            if ($data['mode'] == 'xweeks' && $duration > 604800 * $data['x_data']) {
                 return array(false,'A scheduled timeslot cannot be longer than its frequency.');
             }
 
             // this is a recurring item.  determine the times to use for collision checks.
-            if ($data['mode']=='daily' || $data['mode']=='weekly' || $data['mode']=='monthly') {
+            if ($data['mode'] == 'daily' || $data['mode'] == 'weekly' || $data['mode'] == 'monthly') {
                 $interval = '+1';
             } else {
-                $interval = '+'.$data['x_data'];
+                $interval = '+' . $data['x_data'];
             }
 
-            if ($data['mode']=='daily' || $data['mode']=='xdays') {
-                $interval.=' days';
-            } elseif ($data['mode']=='weekly' || $data['mode']=='xweeks') {
-                $interval.=' weeks';
+            if ($data['mode'] == 'daily' || $data['mode'] == 'xdays') {
+                $interval .= ' days';
+            } elseif ($data['mode'] == 'weekly' || $data['mode'] == 'xweeks') {
+                $interval .= ' weeks';
             } else {
-                $interval.=' months';
+                $interval .= ' months';
             }
 
             /*$tmp_time = $data['start'];
@@ -281,27 +282,27 @@ class TimeslotsModel extends OBFModel
                 $collision_check[] = $tmp_time->format('Y-m-d H:i:s');
 
                 switch ($data['mode']) {
-          case 'daily':
-            $tmp_time->add(new DateInterval('P1D'));
-            break;
-          case 'weekly':
-            $tmp_time->add(new DateInterval('P7D'));
-            break;
-          case 'monthly':
-            $tmp_time->add(new DateInterval('P1M'));
-            break;
-          case 'xdays':
-            $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'D'));
-            break;
-          case 'xweeks':
-            $tmp_time->add(new DateInterval('P' . ($data['x_data'] * 7) . 'D'));
-            break;
-          case 'xmonths':
-            $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'M'));
-            break;
-          default:
-            trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
-        }
+                    case 'daily':
+                        $tmp_time->add(new DateInterval('P1D'));
+                        break;
+                    case 'weekly':
+                        $tmp_time->add(new DateInterval('P7D'));
+                        break;
+                    case 'monthly':
+                        $tmp_time->add(new DateInterval('P1M'));
+                        break;
+                    case 'xdays':
+                        $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'D'));
+                        break;
+                    case 'xweeks':
+                        $tmp_time->add(new DateInterval('P' . ($data['x_data'] * 7) . 'D'));
+                        break;
+                    case 'xmonths':
+                        $tmp_time->add(new DateInterval('P' . $data['x_data'] . 'M'));
+                        break;
+                    default:
+                        trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
+                }
             }
         }
 
@@ -346,7 +347,7 @@ class TimeslotsModel extends OBFModel
      * @param id Updating an existing timeslot. Default FALSE.
      * @param edit_recurring Whether editing a recurring item. Default FALSE.
      */
-    public function save_timeslot($data, $id=false, $edit_recurring=false)
+    public function save_timeslot($data, $id = false, $edit_recurring = false)
     {
         $duration = $data['duration'];
 
@@ -367,18 +368,18 @@ class TimeslotsModel extends OBFModel
 
         $dbdata = array();
 
-        $dbdata['player_id']=$data['player_id'];
-        $dbdata['user_id']=$data['user_id'];
-        $dbdata['start']=$data['start'];
+        $dbdata['player_id'] = $data['player_id'];
+        $dbdata['user_id'] = $data['user_id'];
+        $dbdata['start'] = $data['start'];
         // $dbdata['duration']=$duration;
         $timeslot_end = new DateTime($data['start'], new DateTimeZone('UTC'));
         $timeslot_end->add(new DateInterval('PT' . $duration . 'S'));
         $dbdata['timeslot_end'] = $timeslot_end->format('Y-m-d H:i:s');
 
-        $dbdata['description']=$data['description'];
+        $dbdata['description'] = $data['description'];
 
-        if ($data['mode']!='once') {
-            $dbdata['mode']=$data['mode'];
+        if ($data['mode'] != 'once') {
+            $dbdata['mode'] = $data['mode'];
             /*$dbdata['x_data']=$data['x_data'];
             $dbdata['stop']=$data['stop'];*/
             $dbdata['recurring_interval'] = $data['x_data'];
@@ -387,7 +388,7 @@ class TimeslotsModel extends OBFModel
             $recurring_id = $this->db->insert('timeslots', $dbdata);
 
             $tmp_time = new DateTime($dbdata['start'], new DateTimeZone('UTC'));
-            $stop_time = new DateTime($data['stop'].' 00:00:00', new DateTimeZone('UTC'));
+            $stop_time = new DateTime($data['stop'] . ' 00:00:00', new DateTimeZone('UTC'));
             $stop_time->add(new DateInterval('P1D'));
             // $stop_time->sub(new DateInterval('PT' . $data['duration'] . 'S'));
 
@@ -403,27 +404,27 @@ class TimeslotsModel extends OBFModel
                 $this->db->insert('timeslots_expanded', $expanded_data);
 
                 switch ($dbdata['mode']) {
-          case 'daily':
-            $tmp_time->add(new DateInterval('P1D'));
-            break;
-          case 'weekly':
-            $tmp_time->add(new DateInterval('P7D'));
-            break;
-          case 'monthly':
-            $tmp_time->add(new DateInterval('P1M'));
-            break;
-          case 'xdays':
-            $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'D'));
-            break;
-          case 'xweeks':
-            $tmp_time->add(new DateInterval('P' . ($dbdata['recurring_interval'] * 7) . 'D'));
-            break;
-          case 'xmonths':
-            $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'M'));
-            break;
-          default:
-            trigger_error('Invalid mode provided. Aborting to avoid infinite timeslots added.', E_USER_ERROR);
-        }
+                    case 'daily':
+                        $tmp_time->add(new DateInterval('P1D'));
+                        break;
+                    case 'weekly':
+                        $tmp_time->add(new DateInterval('P7D'));
+                        break;
+                    case 'monthly':
+                        $tmp_time->add(new DateInterval('P1M'));
+                        break;
+                    case 'xdays':
+                        $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'D'));
+                        break;
+                    case 'xweeks':
+                        $tmp_time->add(new DateInterval('P' . ($dbdata['recurring_interval'] * 7) . 'D'));
+                        break;
+                    case 'xmonths':
+                        $tmp_time->add(new DateInterval('P' . $dbdata['recurring_interval'] . 'M'));
+                        break;
+                    default:
+                        trigger_error('Invalid mode provided. Aborting to avoid infinite timeslots added.', E_USER_ERROR);
+                }
             }
         } else {
             //$dbdata['end']=$dbdata['start']+$dbdata['duration']; // we also add 'end' data, which is used to speed up timeslot searching

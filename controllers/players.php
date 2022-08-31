@@ -61,11 +61,11 @@ class Players extends OBFController
 
         $players = $this->models->players('get', $params);
 
-        if ($players===false) {
+        if ($players === false) {
             return array(false,'An unknown error occurred while fetching players.');
         }
 
-        foreach ($players as $index=>$player) {
+        foreach ($players as $index => $player) {
             unset($players[$index]['password']); // never need to share this.
 
             if (!$this->user->check_permission('manage_players')) { // hide sensitive info unless we are a player manager.
@@ -153,7 +153,7 @@ class Players extends OBFController
         }
 
         $validation = $this->models->players('validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -183,7 +183,7 @@ class Players extends OBFController
         }
 
         $validation = $this->models->players('delete_check_permission', $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -285,7 +285,7 @@ class Players extends OBFController
         if (!preg_match('/^[0-9]+$/', $data['player_id'])) {
             return array(false,'Invalid player ID.');
         }
-        $this->user->require_permission('view_player_monitor:'.$data['player_id']);
+        $this->user->require_permission('view_player_monitor:' . $data['player_id']);
 
         $result = $this->models->players('monitor_search', $data);
 
@@ -293,7 +293,7 @@ class Players extends OBFController
             return array(false,'An unknown error occurred while searching the playlog.');
         }
 
-        return array(true,'Playlog search results.',array('results'=>$result[0],'total_rows'=>$result[1], 'csv'=>$this->models->players('monitor_csv', $result[0])));
+        return array(true,'Playlog search results.',array('results' => $result[0],'total_rows' => $result[1], 'csv' => $this->models->players('monitor_csv', $result[0])));
     }
 
     /**

@@ -59,7 +59,7 @@ class ClientStorage extends OBFController
         }
 
         $validation = $this->models->clientstorage('validate', $data);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 

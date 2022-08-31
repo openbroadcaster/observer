@@ -129,23 +129,23 @@ class OBFHelpers
 
         $mime_type = mime_content_type($filename);
         switch ($mime_type) {
-      case 'image/svg+xml':
-        return 'svg';
-      case 'image/jpeg':
-        return 'jpg';
-      case 'image/png':
-        return 'png';
-    }
+            case 'image/svg+xml':
+                return 'svg';
+            case 'image/jpeg':
+                return 'jpg';
+            case 'image/png':
+                return 'png';
+        }
 
         // backup in case mime type failed
         $gd_type = getimagesize($filename);
         if (isset($gd_type[2])) {
             switch ($gd_type[2]) {
-        case IMAGETYPE_JPEG:
-          return 'jpg';
-        case IMAGETYPE_PNG:
-          return 'png';
-      }
+                case IMAGETYPE_JPEG:
+                    return 'jpg';
+                case IMAGETYPE_PNG:
+                    return 'png';
+            }
         }
 
         // no result
@@ -178,19 +178,19 @@ class OBFHelpers
             return false;
         }
 
-        if ($format=='svg' && !extension_loaded('imagick')) {
+        if ($format == 'svg' && !extension_loaded('imagick')) {
             trigger_error('The ImageMagick (imagick) extension is required to resize SVG images.', E_USER_ERROR);
         }
 
-        if ($format=='svg') {
+        if ($format == 'svg') {
             $im = new Imagick();
             $svg = file_get_contents($src);
             $im->readImageBlob($svg);
 
             $source_width = $im->getImageWidth();
             $source_height = $im->getImageHeight();
-            $source_ratio = $source_width/$source_height;
-            $ratio = $width/$height;
+            $source_ratio = $source_width / $source_height;
+            $ratio = $width / $height;
 
             if ($ratio > $source_ratio) {
                 $width = $height * $source_ratio;
@@ -209,8 +209,8 @@ class OBFHelpers
 
             list($source_width, $source_height) = $image_data;
 
-            $source_ratio = $source_width/$source_height;
-            $ratio = $width/$height;
+            $source_ratio = $source_width / $source_height;
+            $ratio = $width / $height;
 
             if ($ratio > $source_ratio) {
                 $width = $height * $source_ratio;
@@ -219,7 +219,7 @@ class OBFHelpers
             }
 
             // png or jpg?
-            if ($image_data[2]==IMAGETYPE_PNG) {
+            if ($image_data[2] == IMAGETYPE_PNG) {
                 $image_source = imagecreatefrompng($src);
             } else {
                 $image_source = imagecreatefromjpeg($src);

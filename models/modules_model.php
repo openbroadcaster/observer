@@ -33,7 +33,7 @@ class ModulesModel extends OBFModel
      *
      * @return modules
      */
-    public function get_installed($object=false)
+    public function get_installed($object = false)
     {
         return $this('get_all', true, $object);
     }
@@ -45,7 +45,7 @@ class ModulesModel extends OBFModel
      *
      * @return modules
      */
-    public function get_not_installed($object=false)
+    public function get_not_installed($object = false)
     {
         return $this('get_all', false, $object);
     }
@@ -58,7 +58,7 @@ class ModulesModel extends OBFModel
      *
      * @return modules
      */
-    public function get_all($installed=true, $object=false)
+    public function get_all($installed = true, $object = false)
     {
         $modules = scandir('modules');
 
@@ -72,13 +72,13 @@ class ModulesModel extends OBFModel
         }
 
         foreach ($modules as $module) {
-            if ($module=='..' || $module=='.' || !is_dir('modules/'.$module)) {
+            if ($module == '..' || $module == '.' || !is_dir('modules/' . $module)) {
                 continue;
             }
 
-            if (is_file('modules/'.$module.'/module.php')) {
-                require_once('modules/'.$module.'/module.php');
-                $module_class_name = $module.'Module';
+            if (is_file('modules/' . $module . '/module.php')) {
+                require_once('modules/' . $module . '/module.php');
+                $module_class_name = $module . 'Module';
 
                 // remove underscores in name if we need to.
                 if (!class_exists($module_class_name)) {
@@ -87,8 +87,8 @@ class ModulesModel extends OBFModel
 
                 $module_instance = new $module_class_name();
 
-                if (($installed && array_search($module, $installed_modules)!==false) || (!$installed && array_search($module, $installed_modules)===false)) {
-                    $modules_list[$module] = ($object ? $module_instance : array('name'=>$module_instance->name, 'description'=>$module_instance->description, 'dir'=>$module));
+                if (($installed && array_search($module, $installed_modules) !== false) || (!$installed && array_search($module, $installed_modules) === false)) {
+                    $modules_list[$module] = ($object ? $module_instance : array('name' => $module_instance->name, 'description' => $module_instance->description, 'dir' => $module));
                 }
             }
         }
@@ -121,7 +121,7 @@ class ModulesModel extends OBFModel
         }
 
         // add the module to our installed module list.
-        $this->db->insert('modules', array('directory'=>$module_name));
+        $this->db->insert('modules', array('directory' => $module_name));
 
         return true;
     }

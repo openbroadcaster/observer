@@ -82,14 +82,14 @@ class MediaGenresModel extends OBFModel
      * @param data
      * @param id Optional. Specified when updating a pre-existing genre.
      */
-    public function save($data, $id=false)
+    public function save($data, $id = false)
     {
         // handle default: if setting default, unset other defaults for this category.
-        if ($data['is_default']!=1) {
+        if ($data['is_default'] != 1) {
             $data['is_default'] = 0;
         } else {
             $this->db->where('media_category_id', $data['media_category_id']);
-            $this->db->update('media_genres', ['is_default'=>0]);
+            $this->db->update('media_genres', ['is_default' => 0]);
         }
 
         if (empty($id)) {
@@ -101,7 +101,7 @@ class MediaGenresModel extends OBFModel
             // changing the parent category of an existing genre.  update media items table appropriately.
             // note - fix at some point - media category column is redundant.
             if (!empty($data['media_category_id'])) {
-                $this->db->query('update media set category_id = "'.$this->db->escape($data['media_category_id']).'" where genre_id = "'.$this->db->escape($id).'"');
+                $this->db->query('update media set category_id = "' . $this->db->escape($data['media_category_id']) . '" where genre_id = "' . $this->db->escape($id) . '"');
             }
 
             return true;
@@ -116,7 +116,7 @@ class MediaGenresModel extends OBFModel
     *
     * @return is_valid
     */
-    public function validate($data, $id=false)
+    public function validate($data, $id = false)
     {
         //T A genre name is required.
         if (!$data['name']) {

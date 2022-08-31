@@ -31,7 +31,7 @@ class UIModel extends OBFModel
     {
         parent::__construct();
         $this->modules = $this->models->modules('get_installed');
-        $this->theme = !empty($this->user->userdata['theme']) && $this->user->userdata['theme']!='default' ? $this->user->userdata['theme'] : false;
+        $this->theme = !empty($this->user->userdata['theme']) && $this->user->userdata['theme'] != 'default' ? $this->user->userdata['theme'] : false;
     }
 
     /**
@@ -43,10 +43,10 @@ class UIModel extends OBFModel
     {
         $image_files = $this->find_files('images');
         if ($this->theme) {
-            $image_files = array_merge($image_files, $this->find_files('themes/'.$this->theme.'/images'));
+            $image_files = array_merge($image_files, $this->find_files('themes/' . $this->theme . '/images'));
         } // add our custom theme images.
         foreach ($this->modules as $module) {
-            $image_files = array_merge($image_files, $this->find_files('modules/'.$module['dir'].'/images'));
+            $image_files = array_merge($image_files, $this->find_files('modules/' . $module['dir'] . '/images'));
         }
         return $image_files;
     }
@@ -58,17 +58,17 @@ class UIModel extends OBFModel
      */
     public function css_files($args = [])
     {
-        if ($this->theme && file_exists('themes/'.$this->theme.'/style.css')) {
-            $css_files[] = 'themes/'.$this->theme.'/style.css';
+        if ($this->theme && file_exists('themes/' . $this->theme . '/style.css')) {
+            $css_files[] = 'themes/' . $this->theme . '/style.css';
         } else {
             $css_files[] = 'themes/default/style.css';
         }
 
         if ($this->theme) {
-            $css_files = array_merge($css_files, $this->find_files('themes/'.$this->theme.'/css_theme', 'css'));
+            $css_files = array_merge($css_files, $this->find_files('themes/' . $this->theme . '/css_theme', 'css'));
         }
         foreach ($this->modules as $module) {
-            $css_files = array_merge($css_files, $this->find_files('modules/'.$module['dir'].'/css', 'css'));
+            $css_files = array_merge($css_files, $this->find_files('modules/' . $module['dir'] . '/css', 'css'));
         }
         return $css_files;
     }
@@ -82,7 +82,7 @@ class UIModel extends OBFModel
     {
         $js_files = $this->find_files('js', 'js');
         foreach ($this->modules as $module) {
-            $js_files = array_merge($js_files, $this->find_files('modules/'.$module['dir'].'/js', 'js'));
+            $js_files = array_merge($js_files, $this->find_files('modules/' . $module['dir'] . '/js', 'js'));
         }
 
         return $js_files;
@@ -100,14 +100,14 @@ class UIModel extends OBFModel
         $themes = [];
 
         foreach ($dirs as $dir) {
-            if ($dir[0]=='.' && !is_dir($dir)) {
+            if ($dir[0] == '.' && !is_dir($dir)) {
                 continue;
             }
-            if (!file_exists('themes/'.$dir.'/style.css')) {
+            if (!file_exists('themes/' . $dir . '/style.css')) {
                 continue;
             }
 
-            $css = file_get_contents('themes/'.$dir.'/style.css');
+            $css = file_get_contents('themes/' . $dir . '/style.css');
             $comment = [];
 
             // https://www.w3.org/TR/CSS2/grammar.html#scanner
@@ -129,7 +129,7 @@ class UIModel extends OBFModel
             }
 
             // only using description for now
-            if (isset($data['description']) && $data['description']!=='') {
+            if (isset($data['description']) && $data['description'] !== '') {
                 $themes[$dir] = $data['description'];
             }
         }
@@ -151,9 +151,9 @@ class UIModel extends OBFModel
 
         foreach ($this->db->get('translations_languages') as $language) {
             $languages[] = array(
-        'name' => $language['name'],
-        'code' => $language['code']
-      );
+            'name' => $language['name'],
+            'code' => $language['code']
+            );
         }
 
         return $languages;
@@ -230,7 +230,7 @@ class UIModel extends OBFModel
      * @param ext File extension to filter for.
      * @param array Reference to array to update with results. Results will be added to already existing array.
      */
-    private function find_files($dir, $ext=false, &$array=[])
+    private function find_files($dir, $ext = false, &$array = [])
     {
         if (!is_dir($dir)) {
             return $array;
@@ -239,16 +239,16 @@ class UIModel extends OBFModel
         $files = scandir($dir);
 
         foreach ($files as $file) {
-            $dirfile = $dir.'/'.$file;
+            $dirfile = $dir . '/' . $file;
 
             // scan if directory
-            if (is_dir($dirfile) && $file[0]!='.') {
+            if (is_dir($dirfile) && $file[0] != '.') {
                 $this->find_files($dirfile, $ext, $array);
             }
 
             // or add file if file
             elseif (is_file($dirfile)) {
-                $array[]=$dirfile;
+                $array[] = $dirfile;
             }
         }
 

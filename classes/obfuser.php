@@ -74,8 +74,8 @@ class OBFUser
 
         $key = '';
 
-        for ($i=1;$i<64;$i++) {
-            $key .= $chars[mt_rand(0, (strlen($chars)-1))];
+        for ($i = 1; $i < 64; $i++) {
+            $key .= $chars[mt_rand(0, (strlen($chars) - 1))];
         }
 
         return $key;
@@ -90,7 +90,7 @@ class OBFUser
      */
     public function password_hash($pass)
     {
-        return password_hash($pass.OB_HASH_SALT, PASSWORD_DEFAULT);
+        return password_hash($pass . OB_HASH_SALT, PASSWORD_DEFAULT);
     }
 
     /**
@@ -105,13 +105,13 @@ class OBFUser
     {
         // old (bad) hashing; fixed in later code + db update.
         $info = password_get_info($hash);
-        if ($info['algo']==0) {
-            return sha1(OB_HASH_SALT.$pass)==$hash;
+        if ($info['algo'] == 0) {
+            return sha1(OB_HASH_SALT . $pass) == $hash;
         }
 
         // good hashing.
         else {
-            return password_verify($pass.OB_HASH_SALT, $hash);
+            return password_verify($pass . OB_HASH_SALT, $hash);
         }
     }
 
@@ -132,22 +132,21 @@ class OBFUser
         $this->db->where('enabled', 1);
         $result = $this->db->get_one('users');
 
-        if ($result && $result['password']=='') {
+        if ($result && $result['password'] == '') {
             return array(false,'Due to security updates, a password reset is required. Use "Forgot Password" to reset your password.');
         }
 
         // valid user and password verified?
         elseif ($result && $this->password_verify($pass, $result['password'])) {
-
       // if rehash required, do that and store in db.
             if (password_needs_rehash($result['password'], PASSWORD_DEFAULT)) {
                 $new_hash = $this->password_hash($pass);
                 $this->db->where('id', $result['id']);
-                $this->db->update('users', array('password'=>$new_hash));
+                $this->db->update('users', array('password' => $new_hash));
             }
 
             // cache our userdata.
-            $this->userdata=$result;
+            $this->userdata = $result;
 
             // clear out expired sessions
             $this->db->where('user_id', $result['id']);
@@ -160,17 +159,17 @@ class OBFUser
             /* $this->db->where('id',$result['id']);
             $this->db->update('users', array('key'=>$this->password_hash($key), 'key_expiry'=>$key_expiry) ); */
             $key_id = $this->db->insert('users_sessions', [
-        'user_id'    => $result['id'],
-        'key'        => $this->password_hash($key),
-        'key_expiry' => $key_expiry
-      ]);
+            'user_id'    => $result['id'],
+            'key'        => $this->password_hash($key),
+            'key_expiry' => $key_expiry
+            ]);
             $this->userdata['key_id'] = $key_id;
 
             setcookie('ob_auth_id', $key_id, 0, '/', null, false, false);
             setcookie('ob_auth_key', $key, 0, '/', null, false, false);
 
             // return key data.
-            return array(true,'Login successful.',array('id'=>$key_id,'key'=>$key, 'key_expiry'=>$key_expiry));
+            return array(true,'Login successful.',array('id' => $key_id,'key' => $key, 'key_expiry' => $key_expiry));
         } else {
             return array(false,'The login or password you have provided is incorrect.');
         }
@@ -181,7 +180,7 @@ class OBFUser
      */
     public function logout()
     {
-        if ($this->param('id')==0) {
+        if ($this->param('id') == 0) {
             return true;
         }
 
@@ -235,7 +234,7 @@ class OBFUser
             $result = $this->db->get_one('users');
 
             // cache our userdata.
-            $this->userdata=$result;
+            $this->userdata = $result;
             $this->userdata['key_id'] = $valid_key['id'];
 
             // add additional users settings
@@ -250,18 +249,18 @@ class OBFUser
             $last_access = time();
             $this->db->where('id', $valid_key['id']);
             $this->db->update('users_sessions', [
-        'key_expiry' => $key_expiry
-      ]);
+            'key_expiry' => $key_expiry
+            ]);
             $this->db->where('id', $result['id']);
             $this->db->update('users', [
-        'last_access' => $last_access
-      ]);
+            'last_access' => $last_access
+            ]);
 
             // see if user is admin
             $this->db->where('user_id', $result['id']);
             $this->db->where('group_id', 1);
             if ($this->db->get_one('users_to_groups')) {
-                $this->is_admin=true;
+                $this->is_admin = true;
             }
 
             return true;
@@ -294,7 +293,6 @@ class OBFUser
 
         // see if we have permission for all requests
         if ($valid) {
-
        // Allow requests from remote locations
             header("Access-Control-Allow-Origin: *");
 
@@ -310,7 +308,7 @@ class OBFUser
 
                 $request_valid = false;
                 foreach ($permissions as $permission) {
-                    if ($permission==$controller.'/'.$method) {
+                    if ($permission == $controller . '/' . $method) {
                         $request_valid = true;
                     }
                 }
@@ -348,8 +346,8 @@ class OBFUser
             // Update last_access in App Keys table.
             $this->db->where('id', $key_row);
             $this->db->update('users_appkeys', [
-         'last_access' => time()
-       ]);
+            'last_access' => time()
+            ]);
 
             $this->using_appkey = true;
 
@@ -370,7 +368,7 @@ class OBFUser
     public function param($param)
     {
         if (empty($this->userdata)) {
-            if ($param=='id') {
+            if ($param == 'id') {
                 return 0;
             } // anonymous user ID.
             else {
@@ -390,7 +388,7 @@ class OBFUser
      */
     public function require_authenticated()
     {
-        if ($this->param('id')==0) {
+        if ($this->param('id') == 0) {
             $this->io->error(OB_ERROR_DENIED);
             die();
         }
@@ -441,7 +439,7 @@ class OBFUser
             return true;
         }
 
-        if ($this->check_permission($permission)===false) {
+        if ($this->check_permission($permission) === false) {
             $this->io->error(OB_ERROR_DENIED);
             die();
         }
@@ -513,13 +511,13 @@ class OBFUser
         $this->db->where('setting', $name);
         if ($setting = $this->db->get_one('users_settings')) {
             $this->db->where('id', $setting['id']);
-            $this->db->update('users_settings', ['value'=>$value]);
+            $this->db->update('users_settings', ['value' => $value]);
         } else {
             $this->db->insert('users_settings', [
-      'user_id'=>$this->param('id'),
-      'setting'=>$name,
-      'value'=>$value
-    ]);
+            'user_id' => $this->param('id'),
+            'setting' => $name,
+            'value' => $value
+            ]);
         }
 
         return true;

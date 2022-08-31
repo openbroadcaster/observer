@@ -60,25 +60,24 @@ class OBFIO
         $user = OBFUser::get_instance();
 
         switch ($error_no) {
-      case OB_ERROR_BAD_POSTDATA:
-        $msg = 'Invalid POST data.';
-        break;
+            case OB_ERROR_BAD_POSTDATA:
+                $msg = 'Invalid POST data.';
+                break;
 
-      case OB_ERROR_BAD_CONTROLLER:
-        $msg = 'Invalid controller.';
-        break;
+            case OB_ERROR_BAD_CONTROLLER:
+                $msg = 'Invalid controller.';
+                break;
 
-      case OB_ERROR_BAD_DATA:
-        $msg = 'Invalid controller data.';
-        break;
+            case OB_ERROR_BAD_DATA:
+                $msg = 'Invalid controller data.';
+                break;
 
-      case OB_ERROR_DENIED:
-        $msg = 'Access denied.';
-        break;
+            case OB_ERROR_DENIED:
+                $msg = 'Access denied.';
+                break;
+        }
 
-    }
-
-        $this->output(array('error'=> array('no'=>$error_no,'msg'=>$msg,'uid'=>$user->param('id'))));
+        $this->output(array('error' => array('no' => $error_no,'msg' => $msg,'uid' => $user->param('id'))));
     }
 
     /**

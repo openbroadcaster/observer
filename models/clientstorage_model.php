@@ -41,7 +41,7 @@ class ClientStorageModel extends OBFModel
     {
         OBFHelpers::require_args($args, ['user_id', 'client_name', 'data']);
 
-        if (empty($args['client_name']) || $args['data']===false || !preg_match('/^[0-9]+$/', $args['user_id'])) {
+        if (empty($args['client_name']) || $args['data'] === false || !preg_match('/^[0-9]+$/', $args['user_id'])) {
             return array(false,'Invalid client name, data, or user.');
         }
 
@@ -95,7 +95,7 @@ class ClientStorageModel extends OBFModel
         $this->db->where('client_name', $args['client_name']);
         $data = $this->db->get_one('client_storage');
 
-        if ($data==false) {
+        if ($data == false) {
             return array(true,'No data found.','');
         } else {
             return array(true,'Stored data found.',$data['data']);

@@ -41,13 +41,13 @@ class SettingsModel extends OBFModel
         $this->db->where('name', $name);
         $this->db->delete('settings');
         $result = $this->db->insert('settings', array(
-      'name'  => $name,
-      'value' => $value
-    ));
+        'name'  => $name,
+        'value' => $value
+        ));
 
         return ($result)
-      ? [true, 'Successfully set setting.', $result]
-      : [false, 'Failed to update setting.'];
+        ? [true, 'Successfully set setting.', $result]
+        : [false, 'Failed to update setting.'];
     }
 
     /**
@@ -63,7 +63,7 @@ class SettingsModel extends OBFModel
         $result = $this->db->get_one('settings');
 
         return ($result)
-      ? [true, 'Successfully loaded setting.', $result['value']]
-      : [false, 'Failed to load setting.'];
+        ? [true, 'Successfully loaded setting.', $result['value']]
+        : [false, 'Failed to load setting.'];
     }
 }

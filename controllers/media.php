@@ -65,7 +65,7 @@ class Media extends OBFController
         $data['audio_formats'] = $this->data('audio_formats');
 
         $validation = $this->models->media('formats_validate', ['data' => $data]);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -86,7 +86,7 @@ class Media extends OBFController
     public function media_my_searches()
     {
         $this->user->require_authenticated();
-        return array(true,'Searches',array('saved'=>$this->models->media('search_get_saved', ['type' => 'saved']), 'history'=>$this->models->media('search_get_saved', ['type' => 'history'])));
+        return array(true,'Searches',array('saved' => $this->models->media('search_get_saved', ['type' => 'saved']), 'history' => $this->models->media('search_get_saved', ['type' => 'history'])));
     }
 
     /**
@@ -210,13 +210,13 @@ class Media extends OBFController
         if ($this->user->check_permission('manage_media')) {
             return true;
         }
-        if ($media['owner_id']==$this->user->param('id') && $this->user->check_permission('create_own_media')) {
+        if ($media['owner_id'] == $this->user->param('id') && $this->user->check_permission('create_own_media')) {
             return true;
         }
-        if (array_search($this->user->param('id'), $permissions['users'])!==false) {
+        if (array_search($this->user->param('id'), $permissions['users']) !== false) {
             return true;
         }
-        if (count(array_intersect($this->user->get_group_ids(), $permissions['groups']))>0) {
+        if (count(array_intersect($this->user->get_group_ids(), $permissions['groups'])) > 0) {
             return true;
         }
         return false;
@@ -251,17 +251,17 @@ class Media extends OBFController
         $params['my'] = $this->data('my');
 
         // if we're doing a simple search, we might need to apply some 'default' filters. this is handled by the media model search method.
-        if ($params['query']['mode']=='simple' && $default_filters = $this->models->media('search_get_default_filters', ['user_id' => $this->user->param('id')])) {
-            $params['default_filters']=$default_filters;
+        if ($params['query']['mode'] == 'simple' && $default_filters = $this->models->media('search_get_default_filters', ['user_id' => $this->user->param('id')])) {
+            $params['default_filters'] = $default_filters;
         }
 
         $media_result = $this->models->media('search', ['params' => $params, 'player_id' => null]);
 
-        if ($media_result==false) {
+        if ($media_result == false) {
             return array(false,'Search error.');
         }
 
-        if ($this->data('save_history') && $params['query']['mode']=='advanced') {
+        if ($this->data('save_history') && $params['query']['mode'] == 'advanced') {
             $this->models->media('search_save', ['query' => $params['query']]);
         }
 
@@ -269,7 +269,7 @@ class Media extends OBFController
             $media['can_edit'] = $this->user_can_edit($media);
         }
 
-        return array(true,'Media',array('num_results'=>$media_result[1],'media'=>$media_result[0]));
+        return array(true,'Media',array('num_results' => $media_result[1],'media' => $media_result[0]));
     }
 
     /**
@@ -295,18 +295,18 @@ class Media extends OBFController
 
         // add our file info to our media array. (this also validates the file upload id/key)
         // also trim artist/title (which is used to determine filename)
-        foreach ($media as $index=>$item) {
+        foreach ($media as $index => $item) {
             if (!empty($item['file_id'])) {
-                $media[$index]['file_info']=$this->models->uploads('file_info', $item['file_id'], $item['file_key']);
+                $media[$index]['file_info'] = $this->models->uploads('file_info', $item['file_id'], $item['file_key']);
             }
 
-            $media[$index]['artist']=trim($media[$index]['artist']);
-            $media[$index]['title']=trim($media[$index]['title']);
+            $media[$index]['artist'] = trim($media[$index]['artist']);
+            $media[$index]['title'] = trim($media[$index]['title']);
         }
 
         // remove advanced permissions if we don't have permission to do that
         if (!$this->user->check_permission('media_advanced_permissions')) {
-            foreach ($media as $index=>$item) {
+            foreach ($media as $index => $item) {
                 if (isset($item['advanced_permissions_users'])) {
                     unset($media[$index]['advanced_permissions_users']);
                 }
@@ -317,8 +317,7 @@ class Media extends OBFController
         }
 
         // validate each media item
-        foreach ($media as $index=>$item) {
-
+        foreach ($media as $index => $item) {
       // check permissions
             if (empty($item['id'])) {
                 $this->user->require_permission('create_own_media or manage_media');
@@ -334,7 +333,7 @@ class Media extends OBFController
 
             $check_media = $this->models->media('validate', ['item' => $item]);
             if (!$check_media[0]) {
-                $validation[]=$check_media;
+                $validation[] = $check_media;
                 $all_valid = false;
             }
         }
@@ -367,7 +366,7 @@ class Media extends OBFController
         $this->user->require_permission('manage_media_versions');
 
         // if we own the media item, we also require create_own_media or manage_media
-        if ($media && $media['owner_id']==$this->user->param('id')) {
+        if ($media && $media['owner_id'] == $this->user->param('id')) {
             $this->user->require_permission('create_own_media or manage_media');
         }
 
@@ -389,8 +388,8 @@ class Media extends OBFController
     public function versions()
     {
         $data = [
-      'media_id'=>$this->data('media_id')
-    ];
+        'media_id' => $this->data('media_id')
+        ];
 
         $this->versions_require_permission($data['media_id']);
 
@@ -416,10 +415,10 @@ class Media extends OBFController
     public function version_add()
     {
         $data = [
-      'media_id'=>$this->data('media_id'),
-      'file_id'=>$this->data('file_id'),
-      'file_key'=>$this->data('file_key')
-    ];
+        'media_id' => $this->data('media_id'),
+        'file_id' => $this->data('file_id'),
+        'file_key' => $this->data('file_key')
+        ];
 
         $this->versions_require_permission($data['media_id']);
 
@@ -438,10 +437,10 @@ class Media extends OBFController
     public function version_edit()
     {
         $data = [
-      'media_id'=>$this->data('media_id'),
-      'created'=>$this->data('created'),
-      'notes'=>$this->data('notes')
-    ];
+        'media_id' => $this->data('media_id'),
+        'created' => $this->data('created'),
+        'notes' => $this->data('notes')
+        ];
 
         $this->versions_require_permission($data['media_id']);
 
@@ -459,9 +458,9 @@ class Media extends OBFController
     public function version_delete()
     {
         $data = [
-      'media_id'=>$this->data('media_id'),
-      'created'=>$this->data('created')
-    ];
+        'media_id' => $this->data('media_id'),
+        'created' => $this->data('created')
+        ];
 
         $this->versions_require_permission($data['media_id']);
 
@@ -479,9 +478,9 @@ class Media extends OBFController
     public function version_set()
     {
         $data = [
-      'media_id'=>$this->data('media_id'),
-      'created'=>$this->data('created')
-    ];
+        'media_id' => $this->data('media_id'),
+        'created' => $this->data('created')
+        ];
 
         $this->versions_require_permission($data['media_id']);
 
@@ -596,7 +595,7 @@ class Media extends OBFController
             return array(false,'Media not found.');
         }
 
-        if ($media['status']=='private' && $media['owner_id']!=$this->user->param('id')) {
+        if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
             $this->user->require_permission('manage_media');
         }
 

@@ -56,7 +56,7 @@ class Dayparting extends OBFController
      */
     public function get()
     {
-        return $this->models->dayparting('get', ['id'=>$this->data('id')]);
+        return $this->models->dayparting('get', ['id' => $this->data('id')]);
     }
 
     /**
@@ -98,6 +98,6 @@ class Dayparting extends OBFController
      */
     public function delete()
     {
-        return $this->models->dayparting('delete', ['id'=>$this->data('id')]);
+        return $this->models->dayparting('delete', ['id' => $this->data('id')]);
     }
 }

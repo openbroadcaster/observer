@@ -40,7 +40,7 @@ class PlayersModel extends OBFModel
         $player = $this->db->get_one('players');
 
         if ($player) {
-            $player['station_ids']=$this('get_station_ids', $id);
+            $player['station_ids'] = $this('get_station_ids', $id);
         }
 
         return $player;
@@ -65,8 +65,8 @@ class PlayersModel extends OBFModel
      */
     public function get($params)
     {
-        foreach ($params as $name=>$value) {
-            $$name=$value;
+        foreach ($params as $name => $value) {
+            $$name = $value;
         }
 
         if ($filters) {
@@ -97,30 +97,29 @@ class PlayersModel extends OBFModel
             return false;
         }
 
-        foreach ($result as $index=>$row) {
-
+        foreach ($result as $index => $row) {
       // get our default playlist name.
             if (!empty($row['default_playlist_id'])) {
                 $this->db->what('name');
                 $this->db->where('id', $row['default_playlist_id']);
                 $default_playlist = $this->db->get_one('playlists');
 
-                $result[$index]['default_playlist_name']=$default_playlist['name'];
+                $result[$index]['default_playlist_name'] = $default_playlist['name'];
             } else {
-                $result[$index]['default_playlist_name']=null;
-                $result[$index]['default_playlist_id']=null;
+                $result[$index]['default_playlist_name'] = null;
+                $result[$index]['default_playlist_id'] = null;
             }
 
             // get our station ids
-            $result[$index]['media_ids']=array();
+            $result[$index]['media_ids'] = array();
 
             $station_ids = $this('get_station_ids', $row['id']);
             foreach ($station_ids as $station_id) {
                 $this->db->where('id', $station_id);
-                $media=$this->db->get_one('media');
+                $media = $this->db->get_one('media');
 
                 if ($media) {
-                    $result[$index]['media_ids'][]=$media;
+                    $result[$index]['media_ids'][] = $media;
                 }
             }
         }
@@ -144,7 +143,7 @@ class PlayersModel extends OBFModel
         $media_ids = array();
 
         foreach ($station_ids as $station_id) {
-            $media_ids[]=$station_id['media_id'];
+            $media_ids[] = $station_id['media_id'];
         }
 
         return $media_ids;
@@ -168,17 +167,17 @@ class PlayersModel extends OBFModel
         $players = $this->get_all();
 
         foreach ($players as $player) {
-            $this->db->query('select count(*) as count from players_station_ids left join media on players_station_ids.media_id = media.id where media.type="image" and players_station_ids.player_id="'.$this->db->escape($player['id']).'"');
+            $this->db->query('select count(*) as count from players_station_ids left join media on players_station_ids.media_id = media.id where media.type="image" and players_station_ids.player_id="' . $this->db->escape($player['id']) . '"');
             $data = $this->db->assoc_list();
 
             $sum += $data['0']['count'] * $player['station_id_image_duration'];
             $sum_count += $data[0]['count'];
         }
 
-        if ($sum_count==0) {
+        if ($sum_count == 0) {
             return 0;
         } // no station IDs? then duration is zero.
-        return $sum/$sum_count;
+        return $sum / $sum_count;
     }
 
     /**
@@ -189,23 +188,23 @@ class PlayersModel extends OBFModel
      *
      * @return [status, msg]
      */
-    public function validate($data, $id=false)
+    public function validate($data, $id = false)
     {
         $error = false;
 
         if (empty($data['name'])) {
             $error = 'A player name is required.';
-        } elseif (isset($data['stream_url']) && $data['stream_url']!='' && !preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $data['stream_url'])) {
+        } elseif (isset($data['stream_url']) && $data['stream_url'] != '' && !preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $data['stream_url'])) {
             $error = 'The stream URL is not valid.  Only HTTP(s) is supported.';
         } elseif (empty($data['password']) && !$id) {
             $error = 'A player password is required.';
         } // only required for new players. if password not specified for existing players, no password change will occur.
 
-        elseif (!empty($data['password']) && strlen($data['password'])<6) {
+        elseif (!empty($data['password']) && strlen($data['password']) < 6) {
             $error = 'The password must be at least 6 characters long.';
         } elseif ($id && !$this->db->id_exists('players', $id)) {
             $error = 'The player you are attempted to edit does not exist.';
-        } elseif (!preg_match('/^[0-9]+$/', $data['station_id_image_duration']) || $data['station_id_image_duration']==0) {
+        } elseif (!preg_match('/^[0-9]+$/', $data['station_id_image_duration']) || $data['station_id_image_duration'] == 0) {
             $error = 'Station ID image duration is not valid.  Enter a number to specify duration in seconds.';
         }
 
@@ -244,7 +243,7 @@ class PlayersModel extends OBFModel
 
             if (!$parent_player) {
                 $error = 'The specified parent player no longer exists.';
-            } elseif ($parent_player['parent_player_id']!=0) {
+            } elseif ($parent_player['parent_player_id'] != 0) {
                 $error = 'This parent player cannot be used.  players that act as child players cannot be used as parents.';
             }
         }
@@ -258,7 +257,7 @@ class PlayersModel extends OBFModel
                     $error = 'A station ID you have selected no longer exists.';
                     break;
                 }
-                if ($media_info['is_archived']==1 || $media_info['is_approved']==0) {
+                if ($media_info['is_archived'] == 1 || $media_info['is_approved'] == 0) {
                     $error = 'Station IDs may be approved media only.';
                     break;
                 }
@@ -287,49 +286,50 @@ class PlayersModel extends OBFModel
      *
      * @return id
      */
-    public function save($data, $id=false)
+    public function save($data, $id = false)
     {
         $station_ids = $data['station_ids'];
         unset($data['station_ids']);
 
         if (!$data['use_parent_schedule']) {
-            $data['use_parent_dynamic']=0;
+            $data['use_parent_dynamic'] = 0;
         }
 
         if (!$id) {
-            $data['password'] = password_hash($data['password'].OB_HASH_SALT, PASSWORD_DEFAULT);
+            $data['password'] = password_hash($data['password'] . OB_HASH_SALT, PASSWORD_DEFAULT);
             $data['owner_id'] = $this->user->param('id');
             $id = $this->db->insert('players', $data);
             if (!$id) {
                 return false;
             }
         } else {
-
       // get original player, see if we're updating default playlist.
             $this->db->where('id', $id);
             $original_player = $this->db->get_one('players');
 
             // do we need to clear out all the cache? (child/parent setting change)
-            if ($original_player['use_parent_dynamic']!=$data['use_parent_dynamic']
-          || $original_player['use_parent_schedule']!=$data['use_parent_schedule']
-          || $original_player['use_parent_ids']!=$data['use_parent_ids']
-          || $original_player['use_parent_playlist']!=$data['use_parent_playlist']) {
+            if (
+                $original_player['use_parent_dynamic'] != $data['use_parent_dynamic']
+                || $original_player['use_parent_schedule'] != $data['use_parent_schedule']
+                || $original_player['use_parent_ids'] != $data['use_parent_ids']
+                || $original_player['use_parent_playlist'] != $data['use_parent_playlist']
+            ) {
                 $this->db->where('player_id', $id);
                 $this->db->delete('shows_cache');
             }
 
             // if we are changing the default playlist, clear the default playlist schedule cache for this player
-            elseif ($original_player['default_playlist_id']!=$data['default_playlist_id']) {
+            elseif ($original_player['default_playlist_id'] != $data['default_playlist_id']) {
                 $this->db->where('player_id', $id);
                 $this->db->where('mode', 'default_playlist');
                 $this->db->delete('shows_cache');
             }
 
             // unset the password if empty - we don't want to change. otherwise, set as hash.
-            if ($data['password']=='') {
+            if ($data['password'] == '') {
                 unset($data['password']);
             } else {
-                $data['password'] = password_hash($data['password'].OB_HASH_SALT, PASSWORD_DEFAULT);
+                $data['password'] = password_hash($data['password'] . OB_HASH_SALT, PASSWORD_DEFAULT);
             }
 
             $this->db->where('id', $id);
@@ -340,9 +340,8 @@ class PlayersModel extends OBFModel
             }
         }
 
-        $station_id_data['player_id']=$id;
-        if ($station_ids!==false) {
-
+        $station_id_data['player_id'] = $id;
+        if ($station_ids !== false) {
       // delete all station IDs for this player.
             $this->db->where('player_id', $id);
             $this->db->delete('players_station_ids');
@@ -350,7 +349,7 @@ class PlayersModel extends OBFModel
             // add all the station IDs we have.
             if (is_array($station_ids)) {
                 foreach ($station_ids as $station_id) {
-                    $station_id_data['media_id']=$station_id;
+                    $station_id_data['media_id'] = $station_id;
                     $this->db->insert('players_station_ids', $station_id_data);
                 }
             }
@@ -368,7 +367,7 @@ class PlayersModel extends OBFModel
     public function update_version($id, $version)
     {
         $this->db->where('id', $id);
-        $this->db->update('players', array('version'=>$version));
+        $this->db->update('players', array('version' => $version));
     }
 
     /**
@@ -381,7 +380,7 @@ class PlayersModel extends OBFModel
     public function update_location($id, $longitude, $latitude)
     {
         $this->db->where('id', $id);
-        $this->db->update('players', array('longitude'=>$longitude,'latitude'=>$latitude));
+        $this->db->update('players', array('longitude' => $longitude,'latitude' => $latitude));
     }
 
 
@@ -478,8 +477,8 @@ class PlayersModel extends OBFModel
      */
     public function monitor_search($params)
     {
-        foreach ($params as $name=>$value) {
-            $$name=$value;
+        foreach ($params as $name => $value) {
+            $$name = $value;
         }
 
         // get timestamps based on player timezone
@@ -520,19 +519,19 @@ class PlayersModel extends OBFModel
                 $value = $filter['value'];
                 $operator = $filter['operator'];
 
-                if (array_search($column, array('media_id','artist','title'))===false) {
+                if (array_search($column, array('media_id','artist','title')) === false) {
                     return array(false,null);
                 }
-                if (array_search($operator, array('is','not','like','not_like'))===false) {
+                if (array_search($operator, array('is','not','like','not_like')) === false) {
                     return array(false,null);
                 }
 
-                if ($operator=='like') {
+                if ($operator == 'like') {
                     $this->db->where_like($column, $value);
-                } elseif ($operator=='not_like') {
+                } elseif ($operator == 'not_like') {
                     $this->db->where_not_like($column, $value);
                 } else {
-                    $this->db->where($column, $value, ($operator=='is' ? '=' : '!='));
+                    $this->db->where($column, $value, ($operator == 'is' ? '=' : '!='));
                 }
             }
         }
@@ -542,7 +541,7 @@ class PlayersModel extends OBFModel
         $results = $this->db->get('playlog');
 
         foreach ($results as &$result) {
-            $result['datetime'] = new DateTime('@'.round($result['timestamp']));
+            $result['datetime'] = new DateTime('@' . round($result['timestamp']));
             $result['datetime']->setTimezone($player_timezone);
             $result['datetime'] = $result['datetime']->format('Y-m-d H:i:s');
         }
@@ -577,13 +576,13 @@ class PlayersModel extends OBFModel
         // add data rows
         foreach ($results as $data) {
             fputcsv($fh, [
-        $data['media_id'],
-        $data['artist'],
-        $data['title'],
-        $data['datetime'],
-        $data['context'],
-        $data['notes']
-      ]);
+            $data['media_id'],
+            $data['artist'],
+            $data['title'],
+            $data['datetime'],
+            $data['context'],
+            $data['notes']
+            ]);
         }
 
         // get csv contents
@@ -618,8 +617,8 @@ class PlayersModel extends OBFModel
         }
 
         $return = array();
-        $return['show_name']=$player['current_show_name'];
-        $return['show_time_left']=$player['current_playlist_end'] - time();
+        $return['show_name'] = $player['current_show_name'];
+        $return['show_time_left'] = $player['current_playlist_end'] - time();
 
         $this->models->media('get_init');
 
@@ -627,23 +626,23 @@ class PlayersModel extends OBFModel
         $media = $this->db->get_one('media');
 
         $media_data = array();
-        $media_data['id']=$media['id'];
-        $media_data['title']=$media['title'];
-        $media_data['album']=$media['album'];
-        $media_data['artist']=$media['artist'];
-        $media_data['year']=$media['year'];
-        $media_data['category_id']=$media['category_id'];
-        $media_data['category_name']=$media['category_name'];
-        $media_data['country_id']=$media['country_id'];
-        $media_data['country_name']=$media['country_name'];
-        $media_data['language_id']=$media['language_id'];
-        $media_data['language_name']=$media['language_name'];
-        $media_data['genre_id']=$media['genre_id'];
-        $media_data['genre_name']=$media['genre_name'];
-        $media_data['duration']=$media['duration'];
-        $media_data['time_left']=$player['current_media_end']-time();
+        $media_data['id'] = $media['id'];
+        $media_data['title'] = $media['title'];
+        $media_data['album'] = $media['album'];
+        $media_data['artist'] = $media['artist'];
+        $media_data['year'] = $media['year'];
+        $media_data['category_id'] = $media['category_id'];
+        $media_data['category_name'] = $media['category_name'];
+        $media_data['country_id'] = $media['country_id'];
+        $media_data['country_name'] = $media['country_name'];
+        $media_data['language_id'] = $media['language_id'];
+        $media_data['language_name'] = $media['language_name'];
+        $media_data['genre_id'] = $media['genre_id'];
+        $media_data['genre_name'] = $media['genre_name'];
+        $media_data['duration'] = $media['duration'];
+        $media_data['time_left'] = $player['current_media_end'] - time();
 
-        $return['media']=$media_data;
+        $return['media'] = $media_data;
 
         return $return;
     }

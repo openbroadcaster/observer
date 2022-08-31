@@ -43,9 +43,9 @@ class UsersModel extends OBFModel
 
         if ($setting) {
             $this->db->where('name', 'new_user_registration');
-            $this->db->update('settings', ['value'=>$value]);
+            $this->db->update('settings', ['value' => $value]);
         } else {
-            $this->db->insert('settings', ['name'=>'new_user_registration','value'=>$value]);
+            $this->db->insert('settings', ['name' => 'new_user_registration','value' => $value]);
         }
 
         return true;
@@ -62,7 +62,7 @@ class UsersModel extends OBFModel
         $setting = $this->db->get_one('settings');
 
         // default is true/enabled if not set.
-        if (!$setting || $setting['value']==1) {
+        if (!$setting || $setting['value'] == 1) {
             return true;
         } else {
             return false;
@@ -92,7 +92,7 @@ class UsersModel extends OBFModel
      *
      * @return users
      */
-    public function user_manage_list($sort_col='display_name', $sort_dir='asc')
+    public function user_manage_list($sort_col = 'display_name', $sort_dir = 'asc')
     {
         $this->db->what('id');
         $this->db->what('name');
@@ -108,15 +108,15 @@ class UsersModel extends OBFModel
         $rows = $this->db->get('users');
 
         // get user groups
-        foreach ($rows as $index=>$row) {
-            $rows[$index]['groups']=array();
+        foreach ($rows as $index => $row) {
+            $rows[$index]['groups'] = array();
 
             $this->db->where('user_id', $row['id']);
             $this->db->leftjoin('users_groups', 'users_to_groups.group_id', 'users_groups.id');
             $groups = $this->db->get('users_to_groups');
 
             foreach ($groups as $group) {
-                $rows[$index]['groups'][]=array('id'=>$group['id'],'name'=>$group['name']);
+                $rows[$index]['groups'][] = array('id' => $group['id'],'name' => $group['name']);
             }
         }
 
@@ -132,7 +132,7 @@ class UsersModel extends OBFModel
     public function user_manage_list_set_sort($sort_col, $sort_dir)
     {
         // make sure sort col is value.
-        if (array_search($sort_col, array('display_name','email','created','last_access'))===false) {
+        if (array_search($sort_col, array('display_name','email','created','last_access')) === false) {
             return false;
         }
 
@@ -173,21 +173,21 @@ class UsersModel extends OBFModel
         $created = time();
 
         $keyid = $this->db->insert('users_appkeys', [
-       'user_id'     => $id,
-       'name'        => $name,
-       'key'         => password_hash($key, PASSWORD_DEFAULT),
-       'created'     => $created,
-       'last_access' => 0
-     ]);
+        'user_id'     => $id,
+        'name'        => $name,
+        'key'         => password_hash($key, PASSWORD_DEFAULT),
+        'created'     => $created,
+        'last_access' => 0
+        ]);
 
         $full_key = base64_encode($keyid) . ':' . $key;
         return [
-       'id'          => $keyid,
-       'name'        => $name,
-       'key'         => $full_key,
-       'created'     => $created,
-       'last_access' => 0
-     ];
+        'id'          => $keyid,
+        'name'        => $name,
+        'key'         => $full_key,
+        'created'     => $created,
+        'last_access' => 0
+        ];
     }
 
     /**
@@ -208,11 +208,11 @@ class UsersModel extends OBFModel
         }
 
         // make sure permissions are valid
-        if ($permissions!=='') {
+        if ($permissions !== '') {
             $permissions = preg_split('/\r\n|\r|\n/', $permissions);
             foreach ($permissions as $permission) {
                 $controller_method = explode('/', $permission);
-                if (count($controller_method)!=2 || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[0]) || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[1])) {
+                if (count($controller_method) != 2 || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[0]) || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[1])) {
                     return [false, 'One or more controller/methods are not valid.'];
                 }
             }
@@ -232,12 +232,12 @@ class UsersModel extends OBFModel
     public function user_manage_key_permissions_save($id, $permissions, $user_id)
     {
         $validation = $this->user_manage_key_permissions_validate($id, $permissions, $user_id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
         $this->db->where('id', $id);
-        $this->db->update('users_appkeys', ['permissions'=>$permissions]);
+        $this->db->update('users_appkeys', ['permissions' => $permissions]);
 
         return [true, 'Updated.'];
     }
@@ -292,10 +292,10 @@ class UsersModel extends OBFModel
      *
      * @return [is_valid, msg]
      */
-    public function user_validate($data, $id=null)
+    public function user_validate($data, $id = null)
     {
-        foreach ($data as $key=>$value) {
-            $$key=$value;
+        foreach ($data as $key => $value) {
+            $$key = $value;
         }
 
         // basic validation
@@ -337,11 +337,11 @@ class UsersModel extends OBFModel
 
         // make sure passwords match.
         //T The passwords do not match.
-        if (!empty($password) && $password!=$password_confirm) {
+        if (!empty($password) && $password != $password_confirm) {
             return array(false,['User Edit', 'The passwords do not match.']);
         }
         //T The password must be at least 6 characters.
-        if (!empty($password) && strlen($password)<6) {
+        if (!empty($password) && strlen($password) < 6) {
             return array(false,['User Edit', 'The password must be at least 6 characters.']);
         }
 
@@ -370,23 +370,23 @@ class UsersModel extends OBFModel
      * @param data
      * @param id User ID. NULL by default if inserting a new user.
      */
-    public function user_save($data, $id=null)
+    public function user_save($data, $id = null)
     {
         // add/edit now.
-        $dbdata['name']=$data['name'];
-        $dbdata['username']=$data['username'];
-        $dbdata['email']=$data['email'];
-        $dbdata['display_name']=$data['display_name'];
-        $dbdata['enabled']=$data['enabled'];
+        $dbdata['name'] = $data['name'];
+        $dbdata['username'] = $data['username'];
+        $dbdata['email'] = $data['email'];
+        $dbdata['display_name'] = $data['display_name'];
+        $dbdata['enabled'] = $data['enabled'];
         if (!empty($data['password'])) {
-            $dbdata['password']=$this->user->password_hash($data['password']);
+            $dbdata['password'] = $this->user->password_hash($data['password']);
         }
 
         if (!empty($id)) {
             $this->db->where('id', $id);
             $this->db->update('users', $dbdata);
         } else {
-            $dbdata['created']=time();
+            $dbdata['created'] = time();
             $insert_id = $this->db->insert('users', $dbdata);
         }
 
@@ -399,18 +399,18 @@ class UsersModel extends OBFModel
         }
 
         $group_data = array();
-        $group_data['user_id']=$id;
+        $group_data['user_id'] = $id;
 
         foreach ($data['group_ids'] as $group_id) {
-            $group_data['group_id']=$group_id;
+            $group_data['group_id'] = $group_id;
             $this->db->insert('users_to_groups', $group_data);
         }
 
         foreach ($data['appkeys'] as $appkey) {
             $this->db->where('id', $appkey[0]);
             $this->db->update('users_appkeys', [
-        'name' => $appkey[1]
-      ]);
+            'name' => $appkey[1]
+            ]);
         }
 
         return true;
@@ -441,8 +441,8 @@ class UsersModel extends OBFModel
         $groups = $this->db->get('users_groups');
 
         if (!$hide_permissions) {
-            foreach ($groups as $index=>$group) {
-                if ($group['id']==1) {
+            foreach ($groups as $index => $group) {
+                if ($group['id'] == 1) {
                     continue;
                 } // administrator has all permissions and not found in table.
 
@@ -459,7 +459,7 @@ class UsersModel extends OBFModel
                 $permissions = $this->db->get('users_permissions_to_groups');
 
                 foreach ($permissions as $permission) {
-                    $groups[$index]['permissions'][]=$permission['name'].($permission['item_id'] ? ':'.$permission['item_id'] : '');
+                    $groups[$index]['permissions'][] = $permission['name'] . ($permission['item_id'] ? ':' . $permission['item_id'] : '');
                 }
             }
         }
@@ -482,16 +482,16 @@ class UsersModel extends OBFModel
         $players = $this->models->players('get_all');
 
         foreach ($permissions as $permission) {
-            if ($permission['category']=='player') {
+            if ($permission['category'] == 'player') {
                 foreach ($players as $player) {
-                    if (!isset($return['player: '.$player['name']])) {
-                        $return['player: '.$player['name']] = array();
+                    if (!isset($return['player: ' . $player['name']])) {
+                        $return['player: ' . $player['name']] = array();
                     }
 
                     $new_permission = $permission;
-                    $new_permission['name'] .= ':'.$player['id'];
+                    $new_permission['name'] .= ':' . $player['id'];
 
-                    $return['player: '.$player['name']][] = $new_permission;
+                    $return['player: ' . $player['name']][] = $new_permission;
                 }
                 continue;
             }
@@ -533,15 +533,15 @@ class UsersModel extends OBFModel
      *
      * @return [is_valid, msg]
      */
-    public function group_validate($data, $id=null)
+    public function group_validate($data, $id = null)
     {
-        foreach ($data as $key=>$value) {
-            $$key=$value;
+        foreach ($data as $key => $value) {
+            $$key = $value;
         }
 
         // we require a name
         //T A group name is required.
-        if ($name=='') {
+        if ($name == '') {
             return array(false,['Permissions Edit','A group name is required.']);
         }
 
@@ -562,7 +562,7 @@ class UsersModel extends OBFModel
 
         // we can't edit the admin group
         //T You cannot edit or delete the administrator group.
-        if ($id==1) {
+        if ($id == 1) {
             return array(false,['Permissions Edit','You cannot edit or delete the administrator group.']);
         }
 
@@ -575,9 +575,9 @@ class UsersModel extends OBFModel
      * @param data
      * @param id Group ID. NULL by default when inserting a new group.
      */
-    public function group_save($data, $id=null)
+    public function group_save($data, $id = null)
     {
-        $dbdata['name']=$data['name'];
+        $dbdata['name'] = $data['name'];
 
         if (!empty($id)) {
             $this->db->where('id', $id);
@@ -595,7 +595,7 @@ class UsersModel extends OBFModel
         $this->db->delete('users_permissions_to_groups');
 
         $pdata = array();
-        $pdata['group_id']=$id;
+        $pdata['group_id'] = $id;
         // $pdata['value']='true';
 
         foreach ($data['permissions'] as $pname) {
@@ -610,10 +610,10 @@ class UsersModel extends OBFModel
             $pdata['permission_id'] = $permission_info['id'];
 
             // is permission associated with an item id? (like a player id specific permission...)
-            if (count($pname_array)>1) {
+            if (count($pname_array) > 1) {
                 $pdata['item_id'] = $pname_array[1];
             } else {
-                $pdata['item_id']=null;
+                $pdata['item_id'] = null;
             }
 
             $this->db->insert('users_permissions_to_groups', $pdata);
@@ -651,13 +651,13 @@ class UsersModel extends OBFModel
         }
 
         // verify password.
-        if (isset($data['password']) && $data['password']!='') {
+        if (isset($data['password']) && $data['password'] != '') {
             //T The passwords you have provided do not match.
-            if ($data['password']!=$data['password_again']) {
+            if ($data['password'] != $data['password_again']) {
                 return array(false,'The passwords you have provided do not match.');
             }
             //T Your password must be at least 6 characters long.
-            elseif (strlen($data['password'])<6) {
+            elseif (strlen($data['password']) < 6) {
                 return array(false,'Your password must be at least 6 characters long.');
             }
         }
@@ -670,14 +670,14 @@ class UsersModel extends OBFModel
         }
 
         //T The language selected is not valid.
-        if ($data['language']!=='' && array_search($data['language'], $language_codes)===false) {
+        if ($data['language'] !== '' && array_search($data['language'], $language_codes) === false) {
             return array(false,'The language selected is not valid.');
         }
 
         // make sure theme is valid
         $themes = array_keys($this->models->ui('get_themes'));
         //T The theme selected is not valid.
-        if (array_search($data['theme'], $themes)===false) {
+        if (array_search($data['theme'], $themes) === false) {
             return array(false,'The theme selected is not valid.');
         }
 
@@ -692,8 +692,8 @@ class UsersModel extends OBFModel
      */
     public function settings_update($user_id, $data)
     {
-        if (isset($data['password']) && $data['password']!='') {
-            $data['password']=$this->user->password_hash($data['password']);
+        if (isset($data['password']) && $data['password'] != '') {
+            $data['password'] = $this->user->password_hash($data['password']);
         } elseif (isset($data['password'])) {
             unset($data['password']);
         }
@@ -715,15 +715,15 @@ class UsersModel extends OBFModel
         foreach ($data['appkeys'] as $appkey) {
             $this->db->where('id', $appkey[0]);
             $this->db->update('users_appkeys', [
-        'name' => $appkey[1]
-      ]);
+            'name' => $appkey[1]
+            ]);
         }
         unset($data['appkeys']);
 
         $this->db->where('id', $user_id);
         $this->db->update('users', $data);
 
-        foreach ($settings as $setting=>$value) {
+        foreach ($settings as $setting => $value) {
             $this->db->where('user_id', $user_id);
             $this->db->where('setting', $setting);
             $this->db->delete('users_settings');
@@ -759,7 +759,7 @@ class UsersModel extends OBFModel
         }
 
         $this->db->where('email', $email);
-        $user=$this->db->get_one('users');
+        $user = $this->db->get_one('users');
 
         if (!$user) {
             return array(false,'The email address you have provided was not found.');
@@ -780,10 +780,10 @@ class UsersModel extends OBFModel
         $password_hash = $this->user->password_hash($password);
 
         $this->db->where('email', $email);
-        $user=$this->db->get_one('users');
+        $user = $this->db->get_one('users');
 
         $this->db->where('id', $user['id']);
-        $this->db->update('users', array('password'=>$password_hash));
+        $this->db->update('users', array('password' => $password_hash));
 
         $this('email_username_password', $email, $user['username'], $password);
     }
@@ -834,10 +834,10 @@ class UsersModel extends OBFModel
     {
         $password = $this->randpass();
 
-        $data['password']=$this->user->password_hash($password);
-        $data['enabled']=1;
-        $data['display_name']=$data['username'];
-        $data['created']=time();
+        $data['password'] = $this->user->password_hash($password);
+        $data['enabled'] = 1;
+        $data['display_name'] = $data['username'];
+        $data['created'] = time();
 
         $this->db->insert('users', $data);
 
@@ -854,8 +854,8 @@ class UsersModel extends OBFModel
         $password_chars = 'abcdefghijkmnopqrstuvwxyz23456789';
         $password = '';
 
-        while (strlen($password)<8) {
-            $password.=$password_chars[rand(0, (strlen($password_chars)-1))];
+        while (strlen($password) < 8) {
+            $password .= $password_chars[rand(0, (strlen($password_chars) - 1))];
         }
 
         return $password;
@@ -884,18 +884,18 @@ class UsersModel extends OBFModel
             $mailer->Port = OB_EMAIL_PORT;
         }
 
-        $mailer->Body='Here is your username and new password for OpenBroadcaster.  You should immediately log in and reset your password.
+        $mailer->Body = 'Here is your username and new password for OpenBroadcaster.  You should immediately log in and reset your password.
 
-Username: '.$username.'
-Password: '.$password.'
+Username: ' . $username . '
+Password: ' . $password . '
 
-Login at '.OB_SITE;
+Login at ' . OB_SITE;
 
-        $mailer->From=OB_EMAIL_REPLY;
+        $mailer->From = OB_EMAIL_REPLY;
 
-        $mailer->FromName=OB_EMAIL_FROM;
+        $mailer->FromName = OB_EMAIL_FROM;
 
-        $mailer->Subject='Your OpenBroadcaster Account';
+        $mailer->Subject = 'Your OpenBroadcaster Account';
 
         $mailer->AddAddress($email);
 

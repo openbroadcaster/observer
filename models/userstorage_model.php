@@ -33,41 +33,46 @@ class UserStorageModel extends OBFModel
    *
    * @return id
    */
-  public function save($args)
-  {
-    if(!$this('validate_required', $args, ['user_id', 'name', 'value'])) return [false, $this('error')];
-    if(!preg_match('/^[a-z0-9-]{1,255}$/i', $args['name'])) { return [false, 'Invalid key (allowed characters alphanumeric plus hyphen).']; }
-  
-    if($this('get', $args))
+    public function save($args)
     {
-      $this->db->where('user_id', $args['user_id']);
-      $this->db->where('name', $args['name']);
-      $this->db->update('users_storage', $this->filter_keys($args, ['value']));
+        if (!$this('validate_required', $args, ['user_id', 'name', 'value'])) {
+            return [false, $this('error')];
+        }
+        if (!preg_match('/^[a-z0-9-]{1,255}$/i', $args['name'])) {
+            return [false, 'Invalid key (allowed characters alphanumeric plus hyphen).'];
+        }
+
+        if ($this('get', $args)) {
+            $this->db->where('user_id', $args['user_id']);
+            $this->db->where('name', $args['name']);
+            $this->db->update('users_storage', $this->filter_keys($args, ['value']));
+        } else {
+            $this->db->insert('users_storage', $this->filter_keys($args, ['user_id', 'name', 'value']));
+        }
+
+        return [true, 'Saved.'];
     }
 
-    else
-    {
-      $this->db->insert('users_storage', $this->filter_keys($args, ['user_id', 'name', 'value']));
-    }
-
-    return [true, 'Saved.'];
-  }
-  
   /**
    * Get user storage data.
    *
    * @param data
-   * 
+   *
    * @return string value
    */
-  public function get($args)
-  {
-    if(!$this->validate_required($args, ['user_id', 'name'])) return false;
-    $this->db->where('user_id', $args['user_id']);
-    $this->db->where('name', $args['name']);
-    $value = $this->db->get('users_storage');
-    
-    if(!$value) return [false, 'Not found.'];
-    else return [true, 'Success.', $value['name']];
-  }
+    public function get($args)
+    {
+        if (!$this->validate_required($args, ['user_id', 'name'])) {
+            return false;
+        }
+        $this->db->where('user_id', $args['user_id']);
+        $this->db->where('name', $args['name']);
+        $value = $this->db->get('users_storage');
+
+        if (!$value) {
+            return [false, 'Not found.'];
+        } else {
+            return [true, 'Success.', $value['name']];
+        }
+    }
 }

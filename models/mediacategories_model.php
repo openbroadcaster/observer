@@ -71,10 +71,10 @@ class MediaCategoriesModel extends OBFModel
         // set default category
         $current_default = $this->get_default();
         foreach ($result as &$category) {
-            if ($category['id']==$current_default) {
-                $category['is_default']=1;
+            if ($category['id'] == $current_default) {
+                $category['is_default'] = 1;
             } else {
-                $category['is_default']=0;
+                $category['is_default'] = 0;
             }
         }
 
@@ -89,9 +89,9 @@ class MediaCategoriesModel extends OBFModel
      *
      * @return id
      */
-    public function save($data, $id=false)
+    public function save($data, $id = false)
     {
-        $set_default = $data['is_default']==1;
+        $set_default = $data['is_default'] == 1;
         unset($data['is_default']);
 
         if (empty($id)) {
@@ -113,11 +113,11 @@ class MediaCategoriesModel extends OBFModel
             $this->db->delete('settings');
 
             // set this as default
-            $this->db->insert('settings', ['name'=>'media_category_default','value'=>$id]);
+            $this->db->insert('settings', ['name' => 'media_category_default','value' => $id]);
         }
 
         // remove default value if necessary
-        elseif ($current_default==$id) {
+        elseif ($current_default == $id) {
             $this->db->where('name', 'media_category_default');
             $this->db->delete('settings');
         }
@@ -149,7 +149,7 @@ class MediaCategoriesModel extends OBFModel
      *
      * @return is_valid
      */
-    public function validate($data, $id=false)
+    public function validate($data, $id = false)
     {
         //T A category name is required.
         if (!$data['name']) {
@@ -172,7 +172,7 @@ class MediaCategoriesModel extends OBFModel
         $genres = $this->db->get('media_genres');
 
         //T You must remove the genres within this category before deleting the category.
-        if (count($genres)>0) {
+        if (count($genres) > 0) {
             return array(false,['Category Edit','You must remove the genres within this category before deleting the category.']);
         } else {
             return array(true,'Can delete.');
@@ -207,7 +207,7 @@ class MediaCategoriesModel extends OBFModel
 
         $category = $this->db->get_one('media_categories');
 
-        if ($category['id']==$this->get_default()) {
+        if ($category['id'] == $this->get_default()) {
             $category['is_default'] = 1;
         } else {
             $category['is_default'] = 0;

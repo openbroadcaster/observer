@@ -41,7 +41,7 @@ class OBFModels
             $model = $this->load->model($name);
             if (!$model) {
                 $stack = debug_backtrace();
-                trigger_error('Call to undefined model '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+                trigger_error('Call to undefined model ' . $name . ' (' . $stack[0]['file'] . ':' . $stack[0]['line'] . ')', E_USER_ERROR);
                 die();
             }
 

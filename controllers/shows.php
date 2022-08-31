@@ -24,255 +24,255 @@
  *
  * @package Controller
  */
- class Shows extends OBFController
- {
-     public function __construct()
-     {
-         parent::__construct();
-     }
+class Shows extends OBFController
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-     /**
-      * Get an individual scheduled show.
-      *
-      * @param id
-      *
-      * @return show
-      *
-      * @route GET /v2/shows/(:id:)
-      */
-     public function get()
-     {
-         $this->user->require_authenticated();
+    /**
+     * Get an individual scheduled show.
+     *
+     * @param id
+     *
+     * @return show
+     *
+     * @route GET /v2/shows/(:id:)
+     */
+    public function get()
+    {
+        $this->user->require_authenticated();
 
-         $id = $this->data('id');
+        $id = $this->data('id');
 
-         $show = $this->models->shows('get_show_by_id', $id, false);
+        $show = $this->models->shows('get_show_by_id', $id, false);
 
-         //T Show not found.
-         if (!$show) {
-             return array(false, 'Show not found.');
-         }
-         //T Scheduled show.
-         return array(true, 'Scheduled show.', $show);
-     }
+        //T Show not found.
+        if (!$show) {
+            return array(false, 'Show not found.');
+        }
+        //T Scheduled show.
+        return array(true, 'Scheduled show.', $show);
+    }
 
-     /**
-      * Get an individual recurring scheduled show.
-      *
-      * @param id
-      *
-      * @return show
-      *
-      * @route GET /v2/shows/recurring/(:id:)
-      */
-     public function get_recurring()
-     {
-         $this->user->require_authenticated();
+    /**
+     * Get an individual recurring scheduled show.
+     *
+     * @param id
+     *
+     * @return show
+     *
+     * @route GET /v2/shows/recurring/(:id:)
+     */
+    public function get_recurring()
+    {
+        $this->user->require_authenticated();
 
-         $id = $this->data('id');
+        $id = $this->data('id');
 
-         $show = $this->models->shows('get_show_by_id', $id, true);
+        $show = $this->models->shows('get_show_by_id', $id, true);
 
-         //T Show not found.
-         if (!$show) {
-             return array(false, 'Show not found.');
-         }
-         //T Scheduled show (recurring).
-         return array(true, 'Scheduled show (recurring).', $show);
-     }
+        //T Show not found.
+        if (!$show) {
+            return array(false, 'Show not found.');
+        }
+        //T Scheduled show (recurring).
+        return array(true, 'Scheduled show (recurring).', $show);
+    }
 
-     /**
-      * Get shows between two given dates/times. This function is used for the
-      * UI/API, but also to detect potential scheduling collisions.
-      *
-      * @param start
-      * @param end
-      * @param player
-      *
-      * @return shows
-      *
-      * @route GET /v2/players/(:player:)/shows
-      */
-     public function search()
-     {
-         $this->user->require_authenticated();
+    /**
+     * Get shows between two given dates/times. This function is used for the
+     * UI/API, but also to detect potential scheduling collisions.
+     *
+     * @param start
+     * @param end
+     * @param player
+     *
+     * @return shows
+     *
+     * @route GET /v2/players/(:player:)/shows
+     */
+    public function search()
+    {
+        $this->user->require_authenticated();
 
-         $start  = $this->data('start');
-         $end    = $this->data('end');
-         $player = $this->data('player');
+        $start  = $this->data('start');
+        $end    = $this->data('end');
+        $player = $this->data('player');
 
-         //T Player ID is invalid.
-         if (!preg_match('/^[0-9]+$/', $player)) {
-             return array(false, 'Player ID is invalid.');
-         }
-         //T Start or end date invalid.
-         if (!preg_match('/^[0-9]+$/', $start) || !preg_match('/^[0-9]+$/', $end)) {
-             return array(false, 'Start or end date invalid.');
-         }
-         if ($start >= $end) {
-             return array(false, 'Start or end date invalid.');
-         }
+        //T Player ID is invalid.
+        if (!preg_match('/^[0-9]+$/', $player)) {
+            return array(false, 'Player ID is invalid.');
+        }
+        //T Start or end date invalid.
+        if (!preg_match('/^[0-9]+$/', $start) || !preg_match('/^[0-9]+$/', $end)) {
+            return array(false, 'Start or end date invalid.');
+        }
+        if ($start >= $end) {
+            return array(false, 'Start or end date invalid.');
+        }
 
-         // check if player is valid.
-         $this->db->where('id', $player);
-         $player_data = $this->db->get_one('players');
+        // check if player is valid.
+        $this->db->where('id', $player);
+        $player_data = $this->db->get_one('players');
 
-         //T Player ID is invalid.
-         if (!$player_data) {
-             return array(false, 'Player ID is invalid.');
-         }
+        //T Player ID is invalid.
+        if (!$player_data) {
+            return array(false, 'Player ID is invalid.');
+        }
 
-         $data = $this->models->shows('get_shows', $start, $end, $player);
+        $data = $this->models->shows('get_shows', $start, $end, $player);
 
-         //T Shows data.
-         return array(true, 'Shows data.', $data);
-     }
+        //T Shows data.
+        return array(true, 'Shows data.', $data);
+    }
 
-     /**
-      * Set the last selected player so we can view schedules for that player
-      * immediately when loading the page again some other time. This will have
-      * to be generalized for other UI elements at some point. This is a
-      * user-specific setting, so no special permissions are necessary.
-      *
-      * @param player
-      *
-      * @route PUT /v2/shows/last_player
-      */
-     public function set_last_player()
-     {
-         $player_id = $this->data('player');
+    /**
+     * Set the last selected player so we can view schedules for that player
+     * immediately when loading the page again some other time. This will have
+     * to be generalized for other UI elements at some point. This is a
+     * user-specific setting, so no special permissions are necessary.
+     *
+     * @param player
+     *
+     * @route PUT /v2/shows/last_player
+     */
+    public function set_last_player()
+    {
+        $player_id = $this->data('player');
 
-         $this->db->where('id', $player_id);
-         $player_data = $this->db->get_one('players');
+        $this->db->where('id', $player_id);
+        $player_data = $this->db->get_one('players');
 
-         if ($player_data) {
-             $this->user->set_setting('last_schedule_player', $player_id);
-             //T Set last schedule player.
-             return array(true, 'Set last schedule player.');
-         }
-         //T Player not found.
-         return array(false,'Player not found.');
-     }
+        if ($player_data) {
+            $this->user->set_setting('last_schedule_player', $player_id);
+            //T Set last schedule player.
+            return array(true, 'Set last schedule player.');
+        }
+        //T Player not found.
+        return array(false,'Player not found.');
+    }
 
-     /**
-      * Get the last selected player on the schedules page for the current user.
-      *
-      * @return player
-      *
-      * @route GET /v2/shows/last_player
-      */
-     public function get_last_player()
-     {
-         $player_id = $this->user->get_setting('last_schedule_player');
-         //T Last schedule player.
-         if ($player_id) {
-             return array(true, 'Last schedule player.', $player_id);
-         }
-         //T Last schedule player not found.
-         return array(false, 'Last schedule player not found.');
-     }
+    /**
+     * Get the last selected player on the schedules page for the current user.
+     *
+     * @return player
+     *
+     * @route GET /v2/shows/last_player
+     */
+    public function get_last_player()
+    {
+        $player_id = $this->user->get_setting('last_schedule_player');
+        //T Last schedule player.
+        if ($player_id) {
+            return array(true, 'Last schedule player.', $player_id);
+        }
+        //T Last schedule player not found.
+        return array(false, 'Last schedule player not found.');
+    }
 
-     /**
-      * Delete a scheduled show. Requires 'manage_timeslots' unless the
-      * show is owned by the user.
-      *
-      * @param id
-      * @param recurring
-      *
-      * @route DELETE /v2/shows/(:id:)/(:recurring:)
-      */
-     public function delete()
-     {
-         $this->user->require_authenticated();
+    /**
+     * Delete a scheduled show. Requires 'manage_timeslots' unless the
+     * show is owned by the user.
+     *
+     * @param id
+     * @param recurring
+     *
+     * @route DELETE /v2/shows/(:id:)/(:recurring:)
+     */
+    public function delete()
+    {
+        $this->user->require_authenticated();
 
-         $id        = trim($this->data('id'));
-         $recurring = trim($this->data('recurring'));
+        $id        = trim($this->data('id'));
+        $recurring = trim($this->data('recurring'));
 
-         // check timeslot.  we can delete a show that we have scheduled, regardless of whether we own that timeslot anymore.
-         $show = $this->models->shows('get_show_by_id', $id, $recurring);
-         if ($show['user_id'] != $this->user->param('id')) {
-             $this->user->require_permission('manage_timeslots');
-         }
+        // check timeslot.  we can delete a show that we have scheduled, regardless of whether we own that timeslot anymore.
+        $show = $this->models->shows('get_show_by_id', $id, $recurring);
+        if ($show['user_id'] != $this->user->param('id')) {
+            $this->user->require_permission('manage_timeslots');
+        }
 
-         $this->models->shows('delete_show', $id, $recurring);
+        $this->models->shows('delete_show', $id, $recurring);
 
-         //T Show deleted.
-         return array(true,'Show deleted.');
-     }
+        //T Show deleted.
+        return array(true,'Show deleted.');
+    }
 
-     /**
-      * Edit or save a new show.
-      *
-      * @param id Optional when saving a new show.
-      * @param edit_recurring Boolean specifying whether or not we're editing a recurring show.
-      * @param player_id
-      * @param mode One time, or every X interval.
-      * @param x_data When mode is set to an interval, x_data specifies every X.
-      * @param start
-      * @param duration
-      * @param stop
-      * @param item_type
-      * @param item_id
-      *
-      * @route POST /v2/shows
-      */
-     public function save()
-     {
-         $this->user->require_authenticated();
+    /**
+     * Edit or save a new show.
+     *
+     * @param id Optional when saving a new show.
+     * @param edit_recurring Boolean specifying whether or not we're editing a recurring show.
+     * @param player_id
+     * @param mode One time, or every X interval.
+     * @param x_data When mode is set to an interval, x_data specifies every X.
+     * @param start
+     * @param duration
+     * @param stop
+     * @param item_type
+     * @param item_id
+     *
+     * @route POST /v2/shows
+     */
+    public function save()
+    {
+        $this->user->require_authenticated();
 
-         $id             = trim($this->data('id'));
-         $edit_recurring = trim($this->data('edit_recurring'));
+        $id             = trim($this->data('id'));
+        $edit_recurring = trim($this->data('edit_recurring'));
 
-         $data['player_id'] = trim($this->data('player_id'));
-         $data['mode']      = trim($this->data('mode'));
-         $data['x_data']    = trim($this->data('x_data'));
+        $data['player_id'] = trim($this->data('player_id'));
+        $data['mode']      = trim($this->data('mode'));
+        $data['x_data']    = trim($this->data('x_data'));
 
-         $data['start']     = trim($this->data('start'));
-         $data['duration']  = trim($this->data('duration'));
-         $data['stop']      = trim($this->data('stop'));
+        $data['start']     = trim($this->data('start'));
+        $data['duration']  = trim($this->data('duration'));
+        $data['stop']      = trim($this->data('stop'));
 
-         $data['item_type'] = trim($this->data('item_type'));
-         $data['item_id']   = trim($this->data('item_id'));
+        $data['item_type'] = trim($this->data('item_type'));
+        $data['item_id']   = trim($this->data('item_id'));
 
-         // if we are editing, make sure ID is valid.
-         if (!empty($id)) {
-             $original_show_data = $this->models->shows('get_show_by_id', $id, $edit_recurring);
-             //T Show not found.
-             if (!$original_show_data) {
-                 return array(false, 'Show not found.');
-             }
+        // if we are editing, make sure ID is valid.
+        if (!empty($id)) {
+            $original_show_data = $this->models->shows('get_show_by_id', $id, $edit_recurring);
+            //T Show not found.
+            if (!$original_show_data) {
+                return array(false, 'Show not found.');
+            }
 
-             // if we're editing someone elses show, we need to be a schedule admin.
-             if ($original_show_data['user_id'] != $this->user->param('id')) {
-                 $this->user->require_permission('manage_timeslots');
-             }
-         }
+            // if we're editing someone elses show, we need to be a schedule admin.
+            if ($original_show_data['user_id'] != $this->user->param('id')) {
+                $this->user->require_permission('manage_timeslots');
+            }
+        }
 
-         // validate show
-         $validate = $this->models->shows('validate_show', $data, $id);
-         if ($validate[0] == false) {
-             return array(false, $validate[1]);
-         }
+        // validate show
+        $validate = $this->models->shows('validate_show', $data, $id);
+        if ($validate[0] == false) {
+            return array(false, $validate[1]);
+        }
 
-         // generate our duration in seconds.
-         $duration = (int) $data['duration'];
+        // generate our duration in seconds.
+        $duration = (int) $data['duration'];
 
-         //T The duration is not valid.
-         if (empty($duration)) {
-             return array(false, 'The duration is not valid.');
-         }
-         $data['duration']=$duration;
+        //T The duration is not valid.
+        if (empty($duration)) {
+            return array(false, 'The duration is not valid.');
+        }
+        $data['duration'] = $duration;
 
-         // collision check!
-         $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id, $edit_recurring);
-         if ($collision_timeslot_check[0] == false) {
-             return array(false, $collision_timeslot_check[1]);
-         }
+        // collision check!
+        $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id, $edit_recurring);
+        if ($collision_timeslot_check[0] == false) {
+            return array(false, $collision_timeslot_check[1]);
+        }
 
-         // FINALLY CREATE/EDIT SHOW
-         $this->models->shows('save_show', $data, $id, $edit_recurring);
+        // FINALLY CREATE/EDIT SHOW
+        $this->models->shows('save_show', $data, $id, $edit_recurring);
 
-         //T Show added.
-         return array(true,'Show added.');
-     }
- }
+        //T Show added.
+        return array(true,'Show added.');
+    }
+}

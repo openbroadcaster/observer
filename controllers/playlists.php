@@ -58,13 +58,13 @@ class Playlists extends OBFController
         if ($this->user->check_permission('manage_playlists')) {
             return true;
         }
-        if ($playlist['owner_id']==$this->user->param('id') && $this->user->check_permission('create_own_playlists')) {
+        if ($playlist['owner_id'] == $this->user->param('id') && $this->user->check_permission('create_own_playlists')) {
             return true;
         }
-        if (array_search($this->user->param('id'), $permissions['users'])!==false) {
+        if (array_search($this->user->param('id'), $permissions['users']) !== false) {
             return true;
         }
-        if (count(array_intersect($this->user->get_group_ids(), $permissions['groups']))>0) {
+        if (count(array_intersect($this->user->get_group_ids(), $permissions['groups'])) > 0) {
             return true;
         }
         return false;
@@ -88,12 +88,12 @@ class Playlists extends OBFController
 
         if ($playlist) {
             $playlist['items'] = $this->models->playlists('get_items', $id);
-            if ($playlist['type']=='live_assist') {
+            if ($playlist['type'] == 'live_assist') {
                 $playlist['liveassist_button_items'] = $this->models->playlists('get_liveassist_items', $id);
             }
 
             // if playlist is private and not ours, require 'manage_playlists'.
-            if ($playlist['status']=='private' && $playlist['owner_id']!=$this->user->param('id')) {
+            if ($playlist['status'] == 'private' && $playlist['owner_id'] != $this->user->param('id')) {
                 $this->user->require_permission('manage_playlists');
             }
 
@@ -199,24 +199,24 @@ class Playlists extends OBFController
         }
 
         // validate data.
-        $validate_playlist = $this->models->playlists('validate_playlist', array('name'=>$name, 'status'=>$status, 'type'=>$type));
-        if ($validate_playlist[0]==false) {
+        $validate_playlist = $this->models->playlists('validate_playlist', array('name' => $name, 'status' => $status, 'type' => $type));
+        if ($validate_playlist[0] == false) {
             return array(false,$validate_playlist[1]);
         }
 
         // check each playlist item.
         foreach ($items as $item) {
             $validate_item = $this->models->playlists('validate_playlist_item', $item, $id);
-            if ($validate_item[0]==false) {
+            if ($validate_item[0] == false) {
                 return array(false,$validate_item[1]);
             }
         }
 
         // check each liveassist button item
-        if ($type=='live_assist' && is_array($liveassist_button_items)) {
+        if ($type == 'live_assist' && is_array($liveassist_button_items)) {
             foreach ($liveassist_button_items as $liveassist_button_item) {
                 $validate_item = $this->models->playlists('validate_liveassist_button_item', $liveassist_button_item);
-                if ($validate_item[0]==false) {
+                if ($validate_item[0] == false) {
                     return array(false,$validate_item[1]);
                 }
             }
@@ -224,15 +224,15 @@ class Playlists extends OBFController
 
         // add/edit playlist entry.
         $data = [];
-        $data['name']=$name;
-        $data['description']=$description;
-        $data['status']=$status;
-        $data['type']=$type;
-        $data['updated']=time();
+        $data['name'] = $name;
+        $data['description'] = $description;
+        $data['status'] = $status;
+        $data['type'] = $type;
+        $data['updated'] = time();
 
         if (!$id) {
-            $data['created']=time();
-            $data['owner_id']=$this->user->param('id');
+            $data['created'] = time();
+            $data['owner_id'] = $this->user->param('id');
             $id = $this->models->playlists('insert', $data);
         } else {
             $this->db->where('id', $id);
@@ -270,7 +270,7 @@ class Playlists extends OBFController
             // TODO use a model... (liveassist model or playlist model?)
             // delete liveassist related cache for this playlist.
 
-            $this->db->query('SELECT * FROM playlists_liveassist_buttons WHERE playlist_id = "'.$this->db->escape($id).'" OR button_playlist_id = "'.$this->db->escape($id).'"');
+            $this->db->query('SELECT * FROM playlists_liveassist_buttons WHERE playlist_id = "' . $this->db->escape($id) . '" OR button_playlist_id = "' . $this->db->escape($id) . '"');
             $groups = $this->db->assoc_list();
 
             foreach ($groups as $group) {
@@ -288,31 +288,31 @@ class Playlists extends OBFController
         // update our playlist items. first delete all items, then re-add them.
         $this->models->playlists('delete_items', $id);
 
-        foreach ($items as $index=>$item) {
+        foreach ($items as $index => $item) {
             unset($data);
-            $data=array();
+            $data = array();
 
-            $data['playlist_id']=$id;
-            $data['item_type']=$item['type'];
-            $data['ord']=$index;
+            $data['playlist_id'] = $id;
+            $data['item_type'] = $item['type'];
+            $data['ord'] = $index;
 
-            if ($item['type']=='media') {
-                $data['item_id']=$item['id'];
+            if ($item['type'] == 'media') {
+                $data['item_id'] = $item['id'];
 
                 // track properties
                 $properties = [];
 
                 // image properties
                 $media = $this->models->media('get_by_id', ['id' => $data['item_id']]);
-                if ($media && $media['type']=='image') {
+                if ($media && $media['type'] == 'image') {
                     $properties['duration'] = (int) $item['duration'];
-                    if ($properties['duration']<=0) {
+                    if ($properties['duration'] <= 0) {
                         $properties['duration'] = 15;
                     }
                 }
 
                 // audio properties
-                if ($media['type']=='audio' && ($item['crossfade'] ?? false)) {
+                if ($media['type'] == 'audio' && ($item['crossfade'] ?? false)) {
                     $properties['crossfade'] = (float) $item['crossfade'];
                 }
 
@@ -320,27 +320,27 @@ class Playlists extends OBFController
                 if (!empty($properties)) {
                     $data['properties'] = json_encode($properties);
                 }
-            } elseif ($item['type']=='dynamic') {
+            } elseif ($item['type'] == 'dynamic') {
                 $properties = [];
-                $properties['num_items']=$item['num_items_all'] ? null : $item['num_items'];
-                $properties['image_duration']=$item['image_duration'];
-                $properties['query']=json_decode($item['query']);
-                $properties['name']=$item['name'];
-                $properties['crossfade']=$item['crossfade'] ?? 0;
-                $properties['crossfade_last']=$item['crossfade_last'] ?? 0;
+                $properties['num_items'] = $item['num_items_all'] ? null : $item['num_items'];
+                $properties['image_duration'] = $item['image_duration'];
+                $properties['query'] = json_decode($item['query']);
+                $properties['name'] = $item['name'];
+                $properties['crossfade'] = $item['crossfade'] ?? 0;
+                $properties['crossfade_last'] = $item['crossfade_last'] ?? 0;
                 $data['properties'] = json_encode($properties);
-            } elseif ($item['type']=='station_id') {
+            } elseif ($item['type'] == 'station_id') {
                 // nothing special to set here.
-            } elseif ($item['type']=='breakpoint') {
+            } elseif ($item['type'] == 'breakpoint') {
                 // nothing special to set here.
-            } elseif ($item['type']=='custom') {
-                $data['properties'] = json_encode(['name'=>$item['query']['name']]);
+            } elseif ($item['type'] == 'custom') {
+                $data['properties'] = json_encode(['name' => $item['query']['name']]);
             }
 
             $this->db->insert('playlists_items', $data);
         }
 
-        if ($type=='live_assist' && is_array($liveassist_button_items)) {
+        if ($type == 'live_assist' && is_array($liveassist_button_items)) {
             $this->models->playlists('update_liveassist_items', $id, $liveassist_button_items);
         }
 
@@ -377,7 +377,7 @@ class Playlists extends OBFController
 
         $validation = $this->models->playlists('validate_dynamic_properties', $search_query, $num_items, $num_items_all, $image_duration);
 
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return array(false,array('Playlist Dynamic Item Properties',$validation[1]));
         }
 
@@ -386,7 +386,7 @@ class Playlists extends OBFController
         } // duration function uses empty num_items indicate 'all items' mode.
 
         // valid, also return some additional information.
-        $validation[2]=array('duration'=>$this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration));
+        $validation[2] = array('duration' => $this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration));
         return $validation;
     }
 
@@ -421,7 +421,7 @@ class Playlists extends OBFController
 
             // check where used, see if we have permission to remove from those.
             $where_used = $this->models->playlists('where_used', $id);
-            if ($where_used['can_delete']==false) {
+            if ($where_used['can_delete'] == false) {
                 return array(false,'Cannot delete one or more playlists as you do not have adequate permissions.');
             }
         }

@@ -145,7 +145,7 @@ class Users extends OBFController
         $data['appkeys'] = $this->data('appkeys');
 
         $validation = $this->models->users('user_validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 
@@ -313,7 +313,7 @@ class Users extends OBFController
         $data['permissions'] = $this->data('permissions');
 
         $validation = $this->models->users('group_validate', $data, $id);
-        if ($validation[0]==false) {
+        if ($validation[0] == false) {
             return $validation;
         }
 

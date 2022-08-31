@@ -26,7 +26,7 @@
  */
 class PermissionsModel extends OBFModel
 {
-    public $permission_cache=false;
+    public $permission_cache = false;
 
     /**
      * Get group permissions from group ID.
@@ -40,7 +40,7 @@ class PermissionsModel extends OBFModel
         $r = array();
 
         // special handling for admin group.  admins get all permissions.
-        if ($id==1) {
+        if ($id == 1) {
             $permissions = $this->db->get('users_permissions');
             foreach ($permissions as $permission) {
                 $r[] = $permission['name'];
@@ -58,7 +58,7 @@ class PermissionsModel extends OBFModel
 
         if (!empty($permissions)) {
             foreach ($permissions as $permission) {
-                $r[]=$permission['name'].($permission['item_id'] ? ':'.$permission['item_id'] : '');
+                $r[] = $permission['name'] . ($permission['item_id'] ? ':' . $permission['item_id'] : '');
             }
         }
 
@@ -81,18 +81,18 @@ class PermissionsModel extends OBFModel
             $groups = $this->db->get('users_to_groups');
 
             // everyone should be considered part of base (new user, no assigned groups)...
-            $groups[]=array('group_id'=>0);
+            $groups[] = array('group_id' => 0);
 
             $result = array();
 
             foreach ($groups as $group) {
-                $p=$this('get_group_permissions', $group['group_id']);
+                $p = $this('get_group_permissions', $group['group_id']);
                 foreach ($p as $pname) {
-                    $result[]=$pname;
+                    $result[] = $pname;
                 }
             }
 
-            $this->permission_cache[$id]=$result;
+            $this->permission_cache[$id] = $result;
         }
 
         return $this->permission_cache[$id];
@@ -134,25 +134,24 @@ class PermissionsModel extends OBFModel
      */
     public function check_permission($permission, $userid)
     {
-        $p=$this('get_user_permissions', $userid);
+        $p = $this('get_user_permissions', $userid);
 
-        $permission_array=explode(' or ', $permission);
+        $permission_array = explode(' or ', $permission);
 
         foreach ($permission_array as $check_permission) {
-
       // if we are looking for an item specific permission, then we will also accept the permission without the item id specified.
             // in this case the permission is valid for all items.
             $check_permission_array = explode(':', $check_permission);
-            if (count($check_permission_array)>1) {
-                if (array_search($check_permission_array[0], $p)!==false) {
+            if (count($check_permission_array) > 1) {
+                if (array_search($check_permission_array[0], $p) !== false) {
                     return true;
                 }
 
                 // in this case we will accept any item ID.
-                if ($check_permission_array[1]=='*') {
+                if ($check_permission_array[1] == '*') {
                     foreach ($p as $pname) {
                         $pname_array = explode(':', $pname);
-                        if ($pname_array[0]==$check_permission_array[0]) {
+                        if ($pname_array[0] == $check_permission_array[0]) {
                             return true;
                         }
                     }
@@ -160,7 +159,7 @@ class PermissionsModel extends OBFModel
             }
 
             // check regular permission or item-specific permission.  (permission as specified)
-            if (array_search($check_permission, $p)!==false) {
+            if (array_search($check_permission, $p) !== false) {
                 return true;
             }
         }

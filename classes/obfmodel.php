@@ -61,7 +61,7 @@ class OBFModel
     {
         if (!isset($this->$name)) {
             $stack = debug_backtrace();
-            trigger_error('Call to undefined method '.$name.' ('.$stack[0]['file'].':'.$stack[0]['line'].')', E_USER_ERROR);
+            trigger_error('Call to undefined method ' . $name . ' (' . $stack[0]['file'] . ':' . $stack[0]['line'] . ')', E_USER_ERROR);
         }
 
         $obj = $this->$name;
@@ -82,7 +82,7 @@ class OBFModel
         $eval_args = array();
 
         // make sure our method name is specified.  determine our method name.
-        if (!isset($stack[0]['args']) || count($stack[0]['args'])<1) {
+        if (!isset($stack[0]['args']) || count($stack[0]['args']) < 1) {
             return;
         }
         $method = $stack[0]['args'][0];
@@ -93,10 +93,10 @@ class OBFModel
         }
 
         // get our args by reference.
-        if (count($stack[0]['args'])>1) {
-            for ($i=1; $i < count($stack[0]["args"]); $i++) {
+        if (count($stack[0]['args']) > 1) {
+            for ($i = 1; $i < count($stack[0]["args"]); $i++) {
                 $args[] = &$stack[0]["args"][$i];
-                $eval_args[] = '$args['.($i-1).']';
+                $eval_args[] = '$args[' . ($i - 1) . ']';
             }
         }
 
@@ -104,7 +104,7 @@ class OBFModel
 
         // call our 'init' callbacks.
         $retval = null;
-        $cb_name = get_class($this).'.'.$method;
+        $cb_name = get_class($this) . '.' . $method;
         $cb_return = $this->callback_handler->fire($cb_name, 'init', $args);
 
         // a callback is forcing an early return.
@@ -113,7 +113,7 @@ class OBFModel
         }
 
         // call our requested method
-        eval('$retval = $this->$method('.$eval_args.');');
+        eval('$retval = $this->$method(' . $eval_args . ');');
         $this->callback_handler->store_retval($cb_name, $cb_name, $retval);
 
         // call our 'return' callbacks;
@@ -138,14 +138,18 @@ class OBFModel
    *
    * @return error
    */
-  public function error($error=null) {
-    if($error===null) return $this->error;
-    else $this->error=$error;
-  }
+    public function error($error = null)
+    {
+        if ($error === null) {
+            return $this->error;
+        } else {
+            $this->error = $error;
+        }
+    }
 
   /**
   * Validation helper.
-  * 
+  *
   * @param array data
   * @param array required
   *
@@ -155,21 +159,21 @@ class OBFModel
   public function validate_required(array $data, array $required)
   {
     foreach($required as $search)
-    {   
+    {
       if(array_search($search, array_keys($data))===false)
       {
         $this->error('Required field'.(count($required)>0 ? 's' : '').' ('.implode(', ', $required).') not found.');
         return false;
       }
     }
-    
+
     return true;
   }
   */
 
   /**
   * Extract the specified keys from an array.
-  * 
+  *
   * @param array data
   * @param array keys
   *
@@ -179,12 +183,12 @@ class OBFModel
   public function filter_keys(array $data, array $keys)
   {
     $return = [];
-    
+
     foreach($keys as $key)
     {
       if(isset($data[$key])) $return[$key] = $data[$key];
     }
-    
+
     return $return;
   }
   */
