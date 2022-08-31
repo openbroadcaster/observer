@@ -16,7 +16,7 @@ class OBUpdate20190918 extends OBUpdate
 
         // check if media_streams exists, early return if it doesn't exist.
         $this->db->query('SHOW TABLES LIKE "media_streams"');
-        if ($this->db->num_rows()<1) {
+        if ($this->db->num_rows() < 1) {
             return true;
         }
 
@@ -24,7 +24,7 @@ class OBUpdate20190918 extends OBUpdate
         $streams = $this->db->get('media_streams');
         foreach ($streams as $stream) {
             $this->db->where('id', $stream['media_id']);
-            $this->db->update('media', ['stream_version'=>$stream['version']]);
+            $this->db->update('media', ['stream_version' => $stream['version']]);
         }
 
         // remove media streams table which is no longer used

@@ -28,15 +28,15 @@ class OBUpdate20210311 extends OBUpdate
 
         foreach ($shows as $show) {
             // get local start time
-      if (!$timezones[$show['player_id']]) {
-          continue;
-      } // invalid, no player timezone.
-      $start = new DateTime('now', new DateTimeZone($timezones[$show['player_id']]));
+            if (!$timezones[$show['player_id']]) {
+                continue;
+            } // invalid, no player timezone.
+            $start = new DateTime('now', new DateTimeZone($timezones[$show['player_id']]));
             $start->setTimestamp($show['start']);
 
             // handle stop
             $mode = $show['mode'] ?? 'once';
-            if ($mode!='once') {
+            if ($mode != 'once') {
                 $stop = new DateTime('now', new DateTimeZone($timezones[$show['player_id']]));
                 $stop->setTimestamp($show['stop']);
                 $stop_formatted = $stop->format('Y-m-d');
@@ -45,16 +45,16 @@ class OBUpdate20210311 extends OBUpdate
             }
 
             $data = [
-        'user_id' => $show['user_id'],
-        'player_id' => $show['player_id'],
-        'mode' => $mode,
-        'x_data' => $show['x_data'] ?? 0,
-        'item_id' => $show['item_id'],
-        'item_type' => $show['item_type'],
-        'start' => $start->format('Y-m-d H:i:s'),
-        'duration' => $show['duration'],
-        'stop' => $stop_formatted
-      ];
+            'user_id' => $show['user_id'],
+            'player_id' => $show['player_id'],
+            'mode' => $mode,
+            'x_data' => $show['x_data'] ?? 0,
+            'item_id' => $show['item_id'],
+            'item_type' => $show['item_type'],
+            'start' => $start->format('Y-m-d H:i:s'),
+            'duration' => $show['duration'],
+            'stop' => $stop_formatted
+            ];
 
             $validate = $this->models->shows('validate_show', $data, false, true);
             if (!$validate[0]) {

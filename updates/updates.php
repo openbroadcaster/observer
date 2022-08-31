@@ -37,9 +37,9 @@ class OBFChecker
     public function php_version()
     {
         if (version_compare(phpversion(), '5.4', '<')) {
-            return array('PHP Version','PHP v5.4 or higher is required (v'.phpversion().' detected).',2);
+            return array('PHP Version','PHP v5.4 or higher is required (v' . phpversion() . ' detected).',2);
         }
-        return array('PHP Version','PHP v'.phpversion().' detected.',0);
+        return array('PHP Version','PHP v' . phpversion() . ' detected.',0);
     }
 
     public function php_mysql_extension()
@@ -113,21 +113,21 @@ class OBFChecker
         if (!exec('which avconv')) {
             return array('Audio & Video Support','Audio and video support requires program avconv. Install libav-tools package on Debian/Ubuntu.',1);
         } else {
-            return array('Audio & Video Support','AVConv found.  Audio and video formats should be supported.'."\n\n".'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
+            return array('Audio & Video Support','AVConv found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
         }
     }
 
     public function config_file_exists()
     {
-        if (!file_exists(__DIR__.'/../config.php')) {
+        if (!file_exists(__DIR__ . '/../config.php')) {
             return array('Settings file', 'Settings file (config.php) not found.',2);
         }
-        return array('Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.'."\n\n".'If you see an error below (or if output stops), check config.php for errors.',0);
+        return array('Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0);
     }
 
     public function config_file_valid()
     {
-        require(__DIR__.'/../components.php');
+        require(__DIR__ . '/../components.php');
 
         $fatal_error = false;
         $errors = array();
@@ -179,7 +179,7 @@ class OBFChecker
                 $error[] = 'Unable to select database (check database name).';
             }
 
-            if (strlen(OB_HASH_SALT)<6) {
+            if (strlen(OB_HASH_SALT) < 6) {
                 $errors[] = 'OB_HASH_SALT (password hash salt) is too short (<6 characters).';
             }
 
@@ -207,7 +207,7 @@ class OBFChecker
                 $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
             }
 
-            if (stripos(OB_SITE, 'http://')!==0 && stripos(OB_SITE, 'https://')!==0) {
+            if (stripos(OB_SITE, 'http://') !== 0 && stripos(OB_SITE, 'https://') !== 0) {
                 $errors[] = 'OB_SITE (installation web address) is not valid.';
             } else {
                 $curl = curl_init(OB_SITE);
@@ -221,7 +221,7 @@ class OBFChecker
 
                 if (!$response) {
                     $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
-                } elseif (stripos($response, 'OpenBroadcaster-Application: index')===false) {
+                } elseif (stripos($response, 'OpenBroadcaster-Application: index') === false) {
                     $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
                 }
             }
@@ -229,7 +229,7 @@ class OBFChecker
             if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) {
                 $errors[] = 'OB_EMAIL_REPLY (email address used to send emails) is not valid.';
             }
-            if (trim(OB_EMAIL_FROM)=='') {
+            if (trim(OB_EMAIL_FROM) == '') {
                 $errors[] = 'OB_EMAIL_FROM (email name used to send emails) must not be blank.';
             }
 
@@ -243,25 +243,25 @@ class OBFChecker
                 }
             }
 
-            if (defined('OB_THEME') && OB_THEME!='default' && (!preg_match('/^[a-z0-9]+$/', OB_THEME) || !is_dir('themes/'.OB_THEME))) {
+            if (defined('OB_THEME') && OB_THEME != 'default' && (!preg_match('/^[a-z0-9]+$/', OB_THEME) || !is_dir('themes/' . OB_THEME))) {
                 $errors[] = 'OB_THEME (custom theme) is not a valid theme.';
             }
 
-            if (defined('OB_REMOTE_DEBUG') && strlen(OB_REMOTE_DEBUG)<4) {
-                $errors[]='OB_REMOTE_DEBUG (remote.php debug code) must be 4 characters or longer.';
+            if (defined('OB_REMOTE_DEBUG') && strlen(OB_REMOTE_DEBUG) < 4) {
+                $errors[] = 'OB_REMOTE_DEBUG (remote.php debug code) must be 4 characters or longer.';
             }
 
             if (defined('OB_UPDATES_USER') && !OB_UPDATES_USER) {
-                $errors[]='OB_UPDATES_USER (update area username) is not valid.';
+                $errors[] = 'OB_UPDATES_USER (update area username) is not valid.';
             }
             if (defined('OB_UPDATES_PW') && !OB_UPDATES_PW) {
-                $errors[]='OB_UPDATES_PW (update area password) is not valid.';
+                $errors[] = 'OB_UPDATES_PW (update area password) is not valid.';
             }
             if (defined('OB_UPDATES_USER') && !defined('OB_UPDATES_PW')) {
-                $errors[]='OB_UPDATES_USER (update area username) is set, but does not have an associated password (OB_UPDATES_PW).';
+                $errors[] = 'OB_UPDATES_USER (update area username) is set, but does not have an associated password (OB_UPDATES_PW).';
             }
             if (defined('OB_UPDATES_PW') && !defined('OB_UPDATES_USER')) {
-                $errors[]='OB_UPDATES_PW (update area password) is set, but does not have an associated username (OB_UPDATES_USER).';
+                $errors[] = 'OB_UPDATES_PW (update area password) is set, but does not have an associated username (OB_UPDATES_USER).';
             }
         }
 
@@ -281,10 +281,10 @@ class OBFChecker
             return array('Assets directory','The assets directory is not writable by the server.',2);
         }
 
-        if (!is_dir(OB_ASSETS.'/uploads')) {
+        if (!is_dir(OB_ASSETS . '/uploads')) {
             return array('Assets directory','The assets/uploads directory does not exist.',2);
         }
-        if (!is_writable(OB_ASSETS.'/uploads')) {
+        if (!is_writable(OB_ASSETS . '/uploads')) {
             return array('Assets directory','The assets/uploads directory is not writable by the server.',2);
         }
 
@@ -304,7 +304,7 @@ class OBFChecker
 
         $this->dbver = $dbver['value'];
 
-        return array('Database Version', 'Database version found: '.$dbver['value'].'.',0);
+        return array('Database Version', 'Database version found: ' . $dbver['value'] . '.',0);
     }
 }
 
@@ -319,7 +319,7 @@ class OBFUpdates
         foreach ($checker_methods as $checker_method) {
             $result = $checker->$checker_method();
             $this->checker_results[] = $result;
-            if ((!defined('OB_FORCE_UPDATE') || OB_FORCE_UPDATE!==true) && $result[2]==2) {
+            if ((!defined('OB_FORCE_UPDATE') || OB_FORCE_UPDATE !== true) && $result[2] == 2) {
                 $this->checker_status = false;
                 return;
             } // fatal error encountered.
@@ -335,7 +335,7 @@ class OBFUpdates
     public function auth()
     {
         // CLI doesn't require auth.
-        if (php_sapi_name()==='cli') {
+        if (php_sapi_name() === 'cli') {
             return;
         }
 
@@ -345,7 +345,7 @@ class OBFUpdates
         }
 
         // use http auth.
-        if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER']!=OB_UPDATES_USER || !password_verify($_SERVER['PHP_AUTH_PW'], OB_UPDATES_PW)) {
+        if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] != OB_UPDATES_USER || !password_verify($_SERVER['PHP_AUTH_PW'], OB_UPDATES_PW)) {
             header('WWW-Authenticate: Basic realm="OpenBroadcaster Updates"');
             header('HTTP/1.0 401 Unauthorized');
             die();
@@ -364,11 +364,11 @@ class OBFUpdates
             $file_explode = explode('.', $file);
             $version = $file_explode[0];
 
-            require($version.'.php');
+            require($version . '.php');
 
-            $class_name = 'OBUpdate'.$version;
+            $class_name = 'OBUpdate' . $version;
             $update_class = new $class_name();
-            $update_class->needed = $version>$this->dbver;
+            $update_class->needed = $version > $this->dbver;
             $update_class->version = $version;
 
             $updates[] = $update_class;
@@ -385,7 +385,7 @@ class OBFUpdates
         // if update was successful, update our database version number.
         if ($result) {
             $this->db->where('name', 'dbver');
-            $this->db->update('settings', array('value'=>$update->version));
+            $this->db->update('settings', array('value' => $update->version));
         }
 
         return $result;

@@ -91,17 +91,17 @@ ALTER TABLE `playlists_permissions_users`
 
         // permission to allow setting user/group permissions on media
         $this->db->insert('users_permissions', [
-      'name'=>'media_advanced_permissions',
-      'description'=>'advanced permissions',
-      'category'=>'media'
-    ]);
+        'name' => 'media_advanced_permissions',
+        'description' => 'advanced permissions',
+        'category' => 'media'
+        ]);
 
         // permission to allow setting user/group permissions on playlists
         $this->db->insert('users_permissions', [
-      'name'=>'playlists_advanced_permissions',
-      'description'=>'advanced permissions',
-      'category'=>'playlists'
-    ]);
+        'name' => 'playlists_advanced_permissions',
+        'description' => 'advanced permissions',
+        'category' => 'playlists'
+        ]);
 
         return true;
     }

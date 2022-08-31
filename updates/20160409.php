@@ -23,9 +23,9 @@ class OBUpdate20160409 extends OBUpdate
         foreach ($users as $user) {
             $info = password_get_info($user['password']);
 
-            if ($info['algo']==0) {
+            if ($info['algo'] == 0) {
                 $this->db->where('id', $user['id']);
-                $this->db->update('users', array('password'=>''));
+                $this->db->update('users', array('password' => ''));
             }
         }
 

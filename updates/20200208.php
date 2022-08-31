@@ -20,11 +20,11 @@ class OBUpdate20200208 extends OBUpdate
 
         // old status public becomes new status visible
         $this->db->where('status', 'public');
-        $this->db->update('media', ['new_status'=>'visible']);
+        $this->db->update('media', ['new_status' => 'visible']);
 
         // if media is_public, new status public (regardless of old status)
         $this->db->where('is_public', 1);
-        $this->db->update('media', ['new_status'=>'public']);
+        $this->db->update('media', ['new_status' => 'public']);
 
         // drop old columns
         $this->db->query('ALTER TABLE `media` DROP COLUMN `is_public`;');
@@ -38,7 +38,7 @@ class OBUpdate20200208 extends OBUpdate
 
         // playlist public becomes visible
         $this->db->where('status', 'public');
-        $this->db->update('playlists', ['status'=>'visible']);
+        $this->db->update('playlists', ['status' => 'visible']);
 
         return true;
     }

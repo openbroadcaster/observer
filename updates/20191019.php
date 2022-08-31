@@ -42,22 +42,22 @@ class OBUpdate20191019 extends OBUpdate
         foreach ($columns as $column) {
             $this->db->what($column['name'], 'tags');
             $this->db->what('media_id', 'media_id');
-            $this->db->where_string($this->db->format_table_column($column['name']).' IS NOT NULL');
+            $this->db->where_string($this->db->format_table_column($column['name']) . ' IS NOT NULL');
             $rows = $this->db->get('media_metadata');
 
             foreach ($rows as $row) {
                 $tags = explode(',', $row['tags']);
                 foreach ($tags as $tag) {
                     $tag = trim($tag);
-                    if ($tag==='') {
+                    if ($tag === '') {
                         continue;
                     }
 
                     $this->db->insert('media_metadata_tags', [
-            'media_id' => $row['media_id'],
-            'media_metadata_column_id' => $column['id'],
-            'tag' => $tag
-          ]);
+                    'media_id' => $row['media_id'],
+                    'media_metadata_column_id' => $column['id'],
+                    'tag' => $tag
+                    ]);
                 }
             }
         }

@@ -17,9 +17,9 @@ class OBUpdate20160906 extends OBUpdate
 
         if ($inuit) {
             $this->db->where('id', $inuit['id']);
-            $this->db->update('media_languages', array('name'=>'Inuktitut'));
+            $this->db->update('media_languages', array('name' => 'Inuktitut'));
         } else {
-            $this->db->insert('media_languages', array('name'=>'Inuktitut'));
+            $this->db->insert('media_languages', array('name' => 'Inuktitut'));
         }
 
         // Add additional languages.
@@ -100,7 +100,7 @@ class OBUpdate20160906 extends OBUpdate
 
         foreach ($languages as $language) {
             $language = trim($language);
-            $this->db->insert('media_languages', array('name'=>$language));
+            $this->db->insert('media_languages', array('name' => $language));
         }
 
         return true;

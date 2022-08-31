@@ -20,7 +20,7 @@ class OBUpdate20160214 extends OBUpdate
         $has_index = false;
 
         foreach ($indexes as $index) {
-            if ($index['Key_name']=='timestamp' && $index['Column_name']=='timestamp') {
+            if ($index['Key_name'] == 'timestamp' && $index['Column_name'] == 'timestamp') {
                 $has_index = true;
                 break;
             }
@@ -39,7 +39,7 @@ class OBUpdate20160214 extends OBUpdate
         $has_index = false;
 
         foreach ($indexes as $index) {
-            if ($index['Key_name']=='start' && $index['Column_name']=='start') {
+            if ($index['Key_name'] == 'start' && $index['Column_name'] == 'start') {
                 $has_index = true;
                 break;
             }
@@ -60,13 +60,13 @@ class OBUpdate20160214 extends OBUpdate
                     'users_permissions_to_groups','users_settings','users_to_groups');
 
         foreach ($tables as $table) {
-            $this->db->query('SHOW TABLE STATUS WHERE Name = \''.$table.'\'');
+            $this->db->query('SHOW TABLE STATUS WHERE Name = \'' . $table . '\'');
             $status = $this->db->assoc_row();
-            if (strtolower($status['Engine'])=='innodb') {
+            if (strtolower($status['Engine']) == 'innodb') {
                 continue;
             }
 
-            $this->db->query('ALTER TABLE '.$table.' ENGINE=InnoDB');
+            $this->db->query('ALTER TABLE ' . $table . ' ENGINE=InnoDB');
         }
 
 

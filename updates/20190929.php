@@ -18,9 +18,9 @@ class OBUpdate20190929 extends OBUpdate
         $setting = $this->db->get_one('settings');
         if (!$setting) {
             $this->db->insert('settings', [
-        'name'=>'dynamic_content_field',
-        'value'=>'{"default":"disabled","hidden":false}'
-      ]);
+            'name' => 'dynamic_content_field',
+            'value' => '{"default":"disabled","hidden":false}'
+            ]);
         }
 
         // set media metadata settings if not already set
@@ -28,9 +28,9 @@ class OBUpdate20190929 extends OBUpdate
         $setting = $this->db->get_one('settings');
         if (!$setting) {
             $this->db->insert('settings', [
-        'name'=>'core_metadata',
-        'value'=>'{"artist":"required","album":"enabled","year":"enabled","category_id":"required","country_id":"required","language_id":"required","comments":"enabled"}'
-      ]);
+            'name' => 'core_metadata',
+            'value' => '{"artist":"required","album":"enabled","year":"enabled","category_id":"required","country_id":"required","language_id":"required","comments":"enabled"}'
+            ]);
         }
 
         return true;

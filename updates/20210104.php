@@ -21,26 +21,26 @@ class OBUpdate20210104 extends OBUpdate
         $items = $this->db->get('playlists_items');
 
         foreach ($items as $item) {
-            if ($item['item_type']=='media' && $item['media_type']=='image') {
+            if ($item['item_type'] == 'media' && $item['media_type'] == 'image') {
                 $this->db->where('id', $item['id']);
-                $this->db->update('playlists_items', ['properties'=>json_encode(['duration'=>(float)$item['duration']])]);
+                $this->db->update('playlists_items', ['properties' => json_encode(['duration' => (float)$item['duration']])]);
             }
 
-            if ($item['item_type']=='dynamic') {
+            if ($item['item_type'] == 'dynamic') {
                 $this->db->where('id', $item['id']);
-                $this->db->update('playlists_items', ['properties'=>json_encode(
+                $this->db->update('playlists_items', ['properties' => json_encode(
                     [
-            'name'=>$item['dynamic_name'],
-            'num_items'=>(int) $item['dynamic_num_items'],
-            'image_duration'=>(int) $item['dynamic_image_duration'],
-            'query'=>json_decode($item['dynamic_query'], true)
-          ]
+                    'name' => $item['dynamic_name'],
+                    'num_items' => (int) $item['dynamic_num_items'],
+                    'image_duration' => (int) $item['dynamic_image_duration'],
+                    'query' => json_decode($item['dynamic_query'], true)
+                    ]
                 )]);
             }
 
-            if ($item['item_type']=='custom') {
+            if ($item['item_type'] == 'custom') {
                 $this->db->where('id', $item['id']);
-                $this->db->update('playlists_items', ['properties'=>$item['dynamic_query']]);
+                $this->db->update('playlists_items', ['properties' => $item['dynamic_query']]);
             }
         }
 

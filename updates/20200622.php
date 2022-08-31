@@ -34,10 +34,10 @@ class OBUpdate20200622 extends OBUpdate
 
         // Add to permissions table.
         $this->db->insert('users_permissions', [
-      'name'        => 'manage_appkeys',
-      'description' => 'create, edit, and delete own app keys',
-      'category'    => 'administration'
-    ]);
+        'name'        => 'manage_appkeys',
+        'description' => 'create, edit, and delete own app keys',
+        'category'    => 'administration'
+        ]);
 
         return true;
     }
