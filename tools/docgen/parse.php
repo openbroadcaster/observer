@@ -48,9 +48,9 @@ function parse_blocks(array $content): array
         }
 
         $blocks[] = [
-      'doc'   => $doc,
-      'decl'  => $content[$end[0] + 1]
-    ];
+            'doc'   => $doc,
+            'decl'  => $content[$end[0] + 1]
+        ];
     }
 
     return $blocks;
@@ -72,20 +72,20 @@ function parse_decl(string $decl): array
         }
 
         return [
-      'type'       => 'method',
-      'visibility' => (strpos($decl, "private") !== false) ? "private" : ((strpos($decl, "protected") !== false) ? "protected" : "public"),
-      'name'       => trim(explode("function", substr($decl, 0, strpos($decl, "(")))[1]),
-      'args'       => $args
-    ];
+            'type'       => 'method',
+            'visibility' => (strpos($decl, "private") !== false) ? "private" : ((strpos($decl, "protected") !== false) ? "protected" : "public"),
+            'name'       => trim(explode("function", substr($decl, 0, strpos($decl, "(")))[1]),
+            'args'       => $args
+        ];
     } elseif (strpos($decl, "class") !== false) {
         return [
-      'type'       => 'class',
-      'name'       => explode(" ", trim(explode("class", $decl)[1]))[0]
-    ];
+            'type'       => 'class',
+            'name'       => explode(" ", trim(explode("class", $decl)[1]))[0]
+        ];
     } else {
         return [
-      'type'       => 'file'
-    ];
+            'type'       => 'file'
+        ];
     }
 }
 
@@ -97,9 +97,9 @@ in the actual documentation. */
 function parse_doc(array $lines): array
 {
     $doc = [
-    'description' => [],
-    'tags'        => []
-  ];
+        'description' => [],
+        'tags'        => []
+    ];
 
     $new_p = true;
     foreach ($lines as $line) {

@@ -98,64 +98,64 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
         $doc  = parse_doc($block['doc']);
 
         switch ($decl['type']) {
-      case 'file':
-        $doc_file->description = array_merge($doc_file->description, $doc['description']);
-      break;
-      case 'class':
-        if ($doc_class != null) {
-            echo "[W] Multiple class definitions are not allowed in a single file: " . $doc_class->name . "\n";
-            continue 2;
-        }
-
-        $doc_class = new DocGenClass($decl['name'], $doc['description']);
-
-        foreach ($doc['tags'] as $tag) {
-            switch ($tag[0]) {
-            case 'package':
-              $doc_class->package = $tag[1];
-            break;
-            default:
-              echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";
-            break;
-          }
-        }
-      break;
-      case 'method':
-        $method = new DocGenMethod($decl['name'], $doc['description'], $decl['visibility'], $decl['args']);
-
-        foreach ($doc['tags'] as $tag) {
-            switch ($tag[0]) {
-            case 'param':
-              if (strpos($tag[1], " ") !== false) {
-                  $method->param[] = [substr($tag[1], 0, strpos($tag[1], " ")), substr($tag[1], strpos($tag[1], " ") + 1)];
-              } else {
-                  $method->param[] = [$tag[1], ""];
-              }
-            break;
-            case 'return':
-              $method->return = $tag[1];
-            break;
-            case 'route':
-              $route_method = substr($tag[1], 0, strpos($tag[1], " "));
-              $route_url = substr($tag[1], strpos($tag[1], " ") + 1);
-              $route_url = '/' . trim($route_url, '/');
-
-              if (!in_array($route_method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
-                echo '[E] Unsupported HTTP method used in @route tag: ' . $tag[1] . ".\n";
+            case 'file':
+                $doc_file->description = array_merge($doc_file->description, $doc['description']);
                 break;
-              }
+            case 'class':
+                if ($doc_class != null) {
+                    echo "[W] Multiple class definitions are not allowed in a single file: " . $doc_class->name . "\n";
+                    continue 2;
+                }
 
-              $method->route = [$route_method, $route_url];
-            break;
-            default:
-              echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";
-            break;
-          }
+                $doc_class = new DocGenClass($decl['name'], $doc['description']);
+
+                foreach ($doc['tags'] as $tag) {
+                    switch ($tag[0]) {
+                        case 'package':
+                            $doc_class->package = $tag[1];
+                            break;
+                        default:
+                            echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";
+                            break;
+                    }
+                }
+                break;
+            case 'method':
+                $method = new DocGenMethod($decl['name'], $doc['description'], $decl['visibility'], $decl['args']);
+
+                foreach ($doc['tags'] as $tag) {
+                    switch ($tag[0]) {
+                        case 'param':
+                            if (strpos($tag[1], " ") !== false) {
+                                $method->param[] = [substr($tag[1], 0, strpos($tag[1], " ")), substr($tag[1], strpos($tag[1], " ") + 1)];
+                            } else {
+                                $method->param[] = [$tag[1], ""];
+                            }
+                            break;
+                        case 'return':
+                            $method->return = $tag[1];
+                            break;
+                        case 'route':
+                            $route_method = substr($tag[1], 0, strpos($tag[1], " "));
+                            $route_url = substr($tag[1], strpos($tag[1], " ") + 1);
+                            $route_url = '/' . trim($route_url, '/');
+
+                            if (!in_array($route_method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+                                echo '[E] Unsupported HTTP method used in @route tag: ' . $tag[1] . ".\n";
+                                break;
+                            }
+
+                            $method->route = [$route_method, $route_url];
+                            break;
+                        default:
+                            echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";
+                            break;
+                    }
+                }
+
+                $doc_methods[] = $method;
+                break;
         }
-
-        $doc_methods[] = $method;
-      break;
-    }
     }
 
     if ($doc_class != null) {

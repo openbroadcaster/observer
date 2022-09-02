@@ -89,6 +89,8 @@ class Alerts extends OBFController
      * user-specific setting, so no special permissions are necessary.
      *
      * @param player
+     *
+     * @hidden Deprecated method to be removed in later update.
      */
     public function set_last_player()
     {
@@ -100,9 +102,8 @@ class Alerts extends OBFController
         if ($player_data) {
             $this->user->set_setting('last_emergencies_player', $player_id);
             return array(true,'Set last emergencies player.');
-        }
-        //T This player no longer exists.
-        else {
+        } else {
+            //T This player no longer exists.
             return array(false,'This player no longer exists.');
         }
     }
@@ -112,6 +113,8 @@ class Alerts extends OBFController
      * current user.
      *
      * @return player
+     *
+     * @hidden Deprecated method to be removed in later update.
      */
     public function get_last_player()
     {
