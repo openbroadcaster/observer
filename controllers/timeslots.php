@@ -154,8 +154,6 @@ class Timeslots extends OBFController
      * user-specific setting, so no special permissions are necessary.
      *
      * @param player
-     *
-     * @route PUT /v2/timeslots/last_player
      */
     public function set_last_player()
     {
@@ -177,8 +175,6 @@ class Timeslots extends OBFController
      * Get the last selected player on the timeslots page for the current user.
      *
      * @return player
-     *
-     * @route GET /v2/timeslots/last_player
      */
     public function get_last_player()
     {

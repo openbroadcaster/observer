@@ -89,8 +89,6 @@ class Alerts extends OBFController
      * user-specific setting, so no special permissions are necessary.
      *
      * @param player
-     *
-     * @route PUT /v2/alerts/last/(:id:)
      */
     public function set_last_player()
     {
@@ -114,8 +112,6 @@ class Alerts extends OBFController
      * current user.
      *
      * @return player
-     *
-     * @route GET /v2/alerts/last
      */
     public function get_last_player()
     {

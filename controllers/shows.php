@@ -135,8 +135,6 @@ class Shows extends OBFController
      * user-specific setting, so no special permissions are necessary.
      *
      * @param player
-     *
-     * @route PUT /v2/shows/last_player
      */
     public function set_last_player()
     {
@@ -158,8 +156,6 @@ class Shows extends OBFController
      * Get the last selected player on the schedules page for the current user.
      *
      * @return player
-     *
-     * @route GET /v2/shows/last_player
      */
     public function get_last_player()
     {
