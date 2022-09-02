@@ -141,3 +141,28 @@ code {
 .doc-method-code-visibility {
   color: #d63131;
 }
+
+.doc-method-body {
+  display: block;
+}
+
+.doc-method-hidden {
+  opacity: 0.4;
+}
+
+.doc-method-hidden.is-hidden .doc-method-body {
+  display: none;
+}
+
+.doc-method-hidden.is-visible .doc-method-body {
+  display: block;
+}
+
+.doc-method-hidden-toggle {
+  width: 20px;
+}
+
+.doc-method-hidden-reason {
+  color: red;
+  margin-top: 1rem;
+}

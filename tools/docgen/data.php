@@ -59,6 +59,25 @@ class DocGenClass
     {
         $this->methods[] = $method;
     }
+
+    public function sort()
+    {
+        // Sort methods alphabetically first.
+        usort($this->methods, fn($a, $b) => strcmp($a->name, $b->name));
+
+        // Sort by visible/hidden methods.
+        usort($this->methods, function ($a, $b) {
+            if ($a->hidden[0] === $b->hidden[0]) {
+                return 0;
+            } elseif ($a->hidden[0] === true) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        return $this;
+    }
 }
 
 class DocGenMethod
@@ -70,8 +89,9 @@ class DocGenMethod
     public $return;
     public $route;
     public $args;
+    public $hidden;
 
-    public function __construct($name, $description = [], $visibility = "public", $args = [], $param = [], $return = "", $route = [])
+    public function __construct($name, $description = [], $visibility = "public", $args = [], $param = [], $return = "", $route = [], $hidden = [false, ""])
     {
         $this->name = $name;
         $this->description = $description;
@@ -80,6 +100,7 @@ class DocGenMethod
         $this->param = $param;
         $this->return = $return;
         $this->route = $route;
+        $this->hidden = $hidden;
     }
 }
 
@@ -146,6 +167,9 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
                             }
 
                             $method->route = [$route_method, $route_url];
+                            break;
+                        case 'hidden':
+                            $method->hidden = [true, $tag[1]];
                             break;
                         default:
                             echo "[W] Unsupported tag found: @" . $tag[0] . " (" . $tag[1] . ")\n";

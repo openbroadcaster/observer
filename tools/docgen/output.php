@@ -23,7 +23,7 @@ function html_file(DocGenFile $doc_file, array $nav_tree): string
     $doc_class   = $doc_file->getClass();
     $html .= html_class_header($doc_class);
 
-    $doc_methods = $doc_class->getMethods();
+    $doc_methods = $doc_class->sort()->getMethods();
     foreach ($doc_methods as $doc_method) {
         $html .= html_method($doc_method);
     }
@@ -137,6 +137,7 @@ function html_method(DocGenMethod $doc_method): string
     $method_param       = $doc_method->param;
     $method_return      = $doc_method->return;
     $method_route       = $doc_method->route;
+    $method_hidden      = $doc_method->hidden;
     include('templates/method.php');
 
     $html = ob_get_contents();
