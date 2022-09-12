@@ -91,8 +91,16 @@ class DocGenMethod
     public $args;
     public $hidden;
 
-    public function __construct($name, $description = [], $visibility = "public", $args = [], $param = [], $return = "", $route = [], $hidden = [false, ""])
-    {
+    public function __construct(
+        $name,
+        $description = [],
+        $visibility = "public",
+        $args = [],
+        $param = [],
+        $return = "",
+        $route = [],
+        $hidden = [false, ""]
+    ) {
         $this->name = $name;
         $this->description = $description;
         $this->visibility = $visibility;
@@ -148,7 +156,9 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
                     switch ($tag[0]) {
                         case 'param':
                             if (strpos($tag[1], " ") !== false) {
-                                $method->param[] = [substr($tag[1], 0, strpos($tag[1], " ")), substr($tag[1], strpos($tag[1], " ") + 1)];
+                                $param = substr($tag[1], 0, strpos($tag[1], " "));
+                                $desc  = substr($tag[1], strpos($tag[1], " ") + 1);
+                                $method->param[] = [$param, $desc];
                             } else {
                                 $method->param[] = [$tag[1], ""];
                             }
