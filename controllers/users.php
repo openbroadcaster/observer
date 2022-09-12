@@ -40,7 +40,7 @@ class Users extends OBFController
      *
      * @param user_registration
      *
-     * @route PUT /v2/users/can_register
+     * @route PUT /v2/users/can-register
      */
     public function user_registration_set()
     {
@@ -55,7 +55,7 @@ class Users extends OBFController
      *
      * @return user_registration
      *
-     * @route GET /v2/users/can_register
+     * @route GET /v2/users/can-register
      */
     public function user_registration_get()
     {

@@ -236,7 +236,7 @@ class Players extends OBFController
      *
      * @return average
      *
-     * @route GET /v2/players/avg_duration
+     * @route GET /v2/players/avg-duration
      */
     public function station_id_avg_duration()
     {
