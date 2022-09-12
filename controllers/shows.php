@@ -91,7 +91,7 @@ class Shows extends OBFController
      *
      * @return shows
      *
-     * @route GET /v2/players/(:player:)/shows
+     * @route GET /v2/shows
      */
     public function search()
     {

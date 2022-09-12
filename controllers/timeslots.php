@@ -95,7 +95,7 @@ class Timeslots extends OBFController
      *
      * @return timeslots
      *
-     * @route GET /v2/players/(:player:)/timeslots
+     * @route GET /v2/timeslots
      */
     public function search()
     {

@@ -69,7 +69,7 @@ class Alerts extends OBFController
      *
      * @return alerts
      *
-     * @route GET /v2/players/(:player_id:)/alerts
+     * @route GET /v2/alerts/search/(:player_id:)
      */
     public function search()
     {
