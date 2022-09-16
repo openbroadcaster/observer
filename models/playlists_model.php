@@ -674,18 +674,6 @@ class PlaylistsModel extends OBFModel
         $this->db->where('id', $id);
         $delete = $this->db->delete('playlists');
 
-        if ($delete) {
-            $this->db->where('item_id', $id);
-            $this->db->where('item_type', 'playlist');
-            $this->db->delete('schedules');
-
-            $this->db->where('item_id', $id);
-            $this->db->where('item_type', 'playlist');
-            $this->db->delete('schedules_recurring');
-
-            return true;
-        }
-
         return false;
     }
 

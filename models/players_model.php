@@ -406,19 +406,11 @@ class PlayersModel extends OBFModel
         $schedule_fail = false;
 
         $this->db->where('player_id', $id);
-        if ($this->db->get_one('schedules') && !$this->user->check_permission('manage_timeslots')) {
-            $schedule_fail = true;
-        }
-        $this->db->where('player_id', $id);
-        if ($this->db->get_one('schedules_recurring') && !$this->user->check_permission('manage_timeslots')) {
+        if ($this->db->get_one('shows') && !$this->user->check_permission('manage_timeslots')) {
             $schedule_fail = true;
         }
         $this->db->where('player_id', $id);
         if ($this->db->get_one('timeslots') && !$this->user->check_permission('manage_timeslots')) {
-            $schedule_fail = true;
-        }
-        $this->db->where('player_id', $id);
-        if ($this->db->get_one('timeslots_recurring') && !$this->user->check_permission('manage_timeslots')) {
             $schedule_fail = true;
         }
 
@@ -457,15 +449,6 @@ class PlayersModel extends OBFModel
     {
         $this->db->where('id', $id);
         $this->db->delete('players');
-
-        $this->db->where('player_id', $id);
-        $this->db->delete('schedules');
-        $this->db->where('player_id', $id);
-        $this->db->delete('schedules_recurring');
-        $this->db->where('player_id', $id);
-        $this->db->delete('timeslots');
-        $this->db->where('player_id', $id);
-        $this->db->delete('timeslots_recurring');
     }
 
     /**

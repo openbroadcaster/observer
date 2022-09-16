@@ -2206,11 +2206,7 @@ class MediaModel extends OBFModel
         // remove from schedules, schedules recurring
         $this->db->where('item_id', $id);
         $this->db->where('item_type', 'media');
-        $this->db->delete('schedules');
-
-        $this->db->where('item_id', $id);
-        $this->db->where('item_type', 'media');
-        $this->db->delete('schedules_recurring');
+        $this->db->delete('shows');
 
         // remove from emergencies
         $this->db->where('item_id', $id);
