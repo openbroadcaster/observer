@@ -31,10 +31,8 @@ $auth_key = null;
 if (!empty($_POST['i']) && !empty($_POST['k'])) {
     $auth_id = $_POST['i'];
     $auth_key = $_POST['k'];
-}
-
-// if not in post, try fetching from cookie.
-elseif (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
+} elseif (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
+    // if not in post, try fetching from cookie.
     $auth_id = $_COOKIE['ob_auth_id'];
     $auth_key = $_COOKIE['ob_auth_key'];
 }

@@ -80,13 +80,11 @@ class OBFController
     public function handle($action, $hook = null, $position = null)
     {
         if (method_exists($this, $action)) {
-            // call as non-callback
             if (!$hook) {
+                // call as non-callback
                 return $this->$action();
-            }
-
-            // call as callback
-            else {
+            } else {
+                // call as callback
                 return $this->$action($hook, $position);
             }
         }

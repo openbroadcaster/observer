@@ -335,20 +335,8 @@ class Remote
                         $media_items[$index] = get_object_vars($tmp);
                     } // convert object to assoc. array
                     $showxml->addChild('last_updated', $cache['created']);
-                }
-
-                // are we using a parent player for cache?
-                elseif ($this->cache_player_id != $this->player['id']) { // this was set to $this->player['player_id'] which i'm quite sure was wrong... (fyi in case i broke something).
-                  /*
-                  $this->db->where('schedule_id',$show['id']);
-                  if(!empty($show['recurring_start']))
-                  {
-                    $this->db->where('mode','recurring');
-                    $this->db->where('start',$show['start']);
-                  }
-                  else $this->db->where('mode','once');
-                  $this->db->where('player_id',$this->cache_player_id);
-                  */
+                } elseif ($this->cache_player_id != $this->player['id']) { // this was set to $this->player['player_id'] which i'm quite sure was wrong... (fyi in case i broke something).
+                    // are we using a parent player for cache?
                     $this->db->where('show_expanded_id', $show['exp_id']);
                     $this->db->where('start', $show['start']);
                     $this->db->where('player_id', $this->cache_player_id);
@@ -367,10 +355,8 @@ class Remote
                         'data' => json_encode($media_items),
                         'created' => $cache_created
                         ]);
-                    }
-
-                    // oh, we do have cache from parent... let's get media items from it.
-                    else {
+                    } else {
+                        // oh, we do have cache from parent... let's get media items from it.
                         $media_items = json_decode($cache['data']);
                         foreach ($media_items as $index => $tmp) {
                             $media_items[$index] = get_object_vars($tmp);
@@ -746,10 +732,8 @@ class Remote
             } // convert object to assoc. array
             $showxml->addChild('last_updated', $cache['created']);
             $duration = $cache['duration'];
-        }
-
-        // are we using a parent player for cache (and playlist)?
-        elseif ($this->cache_player_id != $this->player['id'] && $this->player['use_parent_playlist']) {
+        } elseif ($this->cache_player_id != $this->player['id'] && $this->player['use_parent_playlist']) {
+            // are we using a parent player for cache (and playlist)?
             // see if parent has a cache entry.
             $this->db->where('player_id', $this->cache_player_id);
             $this->db->where('show_expanded_id', null);
@@ -771,10 +755,8 @@ class Remote
                 'data' => json_encode($show_media_items),
                 'created' => $cache_created
                 ]);
-            }
-
-            // oh, we do have cache from parent... let's get media items from it.
-            else {
+            } else {
+                // oh, we do have cache from parent... let's get media items from it.
                 $show_media_items = json_decode($cache['data']);
                 foreach ($show_media_items as $index => $tmp) {
                     $show_media_items[$index] = get_object_vars($tmp);

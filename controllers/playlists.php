@@ -191,10 +191,8 @@ class Playlists extends OBFController
             if (!$this->user_can_edit($original_playlist)) {
                 $this->user->require_permission('manage_playlists');
             }
-        }
-
-        // new playlist
-        else {
+        } else {
+            // new playlist
             $this->user->require_permission('manage_playlists or create_own_playlists');
         }
 

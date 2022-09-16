@@ -368,10 +368,8 @@ class Media extends OBFController
         // if we own the media item, we also require create_own_media or manage_media
         if ($media && $media['owner_id'] == $this->user->param('id')) {
             $this->user->require_permission('create_own_media or manage_media');
-        }
-
-        // if we don't own the media item, we also require manage_media
-        else {
+        } else {
+            // if we don't own the media item, we also require manage_media
             $this->user->require_permission('manage_media');
         }
     }

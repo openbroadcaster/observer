@@ -69,10 +69,8 @@ class MediaModel extends OBFModel
             } elseif ($mime_array[1] == 'svg+xml') {
                 $return['format'] = 'svg';
             }
-        }
-
-        // if we have an audio or a video, then we use avprobe to find format and duration.
-        else {
+        } else {
+            // if we have an audio or a video, then we use avprobe to find format and duration.
             $mediainfo_json = shell_exec('avprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename']));
             if ($mediainfo_json === null || !$mediainfo = json_decode($mediainfo_json)) {
                 return $return;
@@ -669,10 +667,8 @@ class MediaModel extends OBFModel
                 }
                 $where_array = array_merge($where_array, $this->search_filters_where_array(['filters' => $params['default_filters']]));
             }
-        }
-
-        // advanced search
-        elseif ($params['query']['mode'] == 'advanced') {
+        } elseif ($params['query']['mode'] == 'advanced') {
+            // advanced search
             if (!$this->search_filters_validate(['filters' => $params['query']['filters']])) {
                 return false;
             }
@@ -715,10 +711,8 @@ class MediaModel extends OBFModel
             // otherwise, if posted sort by data is valid, use that...
             if (isset($params['sort_dir']) && ($params['sort_dir'] == 'asc' || $params['sort_dir'] == 'desc') && array_search($params['sort_by'], array('artist','album','title','year','media_categories.name','media_genres.name','media_countries.name','media_languages.name','duration','updated')) !== false) {
                 $this->db->orderby($params['sort_by'], $params['sort_dir']);
-            }
-
-            // otherwise, show the most recently updated first
-            else {
+            } else {
+                // otherwise, show the most recently updated first
                 $this->db->orderby('updated', 'desc');
             }
 
@@ -1476,10 +1470,8 @@ class MediaModel extends OBFModel
 
             $this->db->where('id', $id);
             $this->db->update('media', $data);
-        }
-
-        // if we are not uploading new file, but we are changing approved status, we need to move our file. or we're changing the artist or title name (on which the filename is based).
-        elseif ($original_media && ($original_media['is_approved'] != $item['is_approved'] || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
+        } elseif ($original_media && ($original_media['is_approved'] != $item['is_approved'] || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
+            // if we are not uploading new file, but we are changing approved status, we need to move our file. or we're changing the artist or title name (on which the filename is based).
             $media_location = '/' . $original_media['file_location'][0] . '/' . $original_media['file_location'][1] . '/';
 
             if ($original_media['is_approved'] == 1) {

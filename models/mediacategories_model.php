@@ -114,10 +114,8 @@ class MediaCategoriesModel extends OBFModel
 
             // set this as default
             $this->db->insert('settings', ['name' => 'media_category_default','value' => $id]);
-        }
-
-        // remove default value if necessary
-        elseif ($current_default == $id) {
+        } elseif ($current_default == $id) {
+            // remove default value if necessary
             $this->db->where('name', 'media_category_default');
             $this->db->delete('settings');
         }

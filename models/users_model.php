@@ -655,9 +655,8 @@ class UsersModel extends OBFModel
             //T The passwords you have provided do not match.
             if ($data['password'] != $data['password_again']) {
                 return array(false,'The passwords you have provided do not match.');
-            }
-            //T Your password must be at least 6 characters long.
-            elseif (strlen($data['password']) < 6) {
+            } elseif (strlen($data['password']) < 6) {
+                //T Your password must be at least 6 characters long.
                 return array(false,'Your password must be at least 6 characters long.');
             }
         }

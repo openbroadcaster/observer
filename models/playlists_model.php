@@ -360,10 +360,8 @@ class PlaylistsModel extends OBFModel
         // otherwise, if posted sort by data is valid, use that...
         if (($sort_dir == 'asc' || $sort_dir == 'desc') && array_search($sort_by, array('name','description','updated')) !== false) {
             $this->db->orderby($sort_by, $sort_dir);
-        }
-
-        // otherwise, show the most recently updated first
-        else {
+        } else {
+            // otherwise, show the most recently updated first
             $this->db->orderby('updated', 'desc');
         }
 
@@ -481,9 +479,8 @@ class PlaylistsModel extends OBFModel
     {
         if ($this->db->id_exists('playlists', $playlist_id)) {
             return array(true,'Live Assist button item is valid.');
-        }
-        //T One or more Live Assist button playlists are invalid.
-        else {
+        } else {
+            //T One or more Live Assist button playlists are invalid.
             return array(false,'One or more Live Assist button playlists are invalid.');
         }
     }
@@ -584,10 +581,8 @@ class PlaylistsModel extends OBFModel
         // simple mode
         if ($search_query['mode'] == 'simple') {
             $where[] = '(artist like "%' . $this->db->escape($search_query['string']) . '%" or title like "%' . $this->db->escape($search_query['string']) . '%") and is_approved = 1 and is_archived = 0';
-        }
-
-        // advanced mode.  Filters should be already validated!
-        else {
+        } else {
+            // advanced mode.  Filters should be already validated!
             $filters = $search_query['filters'];
 
             foreach ($filters as $filter) {
@@ -762,10 +757,8 @@ class PlaylistsModel extends OBFModel
                     $tmp['context'] = 'Media';
                     $media_items_tmp[] = $tmp;
                 }
-            }
-
-            // dynamic item
-            elseif ($playlist_item['item_type'] == 'dynamic') {
+            } elseif ($playlist_item['item_type'] == 'dynamic') {
+                // dynamic item
                 $dynamic_items = [];
 
                 // get a list of possible items with this query
@@ -830,10 +823,8 @@ class PlaylistsModel extends OBFModel
                             $item['crossfade'] = $playlist_item['properties']['crossfade'];
                             $media_offset -= $playlist_item['properties']['crossfade'];
                         }
-                    }
-
-                    // last item
-                    else {
+                    } else {
+                        // last item
                         if ($item['media_type'] == 'audio' && ($playlist_item['properties']['crossfade_last'] ?? 0)) {
                             $item['crossfade'] = $playlist_item['properties']['crossfade_last'];
                             $media_offset -= $playlist_item['properties']['crossfade_last'];
@@ -842,10 +833,8 @@ class PlaylistsModel extends OBFModel
                 }
 
                 $media_items_tmp = array_merge($media_items_tmp, $dynamic_items);
-            }
-
-            // random station id
-            elseif ($playlist_item['item_type'] == 'station_id') {
+            } elseif ($playlist_item['item_type'] == 'station_id') {
+                // random station id
                 if ($player['parent_player_id'] && ($generate_for_parent || $player['use_parent_ids'])) {
                     $station_id_player = $player['parent_player_id'];
                     $station_id_image_duration = $parent_player['station_id_image_duration'];
@@ -888,10 +877,8 @@ class PlaylistsModel extends OBFModel
                 }
             } elseif ($playlist_item['item_type'] == 'breakpoint') {
                 $media_items_tmp[] = ['type' => 'breakpoint'];
-            }
-
-            // get the callback model/method in order for this custom item, add media items specified by the callback method.
-            elseif ($playlist_item['item_type'] == 'custom') {
+            } elseif ($playlist_item['item_type'] == 'custom') {
+                // get the callback model/method in order for this custom item, add media items specified by the callback method.
                 $custom_item_query = $playlist_item['properties'];
                 $custom_item_name = $custom_item_query['name'] ?? '';
                 $this->db->where('name', $custom_item_name);

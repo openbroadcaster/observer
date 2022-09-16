@@ -244,10 +244,8 @@ class UIModel extends OBFModel
             // scan if directory
             if (is_dir($dirfile) && $file[0] != '.') {
                 $this->find_files($dirfile, $ext, $array);
-            }
-
-            // or add file if file
-            elseif (is_file($dirfile)) {
+            } elseif (is_file($dirfile)) {
+                // or add file if file
                 $array[] = $dirfile;
             }
         }

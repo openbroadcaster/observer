@@ -107,10 +107,8 @@ class OBFUser
         $info = password_get_info($hash);
         if ($info['algo'] == 0) {
             return sha1(OB_HASH_SALT . $pass) == $hash;
-        }
-
-        // good hashing.
-        else {
+        } else {
+            // good hashing.
             return password_verify($pass . OB_HASH_SALT, $hash);
         }
     }
@@ -134,11 +132,9 @@ class OBFUser
 
         if ($result && $result['password'] == '') {
             return array(false,'Due to security updates, a password reset is required. Use "Forgot Password" to reset your password.');
-        }
-
-        // valid user and password verified?
-        elseif ($result && $this->password_verify($pass, $result['password'])) {
-      // if rehash required, do that and store in db.
+        } elseif ($result && $this->password_verify($pass, $result['password'])) {
+            // valid user and password verified?
+            // if rehash required, do that and store in db.
             if (password_needs_rehash($result['password'], PASSWORD_DEFAULT)) {
                 $new_hash = $this->password_hash($pass);
                 $this->db->where('id', $result['id']);
@@ -370,8 +366,8 @@ class OBFUser
         if (empty($this->userdata)) {
             if ($param == 'id') {
                 return 0;
-            } // anonymous user ID.
-            else {
+            } else {
+                // anonymous user ID.
                 return false;
             }
         }

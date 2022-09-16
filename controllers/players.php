@@ -223,10 +223,8 @@ class Players extends OBFController
             }
 
             return array(true,'player data',$player);
-        }
-
-        //T This player no longer exists.
-        else {
+        } else {
+            //T This player no longer exists.
             return array(false,'This player no longer exists.');
         }
     }

@@ -198,18 +198,15 @@ class PlayersModel extends OBFModel
             $error = 'The stream URL is not valid.  Only HTTP(s) is supported.';
         } elseif (empty($data['password']) && !$id) {
             $error = 'A player password is required.';
-        } // only required for new players. if password not specified for existing players, no password change will occur.
-
-        elseif (!empty($data['password']) && strlen($data['password']) < 6) {
+        } elseif (!empty($data['password']) && strlen($data['password']) < 6) {
+            // only required for new players. if password not specified for existing players, no password change will occur.
             $error = 'The password must be at least 6 characters long.';
         } elseif ($id && !$this->db->id_exists('players', $id)) {
             $error = 'The player you are attempted to edit does not exist.';
         } elseif (!preg_match('/^[0-9]+$/', $data['station_id_image_duration']) || $data['station_id_image_duration'] == 0) {
             $error = 'Station ID image duration is not valid.  Enter a number to specify duration in seconds.';
-        }
-
-        // verify timezone
-        elseif (empty($data['timezone'])) {
+        } elseif (empty($data['timezone'])) {
+            // verify timezone
             $error = 'You must set a timezone for each player.';
         }
 
@@ -316,10 +313,8 @@ class PlayersModel extends OBFModel
             ) {
                 $this->db->where('player_id', $id);
                 $this->db->delete('shows_cache');
-            }
-
-            // if we are changing the default playlist, clear the default playlist schedule cache for this player
-            elseif ($original_player['default_playlist_id'] != $data['default_playlist_id']) {
+            } elseif ($original_player['default_playlist_id'] != $data['default_playlist_id']) {
+                // if we are changing the default playlist, clear the default playlist schedule cache for this player
                 $this->db->where('player_id', $id);
                 $this->db->where('mode', 'default_playlist');
                 $this->db->delete('shows_cache');

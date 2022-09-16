@@ -122,10 +122,8 @@ class OBFAPI
                 if (!empty($cb_return->r)) {
                     $output = $cb_return->v;
                 }
-            }
-
-            // init callbacks requested an early return.
-            else {
+            } else {
+                // init callbacks requested an early return.
                 $output = $cb_return->v;
             }
 

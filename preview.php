@@ -53,10 +53,8 @@ $auth_key = null;
 if (!empty($_POST['i']) && !empty($_POST['k'])) {
     $auth_id = $_POST['i'];
     $auth_key = $_POST['k'];
-}
-
-// if not in post, try fetching from cookie.
-elseif (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
+} elseif (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
+    // if not in post, try fetching from cookie.
     $auth_id = $_COOKIE['ob_auth_id'];
     $auth_key = $_COOKIE['ob_auth_key'];
 }
@@ -314,10 +312,8 @@ $version = false;
 if (isset($_GET['v'])) {
     $download_mode = true;
     $version = (int) $_GET['v'];
-}
-
-// or just downloading active media file
-elseif (isset($_GET['dl']) && $_GET['dl'] == 1) {
+} elseif (isset($_GET['dl']) && $_GET['dl'] == 1) {
+    // or just downloading active media file
     $download_mode = true;
 }
 
