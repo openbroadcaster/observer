@@ -16,6 +16,8 @@
   <header><?=$title?></header>
   <div class="doc-flex">
     <nav>
+      <span>Routes</span>
+      <a href="routes.html">Routes</a>
     <?php foreach ($nav_tree as $nav_package => $nav_items) { ?>
       <span><?=($nav_package == 'pages' ? 'Pages' : '@' . $nav_package)?></span>
       <?php
