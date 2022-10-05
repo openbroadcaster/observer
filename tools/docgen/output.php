@@ -151,7 +151,12 @@ function html_routes(array $routes, array $nav_tree): string
     $html .= ob_get_contents();
     ob_clean();
 
-    $html .= json_encode($routes, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+    ob_start();
+
+    include('templates/routes.php');
+    $html .= ob_get_contents();
+
+    ob_clean();
 
     ob_start();
     include('templates/page_footer.php');
