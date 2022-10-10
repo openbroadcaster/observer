@@ -30,3 +30,26 @@ function routes_contain_duplicates(array $routes): bool
 
     return $dupes;
 }
+
+// Get all routes sorted by endpoints instead of by method.
+function routes_by_endpoint(array $routes): array
+{
+    $endpoints = [];
+    foreach ($routes as $method => $method_routes) {
+        foreach ($method_routes as $route) {
+            $parts = explode('/', trim($route[0], '/'));
+            build_endpoint($endpoints, $parts, $method, [$route[1], $route[2]]);
+        }
+    }
+
+    return $endpoints;
+}
+
+function build_endpoint(&$endpoints, $parts_remaining, $method, $values)
+{
+    if ($parts_remaining == []) {
+        $endpoints['/'][$method] = $values;
+    } else {
+        build_endpoint($endpoints[$parts_remaining[0]], array_slice($parts_remaining, 1), $method, $values);
+    }
+}

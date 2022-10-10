@@ -7,7 +7,6 @@ specific file. Uses the class and method functions to include their templates in
 the output as well. Use a separate function for creating the index page, which
 still needs to know about the nav menu but doesn't show any class or method
 data. */
-
 function html_file(DocGenFile $doc_file, array $nav_tree): string
 {
     $html = html_header($nav_tree);
@@ -52,7 +51,6 @@ function html_index(array $nav_tree): string
 
 /* Take an HTML documentation page and wrap it in the appropriate headers and
 everything. */
-
 function html_page(string $page, array $nav_tree): string
 {
     $html = html_header($nav_tree);
@@ -79,7 +77,6 @@ function html_page(string $page, array $nav_tree): string
 
 /* Generate HTML section for the header. This needs a separate function to
 account for CSS and JS includes. */
-
 function html_header(array $nav_tree): string
 {
     ob_start();
@@ -96,7 +93,6 @@ function html_header(array $nav_tree): string
 }
 
 /* Generate HTML section for the class documentation. */
-
 function html_class_header(DocGenClass $doc_class): string
 {
     ob_start();
@@ -125,7 +121,6 @@ function html_class_footer(DocGenClass $doc_class): string
 }
 
 /* Generate HTML section for the method documentation. */
-
 function html_method(DocGenMethod $doc_method): string
 {
     ob_start();
@@ -141,6 +136,36 @@ function html_method(DocGenMethod $doc_method): string
     include('templates/method.php');
 
     $html = ob_get_contents();
+    ob_clean();
+
+    return $html;
+}
+
+/* HTML section for routes graph. */
+function html_routes(array $routes, array $nav_tree): string
+{
+    $html = html_header($nav_tree);
+
+    ob_start();
+    include('templates/page_header.php');
+    $html .= ob_get_contents();
+    ob_clean();
+
+    ob_start();
+
+    include('templates/routes.php');
+    $html .= ob_get_contents();
+
+    ob_clean();
+
+    ob_start();
+    include('templates/page_footer.php');
+    $html .= ob_get_contents();
+    ob_clean();
+
+    ob_start();
+    include('templates/footer.php');
+    $html .= ob_get_contents();
     ob_clean();
 
     return $html;

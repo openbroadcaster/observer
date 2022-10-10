@@ -174,3 +174,53 @@ code {
   content: "-";
   color: #460cf2;
 }
+
+/* Routes */
+.doc-route {
+  margin-left: 1rem;
+}
+
+.doc-class > .doc-route {
+  margin-left: 0;
+}
+
+.doc-route summary span {
+    /*width: 75%;
+    display: inline-block;
+    text-align: center;*/
+}
+
+.doc-route-details {
+  padding: 0.5rem;
+  border: black 1px solid;
+  margin: 0.25rem;
+}
+
+.doc-route-body {
+  display: flex;
+  margin-left: 1rem;
+}
+
+.doc-route-method-GET {
+  color: #11853d;
+}
+
+.doc-route-method {
+  font-weight: bold;
+}
+
+.doc-route-method-POST {
+  color: #460cf2;
+}
+
+.doc-route-method-DELETE {
+  color: #d63131;
+}
+
+.doc-route-method-PATCH {
+  color: #6ae6df;
+}
+
+.doc-route-method-PUT {
+  color: #6ae6df;
+}
