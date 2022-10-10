@@ -1034,7 +1034,7 @@ class MediaModel extends OBFModel
         $emergencies = $this->db->get('emergencies');
 
         foreach ($emergencies as $emergency) {
-            if (!$this->user->check_permission('manage_emergency_broadcasts')) {
+            if (!$this->user->check_permission('manage_alerts')) {
                 $info['can_delete'] = false;
             }
 

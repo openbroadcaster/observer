@@ -900,7 +900,7 @@ class Remote
 
     private function emergency()
     {
-        if ($this->player['parent_player_id'] && $this->player['use_parent_emergency']) {
+        if ($this->player['parent_player_id'] && $this->player['use_parent_alert']) {
             $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['parent_player_id'], time() + $this->buffer);
         } else {
             $broadcasts = $this->get_upcoming_emergency_broadcasts($this->player['id'], time() + $this->buffer);

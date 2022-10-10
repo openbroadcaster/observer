@@ -99,7 +99,7 @@ class Players extends OBFController
      * @param use_parent_schedule
      * @param use_parent_ids If TRUE, 'station_ids' is emptied and 'station_id_image_duration' will be ignored.
      * @param use_parent_playlist If TRUE, 'default_playlist_id' will be set to FALSE.
-     * @param use_parent_emergency
+     * @param use_parent_alert
      *
      * @return player_id
      *
@@ -133,7 +133,7 @@ class Players extends OBFController
             $data['use_parent_schedule'] = (int) $this->data('use_parent_schedule');
             $data['use_parent_ids'] = (int) $this->data('use_parent_ids');
             $data['use_parent_playlist'] = (int) $this->data('use_parent_playlist');
-            $data['use_parent_emergency'] = (int) $this->data('use_parent_emergency');
+            $data['use_parent_alert'] = (int) $this->data('use_parent_alert');
 
             if ($data['use_parent_ids']) {
                 $data['station_ids'] = array();
@@ -149,7 +149,7 @@ class Players extends OBFController
             $data['use_parent_schedule'] = 0;
             $data['use_parent_ids'] = 0;
             $data['use_parent_playlist'] = 0;
-            $data['use_parent_emergency'] = 0;
+            $data['use_parent_alert'] = 0;
         }
 
         $validation = $this->models->players('validate', $data, $id);

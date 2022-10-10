@@ -20,17 +20,17 @@
 */
 
 /**
- * Manages emergency broadcasts, also commonly referred to as priorities or
- * priority broadcasts.
+ * Manages alerts, also commonly referred to as emergency broadcasts, priorities,
+ * or priority broadcasts.
  *
  * @package Model
  */
-class EmergenciesModel extends OBFModel
+class AlertsModel extends OBFModel
 {
     /**
      * Set up the initial parts of a database query, selecting media and
-     * emergency items from the tables, and joining media items on the item ID
-     * in emergencies.
+     * alert items from the tables, and joining media items on the item ID
+     * in alerts.
      */
     public function get_init($args = [])
     {
@@ -38,24 +38,24 @@ class EmergenciesModel extends OBFModel
         $this->db->what('media.artist', 'artist');
         $this->db->what('media.type', 'item_type');
         $this->db->what('media.duration', 'item_duration');
-        $this->db->what('emergencies.id', 'id');
-        $this->db->what('emergencies.item_id', 'item_id');
-        $this->db->what('emergencies.duration', 'duration');
-        $this->db->what('emergencies.frequency', 'frequency');
-        $this->db->what('emergencies.name', 'name');
-        $this->db->what('emergencies.start', 'start');
-        $this->db->what('emergencies.stop', 'stop');
-        $this->db->what('emergencies.player_id', 'player_id');
+        $this->db->what('alerts.id', 'id');
+        $this->db->what('alerts.item_id', 'item_id');
+        $this->db->what('alerts.duration', 'duration');
+        $this->db->what('alerts.frequency', 'frequency');
+        $this->db->what('alerts.name', 'name');
+        $this->db->what('alerts.start', 'start');
+        $this->db->what('alerts.stop', 'stop');
+        $this->db->what('alerts.player_id', 'player_id');
 
-        $this->db->leftjoin('media', 'emergencies.item_id', 'media.id');
+        $this->db->leftjoin('media', 'alerts.item_id', 'media.id');
     }
 
     /**
-     * Get an emergency and its associated media item.
+     * Get an alert and its associated media item.
      *
      * @param id
      *
-     * @return emergency
+     * @return alert
      */
     public function get_one($args = [])
     {
@@ -63,32 +63,32 @@ class EmergenciesModel extends OBFModel
 
         $this('get_init');
 
-        $this->db->where('emergencies.id', $args['id']);
+        $this->db->where('alerts.id', $args['id']);
 
-        $emergency = $this->db->get_one('emergencies');
+        $alert = $this->db->get_one('alerts');
 
-        if (!$emergency) {
+        if (!$alert) {
             return false;
         }
 
-        $emergency['item_name'] = $emergency['artist'] . ' - ' . $emergency['title'];
-        unset($emergency['artist']);
-        unset($emergency['title']);
+        $alert['item_name'] = $alert['artist'] . ' - ' . $alert['title'];
+        unset($alert['artist']);
+        unset($alert['title']);
 
-        if ($emergency['item_type'] != 'image') {
-            $emergency['duration'] = $emergency['item_duration'];
+        if ($alert['item_type'] != 'image') {
+            $alert['duration'] = $alert['item_duration'];
         }
-        unset($emergency['item_duration']);
+        unset($alert['item_duration']);
 
-        return $emergency;
+        return $alert;
     }
 
     /**
-     * Get the emergencies associated with a player.
+     * Get the alerts associated with a player.
      *
      * @param player_id
      *
-     * @return emergencies
+     * @return alerts
      */
     public function get_for_player($args = [])
     {
@@ -96,29 +96,29 @@ class EmergenciesModel extends OBFModel
 
         $this('get_init');
 
-        $this->db->where('emergencies.player_id', $args['player_id']);
+        $this->db->where('alerts.player_id', $args['player_id']);
 
-        $emergencies = $this->db->get('emergencies');
+        $alerts = $this->db->get('alerts');
 
-        foreach ($emergencies as $index => $emergency) {
-            $emergencies[$index]['item_name'] = $emergency['artist'] . ' - ' . $emergency['title'];
-            unset($emergencies[$index]['artist']);
-            unset($emergencies[$index]['title']);
+        foreach ($alerts as $index => $alert) {
+            $alerts[$index]['item_name'] = $alert['artist'] . ' - ' . $alert['title'];
+            unset($alerts[$index]['artist']);
+            unset($alerts[$index]['title']);
 
-            if ($emergencies[$index]['item_type'] != 'image') {
-                $emergencies[$index]['duration'] = $emergencies[$index]['item_duration'];
+            if ($alerts[$index]['item_type'] != 'image') {
+                $alerts[$index]['duration'] = $alerts[$index]['item_duration'];
             }
-            unset($emergencies[$index]['item_duration']);
+            unset($alerts[$index]['item_duration']);
         }
 
-        return $emergencies;
+        return $alerts;
     }
 
     /**
-     * Validate the data for updating or inserting an emergency.
+     * Validate the data for updating or inserting an alert.
      *
      * @param data
-     * @param id FALSE by default, set when updating existing emergency.
+     * @param id FALSE by default, set when updating existing alert.
      *
      * @return is_valid
      */
@@ -140,7 +140,7 @@ class EmergenciesModel extends OBFModel
 
         if (!empty($args['id'])) {
             //T The item you are attempting to edit does not appear to exist.
-            if (!$this->db->id_exists('emergencies', $args['id'])) {
+            if (!$this->db->id_exists('alerts', $args['id'])) {
                 return array(false,'The item you are attempting to edit does not appear to exist.');
             }
         }
@@ -198,10 +198,10 @@ class EmergenciesModel extends OBFModel
     }
 
     /**
-     * Update or insert an emergency.
+     * Update or insert an alert.
      *
      * @param data
-     * @param id FALSE by default, set when updating existing emergency.
+     * @param id FALSE by default, set when updating existing alert.
      */
     public function save($args = [])
     {
@@ -215,15 +215,15 @@ class EmergenciesModel extends OBFModel
         } // duration not needed unless this is an image.
 
         if (empty($args['id'])) {
-            $this->db->insert('emergencies', $args['data']);
+            $this->db->insert('alerts', $args['data']);
         } else {
             $this->db->where('id', $args['id']);
-            $this->db->update('emergencies', $args['data']);
+            $this->db->update('alerts', $args['data']);
         }
     }
 
     /**
-     * Delete an emergency.
+     * Delete an alert.
      *
      * @param id
      */
@@ -232,6 +232,6 @@ class EmergenciesModel extends OBFModel
         OBFHelpers::require_args($args, ['id']);
 
         $this->db->where('id', $args['id']);
-        $this->db->delete('emergencies');
+        $this->db->delete('alerts');
     }
 }

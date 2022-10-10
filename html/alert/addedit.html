@@ -1,29 +1,29 @@
-<obwidget id="emergency_addedit_message" type="message"></obwidget>
+<obwidget id="alert_addedit_message" type="message"></obwidget>
 
 <div>
 
 <fieldset>
-<legend data-t>Priority Broadcast</legend>
+<legend data-t>Alert</legend>
 
 <div class="fieldrow">
   <label class="required" data-t>Media Item</label>
-  <span id="emergency_item_info"></span>
+  <span id="alert_item_info"></span>
 </div>
 
 <div class="fieldrow">
   <label class="required" data-t>Name</label>
-  <input type="text" id="emergency_name">
+  <input type="text" id="alert_name">
 </div>
 
 <div class="fieldrow">
   <label class="required" data-t>Play Every</label>
-  <input type="text" id="emergency_frequency"> <span data-t>seconds</span>
+  <input type="text" id="alert_frequency"> <span data-t>seconds</span>
 </div>
 
-<div id="emergency_duration" class="hidden">
+<div id="alert_duration" class="hidden">
 <div class="fieldrow">
   <label class="required" data-t>Image Duration</label>
-  <select name="emergency_duration_minutes" id="emergency_duration_minutes">
+  <select name="alert_duration_minutes" id="alert_duration_minutes">
     <option value="0">00</option>
     <option value="1">01</option>
     <option value="2">02</option>
@@ -88,7 +88,7 @@
 </div>
 <div class="fieldrow">
   <label class="empty"></label>
-  <select name="emergency_duration_seconds" id="emergency_duration_seconds">
+  <select name="alert_duration_seconds" id="alert_duration_seconds">
     <option value="0">00</option>
     <option value="1">01</option>
     <option value="2">02</option>
@@ -155,26 +155,26 @@
 
 <div class="fieldrow">
   <label class="required" data-t>Start</label>
-  <ob-datetime-input id="emergency_start_datetime"></ob-datetime-input>
+  <ob-datetime-input id="alert_start_datetime"></ob-datetime-input>
 </div>
 
 <div class="fieldrow">
   <label class="required" data-t>Stop</label>
-  <ob-datetime-input id="emergency_stop_datetime"></ob-datetime-input>
+  <ob-datetime-input id="alert_stop_datetime"></ob-datetime-input>
 </div>
 
 </fieldset>
 
 <fieldset>
 <div class="fieldrow">
-  <button class="add" id="item_properties_save" onclick="OB.Emergency.saveEmergency();" data-t>Save</button>
-  <button class="edit_only delete" id="item_properties_delete" onclick="OB.Emergency.deleteEmergency();" data-t>Delete</button>
+  <button class="add" id="item_properties_save" onclick="OB.Alert.saveAlert();" data-t>Save</button>
+  <button class="edit_only delete" id="item_properties_delete" onclick="OB.Alert.deleteAlert();" data-t>Delete</button>
   <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
 </div>
 </fieldset>
 
 
-<input type="hidden" id="emergency_item_id" value="">
-<input type="hidden" id="emergency_id" value="">
+<input type="hidden" id="alert_item_id" value="">
+<input type="hidden" id="alert_id" value="">
 
 </div>

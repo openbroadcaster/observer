@@ -156,7 +156,7 @@ OB.Player.editPlayer = function (player_id) {
     if (response.data.use_parent_dynamic == "1")   $('#player_settings_parent_dynamic').prop('checked', true);
     if (response.data.use_parent_ids == "1")       $('#player_settings_parent_stations').prop('checked', true);
     if (response.data.use_parent_playlist == "1")  $('#player_settings_parent_playlist').prop('checked', true);
-    if (response.data.use_parent_emergency == "1") $('#player_settings_parent_priority').prop('checked', true);
+    if (response.data.use_parent_alert == "1") $('#player_settings_parent_priority').prop('checked', true);
 
     $('#player_settings_ip').val(response.data.ip_address);
 
@@ -256,7 +256,7 @@ OB.Player.savePlayer = function () {
   post.use_parent_schedule = $('#player_settings_parent_schedule').is(':checked');
   post.use_parent_ids = $('#player_settings_parent_stations').is(':checked');
   post.use_parent_playlist = $('#player_settings_parent_playlist').is(':checked');
-  post.use_parent_emergency = $('#player_settings_parent_priority').is(':checked');
+  post.use_parent_alert = $('#player_settings_parent_priority').is(':checked');
 
   OB.API.post('players', 'save', post, function (response) {
     if (!response.status) {

@@ -393,7 +393,7 @@ class PlayersModel extends OBFModel
 
     // see if there are emergency broadcasts associated with this player.
         $this->db->where('player_id', $id);
-        if ($this->db->get_one('emergencies') && !$this->user->check_permission('manage_emergency_broadcasts')) {
+        if ($this->db->get_one('emergencies') && !$this->user->check_permission('manage_alerts')) {
             return array(false,'Unable to remove this player.  It has emergency broadcast content that you do not have permission to delete.');
         }
 

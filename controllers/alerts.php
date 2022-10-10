@@ -35,7 +35,7 @@ class Alerts extends OBFController
     }
 
     /**
-     * Return data about a specific alert ID. 'manage_emergency_broadcasts' is
+     * Return data about a specific alert ID. 'manage_alerts' is
      * a required permission.
      *
      * @param id
@@ -49,20 +49,19 @@ class Alerts extends OBFController
         $id = trim($this->data('id'));
 
         if (!empty($id)) {
-            $alert = $this->models->emergencies('get_one', ['id' => $id]);
-            //T Priority
-            //T Priority broadcast not found.
+            $alert = $this->models->alerts('get_one', ['id' => $id]);
+            //T Alert not found.
             if (!$alert) {
-                return array(false, 'Priority broadcast not found.');
+                return array(false, 'Alert not found.');
             }
-            $this->user->require_permission('manage_emergency_broadcasts:' . $alert['player_id']);
-            //T Priority Broadcast
-            return array(true, 'Priority Broadcast', $alert);
+            $this->user->require_permission('manage_alerts:' . $alert['player_id']);
+            //T Alert
+            return array(true, 'Alert', $alert);
         }
     }
 
     /**
-     * Get all alerts for a specific player ID. 'manage_emergency_broadcasts'
+     * Get all alerts for a specific player ID. 'manage_alerts'
      * is a required permission.
      *
      * @param player_id
@@ -76,9 +75,9 @@ class Alerts extends OBFController
         $player_id = trim($this->data('player_id'));
 
         if (!empty($player_id)) {
-            $this->user->require_permission('manage_emergency_broadcasts:' . $player_id);
-            //T Priority Broadcasts
-            return array(true, 'Priority Broadcasts', $this->models->emergencies('get_for_player', ['player_id' => $player_id]));
+            $this->user->require_permission('manage_alerts:' . $player_id);
+            //T Alerts
+            return array(true, 'Alerts', $this->models->alerts('get_for_player', ['player_id' => $player_id]));
         }
     }
 
@@ -101,7 +100,7 @@ class Alerts extends OBFController
 
         if ($player_data) {
             $this->user->set_setting('last_emergencies_player', $player_id);
-            return array(true,'Set last emergencies player.');
+            return array(true,'Set last alerts player.');
         } else {
             //T This player no longer exists.
             return array(false,'This player no longer exists.');
@@ -109,7 +108,7 @@ class Alerts extends OBFController
     }
 
     /**
-     * Get the last selected player on the priority broadcasts page for the
+     * Get the last selected player on the alerts page for the
      * current user.
      *
      * @return player
@@ -120,15 +119,15 @@ class Alerts extends OBFController
     {
         $player_id = $this->user->get_setting('last_emergencies_player');
         if ($player_id) {
-            return array(true,'Last emergencies player.',$player_id);
+            return array(true,'Last alerts player.',$player_id);
         } else {
-            return array(false,'Last emergencies player not found.');
+            return array(false,'Last alerts player not found.');
         }
     }
 
     /**
      * Save a new alert. The 'user_id' is set to the currently logged
-     * in user for the new broadcast. Requires the 'manage_emergency_broadcasts'
+     * in user for the new broadcast. Requires the 'manage_alerts'
      * permission.
      *
      * @param id ID of alert. Update a pre-existing alert if set.
@@ -158,22 +157,22 @@ class Alerts extends OBFController
 
         $data['user_id'] = $this->user->param('id');
 
-        $validation = $this->models->emergencies('validate', ['data' => $data, 'id' => $id]);
-        //T Priority
+        $validation = $this->models->alerts('validate', ['data' => $data, 'id' => $id]);
         if ($validation[0] == false) {
             return array(false,$validation[1]);
         }
 
         // check permission on this player.
-        $this->user->require_permission('manage_emergency_broadcasts:' . $data['player_id']);
+        $this->user->require_permission('manage_alerts:' . $data['player_id']);
 
-        $this->models->emergencies('save', ['data' => $data, 'id' => $id]);
+        $this->models->alerts('save', ['data' => $data, 'id' => $id]);
 
+        //T Alert saved.
         return array(true,'Alert saved.');
     }
 
     /**
-     * Delete an alert. Requries the 'manage_emergency_broadcasts'
+     * Delete an alert. Requries the 'manage_alerts'
      * permission.
      *
      * @param id
@@ -184,15 +183,15 @@ class Alerts extends OBFController
     {
         $id = trim($this->data('id'));
 
-        $alert = $this->models->emergencies('get_one', ['id' => $id]);
+        $alert = $this->models->alerts('get_one', ['id' => $id]);
         if (!$alert) {
             return array(false,'Alert not found.');
         }
 
         // check permission on appropriate player.
-        $this->user->require_permission('manage_emergency_broadcasts:' . $alert['player_id']);
+        $this->user->require_permission('manage_alerts:' . $alert['player_id']);
 
-        $this->models->emergencies('delete', ['id' => $id]);
+        $this->models->alerts('delete', ['id' => $id]);
 
         return array(true,'Alert deleted.');
     }
