@@ -13,7 +13,7 @@ title: Server
 
 The main screen comprises three areas: a center 'work' area, media sidebar, and a menu panel.
 
-![Server Main Screen](/server/img/mainscreen.jpg ){: .screenshot} 
+![Server Main Screen](/observer/img/mainscreen.jpg ){: .screenshot} 
 
 <a name="cwa"></a>
 The __centre work area__ is the main window workspace.  This is where users can create play lists, add and edit media, schedule shows, update system settings, install modules and manage users.  In the example above, a *Schedule* is loaded into the main window workspace.
@@ -24,7 +24,7 @@ Along the bottom of the screen is the __menu panel__. Depending on user permissi
 
 ### Profile and Account ###
 
-![User Account Settings](/server/img/account-settings.png ){: .screenshot}
+![User Account Settings](/observer/img/account-settings.png ){: .screenshot}
 
 Login to the [OpenBroadcaster Server] application as the `admin` user (default password is 'admin')
 
@@ -91,11 +91,11 @@ Compatible media codecs and containers are listed below:
 
 The System Administrator may choose to restrict uploads to a subset of the compatible formats. 
 
-![Supported Media](/server/img/media-supported.png ){: .screenshot} 
+![Supported Media](/observer/img/media-supported.png ){: .screenshot} 
 
 Global default media fields and behaviour.
 
-![Media Fields](/server/img/media-fields.png ){: .screenshot} 
+![Media Fields](/observer/img/media-fields.png ){: .screenshot} 
 
 Complete list of [Experimental](https://wiki.openbroadcaster.com/experimental) codecs and containers. 
 
@@ -103,7 +103,7 @@ Complete list of [Experimental](https://wiki.openbroadcaster.com/experimental) c
 
 ### Metadata 
 
-![Upload Details Screen](/server/img/uploadDetails.jpg ){: .lowres} 
+![Upload Details Screen](/observer/img/uploadDetails.jpg ){: .lowres} 
 
 If available, ID3 data are automatically entered into the upload form, otherwise, enter the __Artist__ , __Title__ , along with other known metadata for each file. For metadata common to all items, the `Copy to All` button may be used to facilitate data entry. Use the __Category__ item to facilitate use of Station ID or Priority Broadcasts messages in [Playlists](#playlist).
 
@@ -113,7 +113,7 @@ Once metadata have been entered, `Save` the items in the queue to add them the l
 
 ### Uploading
 
-![Media Upload Screen](/server/img/uploadMedia.jpg ){: .screenshot} 
+![Media Upload Screen](/observer/img/uploadMedia.jpg ){: .screenshot} 
 
 New Media may be added to the library using the media uploader, accessed from the __media__ menu.
 
@@ -143,7 +143,7 @@ Batch Processing
 
 #### Categories and Genres
 
-![Add Genre](/server/img/Add_Genre.png ){: .screenshot} 
+![Add Genre](/observer/img/Add_Genre.png ){: .screenshot} 
 
 Create and edit unlimited categories and associated genres of media. 
 e.g.  Audio-Inuktitut, Images-Unicorns, Video-28mmPathe
@@ -154,7 +154,7 @@ Each `Category` and `Genre` can be specificied as default
 
 ### View Details 
 
-![Media Details](/server/img/media-details.png ){: .screenshot}
+![Media Details](/observer/img/media-details.png ){: .screenshot}
 
 From the `Media Sidebar`, hightlight, right click and select `Details` to find out where the PL is used, who created it and when it was last modified.
 
@@ -173,7 +173,7 @@ Use drop down menus to select applicable `Language` and `Country`
 
 ### Media Field Settings
 
-![Media Field Settings](/server/img/media-field-settings.png){: .screenshot} 
+![Media Field Settings](/observer/img/media-field-settings.png){: .screenshot} 
 
 Default Settings and mandatory fields can be applied globally
 
@@ -187,13 +187,13 @@ __Simple search mode__, users enter terms (i.e. a word or phrase) in the query w
 
 ### Advanced Searches
 
-![Advanced Search Screen](/server/img/advancedSearch.jpg ){: .square_redux} 
+![Advanced Search Screen](/observer/img/advancedSearch.jpg ){: .square_redux} 
 
 __Advanced search mode__, users combine search criteria to query and filter large libraries. Query fields and search terms may be specified and added to a list of search criteria.
 
 <br/>
 
-![Advanced Search Results](/server/img/searchResults.jpg ){: .screenshot} 
+![Advanced Search Results](/observer/img/searchResults.jpg ){: .screenshot} 
 
 Once a search is conducted, items matching all listed criteria will be returned and the number of results is displayed at the bottom of the search tab. Further sorting or returns can be done by clicking on the headers of columns on the list to display in “Ascending\Descending” order. To clear the search results, clear the search window and press enter. Use the previous and next buttons to display the next page of results.   The number of results to display per page may be set in the user profile settings. Select and reload previous search results using `my searches`.
 
@@ -201,7 +201,7 @@ Once a search is conducted, items matching all listed criteria will be returned 
 
 ### Saved Searches
 
-![Saved Searches](/server/img/Saved_Searches.png ){: .screenshot} 
+![Saved Searches](/observer/img/Saved_Searches.png ){: .screenshot} 
 
 Search history results are recalled and used edited again for personalized results.
 
@@ -225,7 +225,7 @@ The `MY` button when selected filters to only show Play Lists created and manage
 
 #### __Standard_Playlist__ 
 
-![Standard Playlist](/server/img/playlist_items.jpg ){: .screenshot}
+![Standard Playlist](/observer/img/playlist_items.jpg ){: .screenshot}
 
 A basic Playlist that you can add `media`,`dynamic segments`and`station IDs` Playlist(s) may be searched, saved and edited later.
 
@@ -235,7 +235,7 @@ A basic Playlist that you can add `media`,`dynamic segments`and`station IDs` Pla
 
 <br/>
 
-![Advanced Playlist](/server/img/adv_playlist.jpg ){: .screenshot} 
+![Advanced Playlist](/observerobserver/img/adv_playlist.jpg ){: .screenshot} 
 
 Mixes Image slide show with accompanying Audio.  Cuts into Video section. Audio and image data may be played simultaneously. Image media will be added to the list on the right of the Playlist items, audio tracks on the left. `zoom in/zoom out` on the schedule of Playlist items to increase the resolution of the time scale.  To create an Advanced Playlist containing `Dynamic Selections`, first create a __Standard__ Playlist containing Dynamic Selections, then add that Playlist to the Advanced Playlist.
 
@@ -243,7 +243,7 @@ Mixes Image slide show with accompanying Audio.  Cuts into Video section. Audio 
 
 #### __LIVE Assist Playlist__
 
-![LIVE Assist Playlist](/server/img/LA_Playlist.png ){: .screenshot} 
+![LIVE Assist Playlist](/observer/img/LA_Playlist.png ){: .screenshot} 
 
 Used with LA Touch screen interface and hot button Player. Special Playlist that contains break points and button player.  Accepts incoming live RTP Streams
 
@@ -269,7 +269,7 @@ To Edit, Select Playlist and click `Edit` or right click, `Edit`
 
 ### Dynamic Segment
 
-![Dynamic Playlist Segments](/server/img/Dynamic_Segments.png ){: .screenshot}
+![Dynamic Playlist Segments](/observer/img/Dynamic_Segments.png ){: .screenshot}
 
 Plays a specified number of media as a segment.   Once a dynamic section is setup, additional media items added later that match the search filters will automatically be included as items to play.
 
@@ -294,7 +294,7 @@ This Playlist is assigned to the `Player` to fill in when there is nothing sched
 
 ### View Details 
 
-![Playlist Details](/server/img/PlayList_Details.png ){: .screenshot}
+![Playlist Details](/observerobserver/img/PlayList_Details.png ){: .screenshot}
 
 From the Playlist sidebar, right click and select `Details` to find out where the PL is used, who created it and when it was last modified.
 
@@ -302,7 +302,7 @@ From the Playlist sidebar, right click and select `Details` to find out where th
 
 ## Schedules
 
-![Schedule Grid](/server/img/schedule_grid.jpg ){: .screenshot} 
+![Schedule Grid](/observer/img/schedule_grid.jpg ){: .screenshot} 
 
 Server schedule grid portrays a week of programming, with shaded, titled blocks indicating the content spanning those dedicated timeslots.  Hover the cursor over a program block to view a summary of the scheduled show. Double-clicking a block accesses Show editor, if the current user's permissions allow this.
 
@@ -328,7 +328,7 @@ __NB CAP Emergency Alerts automatically override all schedules, currently playin
 
 The date/time of  timeslots available for scheduling by any user are based on group permissions associated with that users profile. Permissions are managed by the `Administrator` group, although this may be delegated to another group. Only one Player may be scheduled at a time, although a Player may act as `Parent` to one or more players for scheduling. See [Advanced Scheduling](#adv_admin).
 
-![Schedule Time slot](/server/img/schedule_timeslot.jpg ){: .screenshot} 
+![Schedule Time slot](/observer/img/schedule_timeslot.jpg ){: .screenshot} 
 
 Open the schedule grid using the `schedules->schedule shows` menu option:
 
@@ -354,7 +354,7 @@ Scheduling Mode is available with options for daily, weekly, monthly as well as 
 
 ### User Time Slots
 
-![User Time Slots](/server/img/User_Time_Slots.jpg ){: .screenshot} 
+![User Time Slots](/observer/img/User_Time_Slots.jpg ){: .screenshot} 
 
 Create Time Slots and Assign Users
 
@@ -374,7 +374,7 @@ In the event that a user is assigned a time-slot that is not utilized or does no
 
 ### Priority Broadcasts
 
-![Priority Broadcasts](/server/img/Priority_Broadcasts.png ){: .screenshot} 
+![Priority Broadcasts](/observer/img/Priority_Broadcasts.png ){: .screenshot} 
 
 The Priority broadcast will start with minimal delay as specified in OBPlayer Dashboard how often to sync for priority messages.  Selecting the default time of 00:00:00 for 3PM will start the broadcast immediately. In order to access this feature the user must have the required permissions and time must be authorized for the media to arrive at the Player in order to play.
 
@@ -401,7 +401,7 @@ When enabled in `Player Manager` a `Line-In` button appears in top right of sche
 
 ### New User Sign up
 
-![User Registration Form](/server/img/registration.jpg ){: .screenshot} 
+![User Registration Form](/observer/img/registration.jpg ){: .screenshot} 
 
 Users may create an account from a link on the Welcome page. This may also be disable if you do not want public to sign up for new accounts in `User Admin`.
 
@@ -413,13 +413,13 @@ The `admin` user has access to all media, playlists and schedules. As new users 
 
 ### User List
 
-![User List](/server/img/user_manager.jpg ){: .screenshot} 
+![User List](/observer/img/user_manager.jpg ){: .screenshot} 
 
 The `user management` menu provides a list of user accounts, indicating group membership and most recent access.  Sort by name, last login and creation date.
 
 <br/>
 
-![Modify User](/server/img/user_account.jpg ){: .screenshot}
+![Modify User](/observer/img/user_account.jpg ){: .screenshot}
 
 Add or Edit User account settings.
 
@@ -435,7 +435,7 @@ Add or Edit User account settings.
 
 ### Permissions
 
-![User Management](/server/img/user_management.png ){: .screenshot}
+![User Management](/observer/img/user_management.png ){: .screenshot}
 
 The `permission` menu accesses a grid for fine-grained control over access to media, Playlist and scheduling functions, on a Player by Player basis. Users in the __Administrator__ group may assign or revoke permissions to other user groups.  Additional groups may be created for granting users' permission to upload and/or download media, schedule PlayLists, or view playlogs. For example, approval for media and allocation of time slots could be delegated to a group that grants permissions on only one Player device, and has no other administrative privileges. [Advanced Admin](#adv_admin) functions establish hooks for remote Player connections.
 
@@ -443,7 +443,7 @@ The `permission` menu accesses a grid for fine-grained control over access to me
 
 ### Create Group
 
-![New Permissions Groups](/server/img/New_permissions_groups.png ){: .screenshot} 
+![New Permissions Groups](/observer/img/New_permissions_groups.png ){: .screenshot} 
 
 1. Name of new group
 
@@ -474,7 +474,7 @@ The Player ID is automatically generated and the assigned password will be neede
 
 ### Connection Messages
 
-![Player Settings](/server/img/Player_Settings.png ){: .screenshot} 
+![Player Settings](/observer/img/Player_Settings.png ){: .screenshot} 
 
 __Connection Messages__ for Players connect back to the server at predetermined times as set in the Player dashboard.  The “last Connect” info is continuously being updated and a graphic icon of a green check mark indicates that all connections are current and the device is in operation and communicating properly. Displays to right of newly created player showing times when last connected.  Top line shows status of Priority, Media and Playlog sync last connections time to server. __"!"__ icon if there is no heartbeat.
 
@@ -486,7 +486,7 @@ __Pro Tip__ Connection info is also displayed with Station Icon status using Map
 
 ### Cloning Playout Devices as Parent and Child
 
-![Cloned Players](/server/img/cloned-players.png){: .screenshot}
+![Cloned Players](/observer/img/cloned-players.png){: .screenshot}
 
 Share a common schedule among a network of players.
 
@@ -504,7 +504,7 @@ Customize the roles of each individual player, fine tuning Parent characteristic
 
 ## Logging and Monitoring 
 
-![Player Monitoring](/server/img/Player_Monitoring.png ){: .screenshot} 
+![Player Monitoring](/observer/img/Player_Monitoring.png ){: .screenshot} 
 
 Play logs are generated from the Player and sent back to OBServer via TCP/IP according to the frequency specified in the Player Dashboard settings. Reports may be generated using filters for a combination of parameters including; Player, Time and Date range, Artist, Title and Media ID.
 
@@ -514,7 +514,7 @@ Play logs are generated from the Player and sent back to OBServer via TCP/IP acc
 
 ## Modules
 
-![Installed Modules](/server/img/installed-modules.png){: .screenshot}
+![Installed Modules](/observer/img/installed-modules.png){: .screenshot}
 
 We include a couple of sample modules. Additional features may be introduced into the OB environment by third-party developers.
 
@@ -528,7 +528,7 @@ Check for updated list of modules
 
 Drag Playlist to turn into a dynamic single file podcast with embedded track list for copyright compliance.
 
-![Podcast Assembler](/server/img/PODcast Assembler.png){: .screenshot}
+![Podcast Assembler](/observer/img/PODcast Assembler.png){: .screenshot}
 
 <br/>
 
@@ -536,12 +536,12 @@ Drag Playlist to turn into a dynamic single file podcast with embedded track lis
 
 Integrate metadata of stream into a RDS encoder at transmitter site.
 
-![RDS Controller](/server/img/RDS Controller.jpg){: .screenshot}
+![RDS Controller](/observer/img/RDS Controller.jpg){: .screenshot}
 
 
 ## Updates and New Features 
 
-![Updates](/server/img/OBServer_Install_Check.png ){: .screenshot} 
+![Updates](/observer/img/OBServer_Install_Check.png ){: .screenshot} 
 
 Setup observer, login to GUI as admin user, open a new browser tab
 ~~~~
