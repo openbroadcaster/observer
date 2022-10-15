@@ -235,7 +235,7 @@ A basic Playlist that you can add `media`,`dynamic segments`and`station IDs` Pla
 
 <br/>
 
-![Advanced Playlist](/observerobserver/img/adv_playlist.jpg ){: .screenshot} 
+![Advanced Playlist](/observer/img/adv_playlist.jpg ){: .screenshot} 
 
 Mixes Image slide show with accompanying Audio.  Cuts into Video section. Audio and image data may be played simultaneously. Image media will be added to the list on the right of the Playlist items, audio tracks on the left. `zoom in/zoom out` on the schedule of Playlist items to increase the resolution of the time scale.  To create an Advanced Playlist containing `Dynamic Selections`, first create a __Standard__ Playlist containing Dynamic Selections, then add that Playlist to the Advanced Playlist.
 
@@ -294,7 +294,7 @@ This Playlist is assigned to the `Player` to fill in when there is nothing sched
 
 ### View Details 
 
-![Playlist Details](/observerobserver/img/PlayList_Details.png ){: .screenshot}
+![Playlist Details](/observer/img/PlayList_Details.png ){: .screenshot}
 
 From the Playlist sidebar, right click and select `Details` to find out where the PL is used, who created it and when it was last modified.
 
