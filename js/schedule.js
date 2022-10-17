@@ -212,7 +212,7 @@ OB.Schedule.deleteTimeslot = function(confirm)
   if(confirm)
   {
 
-    OB.API.post('timeslots','delete',{ 'recurring': $('#timeslot_edit_recurring').val(), 'id': $('#timeslot_id').val() }, function(data)
+    OB.API.post('timeslots','delete',{ 'id': $('#timeslot_id').val() }, function(data)
     {
 
       if(data.status==true)
@@ -302,7 +302,6 @@ OB.Schedule.saveTimeslot = function()
   fields = new Object();
 
   fields.id = $('#timeslot_id').val();
-  fields.edit_recurring = $('#timeslot_edit_recurring').val();
 
   fields.description = $('#timeslot_description').val();
 
@@ -486,7 +485,7 @@ OB.Schedule.editShowWindow = function(id,recurring)
 {
 
   if(recurring) var data_method = 'get_recurring';
-  else var data_method = 'get';
+  var data_method = 'get';
 
   OB.API.post('shows',data_method,{'id': id}, function(data)
   {
@@ -581,11 +580,10 @@ OB.Schedule.addTimeslotWindow = function()
 
 }
 
-OB.Schedule.editTimeslotWindow = function(id,recurring)
+OB.Schedule.editTimeslotWindow = function(id)
 {
 
-  if(recurring) var data_method = 'get_recurring';
-  else var data_method = 'get';
+  var data_method = 'get';
 
   OB.API.post('users','user_list',{}, function(user_data) {
   OB.API.post('timeslots',data_method,{'id': id}, function(data)
@@ -597,8 +595,7 @@ OB.Schedule.editTimeslotWindow = function(id,recurring)
 
     var timeslot = data.data;
 
-    if(!recurring) { $('#timeslot_mode').val('once'); $('#timeslot_edit_recurring').val(0); }
-    else { $('#timeslot_mode').val(timeslot.mode); $('#timeslot_edit_recurring').val(1); }
+    $('#timeslot_mode').val(timeslot.mode);
 
     $('#timeslot_user_id').val(timeslot.user_id);
 

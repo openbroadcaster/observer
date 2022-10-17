@@ -89,18 +89,12 @@ class TimeslotsModel extends OBFModel
      * Get timeslot by ID.
      *
      * @param id
-     * @param recurring Boolean for recurring item. Default FALSE.
      *
      * @return timeslot
      */
-    public function get_timeslot_by_id($id, $recurring = false)
+    public function get_timeslot_by_id($id)
     {
         $this->db->where('id', $id);
-        if (!$recurring) {
-            $this->db->where('mode', 'once');
-        } else {
-            $this->db->where('mode', 'once', '!=');
-        }
         $row = $this->db->get_one('timeslots');
 
         if (!$row) {
@@ -206,17 +200,16 @@ class TimeslotsModel extends OBFModel
      *
      * @param data
      * @param id Existing show ID. FALSE by default.
-     * @param edit_recurring Whether editing a recurring existing show. FALSE by default.
      *
      * @return [is_colliding, msg]
      */
-    public function collision_check($data, $id = false, $edit_recurring = false)
+    public function collision_check($data, $id = false)
     {
         $duration = $data['duration'];
 
         // does this collide with another timeslot?
         if (!empty($id)) {
-            $not_entry = array('id' => $id,'recurring' => $edit_recurring);
+            $not_entry = array('id' => $id);
         } else {
             $not_entry = false;
         }
@@ -312,16 +305,6 @@ class TimeslotsModel extends OBFModel
             $end->add(new DateInterval('PT' . $duration . 'S'));
             $end = $end->format('Y-m-d H:i:s');
 
-            /*$collision_data = $this('get_timeslots',$check,$check + $duration, $data['player_id'], $not_entry);
-
-            // if(!is_array($collision_data) || count($collision_data)>0) return array(false,'This timeslot conflicts with another on the schedule ('.date('M j, Y',$collision_data[0]['start']).').'.print_r($collision_data,true).' '.$check.' '.($check+$duration));
-            //T This timeslot conflicts with another on the schedule.
-            if(!is_array($collision_data) || count($collision_data)>0) return array(false,'This timeslot conflicts with another on the schedule.');*/
-
-            /*$this->db->where('end', $start, '>');
-            $this->db->where('start', $end, '<');
-            if ($not_entry) $this->db->where('timeslot_id', $not_entry['id'], '!=');
-            $result = $this->db->get('timeslots_expanded');*/
             $query  = "SELECT timeslots_expanded.*,timeslots.player_id AS player FROM timeslots_expanded LEFT JOIN timeslots ON timeslots.id = timeslots_expanded.timeslot_id WHERE ";
             $query .= "timeslots_expanded.end > '" . $this->db->escape($start) . "' AND ";
             $query .= "timeslots_expanded.start < '" . $this->db->escape($end) . "' AND ";
@@ -345,24 +328,14 @@ class TimeslotsModel extends OBFModel
      *
      * @param data
      * @param id Updating an existing timeslot. Default FALSE.
-     * @param edit_recurring Whether editing a recurring item. Default FALSE.
      */
-    public function save_timeslot($data, $id = false, $edit_recurring = false)
+    public function save_timeslot($data, $id = false)
     {
         $duration = $data['duration'];
 
         // if editing, we delete our existing timeslot then add a new one.  (might be another type).
         if (!empty($id)) {
             $this->db->where('id', $id);
-            /* if($edit_recurring) $this->db->delete('timeslots_recurring');
-            else $this->db->delete('timeslots');
-
-            // delete from expanded
-            if($edit_recurring)
-            {
-              $this->db->where('recurring_id',$id);
-              $this->db->delete('timeslots_recurring_expanded');
-            }*/
             $this->db->delete('timeslots');
         }
 

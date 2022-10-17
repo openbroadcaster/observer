@@ -44,7 +44,7 @@ class Timeslots extends OBFController
     {
         $id = $this->data('id');
 
-        $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, false);
+        $timeslot = $this->models->timeslots('get_timeslot_by_id', $id);
 
         $this->user->require_permission('manage_timeslots:' . $timeslot['player_id']);
 
@@ -54,31 +54,6 @@ class Timeslots extends OBFController
         }
         //T Timeslot.
         return array(true, 'Timeslot.', $timeslot);
-    }
-
-    /**
-     * Get schedule recurring timeslot by ID. Requires 'manage_timeslots'.
-     *
-     * @param id
-     *
-     * @return timeslot
-     *
-     * @route GET /v2/timeslots/recurring/(:id:)
-     */
-    public function get_recurring()
-    {
-        $id = $this->data('id');
-
-        $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, true);
-
-        $this->user->require_permission('manage_timeslots:' . $timeslot['player_id']);
-
-        //T Timeslot not found.
-        if (!$timeslot) {
-            return array(false, 'Timeslot not found.');
-        }
-        //T Timeslot (recurring).
-        return array(true,'Timeslot (recurring).',$timeslot);
     }
 
     /**
@@ -188,26 +163,19 @@ class Timeslots extends OBFController
     }
 
     /**
-     * Delete a timeslot by ID. Specify whether or not this is a recurring
-     * timeslot. Requires 'manage_timeslots' for the player ID linked
-     * to the timeslot.
+     * Delete a timeslot by ID. Requires 'manage_timeslots' for the player ID
+     * linked to the timeslot.
      *
      * @param id
-     * @param recurring
      *
-     * @route DELETE /v2/timeslots/(:id:)/(:recurring:)
+     * @route DELETE /v2/timeslots/(:id:)
      */
     public function delete()
     {
         $id        = trim($this->data('id'));
-        $recurring = trim($this->data('recurring'));
 
         // make sure timeslot exists, check user permissions against player ID.
-        if ($recurring) {
-            $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, true);
-        } else {
-            $timeslot = $this->models->timeslots('get_timeslot_by_id', $id, false);
-        }
+        $timeslot = $this->models->timeslots('get_timeslot_by_id', $id);
 
         //T Timeslot not found.
         if (!$timeslot) {
@@ -215,7 +183,7 @@ class Timeslots extends OBFController
         }
         $this->user->require_permission('manage_timeslots:' . $timeslot['player_id']);
 
-        $this->models->timeslots('delete_timeslot', $id, $recurring);
+        $this->models->timeslots('delete_timeslot', $id);
 
         //T Timeslot deleted.
         return array(true, 'Timeslot deleted.');
@@ -225,7 +193,6 @@ class Timeslots extends OBFController
      * Edit or save a timeslot.
      *
      * @param id Optional when saving a new timeslot.
-     * @param edit_recurring Boolean specifying whether or not we're editing a recurring show.
      * @param user_id
      * @param player_id
      * @param mode One time, or every X interval.
@@ -240,7 +207,6 @@ class Timeslots extends OBFController
     public function save()
     {
         $id             = trim($this->data('id'));
-        $edit_recurring = trim($this->data('edit_recurring'));
 
         $data['user_id']     = trim($this->data('user_id'));
         $data['player_id']   = trim($this->data('player_id'));
@@ -255,7 +221,7 @@ class Timeslots extends OBFController
 
         // if we are editing, make sure ID is valid.
         if (!empty($id)) {
-            $original_timeslot = $this->models->timeslots('get_timeslot_by_id', $id, $edit_recurring);
+            $original_timeslot = $this->models->timeslots('get_timeslot_by_id', $id);
             //T Timeslot not found.
             if (!$original_timeslot) {
                 return array(false, 'Timeslot not found.');
@@ -280,13 +246,13 @@ class Timeslots extends OBFController
         $data['duration'] = $duration;
 
         // collision check!
-        $collision_check = $this->models->timeslots('collision_check', $data, $id, $edit_recurring);
+        $collision_check = $this->models->timeslots('collision_check', $data, $id);
         if ($collision_check[0] == false) {
             return array(false, $collision_check[1]);
         }
 
         // FINALLY CREATE/EDIT TIMESLOT
-        $this->models->timeslots('save_timeslot', $data, $id, $edit_recurring);
+        $this->models->timeslots('save_timeslot', $data, $id);
 
         //T Timeslot added.
         return array(true, 'Timeslot added.');
