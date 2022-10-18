@@ -153,28 +153,12 @@ class ShowsModel extends OBFModel
      * Get a show by ID.
      *
      * @param id
-     * @param recurring Boolean for recurring shows. Default FALSE.
      *
      * @return show
      */
-    public function get_show_by_id($id, $recurring = false)
+    public function get_show_by_id($id)
     {
-
-    /* $this->db->where('id',$id);
-    if($recurring) $row = $this->db->get_one('schedules_recurring');
-    else $row = $this->db->get_one('schedules');
-
-
-    if(!$row) return false;
-
-    if(!$row) return array(false,'Show not found.'); */
-
         $this->db->where('id', $id);
-        if (!$recurring) {
-            $this->db->where('mode', 'once');
-        } else {
-            $this->db->where('mode', 'once', '!=');
-        }
         $row = $this->db->get_one('shows');
 
         if (!$row) {
@@ -206,46 +190,19 @@ class ShowsModel extends OBFModel
      * Delete a show by ID.
      *
      * @param id
-     * @param recurring Boolean for recurring shows. Default FALSE.
      */
-    public function delete_show($id, $recurring = false)
+    public function delete_show($id)
     {
 
-    // get show information, start time and player id needed for liveassist cache delete
-        /* $this->db->where('id',$id);
-        if($recurring) $show = $this->db->get_one('schedules_recurring');
-        else $show = $this->db->get_one('schedules');*/
+        // get show information, start time and player id needed for liveassist cache delete
         $this->db->where('id', $id);
-        if ($recurring) {
-            $this->db->where('mode', 'once', '!=');
-        } else {
-            $this->db->where('mode', 'once');
-        }
         $show = $this->db->get_one('shows');
 
         if (!$show) {
             return false;
         }
 
-        // if recurring, figure out show start times for deleting liveassist cache.
-        $starts = [];
-        if ($recurring) {
-            /* $this->db->where('recurring_id',$id);
-            $recurring_expanded = $this->db->get('schedules_recurring_expanded');
-            foreach($recurring_expanded as $expanded) $starts[] = $expanded['start'];*/
-            $this->db->where('show_id', $id);
-            $shows_expanded = $this->db->get('shows_expanded');
-            foreach ($shows_expanded as $expanded) {
-                $start[] = $expanded['start'];
-            }
-        } else {
-            $starts[] = $show['start'];
-        }
-
         // proceed with delete.
-        /* $this->db->where('id',$id);
-        if($recurring) $this->db->delete('schedules_recurring');
-        else $this->db->delete('schedules');*/
         $this->db->where('id', $id);
         $this->db->delete('shows');
 
@@ -381,14 +338,13 @@ class ShowsModel extends OBFModel
      *
      * @param data
      * @param id Item to exclude. Default FALSE.
-     * @param edit_recurring Whether editing a recurring item. Default FALSE.
      *
      * @return [is_colliding, msg]
      */
-    public function collision_timeslot_check($data, $id = false, $edit_recurring = false, $skip_timeslot_check = false)
+    public function collision_timeslot_check($data, $id = false, $skip_timeslot_check = false)
     {
         if (!empty($id)) {
-            $not_entry = array('id' => $id,'recurring' => $edit_recurring);
+            $not_entry = array('id' => $id);
         } else {
             $not_entry = false;
         }
@@ -557,9 +513,8 @@ class ShowsModel extends OBFModel
      *
      * @param data
      * @param id Set when updating an existing show. Unset by default.
-     * @param edit_recurring Whether editing a recurring show. Unset by default.
      */
-    public function save_show($data, $id = false, $edit_recurring = false)
+    public function save_show($data, $id = false)
     {
 
     // if editing, we delete our existing show then add a new one.  (might be another type).
@@ -567,40 +522,16 @@ class ShowsModel extends OBFModel
 
         if (!empty($id)) {
             $this->db->where('id', $id);
-            if ($edit_recurring) {
-                $this->db->where('mode', 'once', '!=');
-            } else {
-                $this->db->where('mode', 'once');
-            }
-            /* if($edit_recurring) $show_data = $this->db->get_one('schedules_recurring');
-            else $show_data = $this->db->get_one('schedules'); */
             $show_data = $this->db->get_one('shows');
 
             $this->db->where('id', $id);
-            if ($edit_recurring) {
-                $this->db->where('mode', 'once', '!=');
-            } else {
-                $this->db->where('mode', 'once');
-            }
-            /*if($edit_recurring) $this->db->delete('schedules_recurring');
-            else $this->db->delete('schedules');*/
             $this->db->delete('shows');
 
             // delete from cache
             $this->db->where('schedule_id', $id);
-            if ($edit_recurring) {
-                $this->db->where('mode', 'recurring');
-            } else {
-                $this->db->where('mode', 'once');
-            }
             $this->db->delete('shows_cache');
 
             // delete from expanded
-            /* if($edit_recurring)
-            {
-              $this->db->where('recurring_id',$id);
-              $this->db->delete('schedules_recurring_expanded');
-            } */
             $this->db->where('show_id', $id);
             $this->db->delete('shows_expanded');
         }

@@ -172,7 +172,7 @@ OB.Schedule.deleteShow = function(confirm)
   if(confirm)
   {
 
-    OB.API.post('shows','delete',{ 'recurring': $('#show_edit_recurring').val(), 'id': $('#show_id').val() }, function(data)
+    OB.API.post('shows','delete',{ 'id': $('#show_id').val() }, function(data)
     {
 
       if(data.status==true)
@@ -252,7 +252,6 @@ OB.Schedule.saveShow = function()
   fields = new Object();
 
   fields.id = $('#show_id').val();
-  fields.edit_recurring = $('#show_edit_recurring').val();
 
   fields.mode = $('#show_mode').val();
   fields.x_data = $('#show_x_data').val();
@@ -484,7 +483,6 @@ OB.Schedule.addShowWindow = function(type,id,name,duration)
 OB.Schedule.editShowWindow = function(id,recurring)
 {
 
-  if(recurring) var data_method = 'get_recurring';
   var data_method = 'get';
 
   OB.API.post('shows',data_method,{'id': id}, function(data)
@@ -516,9 +514,6 @@ OB.Schedule.editShowWindow = function(id,recurring)
         else $('#show_item_info').text(show.item_name+' ('+show.item_type+' #'+show.item_id+')');
 
         var show = data.data;
-
-        if(!recurring) { $('#show_mode').val('once'); $('#show_edit_recurring').val(0); }
-        else { $('#show_mode').val(show.mode); $('#show_edit_recurring').val(1); }
 
         var start_time = new Date(parseInt(show.start)*1000);
         // $('#show_start_datetime').val(start_time);

@@ -76,13 +76,11 @@ class LoggerModule extends OBFModule
 		$hooks[] = 'Playlist.delete';
 
 		$hooks[] = 'Shows.get';
-		$hooks[] = 'Shows.get_recurring';
 		$hooks[] = 'Shows.search';
 		$hooks[] = 'Shows.delete';
 		$hooks[] = 'Shows.save';
 
 		$hooks[] = 'Timeslots.get';
-		$hooks[] = 'Timeslots.get_recurring';
 		$hooks[] = 'Timeslots.search';
 		$hooks[] = 'Timeslots.delete';
 		$hooks[] = 'Timeslots.save';

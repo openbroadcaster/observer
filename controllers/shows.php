@@ -46,7 +46,7 @@ class Shows extends OBFController
 
         $id = $this->data('id');
 
-        $show = $this->models->shows('get_show_by_id', $id, false);
+        $show = $this->models->shows('get_show_by_id', $id);
 
         //T Show not found.
         if (!$show) {
@@ -54,31 +54,6 @@ class Shows extends OBFController
         }
         //T Scheduled show.
         return array(true, 'Scheduled show.', $show);
-    }
-
-    /**
-     * Get an individual recurring scheduled show.
-     *
-     * @param id
-     *
-     * @return show
-     *
-     * @route GET /v2/shows/recurring/(:id:)
-     */
-    public function get_recurring()
-    {
-        $this->user->require_authenticated();
-
-        $id = $this->data('id');
-
-        $show = $this->models->shows('get_show_by_id', $id, true);
-
-        //T Show not found.
-        if (!$show) {
-            return array(false, 'Show not found.');
-        }
-        //T Scheduled show (recurring).
-        return array(true, 'Scheduled show (recurring).', $show);
     }
 
     /**
@@ -173,24 +148,22 @@ class Shows extends OBFController
      * show is owned by the user.
      *
      * @param id
-     * @param recurring
      *
-     * @route DELETE /v2/shows/(:id:)/(:recurring:)
+     * @route DELETE /v2/shows/(:id:)
      */
     public function delete()
     {
         $this->user->require_authenticated();
 
         $id        = trim($this->data('id'));
-        $recurring = trim($this->data('recurring'));
 
         // check timeslot.  we can delete a show that we have scheduled, regardless of whether we own that timeslot anymore.
-        $show = $this->models->shows('get_show_by_id', $id, $recurring);
+        $show = $this->models->shows('get_show_by_id', $id);
         if ($show['user_id'] != $this->user->param('id')) {
             $this->user->require_permission('manage_timeslots');
         }
 
-        $this->models->shows('delete_show', $id, $recurring);
+        $this->models->shows('delete_show', $id);
 
         //T Show deleted.
         return array(true,'Show deleted.');
@@ -200,7 +173,6 @@ class Shows extends OBFController
      * Edit or save a new show.
      *
      * @param id Optional when saving a new show.
-     * @param edit_recurring Boolean specifying whether or not we're editing a recurring show.
      * @param player_id
      * @param mode One time, or every X interval.
      * @param x_data When mode is set to an interval, x_data specifies every X.
@@ -217,7 +189,6 @@ class Shows extends OBFController
         $this->user->require_authenticated();
 
         $id             = trim($this->data('id'));
-        $edit_recurring = trim($this->data('edit_recurring'));
 
         $data['player_id'] = trim($this->data('player_id'));
         $data['mode']      = trim($this->data('mode'));
@@ -232,7 +203,7 @@ class Shows extends OBFController
 
         // if we are editing, make sure ID is valid.
         if (!empty($id)) {
-            $original_show_data = $this->models->shows('get_show_by_id', $id, $edit_recurring);
+            $original_show_data = $this->models->shows('get_show_by_id', $id);
             //T Show not found.
             if (!$original_show_data) {
                 return array(false, 'Show not found.');
@@ -260,13 +231,13 @@ class Shows extends OBFController
         $data['duration'] = $duration;
 
         // collision check!
-        $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id, $edit_recurring);
+        $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id);
         if ($collision_timeslot_check[0] == false) {
             return array(false, $collision_timeslot_check[1]);
         }
 
         // FINALLY CREATE/EDIT SHOW
-        $this->models->shows('save_show', $data, $id, $edit_recurring);
+        $this->models->shows('save_show', $data, $id);
 
         //T Show added.
         return array(true,'Show added.');
