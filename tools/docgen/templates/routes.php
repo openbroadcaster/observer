@@ -1,6 +1,9 @@
 <div class="doc-file-name"><code>routes</code></div>
-<div class="doc-class">
-  <h2>Routes</h2>
+<div class="doc-route-container">
+  <div class="doc-route-helpers">
+    <h2>Routes</h2>
+    <button onclick="routesExpandAll(this)" data-is-expanded="false">Expand All</button>
+  </div>
 
 <?php
 
@@ -12,7 +15,7 @@ function recursive_route_details($routes)
         $controller = $routes[0];
         $method     = $routes[1];
 
-        return '<div class="doc-route-connection"><code>' . $controller . '/' . $method . '</code></div>';
+        return '<!--<div class="doc-route-connection"><code>' . $controller . '/' . $method . '</code></div>-->';
     } elseif (in_array(array_keys($routes)[0], ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'])) {
         $result = '';
         foreach ($routes as $method => $connections) {
@@ -39,3 +42,15 @@ function recursive_route_details($routes)
 ?>
 
 </div>
+<script>
+  function routesExpandAll(elem)
+  {
+      if (jQuery(elem).attr('data-is-expanded') === 'false') {
+        jQuery(elem).attr('data-is-expanded', 'true').text('Collapse All');
+        jQuery('details').attr('open', '');
+      } else {
+        jQuery(elem).attr('data-is-expanded', 'false').text('Expand All');
+        jQuery('details').removeAttr('open');
+      }
+  }
+</script>

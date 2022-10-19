@@ -178,10 +178,41 @@ code {
 /* Routes */
 .doc-route {
   margin-left: 1rem;
+  font-weight: normal;
 }
 
-.doc-class > .doc-route {
+.doc-route-container > .doc-route-helpers {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.doc-route-helpers > h2 {
+  margin: 0;
+  display: inline-block;
+}
+
+.doc-route-helpers > button {
+  margin-left: 1rem;
+  background-color: white;
+  border: 1px black solid;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+}
+
+.doc-route-helpers > button:hover {
+  background-color: #f2f2f2;
+}
+
+.doc-route-helpers > button:active {
+  color: #460cf2;
+}
+
+.doc-route-container > .doc-route {
   margin-left: 0;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 .doc-route summary span {

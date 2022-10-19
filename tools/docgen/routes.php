@@ -53,3 +53,21 @@ function build_endpoint(&$endpoints, $parts_remaining, $method, $values)
         build_endpoint($endpoints[$parts_remaining[0]], array_slice($parts_remaining, 1), $method, $values);
     }
 }
+
+// Called to trim top level routes AFTER they've been sorted by endpoint using
+// routes_by_endpoint
+function trim_toplevel_routes(array $routes): array
+{
+    if (count($routes) < 1) {
+        echo '\t[E] Failed to trim top level routes, since routes array is empty. This ordinarily shouldn\'t happen!\n';
+        return $routes;
+    }
+
+    // Topmost route only has one item, recursively call function on its member.
+    if (count($routes) == 1) {
+        return trim_toplevel_routes(array_values($routes)[0]);
+    }
+
+    // Topmost route has multiple items, return routes.
+    return $routes;
+}

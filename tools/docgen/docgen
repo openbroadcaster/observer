@@ -132,7 +132,7 @@ if ($mode == 'docs') {
     }
 
     echo "Outputting route graph HTML.\n";
-    file_put_contents($target_dir . "/routes.html", html_routes(routes_by_endpoint($routes), $nav_tree));
+    file_put_contents($target_dir . "/routes.html", html_routes(trim_toplevel_routes(routes_by_endpoint($routes)), $nav_tree));
 
     file_put_contents($target_dir . "/index.html", html_index($nav_tree));
     echo "Successfully generated documentation HTML.\n\n";
