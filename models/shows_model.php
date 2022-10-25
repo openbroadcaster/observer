@@ -407,7 +407,7 @@ class ShowsModel extends OBFModel
                 $timeslots = $this->models->timeslots('get_timeslots', $check, $check + $duration, $data['player_id'], false, $this->user->param('id'));
 
                 // put our timeslots in order so we can make sure they are adequate.
-                usort($timeslots, array($this,'order_schedule'));
+                usort($timeslots, array($this,'order_show'));
 
                 // make sure there are no gaps in the timeslot between this start and end timestamp.
                 $timeslot_check_failed = false;
@@ -572,7 +572,7 @@ class ShowsModel extends OBFModel
      *
      * @return 1|-1
      */
-    private function order_schedule($a, $b)
+    private function order_show($a, $b)
     {
         if ($a['start'] > $b['start']) {
             return 1;
