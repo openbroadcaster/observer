@@ -90,7 +90,7 @@ OB.Alert.alertInit = function()
 
     $.each(players,function(index,item) {
 
-      if(item.use_parent_alert=='1') return; // player uses parent emergency broadcasts, setting them here would not do anything.
+      if(item.use_parent_alert=='1') return; // player uses parent alerts, setting them here would not do anything.
 
       // make sure we have permission for this
       if(OB.Settings.permissions.indexOf('manage_alerts')==-1 && OB.Settings.permissions.indexOf('manage_alerts:'+item.id)==-1) return;

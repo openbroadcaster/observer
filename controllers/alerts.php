@@ -99,7 +99,7 @@ class Alerts extends OBFController
         $player_data = $this->db->get_one('players');
 
         if ($player_data) {
-            $this->user->set_setting('last_emergencies_player', $player_id);
+            $this->user->set_setting('last_alerts_player', $player_id);
             return array(true,'Set last alerts player.');
         } else {
             //T This player no longer exists.
@@ -117,7 +117,7 @@ class Alerts extends OBFController
      */
     public function get_last_player()
     {
-        $player_id = $this->user->get_setting('last_emergencies_player');
+        $player_id = $this->user->get_setting('last_alerts_player');
         if ($player_id) {
             return array(true,'Last alerts player.',$player_id);
         } else {
