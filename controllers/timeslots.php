@@ -86,7 +86,7 @@ class Timeslots extends OBFController
             return array(false, 'Player ID is invalid.');
         }
 
-        // require "manage schedule permissions" permission unless we are getting the timeslots for our own user.
+        // require "manage timeslots" permission unless we are getting the timeslots for our own user.
         if ($user_id != $this->user->param('id')) {
             $this->user->require_permission('manage_timeslots:' . $player);
         }
