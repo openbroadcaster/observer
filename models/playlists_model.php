@@ -221,8 +221,8 @@ class PlaylistsModel extends OBFModel
     }
 
     /**
-     * Provide information about where a playlist is used. This includes player
-     * schedules, default playlists, and LiveAssist buttons.
+     * Provide information about where a playlist is used. This includes shows,
+     * default playlists, and LiveAssist buttons.
      *
      * @param id
      *
@@ -236,50 +236,26 @@ class PlaylistsModel extends OBFModel
         $info['id'] = $id;
         $info['can_delete'] = true;
 
-        // is this used on a schedule?
+        // is this used on a show?
         $this->db->what('players.id', 'player_id');
         $this->db->what('players.name', 'player_name');
-        $this->db->what('schedules.user_id', 'user_id');
-        $this->db->what('schedules.id', 'id');
+        $this->db->what('shows.user_id', 'user_id');
+        $this->db->what('shows.id', 'id');
         $this->db->where('item_id', $id);
         $this->db->where('item_type', 'playlist');
-        $this->db->leftjoin('players', 'schedules.player_id', 'players.id');
-        $schedules = $this->db->get('schedules');
+        $this->db->leftjoin('players', 'shows.player_id', 'players.id');
+        $shows = $this->db->get('shows');
 
-        foreach ($schedules as $schedule) {
-            if ($schedule['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
+        foreach ($shows as $show) {
+            if ($show['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
                 $info['can_delete'] = false;
             }
 
             $used_data = new stdClass();
-            $used_data->where = 'schedule';
-            $used_data->name = $schedule['player_name']; // for player
-            $used_data->id = $schedule['id'];
-            $used_data->user_id = $schedule['user_id'];
-
-            $info['used'][] = $used_data;
-        }
-
-        // is this used on a schedule (recurring)?
-        $this->db->what('players.id', 'player_id');
-        $this->db->what('players.name', 'player_name');
-        $this->db->what('schedules_recurring.user_id', 'user_id');
-        $this->db->what('schedules_recurring.id', 'id');
-        $this->db->where('item_id', $id);
-        $this->db->where('item_type', 'playlist');
-        $this->db->leftjoin('players', 'schedules_recurring.player_id', 'players.id');
-        $schedules = $this->db->get('schedules_recurring');
-
-        foreach ($schedules as $schedule) {
-            if ($schedule['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
-                $info['can_delete'] = false;
-            }
-
-            $used_data = new stdClass();
-            $used_data->where = 'recurring schedule';
-            $used_data->name = $schedule['player_name']; // for player
-            $used_data->id = $schedule['id'];
-            $used_data->user_id = $schedule['user_id'];
+            $used_data->where = 'show';
+            $used_data->name = $show['player_name']; // for player
+            $used_data->id = $show['id'];
+            $used_data->user_id = $show['user_id'];
 
             $info['used'][] = $used_data;
         }
@@ -660,7 +636,7 @@ class PlaylistsModel extends OBFModel
     }
 
     /**
-     * Delete playlist, associated items, and scheduled content.
+     * Delete playlist, associated items and shows.
      *
      * @param id
      */
