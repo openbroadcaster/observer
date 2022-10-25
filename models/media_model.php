@@ -1029,68 +1029,44 @@ class MediaModel extends OBFModel
             $info['used'][] = $used_data;
         }
 
-        // is this used with an emergency broadcast?
+        // is this used with an alert broadcast?
         $this->db->where('item_id', $id);
-        $emergencies = $this->db->get('emergencies');
+        $alerts = $this->db->get('alerts');
 
-        foreach ($emergencies as $emergency) {
+        foreach ($alerts as $alert) {
             if (!$this->user->check_permission('manage_alerts')) {
                 $info['can_delete'] = false;
             }
 
             $used_data = new stdClass();
-            $used_data->where = 'emergency';
-            $used_data->name = $emergency['name'];
-            $used_data->user_id = $emergency['user_id'];
-            $used_data->id = $emergency['id'];
+            $used_data->where = 'alert';
+            $used_data->name = $alert['name'];
+            $used_data->user_id = $alert['user_id'];
+            $used_data->id = $alert['id'];
 
             $info['used'][] = $used_data;
         }
 
-        // is this used on a schedule?
+        // is this used on a show?
         $this->db->what('players.id', 'player_id');
         $this->db->what('players.name', 'player_name');
-        $this->db->what('schedules.user_id', 'user_id');
-        $this->db->what('schedules.id', 'id');
+        $this->db->what('shows.user_id', 'user_id');
+        $this->db->what('shows.id', 'id');
         $this->db->where('item_id', $id);
         $this->db->where('item_type', 'media');
-        $this->db->leftjoin('players', 'schedules.player_id', 'players.id');
-        $schedules = $this->db->get('schedules');
+        $this->db->leftjoin('players', 'shows.player_id', 'players.id');
+        $shows = $this->db->get('shows');
 
-        foreach ($schedules as $schedule) {
-            if ($schedule['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
+        foreach ($shows as $show) {
+            if ($show['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
                 $info['can_delete'] = false;
             }
 
             $used_data = new stdClass();
-            $used_data->where = 'schedule';
-            $used_data->name = $schedule['player_name'];
-            $used_data->id = $schedule['id'];
-            $used_data->user_id = $schedule['user_id'];
-
-            $info['used'][] = $used_data;
-        }
-
-        // is this used on a schedule (recurring)?
-        $this->db->what('players.id', 'player_id');
-        $this->db->what('players.name', 'player_name');
-        $this->db->what('schedules_recurring.user_id', 'user_id');
-        $this->db->what('schedules_recurring.id', 'id');
-        $this->db->where('item_id', $id);
-        $this->db->where('item_type', 'media');
-        $this->db->leftjoin('players', 'schedules_recurring.player_id', 'players.id');
-        $schedules = $this->db->get('schedules_recurring');
-
-        foreach ($schedules as $schedule) {
-            if ($schedule['user_id'] != $this->user->param('id') && !$this->user->check_permission('manage_timeslots')) {
-                $info['can_delete'] = false;
-            }
-
-            $used_data = new stdClass();
-            $used_data->where = 'recurring schedule';
-            $used_data->name = $schedule['player_name'];
-            $used_data->id = $schedule['id'];
-            $used_data->user_id = $schedule['user_id'];
+            $used_data->where = 'show';
+            $used_data->name = $show['player_name'];
+            $used_data->id = $show['id'];
+            $used_data->user_id = $show['user_id'];
 
             $info['used'][] = $used_data;
         }
@@ -2200,9 +2176,9 @@ class MediaModel extends OBFModel
         $this->db->where('item_type', 'media');
         $this->db->delete('shows');
 
-        // remove from emergencies
+        // remove from alerts
         $this->db->where('item_id', $id);
-        $this->db->delete('emergencies');
+        $this->db->delete('alerts');
     }
 
     /**
