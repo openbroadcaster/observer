@@ -61,12 +61,12 @@ OB.Media.detailsPage = function(id)
     $('#media_details_language').text(item.language_name);
     $('#media_details_genre').text(item.genre_name);
     $('#media_details_comments').text(item.comments);
-    
+
     // add custom metadata
     $.each(OB.Settings.media_metadata, function(index, metadata)
     {
       if(metadata.type=='hidden') return;
-      
+
       var value = item['metadata_'+metadata.name] ?? '';
       if(metadata.type=='tags') value = value.split(',').join(', ');
 
@@ -75,13 +75,13 @@ OB.Media.detailsPage = function(id)
       $metadata.find('span').text(value);
       $('#media_details_metadata').append($metadata);
     });
-    
+
     // add thumbnail if available
     if(item.thumbnail)
     {
       $('#media_details_fieldset > legend').after('<img alt="" id="media_thumbnail" src="/thumbnail.php?id='+item.id+'">');
     }
-    
+
     // remove unused metadata
     $.each(OB.Settings.media_required_fields, function(field, status)
     {
@@ -133,9 +133,9 @@ OB.Media.detailsPage = function(id)
         //T station ID
         if(used_detail.where=='player') $('#media_details_used ul').append('<li>'+htmlspecialchars(OB.t('station ID'))+': '+htmlspecialchars(used_detail.name)+'</li>');
         //T priority broadcast
-        if(used_detail.where=='emergency') $('#media_details_used ul').append('<li>'+htmlspecialchars(OB.t('priority broadcast'))+': '+htmlspecialchars(used_detail.name)+'</li>');
-        //T schedule for player
-        if(used_detail.where=='schedule' || used_detail.where=='recurring schedule') $('#media_details_used ul').append('<li>'+htmlspecialchars(OB.t('schedule for player'))+': '+htmlspecialchars(used_detail.name)+'</li>');
+        if(used_detail.where=='alert') $('#media_details_used ul').append('<li>'+htmlspecialchars(OB.t('priority broadcast'))+': '+htmlspecialchars(used_detail.name)+'</li>');
+        //T show for player
+        if(used_detail.where=='show') $('#media_details_used ul').append('<li>'+htmlspecialchars(OB.t('show for player'))+': '+htmlspecialchars(used_detail.name)+'</li>');
       });
 
       //T Indicates possible dynamic selection.

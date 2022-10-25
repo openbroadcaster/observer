@@ -381,8 +381,8 @@ class PlayersModel extends OBFModel
 
     /**
      * Validate whether it is possible to delete a player. Return FALSE in cases
-     * where a player has emergency broadcast content associated with it, or
-     * schedule data that the current user has no permission to delete.
+     * where a player has alerts associated with it, or schedule data that the
+     * current user has no permission to delete.
      *
      * @param id
      *
@@ -391,10 +391,11 @@ class PlayersModel extends OBFModel
     public function delete_check_permission($id)
     {
 
-    // see if there are emergency broadcasts associated with this player.
+    // see if there are alerts associated with this player.
         $this->db->where('player_id', $id);
-        if ($this->db->get_one('emergencies') && !$this->user->check_permission('manage_alerts')) {
-            return array(false,'Unable to remove this player.  It has emergency broadcast content that you do not have permission to delete.');
+        if ($this->db->get_one('alerts') && !$this->user->check_permission('manage_alerts')) {
+            //T Unable to remove this player.  It has alerts that you do not have permission to delete.
+            return array(false,'Unable to remove this player.  It has alerts that you do not have permission to delete.');
         }
 
         // this doesn't check 'able to delete own show' ability... not sure it's practically necessary..
@@ -410,6 +411,7 @@ class PlayersModel extends OBFModel
         }
 
         if ($schedule_fail) {
+            //T Unable to remove this player.  It has schedule data that you do not have permission to delete.
             return array(false,'Unable to remove this player.  It has schedule data that you do not have permission to delete.');
         }
 
