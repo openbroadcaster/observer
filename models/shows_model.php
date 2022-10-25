@@ -54,48 +54,6 @@ class ShowsModel extends OBFModel
         // init
         $data = array();
 
-        // fill in non-recurring data
-        /*$this->db->query('SELECT schedules.*,users.display_name as user FROM schedules LEFT JOIN users ON users.id = schedules.user_id
-                           WHERE schedules.player_id = "'.$this->db->escape($player).'" AND
-                            schedules.end > "'.$this->db->escape($start).'" AND
-                            schedules.start < "'.$this->db->escape($end).'"'.($not_entry && !$not_entry['recurring'] ? ' AND schedules.id != '.$not_entry['id'] : ''));
-
-        $rows = $this->db->assoc_list();
-
-        foreach($rows as $row)
-        {
-          unset($row['player_id']);
-          $data[]=$row;
-        }*/
-
-        // fill in recurring data
-        /* $this->db->query('SELECT schedules_recurring.*,users.display_name AS user, schedules_recurring_expanded.start as single_start FROM schedules_recurring_expanded
-                            LEFT JOIN schedules_recurring ON schedules_recurring_expanded.recurring_id = schedules_recurring.id
-                            LEFT JOIN users ON users.id = schedules_recurring.user_id
-                            WHERE schedules_recurring.player_id = "'.$this->db->escape($player).'" AND
-                            schedules_recurring_expanded.end > "'.$this->db->escape($start).'" AND
-                            schedules_recurring_expanded.start < "'.$this->db->escape($end).'"'
-                            .($not_entry && $not_entry['recurring'] ? ' AND schedules_recurring.id!= '.$not_entry['id'] : ''));
-
-        $rows = $this->db->assoc_list();
-
-        foreach($rows as $row)
-        {
-
-          $row['recurring_start']=$row['start'];
-          $row['recurring_stop']=$row['stop'];
-
-          unset($row['player_id']);
-          unset($row['start']);
-          unset($row['stop']);
-
-          $row['start']=$row['single_start'];
-          unset($row['single_start']);
-
-          $data[]=$row;
-
-        }*/
-
         $query =  ("SELECT shows.*,users.display_name AS user,shows_expanded.start AS exp_start,shows_expanded.end AS exp_end,shows_expanded.id AS exp_id FROM shows LEFT JOIN users ON users.id = shows.user_id LEFT JOIN shows_expanded ON shows_expanded.show_id = shows.id ");
         $query .= ("WHERE shows.player_id = '" . $this->db->escape($player) . "' ");
         $query .= ("AND shows_expanded.end > '" . $this->db->escape(date('Y-m-d H:i:s', $start)) . "' ");
@@ -307,7 +265,6 @@ class ShowsModel extends OBFModel
 
         // check if start date is valid.
         //T The start date/time is not valid.
-        // if(!preg_match('/^[0-9]+$/',$data['start'])) return array(false,'The start date/time is not valid.');
         $dt_start = DateTime::createFromFormat('Y-m-d H:i:s', $data['start']);
         if (!$dt_start) {
             return [false, 'The start date/time is not valid.'];
@@ -315,14 +272,10 @@ class ShowsModel extends OBFModel
 
         // check if the stop date is valid.
         //T The stop (last) date is not valid and must come after the start date/time.
-        // if($data['mode']!='once' && !preg_match('/^[0-9]+$/',$data['stop'])) return array(false,'The stop (last) date is not valid and must come after the start date/time.');
         $dt_stop = DateTime::createFromFormat('Y-m-d', $data['stop']);
         if (($data['mode'] != 'once') && (!$dt_stop || ($dt_start >= $dt_stop))) {
             return [false, 'The stop (last) date is not valid and must come after the start date/time.'];
         }
-        //T The stop (last) date is not valid and must come after the start date/time.
-        //if($data['mode']!='once' && $data['start']>=$data['stop']) return array(false,'The stop (last) date is not valid and must come after the start date/time.');
-
 
         // check if x data is valid.
         //T The recurring frequency is not valid.
@@ -395,16 +348,6 @@ class ShowsModel extends OBFModel
                 $interval .= ' months';
             }
 
-            /*$tmp_time = $data['start'];
-
-            while($tmp_time < $data['stop'])
-            {
-
-              $collision_check[]=$tmp_time;
-              $tmp_time = strtotime($interval,$tmp_time);
-
-            }*/
-
             $tmp_time = new DateTime($data['start'], new DateTimeZone('UTC'));
             $stop_time = new DateTime($data['stop'], new DateTimeZone('UTC'));
             $stop_time->add(new DateInterval('P1D'));
@@ -443,11 +386,6 @@ class ShowsModel extends OBFModel
             $end->add(new DateInterval('PT' . $duration . 'S'));
             $end = $end->format('Y-m-d H:i:s');
 
-            /*$collision_data = $this('get_shows',$check,$check + $duration, $data['player_id'], $not_entry);
-            $collision_data = $collision_data;
-
-            //T This show conflicts with another on the schedule.
-            if(!is_array($collision_data) || count($collision_data)>0) return array(false,'This show conflicts with another on the schedule.');*/
             $this->db->where('shows_expanded.end', $start, '>');
             $this->db->where('shows_expanded.start', $end, '<');
             $this->db->where('shows.player_id', $data['player_id']);
@@ -568,8 +506,6 @@ class ShowsModel extends OBFModel
 
             $recurring_id = $this->db->insert('shows', $dbdata);
 
-            /*$tmp_time = $dbdata['start'];
-            $count=0;*/
             $tmp_time = new DateTime($dbdata['start'], new DateTimeZone('UTC'));
             $stop_time = new DateTime($data['stop'], new DateTimeZone('UTC'));
             $stop_time->add(new DateInterval('P1D'));
@@ -610,20 +546,7 @@ class ShowsModel extends OBFModel
                 }
             }
 
-            /*while($tmp_time < $dbdata['stop'])
-            {
-
-              $count++;
-
-              $expanded_data['start'] = $tmp_time;
-              $expanded_data['end'] = $tmp_time + $dbdata['duration'];
-              $this->db->insert('shows_expanded', $expanded_data);
-
-              $tmp_time = strtotime($interval,$tmp_time);
-
-            }*/
         } else {
-            // $dbdata['end']=$dbdata['start']+$dbdata['duration']; // we also add 'end' data, which is used to speed up show searching
             $dbdata['mode'] = 'once';
             $dbdata['recurring_interval'] = 0;
             $dbdata['recurring_end'] = $show_end->format('Y-m-d');
