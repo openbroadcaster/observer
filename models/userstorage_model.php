@@ -35,19 +35,23 @@ class UserStorageModel extends OBFModel
    */
     public function save($args)
     {
-        if (!$this('validate_required', $args, ['user_id', 'name', 'value'])) {
-            return [false, $this('error')];
-        }
         if (!preg_match('/^[a-z0-9-]{1,255}$/i', $args['name'])) {
             return [false, 'Invalid key (allowed characters alphanumeric plus hyphen).'];
         }
 
-        if ($this('get', $args)) {
+        if ($this('get', $args)[0]) {
             $this->db->where('user_id', $args['user_id']);
             $this->db->where('name', $args['name']);
-            $this->db->update('users_storage', $this->filter_keys($args, ['value']));
+            $this->db->update('users_storage', [
+              'value' => $args['value']
+            ]);
         } else {
-            $this->db->insert('users_storage', $this->filter_keys($args, ['user_id', 'name', 'value']));
+            $data = [
+              'user_id' => $args['user_id'],
+              'name'    => $args['name'],
+              'value'   => $args['value']
+            ];
+            $this->db->insert('users_storage', $data);
         }
 
         return [true, 'Saved.'];
@@ -62,9 +66,6 @@ class UserStorageModel extends OBFModel
    */
     public function get($args)
     {
-        if (!$this->validate_required($args, ['user_id', 'name'])) {
-            return false;
-        }
         $this->db->where('user_id', $args['user_id']);
         $this->db->where('name', $args['name']);
         $value = $this->db->get('users_storage');
@@ -72,7 +73,7 @@ class UserStorageModel extends OBFModel
         if (!$value) {
             return [false, 'Not found.'];
         } else {
-            return [true, 'Success.', $value['name']];
+            return [true, 'Success.', $value[0]['name']];
         }
     }
 }

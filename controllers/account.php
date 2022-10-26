@@ -358,20 +358,23 @@ class Account extends OBFController
     * @param key
     * @param value
     */
-    /*
     public function store()
     {
-      $data['user_id'] = $this->user->param('id');
-      if (empty($data['user_id'])) return array(false, 'Invalid user ID.');
+        $data['user_id'] = $this->user->param('id');
+        $data['name'] = $this->data('name');
+        $data['value'] = $this->data('value');
 
-      $data['name'] = $this->data('name');
-      $data['value'] = $this->data('value');
-      $data['user_id'] = $this->user->param('id');
+        if (empty($data['user_id'])) {
+            return [false, 'Invalid user ID.'];
+        }
 
-      var_dump($data);
+        if (! $data['name']) {
+            return [false, 'No key provided.'];
+        }
 
-      if($data['value']) return $this->models->userstorage('save', $data);
-      else return $this->models->userstorage('save', $data);
+        if ($data['value']) {
+            return $this->models->userstorage('save', $data);
+        }
+        return $this->models->userstorage('get', $data);
     }
-    */
 }
