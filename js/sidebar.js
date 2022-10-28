@@ -19,6 +19,10 @@
 
 OB.Sidebar = new Object();
 
+OB.Sidebar.defaults = {
+  results_per_page: 250
+}
+
 OB.Sidebar.init = function()
 {
   OB.Callbacks.add('ready',-5,OB.Sidebar.sidebarInit);
@@ -370,8 +374,15 @@ OB.Sidebar.media_search_offset = 0;
 
 OB.Sidebar.mediaSearchMore = function()
 {
-  OB.Sidebar.media_search_offset += OB.ClientStorage.get('results_per_page');
-  OB.Sidebar.mediaSearch(true);
+  OB.API.post('account', 'store', {'name': 'results-per-page'}, function (result) {
+    if (result.status) {
+      OB.Sidebar.media_search_offset += result.data;
+    } else {
+      OB.Sidebar.media_search_offset += OB.Sidebar.defaults.results_per_page;
+    }
+
+    OB.Sidebar.mediaSearch(true);
+  });
 }
 
 OB.Sidebar.media_search_sort_by = 'updated';
@@ -468,225 +479,232 @@ OB.Sidebar.mediaSearch = function(more)
   $('#sidebar_search_media_loading').show();
   $('#sidebar_search_media_loadmore').hide();
 
-  OB.API.post('media','search',{ save_history: true, sort_by: OB.Sidebar.media_search_sort_by, sort_dir: OB.Sidebar.media_search_sort_dir, q: search_query, s: OB.Sidebar.media_search_filters.mode, l: OB.ClientStorage.get('results_per_page'), o: OB.Sidebar.media_search_offset, my: OB.Sidebar.media_search_filters.my },function (data)
-  {
-    var media_class = media; // media singleton is needed, but media local variable below overrides.
-
-    var media = data.data.media;
-    var num_results = data.data.num_results;
-
-    // handle results
-    if(!more) $('#sidebar_search_media_results tbody').html('');
-
-    if(data.status != false) for(var i in media)
-    {
-
-      var duration = media[i]['duration'];
-      if(duration==null) duration = '';
-      else duration = secsToTime(duration);
-
-      if(media[i]['is_archived']==1) var data_mode = 'media_archived';
-      else if(media[i]['is_approved']==0) var data_data = 'media_unapproved';
-      else data_mode = 'media';
-
-      var media_type_symbol = '';
-      switch (media[i]['type']) {
-        case 'audio':
-          media_type_symbol = '<i class="fas fa-music"></i>';
-        break;
-        case 'video':
-          media_type_symbol = '<i class="fas fa-video"></i>';
-        break;
-        case 'image':
-          media_type_symbol = '<i class="fas fa-image"></i>';
-        break;
-      }
-
-      var thumbnail = media[i]['thumbnail'] ? '<img loading="lazy" src="/thumbnail.php?id='+media[i]['id']+'" />' : '';
-
-      $('#sidebar_search_media_results tbody').append('\
-        <tr class="sidebar_search_media_result" id="sidebar_search_media_result_'+media[i]['id']+'" data-mode="'+data_mode+'">\
-          <td class="sidebar_search_media_thumbnail hidden" data-column="thumbnail">'+thumbnail+'</td>\
-          <td class="sidebar_search_media_type" data-column="type">'+media_type_symbol+'</td>\
-          <td class="sidebar_search_media_artist" data-column="artist">'+htmlspecialchars(media[i]['artist'])+'</td>\
-          <td class="sidebar_search_media_detailed_column hidden" data-column="album">'+htmlspecialchars(media[i]['album'])+'</td>\
-          <td class="sidebar_search_media_title" data-column="title">'+htmlspecialchars(media[i]['title'])+'</td>\
-          <td class="sidebar_search_media_detailed_column sidebar_search_media_year hidden" data-column="year">'+htmlspecialchars(media[i]['year'])+'</td>\
-          <td class="sidebar_search_media_detailed_column hidden" data-column="category">'+htmlspecialchars(media[i]['category_name'])+'</td>\
-          <td class="sidebar_search_media_detailed_column hidden" data-column="genre">'+htmlspecialchars(media[i]['genre_name'])+'</td>\
-          <td class="sidebar_search_media_detailed_column hidden" data-column="country">'+htmlspecialchars(media[i]['country_name'])+'</td>\
-          <td class="sidebar_search_media_detailed_column hidden" data-column="language">'+htmlspecialchars(media[i]['language_name'])+'</td>\
-          <td class="sidebar_search_media_time" data-column="time">'+duration+'</td>\
-        </tr>');
-
-      if(OB.Settings.media_required_fields.artist=='disabled') $('.sidebar_search_media_artist').hide();
-
-      $('#sidebar_search_media_result_'+media[i]['id']).click(function(e) {
-
-        var keypress = null;
-        if(e.shiftKey) keypress='shift';
-        else if(e.ctrlKey) keypress='ctrl';
-
-        OB.Sidebar.mediaSelect(this,false,keypress);
-      });
-
-      // change null object to blank string when required
-      if(media[i]['year'] === null) media[i]['year']='';
-
-      if(media[i]['country_id'] === null) media[i]['country_id']='';
-      if(media[i]['country_name'] === null) media[i]['country_name']='';
-
-      if(media[i]['language_id'] === null) media[i]['language_id']='';
-      if(media[i]['language_name'] === null) media[i]['language_name']='';
-
-
-      // some additional attributes to set
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-duration', media[i]['duration']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-id', media[i]['id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-artist', media[i]['artist']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-title', media[i]['title']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-year', media[i]['year']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-album', media[i]['album']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-type', media[i]['type']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-filename', media[i]['filename']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_id', media[i]['category_id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_name', media[i]['category_name']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_id', media[i]['country_id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_name', media[i]['country_name']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_id', media[i]['language_id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_name', media[i]['language_name']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-genre_id', media[i]['genre_id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-genre_name', media[i]['genre_name']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-comments', media[i]['comments']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-is_copyright_owner', media[i]['is_copyright_owner']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-visibility', media[i]['status']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-dynamic_select', media[i]['dynamic_select']);
-
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-owner_id', media[i]['owner_id']);
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-can_edit', media[i]['can_edit']);
-
-      if(media[i]['is_archived']==1) $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'archived');
-      else if(media[i]['is_approved']==0) $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'unapproved');
-      else $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'approved');
-
-      // set custom metadata
-      $.each(OB.Settings.media_metadata, function(index, metadata)
-      {
-        if(metadata.type=='hidden') return;
-        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-metadata_'+metadata.name, media[i]['metadata_'+metadata.name]);
-      });
-
-      // remove our hidden class from detailed columns if we're in an expanded (detailed) view.
-      if($('#sidebar_search').hasClass('sidebar_search_detailed')) $('.sidebar_search_media_detailed_column').show();
-
-      // set up context menu
-      var menuOptions = new Object();
-
-      //T Details
-      menuOptions[OB.t('Details')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuDetailsPage($(element).attr('data-id')); } };
-      if(media[i]['can_edit']=="true") menuOptions[OB.t('Edit')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuEditPage(); } };
-      //T Download
-      if(OB.Settings.permissions.indexOf('download_media')!=-1) menuOptions[OB.t('Download')] = { klass: 'context-menu-media-item', click: function(element){ OB.Sidebar.contextMenuDownload($(element).attr('data-id')); } };
-      //T Versions
-      if(media[i]['can_edit']=="true" && OB.Settings.permissions.indexOf('manage_media_versions')!=-1) menuOptions[OB.t('Versions')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuVersionPage($(element).attr('data-id'), $(element).attr('data-title')); } };
-
-      if(Object.keys(menuOptions).length>0)
-      {
-        $('#sidebar_search_media_result_'+media[i]['id']).contextMenu('context-menu-media-'+media[i]['id'],
-            menuOptions,
-            {
-              disable_native_context_menu: false,
-              showMenu: function(element) { $(element).click(); },
-              hideMenu: function() { },
-              leftClick: false // trigger on left click instead of right click
-            });
-      }
-
-      // double click loads detail
-      $('#sidebar_search_media_result_'+media[i]['id']).dblclick(function() { OB.Sidebar.contextMenuDetailsPage($(this).attr('data-id')); });
-
+  OB.API.post('account', 'store', {'name': 'results-per-page'}, function (result) {
+    if (result.status) {
+      var results_per_page = result.data;
+    } else {
+      var results_per_page = OB.Sidebar.defaults.results_per_page;
     }
 
-    if(data.status==false) $('#sidebar_search_media_results').attr('data-num_results',0);
-    else $('#sidebar_search_media_results').attr('data-num_results',num_results);
+    OB.API.post('media','search',{ save_history: true, sort_by: OB.Sidebar.media_search_sort_by, sort_dir: OB.Sidebar.media_search_sort_dir, q: search_query, s: OB.Sidebar.media_search_filters.mode, l: results_per_page, o: OB.Sidebar.media_search_offset, my: OB.Sidebar.media_search_filters.my },function (data)
+    {
+      var media_class = media; // media singleton is needed, but media local variable below overrides.
 
-    OB.Sidebar.mediaSearchNumResults();
-    OB.Sidebar.media_search_last_query = search_query;
+      var media = data.data.media;
+      var num_results = data.data.num_results;
 
-    if(search_query.mode=='simple') OB.Sidebar.media_search_last_simple = search_query;
-    else OB.Sidebar.media_search_last_advanced = search_query;
+      // handle results
+      if(!more) $('#sidebar_search_media_results tbody').html('');
 
-    if(data.status!=false && media.length>0) {
-      $('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
-        start: function(event, ui) {
+      if(data.status != false) for(var i in media)
+      {
 
-          var keypress = null;
-          if(event.shiftKey) keypress='shift';
-          else if(event.ctrlKey) keypress='ctrl';
+        var duration = media[i]['duration'];
+        if(duration==null) duration = '';
+        else duration = secsToTime(duration);
 
-          // select the media we're dragging also.
-          OB.Sidebar.mediaSelect($(ui.helper),true,keypress);
+        if(media[i]['is_archived']==1) var data_mode = 'media_archived';
+        else if(media[i]['is_approved']==0) var data_data = 'media_unapproved';
+        else data_mode = 'media';
 
-          // but we don't actually want the helper to count as part of this.
-          $(ui.helper).removeClass('sidebar_search_media_selected');
-
-          var num_selected = $('.sidebar_search_media_selected').size();
-
-          if(num_selected==1) var helper_html = htmlspecialchars($(ui.helper).attr('data-artist')) + '<br>' + htmlspecialchars($(ui.helper).attr('data-title'));
-          else var helper_html = htmlspecialchars(num_selected+' items');
-
-          $(ui.helper).html('');
-          OB.UI.dragHelperOn(helper_html);
-
-          var data_status = $(ui.helper).attr('data-status');
-
-          if(data_status == 'approved')
-            $('.droppable_target_media').addClass('droppable_target_highlighted');
-
-          else if(data_status == 'unapproved')
-            $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
-
-          else if(data_status == 'archived')
-            $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
-
-        },
-
-        stop: function(event, ui) {
-
-          OB.UI.dragHelperOff();
-
-          var data_status = $(ui.helper).attr('data-status');
-
-          if(data_status == 'approved')
-            $('.droppable_target_media').removeClass('droppable_target_highlighted');
-
-          else if(data_status == 'unapproved')
-            $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
-
-          else if(data_status == 'archived')
-            $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
-
+        var media_type_symbol = '';
+        switch (media[i]['type']) {
+          case 'audio':
+            media_type_symbol = '<i class="fas fa-music"></i>';
+          break;
+          case 'video':
+            media_type_symbol = '<i class="fas fa-video"></i>';
+          break;
+          case 'image':
+            media_type_symbol = '<i class="fas fa-image"></i>';
+          break;
         }
 
-      });
+        var thumbnail = media[i]['thumbnail'] ? '<img loading="lazy" src="/thumbnail.php?id='+media[i]['id']+'" />' : '';
 
-      OB.Layout.tableFixedHeaders($('#sidebar_search_media_headings'),$('#sidebar_search_media_results'));
-    }
+        $('#sidebar_search_media_results tbody').append('\
+          <tr class="sidebar_search_media_result" id="sidebar_search_media_result_'+media[i]['id']+'" data-mode="'+data_mode+'">\
+            <td class="sidebar_search_media_thumbnail hidden" data-column="thumbnail">'+thumbnail+'</td>\
+            <td class="sidebar_search_media_type" data-column="type">'+media_type_symbol+'</td>\
+            <td class="sidebar_search_media_artist" data-column="artist">'+htmlspecialchars(media[i]['artist'])+'</td>\
+            <td class="sidebar_search_media_detailed_column hidden" data-column="album">'+htmlspecialchars(media[i]['album'])+'</td>\
+            <td class="sidebar_search_media_title" data-column="title">'+htmlspecialchars(media[i]['title'])+'</td>\
+            <td class="sidebar_search_media_detailed_column sidebar_search_media_year hidden" data-column="year">'+htmlspecialchars(media[i]['year'])+'</td>\
+            <td class="sidebar_search_media_detailed_column hidden" data-column="category">'+htmlspecialchars(media[i]['category_name'])+'</td>\
+            <td class="sidebar_search_media_detailed_column hidden" data-column="genre">'+htmlspecialchars(media[i]['genre_name'])+'</td>\
+            <td class="sidebar_search_media_detailed_column hidden" data-column="country">'+htmlspecialchars(media[i]['country_name'])+'</td>\
+            <td class="sidebar_search_media_detailed_column hidden" data-column="language">'+htmlspecialchars(media[i]['language_name'])+'</td>\
+            <td class="sidebar_search_media_time" data-column="time">'+duration+'</td>\
+          </tr>');
 
-    OB.Sidebar.mediaEditDeleteVisibility();
+        if(OB.Settings.media_required_fields.artist=='disabled') $('.sidebar_search_media_artist').hide();
 
-    // show/hide loadmore as necessary, hide loading
-    $('#sidebar_search_media_loadmore').toggle( $('.sidebar_search_media_result').length < num_results );
-    $('#sidebar_search_media_loading').hide();
+        $('#sidebar_search_media_result_'+media[i]['id']).click(function(e) {
+
+          var keypress = null;
+          if(e.shiftKey) keypress='shift';
+          else if(e.ctrlKey) keypress='ctrl';
+
+          OB.Sidebar.mediaSelect(this,false,keypress);
+        });
+
+        // change null object to blank string when required
+        if(media[i]['year'] === null) media[i]['year']='';
+
+        if(media[i]['country_id'] === null) media[i]['country_id']='';
+        if(media[i]['country_name'] === null) media[i]['country_name']='';
+
+        if(media[i]['language_id'] === null) media[i]['language_id']='';
+        if(media[i]['language_name'] === null) media[i]['language_name']='';
+
+
+        // some additional attributes to set
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-duration', media[i]['duration']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-id', media[i]['id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-artist', media[i]['artist']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-title', media[i]['title']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-year', media[i]['year']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-album', media[i]['album']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-type', media[i]['type']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-filename', media[i]['filename']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_id', media[i]['category_id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_name', media[i]['category_name']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_id', media[i]['country_id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_name', media[i]['country_name']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_id', media[i]['language_id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_name', media[i]['language_name']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-genre_id', media[i]['genre_id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-genre_name', media[i]['genre_name']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-comments', media[i]['comments']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-is_copyright_owner', media[i]['is_copyright_owner']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-visibility', media[i]['status']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-dynamic_select', media[i]['dynamic_select']);
+
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-owner_id', media[i]['owner_id']);
+        $('#sidebar_search_media_result_'+media[i]['id']).attr('data-can_edit', media[i]['can_edit']);
+
+        if(media[i]['is_archived']==1) $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'archived');
+        else if(media[i]['is_approved']==0) $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'unapproved');
+        else $('#sidebar_search_media_result_'+media[i]['id']).attr('data-status', 'approved');
+
+        // set custom metadata
+        $.each(OB.Settings.media_metadata, function(index, metadata)
+        {
+          if(metadata.type=='hidden') return;
+          $('#sidebar_search_media_result_'+media[i]['id']).attr('data-metadata_'+metadata.name, media[i]['metadata_'+metadata.name]);
+        });
+
+        // remove our hidden class from detailed columns if we're in an expanded (detailed) view.
+        if($('#sidebar_search').hasClass('sidebar_search_detailed')) $('.sidebar_search_media_detailed_column').show();
+
+        // set up context menu
+        var menuOptions = new Object();
+
+        //T Details
+        menuOptions[OB.t('Details')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuDetailsPage($(element).attr('data-id')); } };
+        if(media[i]['can_edit']=="true") menuOptions[OB.t('Edit')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuEditPage(); } };
+        //T Download
+        if(OB.Settings.permissions.indexOf('download_media')!=-1) menuOptions[OB.t('Download')] = { klass: 'context-menu-media-item', click: function(element){ OB.Sidebar.contextMenuDownload($(element).attr('data-id')); } };
+        //T Versions
+        if(media[i]['can_edit']=="true" && OB.Settings.permissions.indexOf('manage_media_versions')!=-1) menuOptions[OB.t('Versions')] = { klass: 'context-menu-media-item', click: function(element) { OB.Sidebar.contextMenuVersionPage($(element).attr('data-id'), $(element).attr('data-title')); } };
+
+        if(Object.keys(menuOptions).length>0)
+        {
+          $('#sidebar_search_media_result_'+media[i]['id']).contextMenu('context-menu-media-'+media[i]['id'],
+              menuOptions,
+              {
+                disable_native_context_menu: false,
+                showMenu: function(element) { $(element).click(); },
+                hideMenu: function() { },
+                leftClick: false // trigger on left click instead of right click
+              });
+        }
+
+        // double click loads detail
+        $('#sidebar_search_media_result_'+media[i]['id']).dblclick(function() { OB.Sidebar.contextMenuDetailsPage($(this).attr('data-id')); });
+
+      }
+
+      if(data.status==false) $('#sidebar_search_media_results').attr('data-num_results',0);
+      else $('#sidebar_search_media_results').attr('data-num_results',num_results);
+
+      OB.Sidebar.mediaSearchNumResults();
+      OB.Sidebar.media_search_last_query = search_query;
+
+      if(search_query.mode=='simple') OB.Sidebar.media_search_last_simple = search_query;
+      else OB.Sidebar.media_search_last_advanced = search_query;
+
+      if(data.status!=false && media.length>0) {
+        $('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
+          start: function(event, ui) {
+
+            var keypress = null;
+            if(event.shiftKey) keypress='shift';
+            else if(event.ctrlKey) keypress='ctrl';
+
+            // select the media we're dragging also.
+            OB.Sidebar.mediaSelect($(ui.helper),true,keypress);
+
+            // but we don't actually want the helper to count as part of this.
+            $(ui.helper).removeClass('sidebar_search_media_selected');
+
+            var num_selected = $('.sidebar_search_media_selected').size();
+
+            if(num_selected==1) var helper_html = htmlspecialchars($(ui.helper).attr('data-artist')) + '<br>' + htmlspecialchars($(ui.helper).attr('data-title'));
+            else var helper_html = htmlspecialchars(num_selected+' items');
+
+            $(ui.helper).html('');
+            OB.UI.dragHelperOn(helper_html);
+
+            var data_status = $(ui.helper).attr('data-status');
+
+            if(data_status == 'approved')
+              $('.droppable_target_media').addClass('droppable_target_highlighted');
+
+            else if(data_status == 'unapproved')
+              $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
+
+            else if(data_status == 'archived')
+              $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
+
+          },
+
+          stop: function(event, ui) {
+
+            OB.UI.dragHelperOff();
+
+            var data_status = $(ui.helper).attr('data-status');
+
+            if(data_status == 'approved')
+              $('.droppable_target_media').removeClass('droppable_target_highlighted');
+
+            else if(data_status == 'unapproved')
+              $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
+
+            else if(data_status == 'archived')
+              $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
+
+          }
+
+        });
+
+        OB.Layout.tableFixedHeaders($('#sidebar_search_media_headings'),$('#sidebar_search_media_results'));
+      }
+
+      OB.Sidebar.mediaEditDeleteVisibility();
+
+      // show/hide loadmore as necessary, hide loading
+      $('#sidebar_search_media_loadmore').toggle( $('.sidebar_search_media_result').length < num_results );
+      $('#sidebar_search_media_loading').hide();
+    });
   });
-
 }
 
 OB.Sidebar.contextMenuEditPage = function()
@@ -816,8 +834,15 @@ OB.Sidebar.playlist_search_offset = 0;
 
 OB.Sidebar.playlistSearchMore = function()
 {
-  OB.Sidebar.playlist_search_offset += OB.ClientStorage.get('results_per_page');
-  OB.Sidebar.playlistSearch(true);
+  OB.API.post('account', 'store', {'name': 'results-per-page'}, function (result) {
+    if (result.status) {
+      OB.Sidebar.playlist_search_offset += result.data;
+    } else {
+      OB.Sidebar.playlist_search_offset += OB.Sidebar.defaults.results_per_page;
+    }
+
+    OB.Sidebar.playlistSearch(true);
+  })
 }
 
 OB.Sidebar.playlist_search_sort_by = 'updated';
@@ -854,131 +879,138 @@ OB.Sidebar.playlistSearch = function(more)
   $('#sidebar_search_playlist_loading').show();
   $('#sidebar_search_playlist_loadmore').hide();
 
-  OB.API.post('playlists','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: OB.ClientStorage.get('results_per_page'), o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
-
-    var playlist = data.data.playlists;
-    var num_results = data.data.num_results;
-
-    // handle results
-    $('#sidebar_search_playlist_results').attr('data-num_results',num_results);
-
-    if(!more) $('#sidebar_search_playlist_results tbody').html('');
-
-    if(num_results == 0)
-    {
-      $('#sidebar_search_playlist_results tbody').html('<tr><td colspan="3" class="sidebar_search_noresults"></td></tr>');
-      //T No Playlists Found
-      $('#sidebar_search_playlist_results tbody .sidebar_search_noresults').text(OB.t('No Playlists Found'));
+  OB.API.post('account', 'store', {'name': 'results-per-page'}, function (result) {
+    if (result.status) {
+      var results_per_page = result.data;
+    } else {
+      var results_per_page = OB.Sidebar.defaults.results_per_page;
     }
 
-    //T 1 result
-    //T %1 results
-    if(num_results==1) num_results_text = OB.t('1 result');
-    else num_results_text = OB.t('%1 results', format_number(num_results));
-    $('#sidebar_search_playlist_footer .results .num_results').html(num_results_text);
+    OB.API.post('playlists','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: results_per_page, o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
 
-    for(var i in playlist)
-    {
+      var playlist = data.data.playlists;
+      var num_results = data.data.num_results;
 
-      var duration = playlist[i]['duration'];
-      if(duration==null) duration = '';
-      else duration = secsToTime(duration);
+      // handle results
+      $('#sidebar_search_playlist_results').attr('data-num_results',num_results);
 
-      var playlist_description = playlist[i]['description'];
-      if(playlist_description.length>150) playlist_description = playlist_description.substr(0,150)+'...';
+      if(!more) $('#sidebar_search_playlist_results tbody').html('');
 
-      $('#sidebar_search_playlist_results tbody').append('\
-        <tr class="sidebar_search_playlist_result" id="sidebar_search_playlist_result_'+playlist[i]['id']+'" data-mode="playlist">\
-          <td class="sidebar_search_playlist_name" data-column="name">'+htmlspecialchars(playlist[i]['name'])+'</td>\
-          <td class="sidebar_search_playlist_description" data-column="description">'+playlist_description+'</td>\
-        </tr>');
-
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).click(function(e) {
-
-        var keypress = null;
-        if(e.shiftKey) keypress='shift';
-        else if(e.ctrlKey) keypress='ctrl';
-
-        OB.Sidebar.playlistSelect(this,false,keypress);
-
-      });
-
-      // some additional attributes to set
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-id', playlist[i]['id']);
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-name', playlist[i]['name']);
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-description', playlist[i]['description']);
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-visibility', playlist[i]['status']);
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-owner_id', playlist[i]['owner_id']);
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-can_edit', playlist[i]['can_edit']);
-
-      // set up context menu
-      var menuOptions = new Object();
-
-      //T Details
-      menuOptions[OB.t('Details')] = { klass: 'context-menu-playlist-item', click: function(element) { OB.Sidebar.contextMenuPlaylistDetailsPage($(element).attr('data-id')); } };
-      //T Edit
-      if(playlist[i]['can_edit']) menuOptions[OB.t('Edit')] = { klass: 'context-menu-playlist-item', click: function(element) { OB.Sidebar.contextMenuPlaylistEditPage(); } };
-
-      if(Object.keys(menuOptions).length>0)
+      if(num_results == 0)
       {
-        $('#sidebar_search_playlist_result_'+playlist[i]['id']).contextMenu('context-menu-playlist-'+playlist[i]['id'],
-          menuOptions,
-          {
-            disable_native_context_menu: false,
-            showMenu: function(element) { $(element).click(); },
-            hideMenu: function() { },
-            leftClick: false // trigger on left click instead of right click
-          }
-        );
+        $('#sidebar_search_playlist_results tbody').html('<tr><td colspan="3" class="sidebar_search_noresults"></td></tr>');
+        //T No Playlists Found
+        $('#sidebar_search_playlist_results tbody .sidebar_search_noresults').text(OB.t('No Playlists Found'));
       }
 
-      // double click loads details page
-      $('#sidebar_search_playlist_result_'+playlist[i]['id']).dblclick(function() { OB.Sidebar.contextMenuPlaylistDetailsPage($(this).attr('data-id')); });
+      //T 1 result
+      //T %1 results
+      if(num_results==1) num_results_text = OB.t('1 result');
+      else num_results_text = OB.t('%1 results', format_number(num_results));
+      $('#sidebar_search_playlist_footer .results .num_results').html(num_results_text);
 
-    }
+      for(var i in playlist)
+      {
 
-    if(playlist.length>0) {
-      $('.sidebar_search_playlist_result').not('.ui-draggable').draggable({helper: 'clone',
-        start: function(event, ui) {
+        var duration = playlist[i]['duration'];
+        if(duration==null) duration = '';
+        else duration = secsToTime(duration);
+
+        var playlist_description = playlist[i]['description'];
+        if(playlist_description.length>150) playlist_description = playlist_description.substr(0,150)+'...';
+
+        $('#sidebar_search_playlist_results tbody').append('\
+          <tr class="sidebar_search_playlist_result" id="sidebar_search_playlist_result_'+playlist[i]['id']+'" data-mode="playlist">\
+            <td class="sidebar_search_playlist_name" data-column="name">'+htmlspecialchars(playlist[i]['name'])+'</td>\
+            <td class="sidebar_search_playlist_description" data-column="description">'+playlist_description+'</td>\
+          </tr>');
+
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).click(function(e) {
 
           var keypress = null;
-          if(event.shiftKey) keypress='shift';
-          else if(event.ctrlKey) keypress='ctrl';
+          if(e.shiftKey) keypress='shift';
+          else if(e.ctrlKey) keypress='ctrl';
 
-          // select the media we're dragging also.
-          OB.Sidebar.playlistSelect($(ui.helper),true,keypress);
+          OB.Sidebar.playlistSelect(this,false,keypress);
 
-          // but we don't actually want the helper to count as part of this.
-          $(ui.helper).removeClass('sidebar_search_playlist_selected');
+        });
 
-          var num_selected = $('.sidebar_search_playlist_selected').size();
+        // some additional attributes to set
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-id', playlist[i]['id']);
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-name', playlist[i]['name']);
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-description', playlist[i]['description']);
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-visibility', playlist[i]['status']);
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-owner_id', playlist[i]['owner_id']);
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).attr('data-can_edit', playlist[i]['can_edit']);
 
-          if(num_selected==1) var helper_html = htmlspecialchars($(ui.helper).attr('data-name'));
-          else var helper_html = htmlspecialchars(num_selected+' items');
+        // set up context menu
+        var menuOptions = new Object();
 
-          $(ui.helper).html('');
-          OB.UI.dragHelperOn(helper_html);
+        //T Details
+        menuOptions[OB.t('Details')] = { klass: 'context-menu-playlist-item', click: function(element) { OB.Sidebar.contextMenuPlaylistDetailsPage($(element).attr('data-id')); } };
+        //T Edit
+        if(playlist[i]['can_edit']) menuOptions[OB.t('Edit')] = { klass: 'context-menu-playlist-item', click: function(element) { OB.Sidebar.contextMenuPlaylistEditPage(); } };
 
-          $('.droppable_target_playlist').addClass('droppable_target_highlighted');
-
-        },
-
-        stop: function(event, ui) {
-          $('.droppable_target_playlist').removeClass('droppable_target_highlighted');
-          OB.UI.dragHelperOff();
+        if(Object.keys(menuOptions).length>0)
+        {
+          $('#sidebar_search_playlist_result_'+playlist[i]['id']).contextMenu('context-menu-playlist-'+playlist[i]['id'],
+            menuOptions,
+            {
+              disable_native_context_menu: false,
+              showMenu: function(element) { $(element).click(); },
+              hideMenu: function() { },
+              leftClick: false // trigger on left click instead of right click
+            }
+          );
         }
-      });
 
-      OB.Layout.tableFixedHeaders($('#sidebar_search_playlist_headings'),$('#sidebar_search_playlist_results'));
-    }
+        // double click loads details page
+        $('#sidebar_search_playlist_result_'+playlist[i]['id']).dblclick(function() { OB.Sidebar.contextMenuPlaylistDetailsPage($(this).attr('data-id')); });
 
-    OB.Sidebar.playlistEditDeleteVisibility();
+      }
 
-    // show/hide loadmore as necessary, hide loading
-    $('#sidebar_search_playlist_loadmore').toggle( $('.sidebar_search_playlist_result').length < num_results );
-    $('#sidebar_search_playlist_loading').hide();
+      if(playlist.length>0) {
+        $('.sidebar_search_playlist_result').not('.ui-draggable').draggable({helper: 'clone',
+          start: function(event, ui) {
+
+            var keypress = null;
+            if(event.shiftKey) keypress='shift';
+            else if(event.ctrlKey) keypress='ctrl';
+
+            // select the media we're dragging also.
+            OB.Sidebar.playlistSelect($(ui.helper),true,keypress);
+
+            // but we don't actually want the helper to count as part of this.
+            $(ui.helper).removeClass('sidebar_search_playlist_selected');
+
+            var num_selected = $('.sidebar_search_playlist_selected').size();
+
+            if(num_selected==1) var helper_html = htmlspecialchars($(ui.helper).attr('data-name'));
+            else var helper_html = htmlspecialchars(num_selected+' items');
+
+            $(ui.helper).html('');
+            OB.UI.dragHelperOn(helper_html);
+
+            $('.droppable_target_playlist').addClass('droppable_target_highlighted');
+
+          },
+
+          stop: function(event, ui) {
+            $('.droppable_target_playlist').removeClass('droppable_target_highlighted');
+            OB.UI.dragHelperOff();
+          }
+        });
+
+        OB.Layout.tableFixedHeaders($('#sidebar_search_playlist_headings'),$('#sidebar_search_playlist_results'));
+      }
+
+      OB.Sidebar.playlistEditDeleteVisibility();
+
+      // show/hide loadmore as necessary, hide loading
+      $('#sidebar_search_playlist_loadmore').toggle( $('.sidebar_search_playlist_result').length < num_results );
+      $('#sidebar_search_playlist_loading').hide();
+    });
   });
-
 }
 
 OB.Sidebar.mySearchesContextMenuOn = function(e,type,id)

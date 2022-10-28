@@ -158,7 +158,8 @@ OB.Account.settings = function()
   post.push(['account','settings',{}]);
   post.push(['ui','get_languages',{}]);
   post.push(['ui','get_themes',{}]);
-  post.push(['account', 'permissions', {}])
+  post.push(['account', 'permissions', {}]);
+  post.push(['account', 'store', {'name': 'results-per-page'}]);
 
   OB.API.multiPost(post,function(data) {
 
@@ -166,6 +167,7 @@ OB.Account.settings = function()
     var languages = data[1];
     var themes = data[2];
     var permissions = data[3];
+    var results_per_page = data[4];
 
     OB.UI.replaceMain('account/settings.html');
 
@@ -177,7 +179,9 @@ OB.Account.settings = function()
     $('#account_display_name_input').val(userdata['display_name']);
 
     // user settings
-    $('#account_user_results_per_page').val(OB.ClientStorage.get('results_per_page'));
+    if (results_per_page.status) {
+      $('#account_user_results_per_page').val(results_per_page.data);
+    }
 
     if(languages && languages.data) $.each(languages.data, function(value,language)
     {
@@ -240,12 +244,9 @@ OB.Account.settingsSubmit = function()
     $('#account_settings_message').obWidget(response.status ? 'success' : 'error',response.msg);
   });
 
-  // TODO this is a bit meh. we merged this to the main account settings page but this doesn't provide any feedback/error/etc.
-  // minor issue i think.
   var settings = {};
   settings.results_per_page = parseInt($('#account_user_results_per_page').val());
-  OB.ClientStorage.store(settings,function() {});
-
+  OB.API.post('account', 'store', { 'name': 'results-per-page', 'value': settings.results_per_page }, function (result) {});
 }
 
 OB.Account.keyAdd = function () {
@@ -291,7 +292,7 @@ OB.Account.keyPermissionsSave = function()
       $('#appkey_permissions_message').obWidget('error', response.msg);
       return;
     }
-    
+
     $('#appkey_permissions_message').obWidget('success', 'Permissions saved.');
   });
 }
@@ -324,7 +325,7 @@ OB.Account.keyLoad = function () {
       $tr.append($('<td/>').text(format_timestamp(row.last_access)));
       $tr.append($('<td/>').html('<button onclick="OB.Account.keyPermissionsOpen(this);">Permissions</button><button class="delete" onclick="OB.Account.keyDelete(this);">Delete</button>'));
       $tr.data('appkey_permissions', row.permissions);
-      
+
       $('#account_appkey_table tbody').append($tr);
     });
   });
