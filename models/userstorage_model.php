@@ -43,13 +43,13 @@ class UserStorageModel extends OBFModel
             $this->db->where('user_id', $args['user_id']);
             $this->db->where('name', $args['name']);
             $this->db->update('users_storage', [
-              'value' => $args['value']
+              'value' => json_encode($args['value'])
             ]);
         } else {
             $data = [
               'user_id' => $args['user_id'],
               'name'    => $args['name'],
-              'value'   => $args['value']
+              'value'   => json_encode($args['value'])
             ];
             $this->db->insert('users_storage', $data);
         }
@@ -73,7 +73,7 @@ class UserStorageModel extends OBFModel
         if (!$value) {
             return [false, 'Not found.'];
         } else {
-            return [true, 'Success.', $value[0]['name']];
+            return [true, 'Success.', json_decode($value[0]['value'])];
         }
     }
 }
