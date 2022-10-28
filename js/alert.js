@@ -80,7 +80,7 @@ OB.Alert.alertInit = function()
 
   var post = [];
   post.push(['players','search', {}]);
-  post.push(['alerts','get_last_player', {}]);
+  post.push(['account','store', {'name': 'alerts-player'}]);
 
   OB.API.multiPost(post, function(responses)
   {
@@ -101,10 +101,10 @@ OB.Alert.alertInit = function()
 
     });
 
-    if(last_player.status && $('#alert_player_select option[value='+last_player.data+']').length)
+    if(last_player.status && $('#alert_player_select option[value='+last_player.data.player+']').length)
     {
-      $('#alert_player_select').val(last_player.data);
-      OB.Alert.player_id = last_player.data;
+      $('#alert_player_select').val(last_player.data.player);
+      OB.Alert.player_id = last_player.data.player;
     }
 
     OB.Alert.loadAlerts();
@@ -126,7 +126,7 @@ OB.Alert.loadAlerts = function()
 
   var post = [];
   post.push(['alerts','search',{ 'player_id': OB.Alert.player_id }]);
-  post.push(['alerts','set_last_player', { 'player': OB.Alert.player_id}]);
+  post.push(['account','store', { 'name': 'alerts-player', 'value': { 'player': OB.Alert.player_id } }]);
 
   OB.API.multiPost(post, function(responses)
   {
