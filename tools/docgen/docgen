@@ -2,6 +2,7 @@
 
 <?php
 
+chdir(__DIR__);
 require_once('parse.php');
 require_once('data.php');
 require_once('output.php');
