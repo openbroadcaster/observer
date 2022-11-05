@@ -291,6 +291,24 @@ class OBFChecker
         return array('Assets directory','Assets and assets/uploads directories exist and are writable by the server.',0);
     }
 
+    public function composer()
+    {
+        if (!is_dir(__DIR__ . '/../vendor')) {
+            return array('Composer', 'Missing vendor directory. Install composer then run "composer install" to get required dependencies.', 2);
+        }
+
+        return array('Composer', 'Vendor directory found. Run "composer install" to ensure all required packages are installed.',0);
+    }
+
+    public function npm()
+    {
+        if (!is_dir(__DIR__ . '/../node_modules')) {
+            return array('Node Package Manager (NPM)', 'Missing node_modules directory. Install npm then run "npm install" to get required dependencies.', 1);
+        }
+
+        return array('Node Package Manager (NPM)', 'Node package directory found. Run "npm install" to ensure all required packages are installed.',0);
+    }
+
     public function database_version()
     {
         $db = new OBFDB();
