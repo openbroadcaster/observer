@@ -12,3 +12,5 @@ tools/subsonic/*.json
 **/.sass-cache
 phpmyadmin
 vendor
+node_modules
+package-lock.json

@@ -44,14 +44,22 @@ $css_files   = $models->ui('css_files');
 $image_files = $models->ui('image_files');
 
 
+$js_dependencies = [
+  'node_modules/jquery/dist/jquery.min.js',
+  'node_modules/jquery-migrate/dist/jquery-migrate.min.js'
+]
+
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>OpenBroadcaster</title>
 
-  <script type="text/javascript" src="extras/jquery.min.js?v=<?=filemtime('extras/jquery.min.js')?>"></script>
-  <script type="text/javascript" src="extras/jquery-migrate.min.js?v=<?=filemtime('extras/jquery-migrate.min.js')?>"></script>
+<?php
+foreach ($js_dependencies as $file) {
+    echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime($file) . '"></script>' . PHP_EOL;
+}
+?>
   <script type="text/javascript" src="extras/jquery-ui.min.js?v=<?=filemtime('extras/jquery-ui.min.js')?>"></script>
   <script type="text/javascript" src="extras/jquery-ui-timepicker-addon.js?v=<?=filemtime('extras/jquery-ui-timepicker-addon.js')?>"></script>
   <script type="text/javascript" src="extras/jquery.ba-dotimeout.min.js?v=<?=filemtime('extras/jquery.ba-dotimeout.min.js')?>"></script>
