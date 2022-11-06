@@ -545,7 +545,6 @@ class ShowsModel extends OBFModel
                         trigger_error('Invalid mode provided. Aborting to avoid infinite shows added.', E_USER_ERROR);
                 }
             }
-
         } else {
             $dbdata['mode'] = 'once';
             $dbdata['recurring_interval'] = 0;
