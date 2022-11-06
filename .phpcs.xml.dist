@@ -19,6 +19,7 @@
 	<file>thumbnail.php</file>
 	<file>tts.php</file>
 	<file>upload.php</file>
+	<file>tools/cli</file>
 
 	<arg value="np"/>
 	<rule ref="PSR12">
