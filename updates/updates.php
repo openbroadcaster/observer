@@ -309,6 +309,54 @@ class OBFChecker
         return array('Node Package Manager (NPM)', 'Node package directory found. Run "npm install" to ensure all required packages are installed.',0);
     }
 
+    public function database_privileges()
+    {
+        $db = new OBFDB();
+        $db->query('SELECT * FROM information_schema.schema_privileges WHERE 
+            TABLE_SCHEMA = "' . $db->escape(OB_DB_NAME) . '" AND
+            GRANTEE LIKE "\'' . $db->escape(OB_DB_USER) . '%"
+        ');
+        $privileges = [];
+        foreach ($db->assoc_list() as $row) {
+            $privileges[] = $row['PRIVILEGE_TYPE'];
+        }
+
+        $required = [
+            'SELECT',
+            'INSERT',
+            'UPDATE',
+            'DELETE',
+            'CREATE',
+            'DROP',
+            'REFERENCES',
+            'INDEX',
+            'ALTER',
+            'CREATE TEMPORARY TABLES',
+            'LOCK TABLES',
+            'EXECUTE',
+            'CREATE VIEW',
+            'SHOW VIEW',
+            'CREATE ROUTINE',
+            'ALTER ROUTINE',
+            'EVENT',
+            'TRIGGER'
+        ];
+
+        $missing = [];
+
+        foreach ($required as $privilege) {
+            if (array_search($privilege, $privileges) === false) {
+                $missing[] = $privilege;
+            }
+        }
+
+        if (!empty($missing)) {
+            return array('Database Privileges', 'Database user may not have all the required privileges necessary. Missing: ' . implode(', ', $missing),1);
+        }
+
+        return array('Database Privileges', 'Found all necessary privileges.',0);
+    }
+
     public function database_version()
     {
         $db = new OBFDB();
