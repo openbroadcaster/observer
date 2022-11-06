@@ -84,7 +84,6 @@ class OBCLI
             if (is_array($output)) {
                 $output = implode(' ', $output);
             }
-            $output = str_replace(PHP_EOL, ' ', $result[1]);
             $output = preg_replace('/\s+/', ' ', $output);
             $output = wordwrap($output);
             $output = str_replace(PHP_EOL, PHP_EOL . '  ', $output);
