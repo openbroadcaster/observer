@@ -39,9 +39,11 @@ class LoggerModule extends OBFModule
 		$hooks[] = 'Account.update_settings';
 		$hooks[] = 'Account.forgotpass';
 		$hooks[] = 'Account.newaccount';
-
-		$hooks[] = 'ClientStorage.store';
-		$hooks[] = 'ClientStorage.get';
+		$hooks[] = 'Account.key_new';
+		$hooks[] = 'Account.key_delete';
+		$hooks[] = 'Account.key_permissions_save';
+		$hooks[] = 'Account.key_load';
+		$hooks[] = 'Account.store';
 
 		$hooks[] = 'Player.search';
 		$hooks[] = 'Player.save';
