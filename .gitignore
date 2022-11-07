@@ -14,3 +14,4 @@ phpmyadmin
 vendor
 node_modules
 package-lock.json
+.php-cs-fixer.cache
