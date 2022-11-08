@@ -291,7 +291,6 @@ class Remote
                 if ($media['item_type'] == 'image') {
                     $media['duration'] = $show['duration'];
                 }
-                $media['context'] = 'Media';
 
                 if ($media) {
                     if (empty($timeslot)) {
@@ -426,6 +425,7 @@ class Remote
                 }
 
                 $itemxml = $mediaxml->addChild('item');
+                $media_item['context'] = 'show';
                 $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
 
                 if ($show['type'] == 'standard' || $show['type'] == 'live_assist') {
