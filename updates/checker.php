@@ -349,12 +349,27 @@ class OBFChecker
     public function database_version()
     {
         $db = new OBFDB();
+        $latest = 0;
 
         $db->where('name', 'dbver');
         $dbver = $db->get_one('settings');
 
         if (!$dbver) {
             return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+        }
+
+        $files = scandir(__DIR__);
+        foreach ($files as $file) {
+            $filename = pathinfo($file)['filename'];
+            if (preg_match('/^[0-9]{8}$/', $filename)) {
+                $latest = max($latest, (int) $filename);
+            }
+        }
+
+        if ($dbver['value'] < $latest) {
+            return ['Database Version', 'Database version ' . $dbver['value'] . ' lower than latest vesrion ' . $latest . '. Please run updates.', 1];
+        } elseif ($dbver['value'] > $latest) {
+            return ['Database Version', 'Database version ' . $dbver['value'] . ' greater than latest vesrion ' . $latest . '.', 1];
         }
 
         $this->dbver = $dbver['value'];

@@ -21,6 +21,10 @@
 
 // command line tool (alpha)
 
+namespace ob\tools\cli;
+
+require(__DIR__ . '/helpers.php');
+
 define('OB_CLI', true);
 
 if (php_sapi_name() !== 'cli') {
@@ -51,49 +55,63 @@ check    check configuration for errors
 ';
 }
 
+
+
 class OBCLI
 {
     public function check()
     {
         require('updates/checker.php');
 
-        $checker = new OBFChecker();
+        $checker = new \OBFChecker();
         $methods = get_class_methods($checker);
         $results = [];
+        $rows = [];
+        $errors = 0;
+        $warnings = 0;
+        $pass = 0;
 
         $check_fatal_error = false;
 
         foreach ($methods as $method) {
             $result = $checker->$method();
             $results[] = $result;
+
+            $formatting1 = '';
+            $formatting2 = '';
+
+            switch ($result[2]) {
+                case 0:
+                    $formatting = "\033[32m";
+                    $pass++;
+                    break;
+                case 1:
+                    $formatting = "\033[33m";
+                    $warnings++;
+                    break;
+                case 2:
+                    $formatting = "\033[31m";
+                    $errors++;
+            }
+            $rows[] = [[$formatting,$result[0]], [$formatting, $result[1]]];
+
             if ($result[2] > 1) {
                 $check_fatal_error = true;
                 break;
             }
         }
 
-        foreach ($results as $result) {
-            if ($result[2] == 0) {
-                echo "\033[1;32m✔\033[0m ";
-            } elseif ($result[2] == 1) {
-                echo "\033[1;33m?\033[0m ";
-            } else {
-                echo "\033[1;31m🗴\033[0m ";
-            }
-            $output = $result[1];
-            if (is_array($output)) {
-                $output = implode(' ', $output);
-            }
-            $output = preg_replace('/\s+/', ' ', $output);
-            $output = wordwrap($output);
-            $output = str_replace(PHP_EOL, PHP_EOL . '  ', $output);
-            echo $output . PHP_EOL;
-        }
+        Helpers::table(rows: $rows);
 
         if ($check_fatal_error) {
             echo "\033[31m";
             echo PHP_EOL . 'Error detected, testing stopped. Correct the above error then run again.' . PHP_EOL;
             echo "\033[0m";
+        } else {
+            echo PHP_EOL .
+                "\033[32m" . str_pad($pass, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .
+                "\033[33m" . str_pad($warnings, 2, ' ', STR_PAD_LEFT) . " warnings\033[0m    " .
+                "\033[31m" . str_pad($errors, 2, ' ', STR_PAD_LEFT) . " errors\033[0m" . PHP_EOL;
         }
     }
 }
