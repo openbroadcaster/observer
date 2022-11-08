@@ -1140,7 +1140,7 @@ class Remote
         } elseif (!preg_match('/^[0-9]+$/', $media_id)) {
             $error = "Media ID is invalid.";
         } else {
-            $sql = 'select id from playlog where ' . implode($dbcheck, ' and ');
+            $sql = 'select id from playlog where ' . implode(' and ', $dbcheck);
 
             $this->db->query($sql);
 
