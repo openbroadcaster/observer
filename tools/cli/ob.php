@@ -108,7 +108,7 @@ class OBCLI
             echo PHP_EOL . 'Error detected, testing stopped. Correct the above error then run again.' . PHP_EOL;
             echo "\033[0m";
         } else {
-            echo PHP_EOL .
+                echo PHP_EOL .
                 "\033[32m" . str_pad($pass, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .
                 "\033[33m" . str_pad($warnings, 2, ' ', STR_PAD_LEFT) . " warnings\033[0m    " .
                 "\033[31m" . str_pad($errors, 2, ' ', STR_PAD_LEFT) . " errors\033[0m" . PHP_EOL;
