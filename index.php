@@ -22,7 +22,7 @@
 // might be used by other things as well.
 header('OpenBroadcaster-Application: index');
 
-require('components.php');
+require_once('components.php');
 
 if (is_file('VERSION')) {
     $version = trim(file_get_contents('VERSION'));

@@ -19,7 +19,7 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('components.php');
+require_once('components.php');
 
 // set default transcoding commands
 if (!defined('OB_TRANSCODE_AUDIO_MP3')) {

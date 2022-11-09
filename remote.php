@@ -21,7 +21,7 @@
 
 
 
-require('components.php');
+require_once('components.php');
 
 // this script requires a long time when generating a lot of content
 ini_set('max_execution_time', max(300, ini_get('max_execution_time')));

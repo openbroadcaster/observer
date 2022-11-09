@@ -19,7 +19,7 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('components.php');
+require_once('components.php');
 
 $db = OBFDB::get_instance();
 

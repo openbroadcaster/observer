@@ -19,7 +19,7 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('components.php');
+require_once('components.php');
 
 if (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key'])) {
     $auth_id = $_COOKIE['ob_auth_id'];

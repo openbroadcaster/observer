@@ -25,7 +25,7 @@
     See license information in extras/valums-file-uploader.
 */
 
-require('components.php');
+require_once('components.php');
 
 // COMPLETE AUTHENTICATION, usually handled by api.php
 $user = OBFUser::get_instance();
