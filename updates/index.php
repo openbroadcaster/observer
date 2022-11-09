@@ -19,7 +19,9 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// experimental functionality to run updates from command line
+mysqli_report(MYSQLI_REPORT_ERROR);
+
+// experimental functionality to run updates from command line (will be moved to ob cli tool)
 if (php_sapi_name() === 'cli' && ($argv[1] ?? null) === 'run') {
     define('OB_FORCE_UPDATE', true);
     require('updates.php');
