@@ -116,7 +116,7 @@ class OBFChecker
 
     public function config_file_valid()
     {
-        require(__DIR__ . '/../components.php');
+        require_once(__DIR__ . '/../components.php');
 
         $fatal_error = false;
         $errors = array();
@@ -170,30 +170,6 @@ class OBFChecker
 
             if (strlen(OB_HASH_SALT) < 6) {
                 $errors[] = 'OB_HASH_SALT (password hash salt) is too short (<6 characters).';
-            }
-
-            if (!is_dir(OB_MEDIA)) {
-                $error[] = 'OB_MEDIA (media directory) is not a valid directory.';
-            } elseif (!is_writable(OB_MEDIA)) {
-                $errors[] = 'OB_MEDIA (media directory) is not writable by the server.';
-            }
-
-            if (!is_dir(OB_MEDIA_UPLOADS)) {
-                $errors[] = 'OB_MEDIA_UPLOADS (media unapproved/uploads directory) is not a valid directory.';
-            } elseif (!is_writable(OB_MEDIA_UPLOADS)) {
-                $errors[] = 'OB_MEDIA_UPLOADS (media upapproved/uploads directory) is not writable by the server.';
-            }
-
-            if (!is_dir(OB_MEDIA_ARCHIVE)) {
-                $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not a valid directory.';
-            } elseif (!is_writable(OB_MEDIA_ARCHIVE)) {
-                $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not writable by the server.';
-            }
-
-            if (!is_dir(OB_CACHE)) {
-                $errors[] = 'OB_CACHE (cache directory) is not a valid directory.';
-            } elseif (!is_writable(OB_CACHE)) {
-                $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
             }
 
             if (stripos(OB_SITE, 'http://') !== 0 && stripos(OB_SITE, 'https://') !== 0) {
@@ -261,23 +237,49 @@ class OBFChecker
         }
     }
 
-    public function assets()
+    public function directories_valid()
     {
+        $errors = [];
+
+        if (!is_dir(OB_MEDIA)) {
+            $errors[] = 'OB_MEDIA (media directory) is not a valid directory.';
+        } elseif (!is_writable(OB_MEDIA)) {
+            $errors[] = 'OB_MEDIA (media directory) is not writable by the server.';
+        }
+
+        if (!is_dir(OB_MEDIA_UPLOADS)) {
+            $errors[] = 'OB_MEDIA_UPLOADS (media unapproved/uploads directory) is not a valid directory.';
+        } elseif (!is_writable(OB_MEDIA_UPLOADS)) {
+            $errors[] = 'OB_MEDIA_UPLOADS (media upapproved/uploads directory) is not writable by the server.';
+        }
+
+        if (!is_dir(OB_MEDIA_ARCHIVE)) {
+            $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not a valid directory.';
+        } elseif (!is_writable(OB_MEDIA_ARCHIVE)) {
+            $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not writable by the server.';
+        }
+
+        if (!is_dir(OB_CACHE)) {
+            $errors[] = 'OB_CACHE (cache directory) is not a valid directory.';
+        } elseif (!is_writable(OB_CACHE)) {
+            $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
+        }
+
         if (!is_dir(OB_ASSETS)) {
-            return array('Assets directory','The assets directory does not exist.',2);
-        }
-        if (!is_writable(OB_ASSETS)) {
-            return array('Assets directory','The assets directory is not writable by the server.',2);
-        }
-
-        if (!is_dir(OB_ASSETS . '/uploads')) {
-            return array('Assets directory','The assets/uploads directory does not exist.',2);
-        }
-        if (!is_writable(OB_ASSETS . '/uploads')) {
-            return array('Assets directory','The assets/uploads directory is not writable by the server.',2);
+            $errors[] = 'The assets directory does not exist.';
+        } elseif (!is_writable(OB_ASSETS)) {
+            $errors[] = 'The assets directory is not writable by the server.';
+        } elseif (!is_dir(OB_ASSETS . '/uploads')) {
+            $errors[] = 'The assets/uploads directory does not exist.';
+        } elseif (!is_writable(OB_ASSETS . '/uploads')) {
+            $errors[] = 'The assets/uploads directory is not writable by the server.';
         }
 
-        return array('Assets directory','Assets and assets/uploads directories exist and are writable by the server.',0);
+        if ($errors) {
+            return ['Directories', implode('. ', $errors), 2];
+        } else {
+            return ['Directories', 'Directories exist with valid permissions.', 0];
+        }
     }
 
     public function composer()
