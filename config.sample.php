@@ -71,3 +71,8 @@ define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "ech
 // OB_SYNC_USERID = 1; // owner for imported media
 // OB_SYNC_SOURCE = '/mnt/media';
 // OB_ACOUSTID_KEY = '';
+
+// what checks should be done on every request to ensure proper operation?
+// see updates/checker.php method names for available checks
+// default false
+// define('OB_INIT_VERIFY', ['database_version', 'config_file_valid']);

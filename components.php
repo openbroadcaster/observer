@@ -43,7 +43,7 @@ chdir(OB_LOCAL);
 if (!file_exists('config.php')) {
     die('Settings file (config.php) not found.');
 }
-require('config.php');
+require_once('config.php');
 
 // set defaults if not set
 if (!defined('OB_ASSETS')) {
@@ -56,22 +56,45 @@ if (!defined('OB_MEDIA_VERIFY')) {
     define('OB_MEDIA_VERIFY', true);
 }
 
+if (!defined('OB_INIT_VERIFY')) {
+    define('OB_INIT_VERIFY', false);
+}
+
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.
 date_default_timezone_set('Etc/UTC');
 
 // load core components
-require('classes/obfdb.php');
-require('classes/obfload.php');
-require('classes/obfio.php');
-require('classes/obfcontroller.php');
-require('classes/obfcallbacks.php');
-require('classes/obfhelpers.php');
-require('classes/obfmodel.php');
-require('classes/obfmodels.php');
-require('classes/obfuser.php');
-require('classes/obfmodule.php');
+require_once('classes/obfdb.php');
+require_once('classes/obfload.php');
+require_once('classes/obfio.php');
+require_once('classes/obfcontroller.php');
+require_once('classes/obfcallbacks.php');
+require_once('classes/obfhelpers.php');
+require_once('classes/obfmodel.php');
+require_once('classes/obfmodels.php');
+require_once('classes/obfuser.php');
+require_once('classes/obfmodule.php');
 
 // load third party components
-require('vendor/autoload.php');
+require_once('vendor/autoload.php');
 //require('extras/PHPMailer/src/Exception.php');
 //require('extras/PHPMailer/src/PHPMailer.php');
+
+// verify proper functioning if requested in config
+$init_verify_running = false;
+if (!$init_verify_running && OB_INIT_VERIFY && is_array(OB_INIT_VERIFY)) {
+    $init_verify_running = true;
+    require_once('updates/checker.php');
+    $checker = new \OBFChecker();
+    $methods = get_class_methods($checker);
+
+    foreach (OB_INIT_VERIFY as $check) {
+        if (is_string($check) && in_array($check, $methods)) {
+            $result = $checker->$check();
+            if ($result[2] > 0) {
+                http_response_code(503);
+                die('OpenBroadcaster temporarily unavailable.');
+            }
+        }
+    }
+}
