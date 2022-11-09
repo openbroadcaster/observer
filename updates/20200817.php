@@ -13,8 +13,6 @@ class OBUpdate20200817 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // CASCADE updates to schedules, schedules_media_cache, schedules_permissions, schedules_recurring, and their sub-tables. Clean up tables first.
 
         // `schedules`
@@ -100,11 +98,6 @@ class OBUpdate20200817 extends OBUpdate
         $this->db->query('DELETE FROM `users_to_groups` WHERE `group_id` NOT IN (SELECT `id` FROM `users_groups`);');
         $this->db->query('ALTER TABLE `users_to_groups` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
         $this->db->query('ALTER TABLE `users_to_groups` ADD FOREIGN KEY (`group_id`) REFERENCES `users_groups`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

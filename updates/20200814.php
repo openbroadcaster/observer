@@ -14,8 +14,6 @@ class OBUpdate20200814 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // CASCADE updates to playlists. Allow NULLS in owner_id when a user gets deleted. Clean up table first.
         $this->db->query("ALTER TABLE `playlists` CHANGE `owner_id` `owner_id` INT(10) UNSIGNED NULL DEFAULT '0';");
         $this->db->query('UPDATE `playlists` SET `owner_id` = NULL WHERE `owner_id` NOT IN (SELECT `id` FROM `users`);');
@@ -32,11 +30,6 @@ class OBUpdate20200814 extends OBUpdate
         $this->db->query('DELETE FROM `playlists_liveassist_buttons` WHERE `button_playlist_id` NOT IN (SELECT `id` FROM `playlists`);');
         $this->db->query('ALTER TABLE `playlists_liveassist_buttons` ADD FOREIGN KEY (`playlist_id`) REFERENCES `playlists`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
         $this->db->query('ALTER TABLE `playlists_liveassist_buttons` ADD FOREIGN KEY (`button_playlist_id`) REFERENCES `playlists`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

@@ -29,8 +29,7 @@ class OBUpdate20200622 extends OBUpdate
       MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;');
 
         $this->db->query('ALTER TABLE `users_appkeys`
-      ADD CONSTRAINT `users_api_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-    COMMIT;');
+      ADD CONSTRAINT `users_api_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
 
         // Add to permissions table.
         $this->db->insert('users_permissions', [

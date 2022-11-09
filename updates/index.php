@@ -19,7 +19,7 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-mysqli_report(MYSQLI_REPORT_ERROR);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // experimental functionality to run updates from command line (will be moved to ob cli tool)
 if (php_sapi_name() === 'cli' && ($argv[1] ?? null) === 'run') {
@@ -63,7 +63,7 @@ if (empty($_GET['run']) || $_GET['run'] != 1) {
   {
     font-size: 22px;
   }
-  
+
   h2
   {
     font-size: 16px;
@@ -109,20 +109,20 @@ if (empty($_GET['run']) || $_GET['run'] != 1) {
   {
     background-color: #cfc !important;
   }
-  
+
   .ob-updates
   {
     display: flex;
     flex-direction: column-reverse;
     font-size: 13px;
   }
-  
-  .ob-update 
+
+  .ob-update
   {
     display: flex;
     align-items: stretch;
   }
-  
+
   .ob-update p,
   .ob-update h2,
   .ob-update ul
@@ -131,46 +131,46 @@ if (empty($_GET['run']) || $_GET['run'] != 1) {
     margin-bottom: 0;
     font-size: 13px;
   }
-  
+
   .ob-update li
   {
     font-size: 12px;
   }
-  
+
   .ob-update ul
   {
     padding-left: 10px;
   }
-  
+
   .ob-update li:not(:first-child)
   {
     margin-top: 10px;
   }
-  
+
   .ob-update > div
   {
     background-color: #f3f3f3;
     margin: 1px;
     padding: 10px;
   }
-  
+
   .ob-update-name
   {
     flex: 0 0 75px;
     display: flex;
   }
-  
+
   .ob-update-description
   {
     flex: 1 1 auto;
   }
-  
+
   .ob-update-status
   {
     flex: 0 0 75px;
     display: flex;
   }
-  
+
   </style>
 </head>
 
@@ -237,9 +237,9 @@ if (empty($_GET['run']) || $_GET['run'] != 1) {
         } ?>
 
   <div class="ob-update ob-update-<?=strtolower($status)?>">
-  
+
     <div class="ob-update-name"><h2><?=$update->version?></h2></div>
-    
+
     <div class="ob-update-description">
         <?php $items = $update->items(); ?>
       <ul>
@@ -251,9 +251,9 @@ if (empty($_GET['run']) || $_GET['run'] != 1) {
         <?php } ?>
       </ul>
     </div>
-    
+
     <div class="ob-update-status"><?=$status?></div>
-  </div> 
+  </div>
         <?php
     } ?>
 </div>

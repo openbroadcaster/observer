@@ -11,8 +11,6 @@ class OBUpdate20200818 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // CASCADE updates to media tables (including genres, metadata*, permissions*, searches, versions). Clean up tables first.
 
         // `media` (update other table structures too so it works)
@@ -51,11 +49,6 @@ class OBUpdate20200818 extends OBUpdate
         $this->db->query('ALTER TABLE `media_versions` ADD INDEX(`media_id`);');
         $this->db->query('DELETE FROM `media_versions` WHERE `media_id` NOT IN (SELECT `id` FROM `media`);');
         $this->db->query('ALTER TABLE `media_versions` ADD FOREIGN KEY (`media_id`) REFERENCES `media`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }
