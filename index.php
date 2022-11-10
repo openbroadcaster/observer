@@ -33,7 +33,7 @@ if (is_file('VERSION')) {
 // are we logged in? if not, redirect to welcome page.
 $user = OBFUser::get_instance();
 if (!isset($_COOKIE['ob_auth_id']) || !isset($_COOKIE['ob_auth_key']) || !$user->auth($_COOKIE['ob_auth_id'], $_COOKIE['ob_auth_key'])) {
-    header('Location: /welcome');
+    header('Location: /welcome/');
     die();
 }
 
