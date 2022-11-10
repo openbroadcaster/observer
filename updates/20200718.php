@@ -12,8 +12,6 @@ class OBUpdate20200718 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // CASCADE device updates to devices table. Clean out any non-existing devices first (this shouldn't be possible in normal use, but make sure anyway so the update runs). Also fix data type inconsistencies.
         $this->db->query('DELETE FROM `devices` WHERE `parent_device_id` NOT IN (SELECT `id` FROM `devices`);');
 
@@ -28,11 +26,6 @@ class OBUpdate20200718 extends OBUpdate
         $this->db->query('ALTER TABLE `devices_station_ids` ADD INDEX (`media_id`);');
         $this->db->query('ALTER TABLE `devices_station_ids` ADD FOREIGN KEY (`device_id`) REFERENCES `devices`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
         $this->db->query('ALTER TABLE `devices_station_ids` ADD FOREIGN KEY (`media_id`) REFERENCES `media`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

@@ -14,8 +14,6 @@ class OBUpdate20201124 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // Update users_permissions with renamed devices (now players).
         $this->db->query("UPDATE `users_permissions` SET `name` = 'manage_players' WHERE `users_permissions`.`name` = 'manage_devices';");
         $this->db->query("UPDATE `users_permissions` SET `name` = 'view_player_monitor' WHERE `users_permissions`.`name` = 'view_device_monitor';");
@@ -42,11 +40,6 @@ class OBUpdate20201124 extends OBUpdate
         $this->db->query("UPDATE `users_permissions` SET `category` = 'player' WHERE `users_permissions`.`name` = 'view_player_monitor';");
         $this->db->query("UPDATE `users_permissions` SET `description` = 'manage players' WHERE `users_permissions`.`name` = 'manage_players';");
         $this->db->query("UPDATE `users_permissions` SET `description` = 'view player logs' WHERE `users_permissions`.`name` = 'view_player_monitor';");
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

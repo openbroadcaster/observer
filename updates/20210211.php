@@ -11,8 +11,6 @@ class OBUpdate20210211 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         /* Drop foreign keys for schedules_media_cache, then re-add the constraint to
            player_id. (Quickest way to make sure there is no constraint to schedule_id,
            which can actually reference multiple tables) */
@@ -30,11 +28,6 @@ class OBUpdate20210211 extends OBUpdate
 
         // Add the constraint to player ID back in.
         $this->db->query('ALTER TABLE `schedules_media_cache` ADD FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

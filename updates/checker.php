@@ -303,7 +303,7 @@ class OBFChecker
     public function database_privileges()
     {
         $db = new OBFDB();
-        $db->query('SELECT * FROM information_schema.schema_privileges WHERE 
+        $db->query('SELECT * FROM information_schema.schema_privileges WHERE
             TABLE_SCHEMA = "' . $db->escape(OB_DB_NAME) . '" AND
             GRANTEE LIKE "\'' . $db->escape(OB_DB_USER) . '%"
         ');
@@ -368,13 +368,13 @@ class OBFChecker
             }
         }
 
-        if ($dbver['value'] < $latest) {
-            return ['Database Version', 'Database version ' . $dbver['value'] . ' lower than latest vesrion ' . $latest . '. Please run updates.', 1];
-        } elseif ($dbver['value'] > $latest) {
-            return ['Database Version', 'Database version ' . $dbver['value'] . ' greater than latest vesrion ' . $latest . '.', 1];
-        }
-
         $this->dbver = $dbver['value'];
+
+        if ($dbver['value'] < $latest) {
+            return ['Database Version', 'Database version ' . $dbver['value'] . ' lower than latest version ' . $latest . '. Please run updates.', 1];
+        } elseif ($dbver['value'] > $latest) {
+            return ['Database Version', 'Database version ' . $dbver['value'] . ' greater than latest version ' . $latest . '.', 1];
+        }
 
         return array('Database Version', 'Database version found: ' . $dbver['value'] . '.',0);
     }

@@ -11,8 +11,6 @@ class OBUpdate20210309 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         $this->db->query("CREATE TABLE IF NOT EXISTS `shows` (
       `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
       `player_id` int(10) UNSIGNED NOT NULL,
@@ -96,11 +94,6 @@ class OBUpdate20210309 extends OBUpdate
 
         $this->db->query("ALTER TABLE `timeslots_expanded`
       ADD CONSTRAINT `timeslots_expanded_ibfk_1` FOREIGN KEY (`timeslot_id`) REFERENCES `timeslots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;");
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }

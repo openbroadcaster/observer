@@ -12,8 +12,6 @@ class OBUpdate20200722 extends OBUpdate
 
     public function run()
     {
-        $this->db->query('START TRANSACTION;');
-
         // CASCADE updates to devices, users, or media items to emergencies table. Clean up table first. Fix typing on device_id.
         $this->db->query('DELETE FROM `emergencies` WHERE `user_id` NOT IN (SELECT `id` FROM `users`);');
         $this->db->query('DELETE FROM `emergencies` WHERE `item_id` NOT IN (SELECT `id` FROM `media`);');
@@ -31,11 +29,6 @@ class OBUpdate20200722 extends OBUpdate
         // CASCADE updates to devices to notices table. Clean up table first.
         $this->db->query('DELETE FROM `notices` WHERE `device_id` NOT IN (SELECT `id` FROM `devices`)');
         $this->db->query('ALTER TABLE `notices` ADD FOREIGN KEY (`device_id`) REFERENCES `devices`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;');
-
-        $this->db->query('COMMIT;');
-        if ($this->db->error()) {
-            return false;
-        }
 
         return true;
     }
