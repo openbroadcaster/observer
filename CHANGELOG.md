@@ -8,6 +8,7 @@
 
 :small_blue_diamond: API v2 using more modern RESTful implementation (alpha)\
 :small_blue_diamond: begin building automated testing via CodeCeption (alpha)\
+:small_blue_diamond: OB CLI tool (alpha) with "check install" function\
 :small_orange_diamond: include and configure PHP Code Sniffer (phpcs) / PHP Code Beautifier (phpcbf)\
 :small_orange_diamond: code refactoring for near-PSR12 adherence (a few issues remain to be resolved later)\
 :small_orange_diamond: code and database refactoring for naming consistency\
