@@ -355,7 +355,7 @@ class Account extends OBFController
    /**
     * Get or save arbitrary string data associated with the logged in account. Used for UI/client settings, etc.
     *
-    * @param key
+    * @param name
     * @param value
     */
     public function store()
