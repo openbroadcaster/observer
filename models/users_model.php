@@ -301,18 +301,18 @@ class UsersModel extends OBFModel
         // basic validation
         //T One or more required fields were not filled.
         if (empty($name) || empty($email) || empty($username) || empty($display_name)) {
-            return array(false,['User Edit', 'One or more required fields were not filled.']);
+            return array(false, 'One or more required fields were not filled.');
         }
 
         //T One or more required fields were not filled.
         if (empty($id) && (empty($password) || empty($password_confirm))) {
-            return array(false,['User Edit', 'One or more required fields were not filled.']);
+            return array(false, 'One or more required fields were not filled.');
         }
 
         // email validation
         //T The email address you have provided is not valid.
         if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) {
-            return array(false,['User Edit', 'The email address you have provided is not valid.']);
+            return array(false, 'The email address you have provided is not valid.');
         }
 
         // make sure email not in use
@@ -322,7 +322,7 @@ class UsersModel extends OBFModel
         }
         //T The email address you have provided is already in use by another account.
         if ($this->db->get_one('users')) {
-            return array(false,['User Edit', 'The email address you have provided is already in use by another account.']);
+            return array(false, 'The email address you have provided is already in use by another account.');
         }
 
         // make sure username not in use.
@@ -332,17 +332,17 @@ class UsersModel extends OBFModel
         }
         //T The username you have selected is already in use.
         if ($this->db->get_one('users')) {
-            return array(false,['User Edit', 'The username you have selected is already in use.']);
+            return array(false, 'The username you have selected is already in use.');
         }
 
         // make sure passwords match.
         //T The passwords do not match.
         if (!empty($password) && $password != $password_confirm) {
-            return array(false,['User Edit', 'The passwords do not match.']);
+            return array(false, 'The passwords do not match.');
         }
         //T The password must be at least 6 characters.
         if (!empty($password) && strlen($password) < 6) {
-            return array(false,['User Edit', 'The password must be at least 6 characters.']);
+            return array(false, 'The password must be at least 6 characters.');
         }
 
         foreach ($appkeys as $appkey) {
