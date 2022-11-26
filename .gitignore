@@ -10,7 +10,3 @@ modules/*
 tools/stream/transcode.log
 tools/subsonic/*.json
 **/.sass-cache
-extras/getid3/demos/demo.browse.php
-extras/getid3/demos/demo.basic.php
-extras/getid3/demos/demo.browse.php
-extras/getid3/demos/demo.basic.php

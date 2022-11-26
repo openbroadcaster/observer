@@ -55,8 +55,6 @@ OB.Media.mediaInfoImport = function(button)
     if(typeof OB.Media.media_info[id].comments.artist != 'undefined') $form.find('.artist_field').val(OB.Media.media_info[id].comments.artist[0]);
     if(typeof OB.Media.media_info[id].comments.album != 'undefined') $form.find('.album_field').val(OB.Media.media_info[id].comments.album[0]);
     if(typeof OB.Media.media_info[id].comments.title != 'undefined') $form.find('.title_field').val(OB.Media.media_info[id].comments.title[0]);
-    if(typeof OB.Media.media_info[id].comments.original_release_time != 'undefined') $form.find('.year_field').val(OB.Media.media_info[id].comments.original_release_time[0]);
-    if(typeof OB.Media.media_info[id].comments.year != 'undefined') $form.find('.year_field').val(OB.Media.media_info[id].comments.year[0]);
     if(typeof OB.Media.media_info[id].comments.comments != 'undefined') $form.find('.comments_field').val(OB.Media.media_info[id].comments.comments[0]);
   }
 
