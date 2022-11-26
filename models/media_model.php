@@ -2107,6 +2107,7 @@ class MediaModel extends OBFModel
     if(isset($id3['comments']['artist'])) $id3_data['artist'] = $id3['comments']['artist'];
     if(isset($id3['comments']['album'])) $id3_data['album'] = $id3['comments']['album'];
     if(isset($id3['comments']['title'])) $id3_data['title'] = $id3['comments']['title'];
+    if(isset($id3['comments']['original_release_time'])) $id3_data['original_release_time'] = $id3['comments']['original_release_time'];
     if(isset($id3['comments']['year'])) $id3_data['year'] = $id3['comments']['year'];
     if(isset($id3['comments']['comments'])) $id3_data['comments'] = $id3['comments']['comments'];
 
