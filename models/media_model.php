@@ -275,15 +275,15 @@ class MediaModel extends OBFModel
 
     $this->db->where('media.id', $args['id']);
     $media = $this->db->get_one('media');
-    
+
     if($media)
     {
       $media['thumbnail'] = $this->models->media('media_thumbnail_exists',['media'=>$media]);
     }
-    
+
     return $media;
   }
-  
+
   /**
    * Check if media thumbnail exists (create if necessary).
    *
@@ -299,17 +299,17 @@ class MediaModel extends OBFModel
       $media = $this->db->get_one('media');
     }
     else $media = $args['media'];
-    
+
     OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
     if(strlen($media['file_location'])!=2) { trigger_error('Invalid media file location.',E_USER_WARNING); return false; }
-    
+
     $thumbnail_directory = OB_CACHE.'/thumbnails/'.$media['file_location'][0].'/'.$media['file_location'][1];
     $thumbnail_file = $thumbnail_directory.'/'.$media['id'].'.jpg';
-    
+
     if(!file_exists($thumbnail_directory)) mkdir($thumbnail_directory, 0755, true);
-    
+
     if($media['type']=='image' && !file_exists($thumbnail_file))
-    {    
+    {
       if($media['is_archived']==1) $media_file=OB_MEDIA_ARCHIVE;
       elseif($media['is_approved']==0) $media_file=OB_MEDIA_UPLOADS;
       else $media_file=OB_MEDIA;
@@ -317,7 +317,7 @@ class MediaModel extends OBFModel
       $media_file=$media_file.'/'.$media['filename'];
       OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
     }
-    
+
     return file_exists($thumbnail_file);
   }
 
@@ -627,7 +627,7 @@ class MediaModel extends OBFModel
     $this->db->leftjoin('media_categories', 'media.category_id','media_categories.id');
     $this->db->leftjoin('media_countries', 'media.country_id','media_countries.id');
     $this->db->leftjoin('media_languages', 'media.language_id','media_languages.id');
-    
+
     if($params['sort_by']=='category_name') $params['sort_by'] = 'media_categories.name';
     elseif($params['sort_by']=='genre_name') $params['sort_by'] = 'media_genres.name';
     elseif($params['sort_by']=='country_name') $params['sort_by'] = 'media_countries.name';
@@ -661,7 +661,7 @@ class MediaModel extends OBFModel
       $this('get_init');
       $this->db->where_string('media.id IN('.implode(',',$ids).')');
       $this->db->orderby_string('FIELD(media.id,'.implode(',',$ids).')');
-      
+
       $items = $this->db->get('media');
       foreach($items as &$item)
       {
@@ -2107,6 +2107,8 @@ class MediaModel extends OBFModel
     if(isset($id3['comments']['artist'])) $id3_data['artist'] = $id3['comments']['artist'];
     if(isset($id3['comments']['album'])) $id3_data['album'] = $id3['comments']['album'];
     if(isset($id3['comments']['title'])) $id3_data['title'] = $id3['comments']['title'];
+    if(isset($id3['comments']['original_release_time'])) $id3_data['original_release_time'] = $id3['comments']['original_release_time'];
+    if(isset($id3['comments']['year'])) $id3_data['year'] = $id3['comments']['year'];
     if(isset($id3['comments']['comments'])) $id3_data['comments'] = $id3['comments']['comments'];
 
     return $id3_data;
