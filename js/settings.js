@@ -71,7 +71,7 @@ OB.Settings.allStoreCache = function()
 	});
 }
 
-OB.Settings.storeStoreCache = function(name, value)
+OB.Settings.store = function(name, value)
 {
 	if (typeof value === "undefined") {
 		return OB.Settings.storeCache[name];

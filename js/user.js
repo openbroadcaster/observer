@@ -49,61 +49,24 @@ OB.User.allowRegistrationToggle = function()
   var checked = $('#users_allow_registration_checkbox').is(':checked');
   OB.API.post('users','user_registration_set',{'user_registration': checked}, function(response) { });
 }
-
-OB.User.sort_cache = {
-  'sort_col': false,
-  'sort_desc': false
-}
-
 OB.User.manageUsersSort = function(column)
 {
-    if (!OB.User.sort_cache.sort_col) {
-        OB.API.post('account', 'store', {name: 'manage-users-sort'}, function (result) {
-            OB.User.sort_cache = {
-                'sort_col': column,
-                'sort_desc': false
-            };
-            if (result.status) {
-                OB.User.sort_cache.sort_desc = !result.data.sort_desc;
-            }
-            OB.API.post('account', 'store', {name: 'manage-users-sort', value: OB.User.sort_cache}, function (result) {
-                // Updated user sort settings.
-                OB.User.manageUsersList();
-            })
-        });
-    } else {
-        // Use cached data
-        OB.User.sort_cache = {
-            'sort_col': column,
-            'sort_desc': (OB.User.sort_cache.sort_col == column) ? !OB.User.sort_cache.sort_desc : false
-		    };
-
-        OB.API.post('account', 'store', {name: 'manage-users-sort', value: OB.User.sort_cache}, function (result) {
-            // Updated user sort settings.
-            OB.User.manageUsersList();
-	      });
+    var prev = OB.Settings.store('manage-users-sort');
+    var sorting = {
+        'sort_col': column,
+        'sort_desc': false
+    };
+    if (typeof prev !== "undefined") {
+      if (prev.sort_col === column) sorting.sort_desc = !prev.sort_desc;
     }
+    OB.Settings.store('manage-users-sort', sorting);
+    OB.User.manageUsersList();
 }
 
 OB.User.manageUsersList = function()
 {
-    // Load from user storage first if data hasn't been cached yet.
-    if (!OB.User.sort_cache.sort_col) {
-        OB.API.post('account', 'store', {name: 'manage-users-sort'}, function (result) {
-            if (result.status) {
-                OB.User.sort_cache.sort_col = result.data.sort_col;
-                OB.User.sort_cache.sort_desc = result.data.sort_desc;
-            }
-
-            OB.User.manageUsersListByColumn(OB.User.sort_cache);
-        });
-    } else {
-        OB.User.manageUsersListByColumn(OB.User.sort_cache);
-    }
-}
-
-OB.User.manageUsersListByColumn = function(sort_vals)
-{
+    var sort_vals = OB.Settings.store('manage-users-sort');
+    if (typeof sort_vals === "undefined") sort_vals = {};
     OB.API.post('users', 'user_manage_list', sort_vals, function(data)
     {
 

@@ -126,13 +126,12 @@ OB.Schedule.scheduleInit = function()
   var post = [];
   post.push(['players','search', {}]);
 
-  if(OB.Schedule.schedule_mode=='timeslot') post.push(['account','store', {'name': 'timeslots-player'}]);
-  else post.push(['account','store', {'name': 'shows-player'}]);
+  if (OB.Schedule.schedule_mode === 'timeslot') var last_player = OB.Settings.store('timeslots-player');
+  else var last_player = OB.Settings.store('shows-player');
 
   OB.API.multiPost(post, function(responses)
   {
     var players = responses[0].data;
-    var last_player = responses[1];
 
     $.each(players,function(index,item) {
       if(item.use_parent_schedule=='1') return; // player uses parent schedule, setting schedule would not do anything.
@@ -147,10 +146,10 @@ OB.Schedule.scheduleInit = function()
     });
 
     // if we have a valid last player for this schedule, set that.
-    if(last_player.status && $('#schedule_player_select option[value='+last_player.data.player+']').length)
+    if(typeof last_player !== "undefined" && $('#schedule_player_select option[value='+last_player.player+']').length)
     {
-      $('#schedule_player_select').val(last_player.data.player);
-      OB.Schedule.player_id = last_player.data.player;
+      $('#schedule_player_select').val(last_player.player);
+      OB.Schedule.player_id = last_player.player;
     }
 
     OB.Schedule.loadSchedule();
@@ -677,7 +676,7 @@ OB.Schedule.loadSchedule = function()
   {
     var post = [];
     post.push(['timeslots','search', { 'start': String(Math.round(OB.Schedule.schedule_start.getTime()/1000)), 'end': String(Math.round(OB.Schedule.schedule_end.getTime()/1000)), 'player': OB.Schedule.player_id }]);
-    post.push(['account','store', { 'name': 'timeslots-player', 'value': { 'player': OB.Schedule.player_id } }]);
+    OB.Settings.store('timeslots-player', {player: OB.Schedule.player_id});
 
     OB.API.multiPost(post, function(responses) {
       if(responses[0].status==true)
@@ -701,7 +700,7 @@ OB.Schedule.loadSchedule = function()
 
     post.push(['shows','search', { 'start': schedule_request_start, 'end': schedule_request_end, 'player': OB.Schedule.player_id }]);
     /*post.push(['shows', 'search', {'start': moment(OB.Schedule.schedule_start.getTime()).format('Y-MM-DD HH:mm:ss'), 'end': moment(OB.Schedule.schedule_end.getTime()).format('Y-MM-DD HH:mm:ss'), 'player': OB.Schedule.player_id}]);*/
-    post.push(['account','store', { 'name': 'shows-player', 'value': { 'player': OB.Schedule.player_id} } ]);
+    OB.Settings.store('shows-player', {player: OB.Schedule.player_id});
 
     OB.API.multiPost(post, function(responses) {
       if(responses[0].status==true)
