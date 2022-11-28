@@ -24,6 +24,7 @@ OB.Settings = new Object();
 OB.Settings.init = function()
 {
 	OB.Callbacks.add('ready', -70, OB.Settings.getSettings);
+	OB.Callbacks.add('ready', -60, OB.Settings.allStoreCache);
 }
 
 OB.Settings.categories = new Array();
@@ -33,6 +34,8 @@ OB.Settings.genres = new Array();
 
 OB.Settings.permissions = null;
 OB.Settings.groups = null;
+
+OB.Settings.storeCache = {};
 
 OB.Settings.getSettings = function(callback)
 {
@@ -59,4 +62,23 @@ OB.Settings.getSettings = function(callback)
 
     if(callback) callback();
   },'sync');
+}
+
+OB.Settings.allStoreCache = function()
+{
+	OB.API.post('account', 'store_all', {}, function (response) {
+		OB.Settings.storeCache = response.data;
+	});
+}
+
+OB.Settings.storeStoreCache = function(name, value)
+{
+	if (typeof value === "undefined") {
+		return OB.Settings.storeCache[name];
+	}
+
+	OB.Settings.storeCache[name] = value;
+	OB.API.post('account', 'store', {name: name, value: value}, function (response) {
+		// Saved setting.
+	});
 }

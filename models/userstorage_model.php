@@ -26,13 +26,13 @@
  */
 class UserStorageModel extends OBFModel
 {
-  /**
-   * Insert or update a name/value pair.
-   *
-   * @param data
-   *
-   * @return id
-   */
+    /**
+     * Insert or update a name/value pair.
+     *
+     * @param data
+     *
+     * @return id
+     */
     public function save($args)
     {
         if (!preg_match('/^[a-z0-9-]{1,255}$/i', $args['name'])) {
@@ -57,13 +57,13 @@ class UserStorageModel extends OBFModel
         return [true, 'Saved.'];
     }
 
-  /**
-   * Get user storage data.
-   *
-   * @param data
-   *
-   * @return string value
-   */
+    /**
+     * Get user storage data.
+     *
+     * @param data
+     *
+     * @return string value
+     */
     public function get($args)
     {
         $this->db->where('user_id', $args['user_id']);
@@ -75,5 +75,25 @@ class UserStorageModel extends OBFModel
         } else {
             return [true, 'Success.', json_decode($value[0]['value'])];
         }
+    }
+
+    /**
+     * Get all user storage data.
+     *
+     * @param data  Contains user id
+     *
+     * @return array values
+     */
+    public function get_all($args)
+    {
+        $this->db->where('user_id', $args['user_id']);
+        $data = $this->db->get('users_storage');
+
+        $values = [];
+        foreach ($data as $value) {
+            $values[$value['name']] = json_decode($value['value']);
+        }
+
+        return [true, 'Success.', $values];
     }
 }
