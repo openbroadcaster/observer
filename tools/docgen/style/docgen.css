@@ -1,10 +1,12 @@
 /* General site layout. */
 
-html {
+html
+{
   height: 100%;
 }
 
-body {
+body
+{
   min-height: 100%;
   margin: 0;
   font-family: 'Roboto', sans-serif;
@@ -12,44 +14,53 @@ body {
   color: #222;
 }
 
-.doc-flex {
+.doc-flex
+{
   display: flex;
   width: calc(100vw - 200px);
 }
 
-nav {
+nav
+{
   flex: 1 300px;
   border-right: 2px solid;
   padding: 20px;
 }
 
-nav a {
+nav a
+{
   display: block;
   text-decoration: none;
   color: #460cf2;
 }
 
-nav a:hover, nav a:active {
+nav a:hover,
+nav a:active
+{
   color: #2f157d;
   background-color: #eee;
 }
 
-nav span {
+nav span
+{
   font-family: 'Roboto Mono', monospace;
   padding-bottom: 15px;
   display: block;
 }
 
-nav span:nth-of-type(1n+2) {
+nav span:nth-of-type(1n+2)
+{
   padding-top: 15px;
 }
 
-main {
+main
+{
   padding-left: 20px;
   flex: 1 800px;
 }
 
-header {
+header
+{
   width: 100vw;
   margin: 0;
   text-align: center;
@@ -58,19 +69,22 @@ header {
   font-size: 36px;
 }
 
-footer {
+footer
+{
   margin: 0;
   text-align: center;
   font-size: 12px;
 }
 
-code {
+code
+{
   font-family: 'Roboto Mono', monospace;
 }
 
 /* Files */
 
-.doc-file-name {
+.doc-file-name
+{
   font-size: 12px;
   color: #11853d;
   margin-top: 20px;
@@ -78,122 +92,152 @@ code {
 
 /* Classes */
 
-.doc-class h3 {
+.doc-class h3
+{
   display: none;
 }
 
 /* Methods */
 
-.doc-method {
+.doc-method
+{
   border-top: 1px dotted;
   padding-bottom: 20px;
   padding-top: 10px;
 }
 
-.doc-method-param {
+.doc-method-param
+{
   padding-bottom: 10px;
 }
 
-.doc-method-param tbody tr td:nth-child(1) {
+.doc-method-param tbody tr td:nth-child(1)
+{
   min-width: 200px;
   padding-right: 10px;
 }
 
-.doc-method-param span {
+.doc-method-param span
+{
   display: block;
   font-weight: bold;
   padding-bottom: 10px;
 }
 
-.doc-method-return {
+.doc-method-return
+{
   padding-bottom: 10px;
 }
 
-.doc-method-return span {
+.doc-method-return span
+{
   display: block;
   font-weight: bold;
   padding-bottom: 10px;
 }
 
-.doc-method-route {
+.doc-method-route
+{
   padding-bottom: 10px;
 }
 
-.doc-method-route .doc-method-code-name {
+.doc-method-route .doc-method-code-name
+{
   min-width: 200px;
   padding-right: 10px;
 }
 
-.doc-method-route span {
+.doc-method-route span
+{
   display: block;
   font-weight: bold;
   padding-bottom: 10px;
 }
 
-.doc-method-code-args {
+.doc-method-code-args
+{
   color: #11853d;
 }
 
-.doc-method-code-name {
+.doc-method-code-name
+{
   color: #460cf2;
 }
 
-.doc-method-code-visibility {
+.doc-method-code-visibility
+{
   color: #d63131;
 }
 
-.doc-method-body {
+.doc-method-body
+{
   display: block;
 }
 
-.doc-method-hidden {
+.doc-method-hidden
+{
   opacity: 0.4;
 }
 
-.doc-method-hidden-reason {
+.doc-method-hidden-reason
+{
   color: #d63131;
   margin-top: 1rem;
 }
 
-.doc-method summary {
+.doc-method summary
+{
   list-style: none;
 }
 
-.doc-method-name {
+.doc-method-name
+{
   display: inline-block;
 }
 
-.doc-method details summary::before {
-  content:"+";
+.doc-method details summary::before
+{
+  content: "+";
   color: #460cf2;
   display: inline-block;
   width: 1rem;
 }
 
-.doc-method details[open] summary::before {
+.doc-method details[open] summary::before
+{
   content: "-";
   color: #460cf2;
 }
 
 /* Routes */
-.doc-route {
+.doc-route
+{
   margin-left: 1rem;
   font-weight: normal;
+  margin-top: 1rem;
 }
 
-.doc-route-container > .doc-route-helpers {
+.doc-route-container
+{
+  padding-left: 1rem;
+}
+
+.doc-route-container>.doc-route-helpers
+{
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
 }
 
-.doc-route-helpers > h2 {
+.doc-route-helpers>h2
+{
   margin: 0;
   display: inline-block;
 }
 
-.doc-route-helpers > button {
+.doc-route-helpers>button
+{
   margin-left: 1rem;
   background-color: white;
   border: 1px black solid;
@@ -201,57 +245,85 @@ code {
   padding: 0.25rem 0.5rem;
 }
 
-.doc-route-helpers > button:hover {
+.doc-route-helpers>button:hover
+{
   background-color: #f2f2f2;
 }
 
-.doc-route-helpers > button:active {
+.doc-route-helpers>button:active
+{
   color: #460cf2;
 }
 
-.doc-route-container > .doc-route {
+.doc-route-container>.doc-route
+{
   margin-left: 0;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  margin-top: 2rem;
 }
 
-.doc-route summary span {
-    /*width: 75%;
+.doc-route summary
+{
+  list-style-position: outside;
+}
+
+.doc-route.no-details summary
+{
+  list-style: none;
+}
+
+.doc-route summary span
+{
+  /*width: 75%;
     display: inline-block;
     text-align: center;*/
 }
 
-.doc-route-details {
-  padding: 0.5rem;
-  border: black 1px solid;
-  margin: 0.25rem;
+.doc-route>summary *
+{
+  display: inline;
 }
 
-.doc-route-body {
+.doc-route-details
+{
+  /* padding: 0.5rem;
+  border: black 1px solid; */
+  margin: 0 0.25rem;
+}
+
+.doc-route-body
+{
   display: flex;
   margin-left: 1rem;
 }
 
-.doc-route-method-GET {
+.doc-route-method-GET
+{
   color: #11853d;
 }
 
-.doc-route-method {
+.doc-route-method
+{
   font-weight: bold;
 }
 
-.doc-route-method-POST {
+.doc-route-method-POST
+{
   color: #460cf2;
 }
 
-.doc-route-method-DELETE {
+.doc-route-method-DELETE
+{
   color: #d63131;
 }
 
-.doc-route-method-PATCH {
+.doc-route-method-PATCH
+{
   color: #6ae6df;
 }
 
-.doc-route-method-PUT {
+.doc-route-method-PUT
+{
   color: #6ae6df;
 }

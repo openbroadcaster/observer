@@ -53,4 +53,17 @@ function recursive_route_details($routes)
         jQuery('details').removeAttr('open');
       }
   }
+
+  $(document).ready(function()
+  {
+    $('.doc-route-body').each(function(index, element)
+    {
+      $(element).appendTo( $(element).siblings('summary') );
+    });
+
+    $('.doc-route').each(function(index, element)
+    {
+      if($(element).find('details').length==0) $(element).addClass('no-details');
+    });
+  });
 </script>
