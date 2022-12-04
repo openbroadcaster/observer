@@ -52,12 +52,37 @@ if (!defined('OB_ASSETS')) {
 if (!defined('OB_MEDIA_FILESIZE_LIMIT')) {
     define('OB_MEDIA_FILESIZE_LIMIT', 1024);
 }
+if (!defined('OB_INIT_VERIFY')) {
+    define('OB_INIT_VERIFY', false);
+}
+
+// set default OB_MEDIA_VERIFY to true
 if (!defined('OB_MEDIA_VERIFY')) {
     define('OB_MEDIA_VERIFY', true);
 }
+if (is_string(OB_MEDIA_VERIFY)) {
+    // OB_MEDIA_VERIFY is already set to a command
+    define('OB_MEDIA_VERIFY_CMD', OB_MEDIA_VERIFY);
+} elseif (OB_MEDIA_VERIFY) {
+    // OB_MEDIA_VERIFY is set to default command
+    define('OB_MEDIA_VERIFY_CMD', 'avconv -i {infile} -f null -');
+} else {
+    // OB_MEDIA_VERIFY is false
+    define('OB_MEDIA_VERIFY_CMD', false);
+}
 
-if (!defined('OB_INIT_VERIFY')) {
-    define('OB_INIT_VERIFY', false);
+// set default transcode commands
+if (!defined('OB_TRANSCODE_AUDIO_MP3')) {
+    define('OB_TRANSCODE_AUDIO_MP3', 'avconv -i {infile} -q 9 -ac 1 -ar 22050 {outfile}');
+}
+if (!defined('OB_TRANSCODE_AUDIO_OGG')) {
+    define('OB_TRANSCODE_AUDIO_OGG', 'avconv -i {infile} -acodec libvorbis -q 0 -ac 1 -ar 22050 {outfile}');
+}
+if (!defined('OB_TRANSCODE_VIDEO_MP4')) {
+    define('OB_TRANSCODE_VIDEO_MP4', 'avconv -i {infile} -crf 40 -vcodec libx264 -s {width}x{height} -ac 1 -ar 22050 {outfile}');
+}
+if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
+    define('OB_TRANSCODE_VIDEO_OGV', 'avconv -i {infile} -q 0 -s {width}x{height} -acodec libvorbis -ac 1 -ar 22050 {outfile}');
 }
 
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.

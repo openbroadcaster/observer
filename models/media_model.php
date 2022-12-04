@@ -83,10 +83,12 @@ class MediaModel extends OBFModel
 
             // use avconv to test whether this file is properly readable as audio/video (valid, not encrypted, etc.)
             // TODO more helpful error needed.
-            if (OB_MEDIA_VERIFY) {
+            if (OB_MEDIA_VERIFY_CMD) {
                 $avconv_return_var = null;
                 $avconv_output = [];
-                exec('avconv -i ' . escapeshellarg($args['filename']) . ' -f null - > /dev/null 2>&1', $avconv_output, $avconv_return_var);
+
+                $strtr_array = array('{infile}' => escapeshellarg($args['filename']));
+                exec(strtr(OB_MEDIA_VERIFY_CMD, $strtr_array), $avconv_output, $avconv_return_var);
                 if ($avconv_return_var != 0) {
                     return $return;
                 }
@@ -2191,7 +2193,7 @@ class MediaModel extends OBFModel
      */
     public function format_allowed($args = [])
     {
-        OBFHelpers::require_args($args, ['type', 'format']);
+        // OBFHelpers::default($args, ['type' => '', 'format' => '']);
         $type = $args['type'];
         $format = $args['format'];
 
