@@ -395,7 +395,9 @@ eg 600 sec = 5 minutes.
 
 ### Scheduling Line In
 
-When enabled in `Player Manager` a `Line-In` button appears in top right of scheduler.  Drag `Schedule Line-In` onto schedule.  What ever is plugged into the Line-in of local machine where the player is will be passed through.  Example is a satellite audio receiver.
+When enabled in `Player Manager` a `Line-In` button appears in top right of scheduler.  Drag `Schedule Line-In` onto schedule.  What ever is plugged into the Line-in of local machine running OBPlayer will be passed through.  Example source is a satellite audio receiver.
+
+CAP Emergency messaging will over ride this source, play the announcement and resume normal programming. 
 
 ## User Management
 
@@ -518,42 +520,14 @@ Play logs are generated from the Player and sent back to OBServer via TCP/IP acc
 
 We include a couple of sample modules. Additional features may be introduced into the OB environment by third-party developers.
 
-Check for updated list of modules
+Check for updated list of [Modules](https://github.com/openbroadcaster)
 
 <br/>
-
-### Legacy Modules
-
-#### Podcast Assembler 
-
-Drag Playlist to turn into a dynamic single file podcast with embedded track list for copyright compliance.
-
-![Podcast Assembler](/observer/img/PODcast Assembler.png){: .screenshot}
-
-<br/>
-
-#### RDS Metadata
-
-Integrate metadata of stream into a RDS encoder at transmitter site.
-
-![RDS Controller](/observer/img/RDS Controller.jpg){: .screenshot}
-
-
-## Updates and New Features 
-
-![Updates](/observer/img/OBServer_Install_Check.png ){: .screenshot} 
-
-Setup observer, login to GUI as admin user, open a new browser tab
-~~~~
-https://IP_OF_SERVER/updates/
-~~~~
 
 ## Client Settings
 
 Login Message of the Day and a default Welcome page displayed on the initial log in screen using an inline editor.
 
-### Email Notification Alerts
 
-When a playlog, schedule or media sync hasn't been received  from a remote Player in 60 minutes, an advisory email will be sent to the Admin user address from the server indicating there is a problem that needs attention.
 
 
