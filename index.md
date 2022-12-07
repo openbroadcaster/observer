@@ -97,7 +97,34 @@ Global default media fields and behaviour.
 
 ![Media Fields](/observer/img/media-fields.png ){: .screenshot} 
 
-Complete list of [Experimental](https://wiki.openbroadcaster.com/experimental) codecs and containers. 
+Complete list of Codecs and Containers
+
+<details>
+<summary>Audio</summary>
+<ul><li>3GP</li>
+<li>APE</li>
+<li>AC3</li>
+<li>AAC</li>  
+<li>AIFF</li> 
+<li>ALAW</li>  
+<li>AU</li>  
+<li>GSM</li>  
+<li>MIDI</li>
+<li>MSV</li>
+<li>MU LAW</li>    
+<li>ULAW</li>
+<li>VOX</li></ul>
+</details>
+
+<details>
+<summary>Video</summary>
+<ul><li>FLV</li>
+<li>MPEG</li>
+<li>MPG</li>
+<li>MSV</li>  
+<li>MTP</li> 
+<li>SPX</li></ul>
+</details>
 
 <br/>
 
@@ -119,7 +146,7 @@ New Media may be added to the library using the media uploader, accessed from th
 
 Drag and drop one or more media files to the uploader, or click within the shaded box to open a file selection window. Each file is uploaded in sequence, and added to a queue. Progress of the current upload is displayed alongside the filename.
 
-__Pro Tip__ Max Limit set to 1GB 
+__Pro Tip__ Max Limit set to 1GB _(may be increased)
 
 <br/>
 
@@ -156,7 +183,7 @@ Each `Category` and `Genre` can be specificied as default
 
 ![Media Details](/observer/img/media-details.png ){: .screenshot}
 
-From the `Media Sidebar`, hightlight, right click and select `Details` to find out where the PL is used, who created it and when it was last modified.
+From the `Media Sidebar`, hightlight, right click (double click) and select `Details` to find out where the PL is used, who created it and when it was last modified.
 
 Displays info This is where the 
 
@@ -165,6 +192,12 @@ Displays info This is where the
 - `Media ID` can be found including usage of media
 
 - Where it is being used
+
+### View Versions
+
+Update media by adding a new version.
+
+![Media Versions](/observer/img/media-versions.png){: .screenshot} 
 
 <br/>
 ### Language and Country
@@ -324,7 +357,7 @@ Flexible methods to schedule media and shows listed in ease of task.
 
 1. Priority function to play every N seconds.  Set start and stop dates. Use sparingly.  Only 1 priority media may run simultaneous per player.
 
-__NB CAP Emergency Alerts automatically override all schedules, currently playing media and internal priority broadcasts. 
+__Note__ _CAP Emergency Alerts automatically override all schedules, currently playing media and internal priority broadcasts. _
 
 The date/time of  timeslots available for scheduling by any user are based on group permissions associated with that users profile. Permissions are managed by the `Administrator` group, although this may be delegated to another group. Only one Player may be scheduled at a time, although a Player may act as `Parent` to one or more players for scheduling. See [Advanced Scheduling](#adv_admin).
 
@@ -360,11 +393,11 @@ Create Time Slots and Assign Users
 
 1. Double click on screen and a menu will pop up
 
-1. First step is to select the user to assign from the drop down menu.  This will display a list of all registered and active users.
+1. Select user to assign from the drop down menu.  This will display a list of all registered and active users.
 
-1. Select the event mode, Single, Daily, Weekly, Monthly or every x, day, week or month
+1. Select the event mode; Single, Daily, Weekly, Monthly or every x, day, week or month
 
-1. Select the start day (default is current date) and the  time when this user can program content
+1. Select the start day (default is current date) and the time(s) when user can program a content time slot
 
 1. Set duration.   In this example the time-slot is one hour and it can be any duration.  Time Slot cannot conflict with an existing time-slot.
 
@@ -410,6 +443,8 @@ Users may create an account from a link on the Welcome page. This may also be di
 Only one registration is allowed at any given email address. Users are notified of a new, random password by email, upon registration or when a password reminder is requested. Once a user has registered, a notice is sent to the __Administrator__ . Until a user is assigned to a group, they are limited to read only browse/preview of the media library. 
 
 The `admin` user has access to all media, playlists and schedules. As new users are added, they are assigned to a group with the appropriate set of permissions. For example, a `guest` user may browse, but not add/edit/delete items in the media library.
+
+Admin can disable new user sign up.
 
 <br/>
 
@@ -461,18 +496,19 @@ Players can be a physical playout device or virtual process located on the same 
 
 ### New Player
 
-1. Begin by giving the Player a unique name,  This name will be displayed when, scheduling, emergency broadcasts and generating reports.  Give a description of the Player. 
-1. Enter in the stream URL
-1. Enter a password that matched with the one that was entered when setting up the Player.  See below
-1. Using the radio buttons select the types of media that the Player will be supporting
-1. Set time zone where the Player is located.  This is also required for the creating of Play logs which are all done in GMT
-1. From the Play List window, drag and drop the DPL (Default Play List) that will be associated with this Player.  If the Player cannot locate a schedule of media to be played, it will play the DPL in a loop to avoid dead air.
-1. Drag and drop station ID that you wish to associate with this Player.
-1. Save  Player
+1. Begin by giving the Player a unique name,  This name will be displayed when, scheduling, emergency broadcasts and generating reports.  
+2. Give a description of the Player. 
+3. Enter in the stream URL
+4. Enter a password that matched with the one that was entered when setting up the Player.  _See below_
+5. Using the radio buttons select the types of media that the Player will be supporting
+6. Set time zone where the Player is located.  This is also required for the creating of Play logs which are all done in GMT
+7. From the Play List window, drag and drop the DPL (Default Play List) that will be associated with this Player.  If the Player cannot locate a schedule of media to be played, it will play the DPL in a loop to avoid dead air.
+8. Drag and drop station ID that you wish to associate with this Player.
+9. Save  Player
 
-__NB Leave IP address field empty__
+__Note__ _Leave IP address field empty_
 
-The Player ID is automatically generated and the assigned password will be needed when configuring the Remote Player. See Remote Player Settings
+The Player ID is automatically generated and the assigned password will be needed when configuring the remote OBPlayer playout device. See [Player Sync Settings](https://support.openbroadcaster.com/obplayer/#syncmedia)
 
 ### Connection Messages
 
@@ -482,7 +518,7 @@ __Connection Messages__ for Players connect back to the server at predetermined 
 
 Displays the Version of connected player, GPS Coordinates and Last known external IP
 
-__Pro Tip__ Connection info is also displayed with Station Icon status using Mapping Module
+__Pro Tip__ _Connection info is also displayed with Station Icon status using Mapping Module_
 
 <br/>
 
@@ -508,7 +544,13 @@ Customize the roles of each individual player, fine tuning Parent characteristic
 
 ![Player Monitoring](/observer/img/Player_Monitoring.png ){: .screenshot} 
 
-Play logs are generated from the Player and sent back to OBServer via TCP/IP according to the frequency specified in the Player Dashboard settings. Reports may be generated using filters for a combination of parameters including; Player, Time and Date range, Artist, Title and Media ID.
+Play logs are generated from the Player and sent back to OBServer via TCP/IP according to the frequency specified in the Player Dashboard settings. Reports may be generated using filters for a combination of parameters including:
+
+* Player
+* Time and Date range
+* Artist
+* Title 
+* Media ID
 
 <br/>
 
@@ -518,7 +560,9 @@ Play logs are generated from the Player and sent back to OBServer via TCP/IP acc
 
 ![Installed Modules](/observer/img/installed-modules.png){: .screenshot}
 
-We include a couple of sample modules. Additional features may be introduced into the OB environment by third-party developers.
+We include a couple of sample modules; Logger, Tutorial and Now Playing. There are dozens of modules avaible to provide added features and functionality.
+
+Additional features may be introduced into the OB environment by third-party developers.
 
 Check for updated list of [Modules](https://github.com/openbroadcaster)
 
