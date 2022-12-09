@@ -526,6 +526,7 @@ OB.Schedule.editShowWindow = function(id,recurring)
         $('#show_duration').val(show.duration);
         $('#show_id').val(show.id);
         $('#show_x_data').val(show.x_data);
+        $('#show_mode').val(show.mode);
 
         // if we have timeslots, and this is scheduled once only, see if the duration/start lines up with one of the timeslots. (then select that timeslot).
         if($('#show_time_slot option').length>0 && !recurring)
