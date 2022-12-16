@@ -4,7 +4,7 @@ namespace ob\tools\cli;
 
 class Helpers
 {
-    public static function table(array $rows)
+    public static function table(array $rows, int $spacing = 1)
     {
         $cols = [];
 
@@ -18,7 +18,7 @@ class Helpers
             $longest_col1 = max(strlen($text), $longest_col1);
         }
         $longest_col1 = min(40, $longest_col1);
-        $longest_col1++;
+        $longest_col1 += $spacing;
 
         $cols = [
             ['length' => $longest_col1],
