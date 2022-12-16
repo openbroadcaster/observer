@@ -66,7 +66,7 @@ Commands:
             ['check', 'check installation for errors'],
             ['cron run', 'run scheduled tasks'],
             ['updates list', 'list available updates'],
-            // ['updates run', 'run available updates']
+            ['updates run', 'run available updates']
         ]);
     }
 

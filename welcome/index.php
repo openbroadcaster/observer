@@ -37,7 +37,7 @@ $update_required = $models->updates('update_required');
             <p>A database update is required using one of the following methods:</p>
             <ul>
                 <li><strong><a href="/updates">Web Browser</a></strong><br>You will need to have <span>OB_UPDATES_USER</span> and <span>OB_UPDATES_PW</span> set in config.php.</li>
-                <li><strong>Command Line</strong><br>By running "php index.php run" in the /updates directory. Please note this functionality is currently experimental.</li>
+                <li><strong>Command Line</strong><br>By running "tools/cli/ob updates run".</li>
         </div>
     
     <?php } else { ?>
