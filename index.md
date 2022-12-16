@@ -351,13 +351,13 @@ DPL (Default Play List) assigned to that Player automatically starts to avoid de
 
 Flexible methods to schedule media and shows listed in ease of task.
 
+1. Create and assign a DPL to player
+
 1. Upload media. Drag to schedule and set to play in a time slot.
 
 1. Select uploaded media and drag into an existing scheduled Playlist.
 
-1. Priority function to play every N seconds.  Set start and stop dates. Use sparingly.  Only 1 priority media may run simultaneous per player.
-
-__Note__ _CAP Emergency Alerts automatically override all schedules, currently playing media and internal priority broadcasts. _
+__Note__ _CAP Emergency Alerts automatically override all schedules, currently playing media and internal Priority Announcements. _
 
 The date/time of  timeslots available for scheduling by any user are based on group permissions associated with that users profile. Permissions are managed by the `Administrator` group, although this may be delegated to another group. Only one Player may be scheduled at a time, although a Player may act as `Parent` to one or more players for scheduling. See [Advanced Scheduling](#adv_admin).
 
@@ -405,18 +405,19 @@ In the event that a user is assigned a time-slot that is not utilized or does no
 
 <br/>
 
-### Priority Broadcasts
+### Priority Announcements
 
-![Priority Broadcasts](/observer/img/Priority_Broadcasts.png ){: .screenshot} 
+![Priority Announcements](/observer/img/Priority_Broadcasts.png ){: .screenshot} 
 
-The Priority broadcast will start with minimal delay as specified in OBPlayer Dashboard how often to sync for priority messages.  Selecting the default time of 00:00:00 for 3PM will start the broadcast immediately. In order to access this feature the user must have the required permissions and time must be authorized for the media to arrive at the Player in order to play.
+Priority Announcements will start with minimal delay as specified in OBPlayer Dashboard how often to sync for priority messages. Priority Announcement function to play every N seconds.  Set start and stop dates. Use sparingly.  Only 1 Priority Announcement may run simultaneous per player. Selecting the default time of 00:00:00 for 3PM will start the broadcast immediately. In order to access this feature the user must have the required permissions and time must be authorized for the media to arrive at the Player in order to play.
 
-1. Begin by selecting the Player where the emergency broadcast is to be scheduled.   Drag and drop a single media from the media window.  A menu will pop up asking for information.
+1. Begin by selecting the Player where the Priority Announcement is to be scheduled.   Drag and drop a single media from the media window.  A menu will pop up asking for information.
 
-1. Give the Priority broadcast a name. 
+1. Give the Priority Announcement a name. 
 
 1. Enter in the frequency of the broadcast in seconds 
-eg 600 sec = 5 minutes.
+
+__eg 600 sec = 5 minutes.__
 
 1. Enter in start/stop times and date range with pop up calendar
 
