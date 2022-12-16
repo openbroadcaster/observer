@@ -2,6 +2,10 @@
 
 namespace ob\tools\cli;
 
+if (!defined('OB_CLI')) {
+    die('Command line access only.');
+}
+
 require('updates/checker.php');
 
 $checker = new \OBFChecker();
@@ -65,6 +69,7 @@ if ($check_fatal_error) {
     echo "\033[31m";
     echo PHP_EOL . 'Error detected, testing stopped . Correct the above error then run again . ' . PHP_EOL;
     echo "\033[0m";
+    exit(1);
 } else {
     echo PHP_EOL .
     "\033[32m" . str_pad($pass, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .

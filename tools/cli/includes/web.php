@@ -9,6 +9,9 @@ if (php_sapi_name() === 'cli') {
     die('This tool must not be run via the command line.' . PHP_EOL);
 }
 
+// required to bypass components.php verify install
+define('OB_CLI', true);
+
 chdir(__DIR__ . '/../../../');
 require_once('components.php');
 require_once('updates/checker.php');

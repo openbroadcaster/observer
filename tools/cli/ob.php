@@ -23,11 +23,10 @@
 
 namespace ob\tools\cli;
 
+define('OB_CLI', true);
 chdir(__DIR__ . '/../../');
 
 require('tools/cli/includes/helpers.php');
-
-define('OB_CLI', true);
 
 if (php_sapi_name() !== 'cli') {
     die('This tool can only be used from the command line.');
@@ -64,8 +63,10 @@ Commands:
 ';
 
         echo Helpers::table(spacing: 5, rows: [
-        ['check', 'check installation for errors'],
-        ['cron run', 'run scheduled tasks']
+            ['check', 'check installation for errors'],
+            ['cron run', 'run scheduled tasks'],
+            ['updates list', 'list available updates'],
+            // ['updates run', 'run available updates']
         ]);
     }
 
@@ -79,6 +80,18 @@ Commands:
         global $subcommand;
         if ($subcommand == 'run') {
             require('cron.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    public function updates()
+    {
+        global $subcommand;
+        if ($subcommand == 'run') {
+            require(__DIR__ . '/commands/updates_run.php');
+        } elseif ($subcommand == 'list') {
+            require(__DIR__ . '/commands/updates_list.php');
         } else {
             $this->help();
         }

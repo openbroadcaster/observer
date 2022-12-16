@@ -107,7 +107,7 @@ require_once('vendor/autoload.php');
 
 // verify proper functioning if requested in config
 $init_verify_running = false;
-if (!$init_verify_running && OB_INIT_VERIFY && is_array(OB_INIT_VERIFY)) {
+if (!$init_verify_running && OB_INIT_VERIFY && is_array(OB_INIT_VERIFY) && !defined('OB_CLI')) {
     $init_verify_running = true;
     require_once('updates/checker.php');
     $checker = new \OBFChecker();

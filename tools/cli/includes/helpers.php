@@ -4,6 +4,18 @@ namespace ob\tools\cli;
 
 class Helpers
 {
+    // require a valid installation, exit with error code if not
+    public static function requireValid()
+    {
+        $result_code = null;
+        exec(command: 'tools/cli/ob check', result_code: $result_code);
+        if ($result_code == 1) {
+            echo 'OpenBroadcaster installation is not valid. Run "ob check" for more information.' . PHP_EOL;
+            exit(1);
+        }
+    }
+
+    // output a formatted table
     public static function table(array $rows, int $spacing = 1)
     {
         $cols = [];
