@@ -43,7 +43,7 @@ class OBFUpdates
         foreach ($checker_methods as $checker_method) {
             $result = $checker->$checker_method();
             $this->checker_results[] = $result;
-            if ((!defined('OB_FORCE_UPDATE') || OB_FORCE_UPDATE !== true) && $result[2] == 2) {
+            if ($result[2] == 2) {
                 $this->checker_status = false;
                 return;
             } // fatal error encountered.

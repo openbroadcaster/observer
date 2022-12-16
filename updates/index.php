@@ -21,25 +21,6 @@
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// experimental functionality to run updates from command line (will be moved to ob cli tool)
-if (php_sapi_name() === 'cli' && ($argv[1] ?? null) === 'run') {
-    define('OB_FORCE_UPDATE', true);
-    require('updates.php');
-    require_once(__DIR__ . '/../components.php');
-    $list = $u->updates();
-    foreach ($list as $update) {
-        if ($update->needed) {
-            if (!$u->run($update)) {
-                echo 'Update failed, exiting.' . PHP_EOL;
-                exit(1);
-            }
-            echo 'Update ' . $update->version . ' installed.' . PHP_EOL;
-        }
-    }
-
-    exit(0);
-}
-
 require_once('updates.php');
 
 if (empty($_GET['run']) || $_GET['run'] != 1) {
