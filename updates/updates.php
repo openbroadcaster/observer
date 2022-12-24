@@ -41,6 +41,11 @@ class OBFUpdates
         $this->checker_results = array();
 
         foreach ($checker_methods as $checker_method) {
+            if ($checker_method == 'directories_valid' && php_sapi_name() == 'cli') {
+                // skip directories valid check for CLI, this needs to be run via web.
+                continue;
+            }
+
             $result = $checker->$checker_method();
             $this->checker_results[] = $result;
             if ($result[2] == 2) {
