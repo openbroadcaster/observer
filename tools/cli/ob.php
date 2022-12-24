@@ -66,7 +66,8 @@ Commands:
             ['check', 'check installation for errors'],
             ['cron run', 'run scheduled tasks'],
             ['updates list', 'list available updates'],
-            ['updates run', 'run available updates']
+            ['updates run', 'run available updates'],
+            ['passwd <username>', 'change password for user']
         ]);
     }
 
@@ -92,6 +93,16 @@ Commands:
             require(__DIR__ . '/commands/updates_run.php');
         } elseif ($subcommand == 'list') {
             require(__DIR__ . '/commands/updates_list.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    public function passwd()
+    {
+        global $subcommand;
+        if ($subcommand) {
+            require(__DIR__ . '/commands/passwd.php');
         } else {
             $this->help();
         }
