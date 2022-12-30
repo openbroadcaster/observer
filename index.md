@@ -2,7 +2,7 @@
 layout: default
 title: Server
 ---
-file:///home/radiorob/Desktop/observer.png![image](https://user-images.githubusercontent.com/4603894/210109996-90f705f7-fe58-444c-9abe-8037ae8d35d4.png)
+![image](https://user-images.githubusercontent.com/4603894/210110071-e9890d95-46ec-4c3b-9101-b15335c791ec.png)
 
 # Media and Management Server 
 {:.no_toc}
