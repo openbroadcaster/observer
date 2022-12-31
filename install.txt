@@ -1,15 +1,10 @@
-OpenBroadcaster - Server Installation Instructions
+OpenBroadcaster - OBServer Installation Instructions
 
-These instructions are an alternative to using ob.installer.sh.
-
-*** After install, set OB_UPDATES_USER and OB_UPDATES_PW in config.php and then run https://YOUR_IP/updates ***
-
-Administrator login is no longer supported for OB updates since July 2020.
+These instructions are an alternative to using ob.installer.sh
 
 Note: When using special characters in the password, they need to use single quotes instead of double quotes when they echo the string 
 
-1. See dependencies.txt for server dependencies.  Mostly PHP/MySQL related, but 
-   a few things to support transcoding and media identification. 
+1. See dependencies.txt for server dependencies.  Mostly PHP/MySQL related, but a few things to support transcoding and media identification. 
 
 2. Copy server files to a web environment (web document root).
 
@@ -19,15 +14,25 @@ Note: When using special characters in the password, they need to use single quo
 
 5. Ensure media storage directories are writable by the web server.
 
-6. In the web document root, create 'assets' and 'assets/uploads' directories.  
-   These directories should be writable by the web server.
+6. In the web document root, create 'assets' and 'assets/uploads' directories. These directories should be writable by the web server.
+   
+7. The database import includes one user. The username is admin. The password must be updated:
 
-7. The database import includes one user.  The username is admin.  The password
-   must be updated:
+   /var/www/observer/tools/cli/ob passwd <username> 
+   
+8. Check for available updates to verify your installation and apply any required updates.
 
-   php tools/password_change.php admin newpassword
+   /var/www/observer/tools/cli/ob updates run
+   
+OpenBroadcaster CLI Tool. Run ob <command>.
 
-8. Log into OpenBroadcaster as admin, and access http://ob_install_url/updates/ to
-   verify your installation and run any required updates.
+   Commands:
+   check                 check installation for errors                             
+   cron run              run scheduled tasks                                       
+   updates list          list available updates                                    
+   updates run           run available updates                                     
+   passwd <username>     change password for user
+   
+For advanced instructions see https://support.openbroadcaster.com/install
 
 -EOF-
