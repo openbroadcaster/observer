@@ -1,48 +1,18 @@
-#  OpenBroadcaster Multimedia Framework
+#  OpenBroadcaster Multimedia Server
 
 ## Overview
 
-OBServer is a multimedia framework application that focuses on reliability, accessibility and scalability over a having a bloated range of half baked/buggy features.  It has an organic AJAX interface built with Gstreamer, HTML5 and Javascript to deliver a web application in support of broadcast radio and TV automation, media asset management and dynamic community programming.  One OBServer may manage one or more OBPlayers in a synchronized network configuration or have the server and playout on one device or VM.   There is a robust Plugin Module Architecture with many modules extending the core server application.  The server has a documented API to enable sharing digital media assets and metadata with revocable secure keys.
-
-## Usage Scenarios
-
-<details>
-<summary>Broadcast Radio and TV</summary>
-<ul><li>Special interest, LPFM, community and multicultural broadcasters</li>
-<li>Time and theme based music segments for public spaces</li>
-<li>Dynamic Podcast assembler, logging and archiving</li></ul>
-</details>
-
-<details>
-<summary>CAP Emergency Alerting</summary>
-<ul><li>Broadcast Radio and TV</li>
-<li>LED Outdoor Signage</li>
-<li>CATV Alerts</li></ul>
-</details>
-
-<details>
-<summary>Video Streaming</summary>
-<ul><li>Low power community television</li>
-<li>User generated community IPTV channel on CATV</li>
-<li>Digital signage and visitor information</li></ul>
-</details>
-
-<details>
-<summary>Media Asset Management</summary>
-<ul><li>Media Asset Management</li>
-<li>Media library, versioning and archiving</li>
-<li>API Access and secure distribution</li></ul>
-</details>
+One OBServer may manage one or more OBPlayers in a synchronized network configuration or have the server and playout on one device or VM.   There is a robust Plugin Module Architecture with many modules extending the core server application.  The server has a documented API to enable sharing digital media assets and metadata with revocable secure keys.
 
 ## Installation
 
-To install OpenBroadcaster, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OpenBroadcaster's web interface.
+To install OBServer, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OBServer's web interface.
 
 Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/main/install.txt) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-server-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
 
 ## Support
 
-If you need help with OpenBroadcaster, the first place you should visit is our [Support](https://support.openbroadcaster.com/) page, which features solutions to a number of commonly encountered issues and questions.
+If you need help with OpenBroadcaster, the first place you should visit is our [Support](https://support.openbroadcaster.com/observer) page, which features solutions to a number of commonly encountered issues and questions.
 
 ## FAQ
 
