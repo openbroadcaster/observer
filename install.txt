@@ -10,7 +10,7 @@ Note: When using special characters in the password, they need to use single quo
 
 3. Import db/dbclean.sql to a database.
 
-4. Copy config.sample.php to config.php, and edit as necessary.
+4. Copy config.sample.php to config.php, Edit as necessary.
 
 5. Ensure media storage directories are writable by the web server.
 
