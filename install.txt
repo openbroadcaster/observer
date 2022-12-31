@@ -2,7 +2,7 @@ OpenBroadcaster - OBServer Installation Instructions
 
 These instructions are an alternative to using ob.installer.sh
 
-Note: When using special characters in the password, they need to use single quotes instead of double quotes when they echo the string 
+Note: When using special characters in the password, they need to use single quotes instead of double quotes when they echo the string. 
 
 1. See dependencies.txt for server dependencies.  Mostly PHP/MySQL related, but a few things to support transcoding and media identification. 
 
@@ -14,9 +14,9 @@ Note: When using special characters in the password, they need to use single quo
 
 5. Ensure media storage directories are writable by the web server.
 
-6. In the web document root, create 'assets' and 'assets/uploads' directories. These directories should be writable by the web server.
-   
-7. The database import includes one user. The username is admin. The password must be updated:
+6. In the web document root, create 'assets' and 'assets/uploads' directories writable by the web server.
+
+7. The database import includes one user. username is admin. The password must be updated.
 
    /var/www/observer/tools/cli/ob passwd <username> 
    
@@ -24,7 +24,7 @@ Note: When using special characters in the password, they need to use single quo
 
    /var/www/observer/tools/cli/ob updates run
    
-OpenBroadcaster CLI Tool. Run ob <command>.
+OpenBroadcaster CLI Tool. Run ob <command>
 
    Commands:
    check                 check installation for errors                             
