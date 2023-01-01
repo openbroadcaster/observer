@@ -44,17 +44,17 @@ Contributions are more than welcome! You can help us improve OpenBroadcaster by 
 
 Any help is welcome, big or small. We are all learning together.
 
-See our [Contributing Guide](https://github.com/openbroadcaster/observer/blob/main/docs/CONTRIBUTING.md) to learn how to get involved.
+See our [Contributing Guide](https://github.com/openbroadcaster/.github/blob/main/docs/CONTRIBUTING.md) to learn how to get involved.
 
 Please check out the various GIT projects and components on [OpenBroadcaster](https://github.com/openbroadcaster)
 
 ## Releases and Versioning
 
-See our [Releases Guide](https://github.com/openbroadcaster/observer/blob/main/docs/Releases.md) 
+See our [Releases Guide](https://github.com/openbroadcaster/.github/blob/main/docs/RELEASES.md) 
 
 ## Code of Conduct
 
-We abide by our [Code of Conduct](https://github.com/openbroadcaster/observer/blob/83c050d1c934b09f5c3c5e7ef0aa338e01af9bf2/CODE_OF_CONDUCT.md) and feel strongly about open, appreciative, and empathetic people joining us. 
+We abide by our [Code of Conduct](https://github.com/openbroadcaster/.github/blob/main/docs/CODE_OF_CONDUCT.md) and feel strongly about open, appreciative, and empathetic people joining us. 
 
 ## Support OpenBroadcaster
 
