@@ -6,7 +6,7 @@ use Tests\Support\AcceptanceTester;
 
 class LoginCest extends BaseCest
 {
-    public function loginSuccess(AcceptanceTester $I)
+    public function login(AcceptanceTester $I)
     {
         $I->amOnPage('/welcome');
         $I->fillField('#login_username', $this->username);
