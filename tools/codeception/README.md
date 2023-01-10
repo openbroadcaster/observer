@@ -11,7 +11,7 @@
 
 ## element not interactable
 
-`[Facebook\WebDriver\Exception\ElementNotInteractableException] element not interactable` is a common error that comes up when writing new tests. This can be something as simple as an element not being visible, but quite commonly it's because the selector allows for *multiple* elements, and Codeception does not allow `:first` to be used in CSS selectors. The way around this is to write the selector in the following way, using a click as an example:
+`[Facebook\WebDriver\Exception\ElementNotInteractableException] element not interactable` is a common error that comes up when writing new tests. This can be something as simple as an element not being visible, but quite commonly it's because the selector includes *multiple* elements, and Codeception does not allow `:first` to be used in CSS selectors. The way around this is to write the selector in the following way, using a click as an example:
 
 ```php
 use Codeception\Util\Locator;
