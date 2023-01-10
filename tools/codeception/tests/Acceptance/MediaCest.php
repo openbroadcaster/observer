@@ -17,10 +17,13 @@ class MediaCest extends BaseCest
     }
 
     /**
+     * @depends Tests\Acceptance\LoginCest:login
      * @example { "file": "eaglelanded.mp3", "id3": true }
      */
     public function uploadMusic(AcceptanceTester $I, Example $example)
     {
+        // UPLOAD MUSIC
+
         $I->click('#sidebar_media_upload_button');
         $I->attachFile('input[type="file"]', $example['file']);
         if ($example['id3']) {
@@ -35,6 +38,21 @@ class MediaCest extends BaseCest
         $I->selectOption('.category_field', 'Music');
         $I->click('Save');
         $I->waitForText('Media has been saved.', 5);
+
+        // CHECK MUSIC DETAILS
+
+        $I->waitForElement('tr[data-title="Mozart Music"]', 5);
+        $I->doubleClick('tr[data-title="Mozart Music"]');
+
+        $I->waitForText('Media Details', 5);
+        $I->waitForText('Acceptance Test Artist', 5, '#media_details_artist');
+        $I->waitFortext('Mozart Music', 5, '#media_details_title');
+        $I->waitForText('2022', 5, '#media_details_year');
+        $I->waitForText('Music', 5, '#media_details_category');
+        $I->waitForText($this->username, 5, '#media_details_uploader');
+
+        $I->click('Where Used', '#layout_main ob-tab-select');
+        $I->waitForText('Media is not in use', 5, '#media_details_used');
     }
 
     /**
@@ -92,6 +110,7 @@ class MediaCest extends BaseCest
     }
 
     /**
+     * @depends Tests\Acceptance\LoginCest:login
      * @example { "file": "electric_scooter.ogv", "id3": false }
      */
     public function uploadVideo(AcceptanceTester $I, Example $example)
@@ -113,6 +132,7 @@ class MediaCest extends BaseCest
     }
 
     /**
+     * @depends Tests\Acceptance\LoginCest:login
      * @example { "file": "apollo.jpg", "id3": false }
      */
     public function uploadImage(AcceptanceTester $I, Example $example)
