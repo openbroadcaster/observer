@@ -19,7 +19,6 @@ class PlaylistCest extends BaseCest
 
     /**
      * @depends Tests\Acceptance\LoginCest:login
-     * @depends Tests\Acceptance\MediaCest:uploadMusic
      * @depends Tests\Acceptance\MediaCest:uploadVideo
      * @depends Tests\Acceptance\MediaCest:uploadImage
      */
@@ -80,6 +79,18 @@ class PlaylistCest extends BaseCest
 
         $I->click('Where Used', '#layout_main ob-tab-select');
         $I->waitForText('Playlist is not in use.', 5, '#playlist_details_used');
+
+        // CHECK MEDIA WHERE USED
+
+        $I->click('Media', '#sidebar_search_tab_media');
+        $I->waitForElement('tr[data-title="Electric Scooter Video"]', 5);
+        $I->doubleClick('tr[data-title="Electric Scooter Video"]');
+
+        $I->waitForText('Acceptance Test Artist', 5, '#media_details_artist');
+        $I->wait(2); // 'where used' takes a bit to become active even when element exists?
+        $I->click('Where Used', '#layout_main ob-tab-select');
+
+        $I->waitForText('Test Playlist', 5, '#media_details_used li a');
     }
 
     /**
@@ -107,6 +118,7 @@ class PlaylistCest extends BaseCest
         $I->click('#playlist_users_permissions_input ob-user span');
 
         // Add group permission.
+        $I->waitForElement('#playlist_groups_permissions_input select', 5);
         $option = $I->grabTextFrom('#playlist_groups_permissions_input select option:last-child');
         $I->selectOption('#playlist_groups_permissions_input select', $option);
 
@@ -136,6 +148,17 @@ class PlaylistCest extends BaseCest
         // Already waited for other items, presumably at this point deleted item
         // should have been loaded if it wasn't deleted from the list.
         $I->dontSee('Acceptance Test Artist - Electric Scooter Video', '#playlist_details_items_table');
+
+        // CHECK MEDIA NO LONGER USED
+
+        $I->click('Media', '#sidebar_search_tab_media');
+        $I->waitForElement('tr[data-title="Electric Scooter Video"]', 5);
+        $I->doubleClick('tr[data-title="Electric Scooter Video"]');
+
+        $I->wait(2); // 'where used' takes a bit to become active even when element exists?
+        $I->click('Where Used', '#layout_main ob-tab-select');
+
+        $I->waitForText('Media is not in use', 5, '#media_details_used');
     }
 
     /**
