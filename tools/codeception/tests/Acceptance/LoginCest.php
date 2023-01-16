@@ -3,6 +3,7 @@
 namespace Tests\Acceptance;
 
 use Tests\Support\AcceptanceTester;
+use Codeception\Attribute\Depends;
 
 class LoginCest extends BaseCest
 {

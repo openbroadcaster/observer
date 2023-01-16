@@ -3,6 +3,7 @@
 namespace Tests\Acceptance;
 
 use Tests\Support\AcceptanceTester;
+use Codeception\Attribute\Depends;
 use Codeception\Example;
 
 class MediaCest extends BaseCest

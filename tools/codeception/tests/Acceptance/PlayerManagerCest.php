@@ -22,6 +22,9 @@ class PlayerManagerCest extends BaseCest
         $I->waitForText('Player Manager', 5, '#layout_main');
     }
 
+    /**
+     * @depends Tests\Acceptance\LoginCest:login
+     */
     public function createPlayer(AcceptanceTester $I)
     {
         $I->click('#layout_main button.add');
