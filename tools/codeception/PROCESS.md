@@ -143,6 +143,10 @@ TODO
 
 TODO
 
+### Cleanup
+
+TODO: While testing process assumes clean install with one admin user, it'd still be very nice to be able to run the testing process a couple times in a row without having to do a whole db reset, especially with tests likely to leave a bit of a mess behind (that then interferes with those same tests when they run a second time). What's the most straightforward way of doing this? 
+
 ## API
 
 TODO (All controllers that are straightforwardly interactable, prioritize UI testing)
