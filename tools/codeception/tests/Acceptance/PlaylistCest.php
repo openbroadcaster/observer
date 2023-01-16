@@ -21,6 +21,8 @@ class PlaylistCest extends BaseCest
      * @depends Tests\Acceptance\LoginCest:login
      * @depends Tests\Acceptance\MediaCest:uploadVideo
      * @depends Tests\Acceptance\MediaCest:uploadImage
+     *
+     * TODO: Generic media dependencies to test with.
      */
     public function createPlaylist(AcceptanceTester $I)
     {
