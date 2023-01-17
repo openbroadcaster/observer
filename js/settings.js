@@ -40,14 +40,14 @@ OB.Settings.storeCache = {};
 OB.Settings.getSettings = function(callback)
 {
   var post = [];
-  post.push(['settings', 'country_list', {}]);
-  post.push(['settings', 'language_list', {}]);
-  post.push(['settings', 'genre_list', {}]);
-  post.push(['settings', 'category_list', {}]);
-  post.push(['settings', 'media_metadata_fields', {}]);
+  post.push(['metadata', 'country_list', {}]);
+  post.push(['metadata', 'language_list', {}]);
+  post.push(['metadata', 'genre_list', {}]);
+  post.push(['metadata', 'category_list', {}]);
+  post.push(['metadata', 'media_metadata_fields', {}]);
   post.push(['settings', 'get_ob_version', {}]);
-  post.push(['settings', 'media_get_fields', {}]);
-  post.push(['settings', 'playlist_item_types', {}]);
+  post.push(['metadata', 'media_get_fields', {}]);
+  post.push(['metadata', 'playlist_item_types', {}]);
 
   OB.API.multiPost(post,function(response)
   {
