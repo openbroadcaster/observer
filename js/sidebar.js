@@ -870,7 +870,7 @@ OB.Sidebar.playlistSearch = function(more)
 
   var results_per_page = OB.Settings.store('results-per-page');
   if (typeof results_per_page === "undefined") results_per_page = OB.Sidebar.defaults.results_per_page;
-  
+
   OB.API.post('playlists','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: results_per_page, o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
 
     var playlist = data.data.playlists;
@@ -1260,7 +1260,7 @@ OB.Sidebar.advancedSearchWindowInit = function()
 
     $.each(OB.Settings.languages,function(index,language)
     {
-      $('#advanced_search_language_options').append('<option value="'+language.id+'">'+htmlspecialchars(language.name)+'</option>');
+      $('#advanced_search_language_options').append('<option value="'+language.language_id+'">'+htmlspecialchars(language.ref_name)+'</option>');
     });
 
     $.each(OB.Settings.media_metadata,function(index,metadata)

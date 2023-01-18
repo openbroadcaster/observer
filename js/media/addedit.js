@@ -116,7 +116,7 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
   // fill language list
   for(var i in OB.Settings.languages)
   {
-    $form.find('.language_field').append('<option value="'+OB.Settings.languages[i].id+'">'+htmlspecialchars(OB.t(OB.Settings.languages[i].name))+'</option>');
+    $form.find('.language_field').append('<option value="'+OB.Settings.languages[i].language_id+'">'+htmlspecialchars(OB.t(OB.Settings.languages[i].ref_name))+'</option>');
   }
 
   // fill country list
@@ -411,7 +411,7 @@ OB.Media.save = function()
 
     item.country_id = $(element).find('.country_field').val();
     item.category_id = $(element).find('.category_field').val();
-    item.language_id = $(element).find('.language_field').val();
+    item.language = $(element).find('.language_field').val();
     item.genre_id = $(element).find('.genre_field').val();
 
     item.comments = $(element).find('.comments_field').val();
@@ -549,7 +549,7 @@ OB.Media.editPage = function(ids)
       OB.Media.updateGenreList(id);
 
       $form.find('.country_field').val( media.country_id );
-      $form.find('.language_field').val( media.language_id );
+      $form.find('.language_field').val( media.language );
       $form.find('.genre_field').val( media.genre_id);
 
       $form.find('.comments_field').val( media.comments );

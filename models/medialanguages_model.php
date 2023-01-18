@@ -33,8 +33,8 @@ class MediaLanguagesModel extends OBFModel
      */
     public function get_all()
     {
-        $this->db->orderby('name');
-        $types = $this->db->get('media_languages');
+        $this->db->orderby('ref_name');
+        $types = $this->db->get('languages');
 
         return $types;
     }
