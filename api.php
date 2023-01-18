@@ -27,13 +27,92 @@ class OBFAPI
     private $user;
     private $io;
     private $callback_handler;
+    private $routes;
 
     public function __construct()
     {
-      // handle rewrite API (v2)
-      // we consider v1 to be the previous method via api.php.
-        if (!(isset($_POST['m']) && is_array($_POST['m'])) && str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
-            if (preg_match('#^/api/v2/ping/?$#', $_SERVER['REQUEST_URI'])) {
+        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+            // we have routes for this request method? find the regex pattern to match with, and variables to extract.
+            $routes = json_decode(file_get_contents('routes.json'));
+            if ($routes && is_object($routes) && property_exists($routes, $_SERVER['REQUEST_METHOD'])) {
+                $this->routes = $routes->{$_SERVER['REQUEST_METHOD']};
+                foreach ($this->routes as &$route) {
+                    $variables = [];
+                    $route_parts = explode('/', preg_replace('/^\/api\/v2\//', '', $route[0]));
+                    foreach ($route_parts as &$route_part) {
+                        if (str_starts_with($route_part, '(:') && str_ends_with($route_part, ':)')) {
+                            $variables[] = substr($route_part, 2, -2);
+                            $route_part = '(\d+)';
+                        } else {
+                            $route_part = preg_quote($route_part, '/');
+                        }
+                    }
+                    $route[3] = [
+                        'pattern' => '/^\/api\/v2\/' . implode('\/', $route_parts) . '\/?$/',
+                        'variables' => $variables
+                    ];
+                }
+            }
+
+            // we consider v1 to be the previous method via api.php.
+            if ($this->routes) {
+                if (preg_match('#^/api/v2/ping/?$#', $_SERVER['REQUEST_URI'])) {
+                    echo json_encode('pong');
+                    exit();
+                }
+
+                $matches = null;
+                $found = false;
+                foreach ($this->routes as $route) {
+                    if (preg_match($route[3]['pattern'], $_SERVER['REQUEST_URI'], $matches)) {
+                        // we need our array of request data
+                        if (!isset($_POST['d'])) {
+                            $_POST['d'] = [];
+                        }
+
+                        // first match is entire endpoint, disregard.
+                        array_shift($matches);
+
+                        // any matches remaining should be matched up with variables
+                        foreach ($matches as $index => $match) {
+                            if (isset($route[3]['variables'][$index])) {
+                                // if request data not an array, something is wrong.
+                                if (is_array($_POST['d'])) {
+                                    $_POST['d'][$route[3]['variables'][$index]] = $match;
+                                }
+                            }
+                        }
+
+                        // provided expected data for v1 behavior below
+                        $_POST['d'] = json_encode($_POST['d']);
+                        $_POST['c'] = $route[1];
+                        $_POST['a'] = $route[2];
+
+                        // found
+                        $found = true;
+
+                        // match found, don't need to look further.
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    http_response_code(400);
+                    header('Content-Type: text/plain');
+                    echo 'Not found or invalid request type for this URL.';
+                    exit();
+                }
+            } else {
+                http_response_code(500);
+                header('Content-Type: text/plain');
+                echo 'API v2 not supported.';
+                exit();
+            }
+        }
+
+        // API v1 with rewrite mode
+        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v1/')) {
+            if (preg_match('#^/api/v1/ping/?$#', $_SERVER['REQUEST_URI'])) {
                 echo json_encode('pong');
                 exit();
             }

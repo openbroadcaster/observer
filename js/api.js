@@ -76,7 +76,7 @@ OB.API.post = function (controller, action, sdata, callback_function, mode) {
   var xhr = $.ajax({
     'async': async,
     'type': 'POST',
-    'url': OB_API_REWRITE ? '/api/v2/' + controller + '/' + action : '/api.php',
+    'url': OB_API_REWRITE ? '/api/v1/' + controller + '/' + action : '/api.php',
     'dataType': 'json',
     'data': requestData,
     'success': function (data) {
