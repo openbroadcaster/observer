@@ -54,7 +54,6 @@ class OBFAPI
                 }
             }
 
-            // we consider v1 to be the previous method via api.php.
             if ($this->routes) {
                 if (preg_match('#^/api/v2/ping/?$#', $_SERVER['REQUEST_URI'])) {
                     echo json_encode('pong');
