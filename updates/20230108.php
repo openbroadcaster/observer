@@ -16,6 +16,7 @@ class OBUpdate20230108 extends OBUpdate
         $updates[] = 'Backup old media_languages table.';
         $updates[] = 'Add language field to media for new table.';
         $updates[] = 'Go through old language table, match against ISO-693-3, update media items, and delete old language rows.';
+        $updates[] = 'Rename field in core metadata setting.';
 
         return $updates;
     }
@@ -126,6 +127,23 @@ class OBUpdate20230108 extends OBUpdate
             $this->db->delete('media_languages');
         }
 
+        // Rename field in core metadata setting.
+
+        $this->db->where('name', 'core_metadata');
+        $core_metadata = json_decode($this->db->get('settings')[0]['value'], true);
+        if ($this->db->error()) {
+            return false;
+        }
+        $core_metadata['language'] = $core_metadata['language_id'];
+        unset($core_metadata['language_id']);
+        $this->db->where('name', 'core_metadata');
+        $this->db->update('settings', [
+            'value' => json_encode($core_metadata)
+        ]);
+        if ($this->db->error()) {
+            return false;
+        }
+        
         return true;
     }
 }

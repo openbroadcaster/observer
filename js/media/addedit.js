@@ -177,7 +177,7 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
     OB.Media.update_required_field(req_fields.category_id, 'category_field');
     OB.Media.update_required_field(req_fields.category_id, 'genre_field');
     OB.Media.update_required_field(req_fields.country_id,  'country_field');
-    OB.Media.update_required_field(req_fields.language_id, 'language_field');
+    OB.Media.update_required_field(req_fields.language,    'language_field');
     OB.Media.update_required_field(req_fields.comments,    'comments_field');
   }
 

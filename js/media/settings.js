@@ -554,7 +554,7 @@ OB.Media.fieldsSave = function () {
   post.year                    = $('#media_fields_year input[type="radio"]:checked').val();
   post.category_id             = $('#media_fields_category_id input[type="radio"]:checked').val();
   post.country_id              = $('#media_fields_country_id input[type="radio"]:checked').val();
-  post.language_id             = $('#media_fields_language_id input[type="radio"]:checked').val();
+  post.language                = $('#media_fields_language input[type="radio"]:checked').val();
   post.comments                = $('#media_fields_comments input[type="radio"]:checked').val();
   post.dynamic_content_default = $('#media_fields_dynamic input[type="radio"]:checked').val();
   post.dynamic_content_hidden  = $('#media_fields_dynamic input[type="checkbox"]').is(':checked');
