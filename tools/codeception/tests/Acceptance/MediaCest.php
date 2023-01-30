@@ -37,6 +37,7 @@ class MediaCest extends BaseCest
         $I->fillField('.album_field', 'Album');
         $I->fillField('.year_field', '2022');
         $I->selectOption('.category_field', 'Music');
+        $I->selectOption('.language_field', 'English');
         $I->click('Save');
         $I->waitForText('Media has been saved.', 5);
 
@@ -127,6 +128,7 @@ class MediaCest extends BaseCest
         $I->fillField('.title_field', 'Electric Scooter Video');
         $I->fillField('.album_field', 'Album');
         $I->fillField('.year_field', '2022');
+        $I->selectOption('.language_field', 'German');
         $I->selectOption('.category_field', 'Entertainment (non-music)');
         $I->click('Save');
         $I->waitForText('Media has been saved.', 5);
@@ -149,6 +151,7 @@ class MediaCest extends BaseCest
         $I->fillField('.title_field', 'Apollo 11 Image');
         $I->fillField('.album_field', 'Album');
         $I->fillField('.year_field', '2022');
+        $I->selectOption('.language_field', 'French');
         $I->selectOption('.category_field', 'Other');
         $I->click('Save');
         $I->waitForText('Media has been saved.', 5);
