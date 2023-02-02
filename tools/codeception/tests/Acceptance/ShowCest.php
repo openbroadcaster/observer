@@ -36,7 +36,14 @@ class ShowCest extends BaseCest
         $I->dragAndDrop('tr[data-title="Electric Scooter Video"]', '#schedule_container');
         $I->waitForText('Acceptance Test Artist - Electric Scooter Video', 5, '#show_item_info');
 
-        $start = date('Y-m-d H:i:s');
+        // Anchor show on a Sunday or Monday because of how shows are displayed.
+        if (date('N') != '1' && date('N') != '7') {
+            $diff = (int) date('N') - 1;
+        } else {
+            $diff = 0;
+        }
+        $start = date('Y-m-d H:i:s', strtotime('-' . $diff . ' day'));
+
         $I->fillField('#show_start_datetime input', $start);
         $I->fillField('#show_duration input', '2:00:00');
         $I->click('#layout_modal_window button.add');
@@ -66,9 +73,9 @@ class ShowCest extends BaseCest
         $I->click('#layout_modal_window button.add');
 
         $I->wait(2); // give shows time to update (not sure what element to check for)
-        // Since the shows table shows a week at a time, when there's a show every
-        // two days in this test that means the table can show either 3 or 4 data
-        // blocks.
+        // Since the shows table shows a week at a time, and the show is anchored
+        // to Sunday or Monday, when there's a show every two days in this test
+        // that means the table can show either 3 or 4 data blocks.
         $I->seeNumberOfElements('.schedule_datablock', [3,4]);
     }
 
