@@ -4,6 +4,20 @@ as well, using App Keys. These can be defined by in the user management model,
 in the account management screen of anyone with the 'manage_appkeys' permission.</p>
 <p>An example of an App Keys request to OpenBroadcaster with jQuery can be found
 below:</p>
+<h3>Version 2</h3>
+<p>TODO</p>
+<p><code><pre>var xhr = $.ajax({
+  'async': true,
+  'type': 'GET',
+  'url': '/api/v2/ping',
+  'dataType': 'json',
+  'success': function (response) {
+    console.log(response);
+  }
+});</pre></code></p>
+<h3>Version 1 (Deprecated)</h3>
+<p><em>Warning: This version of using the API is deprecated, and could be
+removed at any time. Please move to using version 2 of the API as soon as possible.</em></p>
 <p><code><pre>var xhr = $.ajax( {
   'async': true,
   'type': 'POST',
