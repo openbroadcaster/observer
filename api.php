@@ -62,11 +62,17 @@ class OBFAPI
 
                 $matches = null;
                 $found = false;
+
                 foreach ($this->routes as $route) {
-                    if (preg_match($route[3]['pattern'], $_SERVER['REQUEST_URI'], $matches)) {
-                        // use json request data if using requests to v2 api
+                    if (preg_match($route[3]['pattern'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), $matches)) {
+                        // request data for requests to v2 api
                         if (!isset($_POST['d']) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
-                            $_POST['d'] = json_decode(file_get_contents('php://input'), true);
+                            // json body
+                            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                                parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $_POST['d']);
+                            } else {
+                                $_POST['d'] = json_decode(file_get_contents('php://input'), true);
+                            }
                         }
 
                         // we need our array of request data
