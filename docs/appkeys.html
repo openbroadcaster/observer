@@ -1,23 +1,55 @@
 <h2>App Key Requests</h2>
-<p>OpenBroadcaster supports making requests to controllers from remote locations
-as well, using App Keys. These can be defined by in the user management model,
-in the account management screen of anyone with the 'manage_appkeys' permission.</p>
-<p>An example of an App Keys request to OpenBroadcaster with jQuery can be found
-below:</p>
+<p>OpenBroadcaster supports making requests to controllers from remote locations,
+using the App Keys API. These can be created in the user management model and the
+account management screen for anyone with the 'manage_appkeys' permission.</p>
+<p>Examples of API requests to OpenBroadcaster with the Fetch API in JavaScript
+can be found below:</p>
 <h3>Version 2</h3>
-<p>TODO</p>
-<p><code><pre>var xhr = $.ajax({
-  'async': true,
-  'type': 'GET',
-  'url': '/api/v2/ping',
-  'dataType': 'json',
-  'success': function (response) {
-    console.log(response);
+<h4>request account settings (GET)</h4>
+<p><code><pre>const response = await fetch("https://OB-INSTALL-URL/api/v2/account/settings", {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'USER-APPKEY-HERE'
   }
-});</pre></code></p>
+});
+
+response.json().then((resp) => console.log(resp));</pre></code></p>
+<h4>update account settings (PUT with JSON data)</h4>
+<p><code><pre>const data = {
+    "name": "Fetch",
+    "display_name": "Fetch Update!",
+    "email": "youremail@example.com",
+    "theme": "openbroadcaster"
+};
+
+const response = await fetch("https://OB-INSTALL-URL/api/v2/account/settings", {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'USER-APPKEY-HERE'
+  },
+  body: JSON.stringify(data)
+});
+
+response.json().then((resp) => console.log(resp));</pre></code></p>
+<h4>get players (GET with parameters in url)</h4>
+<p><code><pre>const response = await fetch("https://observer2.pl3.dev/api/v2/players?" +
+  new URLSearchParams({
+    limit: 1,
+    offset: 1
+  }), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Mw==:6hNcuhaA9ZnAJ+KyqSawzac5efmAze7ADZsUanLhLME='
+    }
+  });
+
+response.json().then((resp) => console.log(resp));</pre></code></p>
 <h3>Version 1 (Deprecated)</h3>
-<p><em>Warning: This version of using the API is deprecated, and could be
-removed at any time. Please move to using version 2 of the API as soon as possible.</em></p>
+<p><em>Warning: This version of the API is deprecated, and could be removed at any
+time. Please move to version 2 of the API as soon as possible.</em></p>
 <p><code><pre>var xhr = $.ajax( {
   'async': true,
   'type': 'POST',
