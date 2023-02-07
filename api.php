@@ -64,6 +64,11 @@ class OBFAPI
                 $found = false;
                 foreach ($this->routes as $route) {
                     if (preg_match($route[3]['pattern'], $_SERVER['REQUEST_URI'], $matches)) {
+                        // use json request data if using requests to v2 api
+                        if (!isset($_POST['d']) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
+                            $_POST['d'] = json_decode(file_get_contents('php://input'), true);
+                        }
+
                         // we need our array of request data
                         if (!isset($_POST['d'])) {
                             $_POST['d'] = [];
@@ -153,11 +158,12 @@ class OBFAPI
             $auth_key = $_POST['k'];
         }
 
-        if (empty($_POST['appkey'])) {
+        if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
             // authorize our user (from post data, cookie data, whatever.)
             $this->user->auth($auth_id, $auth_key);
         } else {
-            $this->user->auth_appkey($_POST['appkey'], $requests);
+            header('Content-Type: application/json');
+            $this->user->auth_appkey($_SERVER['HTTP_AUTHORIZATION'], $requests);
         }
 
         // make sure each request has a valid controller (not done above since auth required before controller load)

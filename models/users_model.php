@@ -711,6 +711,7 @@ class UsersModel extends OBFModel
         unset($data['dyslexia_friendly_font']);
         unset($data['sidebar_display_left']);
 
+        if (!$data['appkeys']) $data['appkeys'] = [];
         foreach ($data['appkeys'] as $appkey) {
             $this->db->where('id', $appkey[0]);
             $this->db->update('users_appkeys', [
