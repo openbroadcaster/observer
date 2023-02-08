@@ -293,6 +293,7 @@ OB.Account.keyPermissionsSave = function()
     }
 
     $('#appkey_permissions_message').obWidget('success', 'Permissions saved.');
+    OB.Account.keyLoad();
   });
 }
 
@@ -317,6 +318,7 @@ OB.Account.keyLoad = function () {
       return;
     }
 
+    $('#account_appkey_table tbody').empty();
     $.each(response.data, function (index, row) {
       $tr = $('<tr/>').attr('data-id', row.id);
       $tr.append($('<td/>').html('<input type="text" class="account_appkey_name" value="' + row.name + '">'));
