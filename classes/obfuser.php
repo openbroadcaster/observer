@@ -280,12 +280,18 @@ class OBFUser
             return false;
         }
 
+        // Make sure Authorization header uses the proper format
+        [$bearer, $appkey] = [substr($appkey, 0, 7), substr($appkey, 7)];
+        if ($bearer !== 'Bearer ') {
+            return false;
+        }
+
         $key_row = base64_decode(explode(':', $appkey)[0]);
         $key_val = explode(':', $appkey)[1];
 
         $this->db->where('id', $key_row);
         $result = $this->db->get_one('users_appkeys');
-        $valid  = password_verify($key_val, $result['key']);
+        $valid  = password_verify($key_val, $result['key'] ?? '');
 
         // see if we have permission for all requests
         if ($valid) {
