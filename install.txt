@@ -24,7 +24,7 @@ Note: When using special characters in the password, they need to use single quo
 
    /var/www/observer/tools/cli/ob updates run
    
-OpenBroadcaster CLI Tool. Run ob <command>
+OpenBroadcaster 5.3 CLI Tool. Run ob <command>
 
    Commands:
    check                 check installation for errors                             
@@ -34,5 +34,9 @@ OpenBroadcaster CLI Tool. Run ob <command>
    passwd <username>     change password for user
    
 For advanced instructions see https://support.openbroadcaster.com/install
+
+Pre 5.3 Branch Instructions
+
+*** After install, set OB_UPDATES_USER and OB_UPDATES_PW in config.php and then run https://YOUR_IP/updates ***
 
 -EOF-
