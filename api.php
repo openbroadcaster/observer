@@ -168,8 +168,15 @@ class OBFAPI
             // authorize our user (from post data, cookie data, whatever.)
             $this->user->auth($auth_id, $auth_key);
         } else {
+            // authorization header set, auth using appkey and throw an error
+            // if invalid (needs to be done explicitly since above relies on
+            // controllers figuring out permission variables aren't set internally)
             header('Content-Type: application/json');
-            $this->user->auth_appkey($_SERVER['HTTP_AUTHORIZATION'], $requests);
+            $valid = $this->user->auth_appkey($_SERVER['HTTP_AUTHORIZATION'], $requests);
+            if (! $valid) {
+                $this->io->error(OB_ERROR_DENIED);
+                return;
+            }
         }
 
         // make sure each request has a valid controller (not done above since auth required before controller load)
