@@ -57,6 +57,7 @@ class OBFDB
      */
     public function __construct()
     {
+        mysqli_report(MYSQLI_REPORT_OFF);
         $this->connection = mysqli_connect(OB_DB_HOST, OB_DB_USER, OB_DB_PASS);
         mysqli_select_db($this->connection, OB_DB_NAME);
         mysqli_query($this->connection, 'SET NAMES \'utf8\'');
