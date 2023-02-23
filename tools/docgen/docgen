@@ -97,13 +97,15 @@ if ($mode == 'docs') {
     $routes = [];
     foreach ($doc_files as $file) {
       foreach ($file->getClass()->getMethods() as $method) {
-        if (count($method->route) > 0) {
-          $routes[$method->route[0]][] = [$method->route[1], strtolower($file->getClass()->name), $method->name];
+        if (count($method->routes) > 0) {
+          foreach ($method->routes as $route) {
+            $routes[$route[0]][] = [$route[1], strtolower($file->getClass()->name), $method->name];
+          }
         }
       }
     }
 
-    if (routes_contain_duplicates($routes, $method->route)) {
+    if (routes_contain_duplicates($routes)) {
       exit("[E] Duplicate routes found. Quitting.\n");
     }
 
@@ -210,13 +212,15 @@ if ($mode == 'docs') {
     $routes = [];
     foreach ($doc_files as $file) {
       foreach ($file->getClass()->getMethods() as $method) {
-        if (count($method->route) > 0) {
-          $routes[$method->route[0]][] = [$method->route[1], strtolower($file->getClass()->name), $method->name];
+        if (count($method->routes) > 0) {
+          foreach ($method->routes as $route) {
+            $routes[$route[0]][] = [$route[1], strtolower($file->getClass()->name), $method->name];
+          }
         }
       }
     }
 
-    if (routes_contain_duplicates($routes, $method->route)) {
+    if (routes_contain_duplicates($routes)) {
       exit("[E] Duplicate routes found. Quitting.\n");
     }
 

@@ -50,13 +50,13 @@
                 <code class="doc-method-code-args"><?=$method_return?></code>
             </div>
             <?php } ?>
-            <?php if (count($method_route) > 0) { ?>
+            <?php if (count($method_routes) > 0) { foreach ($method_routes as $method_route) {?>
             <div class="doc-method-route">
                 <span>API Route</span>
                 <code class="doc-method-code-name"><?=$method_route[0]?></code>
                 <code class="doc-method-code-args"><?=$method_route[1]?></code>
             </div>
-            <?php } ?>
+            <?php } } ?>
         </div>
     </details>
 </div>

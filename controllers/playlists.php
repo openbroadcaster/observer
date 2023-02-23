@@ -168,6 +168,7 @@ class Playlists extends OBFController
      * @return id
      *
      * @route POST /v2/playlists
+     * @route PUT /v2/playlists/(:id:)
      */
     public function save()
     {

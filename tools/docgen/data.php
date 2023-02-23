@@ -98,7 +98,7 @@ class DocGenMethod
         $args = [],
         $param = [],
         $return = "",
-        $route = [],
+        $routes = [],
         $hidden = [false, ""]
     ) {
         $this->name = $name;
@@ -107,7 +107,7 @@ class DocGenMethod
         $this->args = $args;
         $this->param = $param;
         $this->return = $return;
-        $this->route = $route;
+        $this->routes = $routes;
         $this->hidden = $hidden;
     }
 }
@@ -176,7 +176,7 @@ function generate_tree(array $blocks, string $filename, string $dir): DocGenFile
                                 break;
                             }
 
-                            $method->route = [$route_method, $route_url];
+                            $method->routes[] = [$route_method, $route_url];
                             break;
                         case 'hidden':
                             $method->hidden = [true, $tag[1]];

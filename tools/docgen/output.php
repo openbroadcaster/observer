@@ -131,7 +131,7 @@ function html_method(DocGenMethod $doc_method): string
     $method_args        = $doc_method->args;
     $method_param       = $doc_method->param;
     $method_return      = $doc_method->return;
-    $method_route       = $doc_method->route;
+    $method_routes      = $doc_method->routes;
     $method_hidden      = $doc_method->hidden;
     include('templates/method.php');
 
