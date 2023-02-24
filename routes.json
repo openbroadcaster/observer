@@ -492,6 +492,11 @@
             "media_required_fields"
         ],
         [
+            "/api/v2/playlists/(:id:)",
+            "playlists",
+            "save"
+        ],
+        [
             "/api/v2/media/searches/(:id:)",
             "media",
             "media_my_searches_edit"

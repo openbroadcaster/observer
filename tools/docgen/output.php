@@ -1,6 +1,6 @@
 <?php
 
-require_once('data.php');
+require_once(__DIR__ . '/data.php');
 
 /* Take a documentation tree object and convert it into an HTML file for that
 specific file. Uses the class and method functions to include their templates in

@@ -2,11 +2,10 @@
 
 <?php
 
-chdir(__DIR__);
-require_once('parse.php');
-require_once('data.php');
-require_once('output.php');
-require_once('routes.php');
+require_once(__DIR__ . '/parse.php');
+require_once(__DIR__ . '/data.php');
+require_once(__DIR__ . '/output.php');
+require_once(__DIR__ . '/routes.php');
 
 /* Take command-line arguments. Start by getting the type of output we want:
 either getting all the documentation, or just a JSON file with the routes.
