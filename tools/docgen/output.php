@@ -15,7 +15,7 @@ function html_file(DocGenFile $doc_file, array $nav_tree): string
     $file_name        = $doc_file->name;
     $file_description = $doc_file->description;
     ob_start();
-    include('templates/file.php');
+    include(__DIR__ . '/templates/file.php');
     $html .= ob_get_contents();
     ob_clean();
 
@@ -30,7 +30,7 @@ function html_file(DocGenFile $doc_file, array $nav_tree): string
     $html .= html_class_footer($doc_class);
 
     ob_start();
-    include('templates/footer.php');
+    include(__DIR__ . '/templates/footer.php');
     $html .= ob_get_contents();
     ob_clean();
 
@@ -42,7 +42,7 @@ function html_index(array $nav_tree): string
     $html = html_header($nav_tree);
 
     ob_start();
-    include('templates/footer.php');
+    include(__DIR__ . '/templates/footer.php');
     $html .= ob_get_contents();
     ob_clean();
 
@@ -56,19 +56,19 @@ function html_page(string $page, array $nav_tree): string
     $html = html_header($nav_tree);
 
     ob_start();
-    include('templates/page_header.php');
+    include(__DIR__ . '/templates/page_header.php');
     $html .= ob_get_contents();
     ob_clean();
 
     $html .= $page;
 
     ob_start();
-    include('templates/page_footer.php');
+    include(__DIR__ . '/templates/page_footer.php');
     $html .= ob_get_contents();
     ob_clean();
 
     ob_start();
-    include('templates/footer.php');
+    include(__DIR__ . '/templates/footer.php');
     $html .= ob_get_contents();
     ob_clean();
 
@@ -84,7 +84,7 @@ function html_header(array $nav_tree): string
     $title   = "OpenBroadcaster Documentation";
     $styles  = array_diff(scandir(__DIR__ . '/style/'), ['..', '.']);
     $scripts = array_diff(scandir(__DIR__ . '/js/'), ['..', '.']);
-    include('templates/header.php');
+    include(__DIR__ . '/templates/header.php');
 
     $html = ob_get_contents();
     ob_clean();
@@ -100,7 +100,7 @@ function html_class_header(DocGenClass $doc_class): string
     $class_name        = $doc_class->name;
     $class_description = $doc_class->description;
     $class_package     = $doc_class->package;
-    include('templates/class_header.php');
+    include(__DIR__ . '/templates/class_header.php');
 
     $html = ob_get_contents();
     ob_clean();
@@ -112,7 +112,7 @@ function html_class_footer(DocGenClass $doc_class): string
 {
     ob_start();
 
-    include('templates/class_footer.php');
+    include(__DIR__ . '/templates/class_footer.php');
 
     $html = ob_get_contents();
     ob_clean();
@@ -133,7 +133,7 @@ function html_method(DocGenMethod $doc_method): string
     $method_return      = $doc_method->return;
     $method_routes      = $doc_method->routes;
     $method_hidden      = $doc_method->hidden;
-    include('templates/method.php');
+    include(__DIR__ . '/templates/method.php');
 
     $html = ob_get_contents();
     ob_clean();
@@ -147,24 +147,24 @@ function html_routes(array $routes, array $nav_tree): string
     $html = html_header($nav_tree);
 
     ob_start();
-    include('templates/page_header.php');
+    include(__DIR__ . '/templates/page_header.php');
     $html .= ob_get_contents();
     ob_clean();
 
     ob_start();
 
-    include('templates/routes.php');
+    include(__DIR__ . '/templates/routes.php');
     $html .= ob_get_contents();
 
     ob_clean();
 
     ob_start();
-    include('templates/page_footer.php');
+    include(__DIR__ . '/templates/page_footer.php');
     $html .= ob_get_contents();
     ob_clean();
 
     ob_start();
-    include('templates/footer.php');
+    include(__DIR__ . '/templates/footer.php');
     $html .= ob_get_contents();
     ob_clean();
 

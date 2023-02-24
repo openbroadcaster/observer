@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&display=swap" rel="stylesheet">
   <?php foreach ($styles as $style) { ?>
-  <link rel="stylesheet" type="text/css" href="style/<?=$style?>?v=<?=filemtime('style/' . $style)?>">
+  <link rel="stylesheet" type="text/css" href="style/<?=$style?>?v=<?=filemtime(__DIR__ . '/../style/' . $style)?>">
   <?php } ?>
   <?php foreach ($scripts as $script) { ?>
-  <script src="js/<?=$script?>?v=<?=filemtime('style/' . $style)?>"></script>
+  <script src="js/<?=$script?>?v=<?=filemtime(__DIR__ . '/../js/' . $script)?>"></script>
   <?php } ?>
 </head>
 
