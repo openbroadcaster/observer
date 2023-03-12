@@ -1173,7 +1173,7 @@ class Remote
 
     else {
 
-      $sql='select id from playlog where '.implode($dbcheck,' and ');
+      $sql='select id from playlog where '.implode(' and ', $dbcheck);
 
       $this->db->query($sql);
 
