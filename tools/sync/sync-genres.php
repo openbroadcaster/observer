@@ -66,10 +66,10 @@ while (true) {
 
         // update database with genres
         if (!empty($genres)) {
-            echo $row['id'].': '.implode($genres, ', ').PHP_EOL;
+            echo $row['id'].': '.implode(', ', $genres).PHP_EOL;
             $db->where('media_id', $row['id']);
             $db->update('media_metadata', [
-        'genres'=>implode($genres, ',')
+        'genres'=>implode(',', $genres)
       ]);
             $db->where('media_id', $row['id']);
             $db->delete('media_metadata_tags');
