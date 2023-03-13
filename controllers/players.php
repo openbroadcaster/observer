@@ -78,7 +78,7 @@ class Players extends OBFController
     }
 
     /**
-     * Edit a player. Requires 'manage_players' permission.
+     * Create or edit a player. Requires 'manage_players' permission.
      *
      * @param id
      * @param station_ids IDs of stations played by this player.
