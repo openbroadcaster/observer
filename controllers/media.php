@@ -282,8 +282,12 @@ class Media extends OBFController
      * This method gets information from the Uploads model and makes sure to add
      * that to the media items.
      *
+     * Note that the PUT request does not take an id in the URL because multiple media
+     * items can be updated at the same time.
+     *
      * @param media The media items to update.
      *
+     * @route POST /v2/media
      * @route PUT /v2/media
      */
     public function save()
@@ -292,6 +296,29 @@ class Media extends OBFController
 
         $all_valid = true;
         $validation = array();
+
+        // Split POST and PUT when using v2 api: one for creating new media,
+        // one for updating existing ones. This means id should be unset on POST, 
+        // while it should be required on PUT with file_id and file_key set to empty
+        // strings.
+        if ($this->api_version() === 2) {
+            foreach ($media as $media_key => $media_item) {
+                if ($this->api_request_method() === 'POST') {
+                    unset($media[$media_key]['id']);
+
+                    if (empty($media_item['file_id']) || empty($media_item['file_key'])) {
+                        return [false, 'File id and key required to create new media item.'];
+                    }
+                } elseif ($this->api_request_method() === 'PUT') {
+                    $media[$media_key]['file_id'] = '';
+                    $media[$media_key]['file_key'] = '';
+
+                    if (empty($media_item['id'])) {
+                        return [false, 'Media id required to update media item.'];
+                    }
+                }
+            }
+        }
 
         // add our file info to our media array. (this also validates the file upload id/key)
         // also trim artist/title (which is used to determine filename)

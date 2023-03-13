@@ -181,14 +181,14 @@ class Playlists extends OBFController
         $liveassist_button_items = $this->data('liveassist_button_items');
 
         // Split POST and PUT when using v2 api: one for creating new playlists,
-        // one for updating existing ones. This means the method should fail if
-        // id is set on a POST, and also fail if it's *not* set on a PUT.
-        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && ! empty($id)) {
-                return array(false, 'No playlist id allowed when creating a new playlist.');
+        // one for updating existing ones. This means id should be unset on POST,
+        // and fail if it's *not* set on a PUT.
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST' && ! empty($id)) {
+                $id = null;
             }
 
-            if ($_SERVER['REQUEST_METHOD'] === 'PUT' && empty($id)) {
+            if ($this->api_request_method() === 'PUT' && empty($id)) {
                 return array(false, 'Playlist id required when updating a playlist.');
             }
         }

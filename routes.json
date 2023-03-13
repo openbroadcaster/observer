@@ -333,6 +333,11 @@
             "media_my_searches_default"
         ],
         [
+            "/api/v2/media",
+            "media",
+            "save"
+        ],
+        [
             "/api/v2/media/versions",
             "media",
             "version_add"
