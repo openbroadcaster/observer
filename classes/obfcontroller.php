@@ -125,6 +125,8 @@ class OBFController
 
     /**
      * Get the request method used.
+     * 
+     * @return request_method
      */
     public function api_request_method()
     {

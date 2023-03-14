@@ -50,7 +50,7 @@ class OBFAPI
                     $route[3] = [
                         'pattern' => '/^\/api\/v2\/' . implode('\/', $route_parts) . '\/?$/',
                         'variables' => $variables
-                    ];
+                    ]; 
                 }
             }
 
@@ -62,7 +62,7 @@ class OBFAPI
 
                 $matches = null;
                 $found = false;
-
+                unset($route);
                 foreach ($this->routes as $route) {
                     if (preg_match($route[3]['pattern'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), $matches)) {
                         // request data for requests to v2 api
