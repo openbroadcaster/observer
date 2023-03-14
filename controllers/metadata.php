@@ -61,12 +61,19 @@ class Metadata extends OBFController
      * @param tag_suggestions
      *
      * @route POST /v2/metadata
+     * @route PUT /v2/metadata/(:id:)
      */
     public function metadata_save()
     {
         $this->user->require_permission('manage_media_settings');
 
         $id = (int) $this->data('id');
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $data = [];
         $data['name'] = trim(strtolower($this->data('name')));
@@ -261,6 +268,7 @@ class Metadata extends OBFController
      * @param default Set as default category for new media.
      *
      * @route POST /v2/metadata/categories
+     * @route PUT /v2/metadata/categories/(:id:)
      */
     public function category_save()
     {
@@ -268,8 +276,13 @@ class Metadata extends OBFController
 
         $id = trim($this->data['id']);
 
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
+
         $data = array();
-        $id = $this->data('id');
         $data['name'] = trim($this->data('name'));
         $data['is_default'] = $this->data('default');
 
@@ -380,6 +393,7 @@ class Metadata extends OBFController
      * @param default Set as default genre for new media.
      *
      * @route POST /v2/metadata/genres
+     * @route PUT /v2/metadata/genres/(:id:)
      */
     public function genre_save()
     {
@@ -387,6 +401,13 @@ class Metadata extends OBFController
 
         $data = array();
         $id = trim($this->data['id']);
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
+
         $data['name'] = $this->data('name');
         $data['description'] = $this->data('description');
         $data['media_category_id'] = $this->data('media_category_id');
@@ -487,6 +508,4 @@ class Metadata extends OBFController
             return array(true,'Language list.',$types);
         }
     }
-
-
 }

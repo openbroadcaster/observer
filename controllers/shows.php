@@ -183,12 +183,19 @@ class Shows extends OBFController
      * @param item_id
      *
      * @route POST /v2/shows
+     * @route PUT /v2/shows/(:id:)
      */
     public function save()
     {
         $this->user->require_authenticated();
 
         $id             = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $data['player_id'] = trim($this->data('player_id'));
         $data['mode']      = trim($this->data('mode'));

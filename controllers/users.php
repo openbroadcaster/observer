@@ -122,6 +122,7 @@ class Users extends OBFController
      * @param appkeys
      *
      * @route POST /v2/users
+     * @route PUT /v2/users/(:id:)
      */
     public function user_manage_addedit()
     {
@@ -139,6 +140,12 @@ class Users extends OBFController
         $data['password_confirm'] = trim($this->data('password_confirm'));
 
         $id = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $data['group_ids'] = $this->data('group_ids');
 
@@ -303,6 +310,7 @@ class Users extends OBFController
      * @param permissions
      *
      * @route POST /v2/users/permissions
+     * @route PUT /v2/users/permissions/(:id:)
      */
     public function permissions_manage_addedit()
     {
@@ -311,6 +319,12 @@ class Users extends OBFController
         $data['name'] = trim($this->data('name'));
         $id = trim($this->data('id'));
         $data['permissions'] = $this->data('permissions');
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $validation = $this->models->users('group_validate', $data, $id);
         if ($validation[0] == false) {

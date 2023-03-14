@@ -80,7 +80,7 @@ class Players extends OBFController
     /**
      * Create or edit a player. Requires 'manage_players' permission.
      *
-     * @param id
+     * @param id ID of player. Update a pre-existing player if set.
      * @param station_ids IDs of stations played by this player.
      * @param name
      * @param description
@@ -104,12 +104,20 @@ class Players extends OBFController
      * @return player_id
      *
      * @route POST /v2/players
+     * @route PUT /v2/players/(:id:)
      */
     public function save()
     {
         $this->user->require_permission('manage_players');
 
         $id = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
+
         $data['station_ids'] = $this->data('station_ids');
 
         $data['name'] = trim($this->data('name'));

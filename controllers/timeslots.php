@@ -203,10 +203,17 @@ class Timeslots extends OBFController
      * @param stop
      *
      * @route POST /v2/timeslots
+     * @route PUT /v2/timeslots/(:id:)
      */
     public function save()
     {
         $id             = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $data['user_id']     = trim($this->data('user_id'));
         $data['player_id']   = trim($this->data('player_id'));
