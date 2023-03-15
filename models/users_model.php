@@ -194,10 +194,10 @@ class UsersModel extends OBFModel
      * Validate App Key permisisons.
      *
      * @param id
-     * @param permissions
+     * @param data Array of permissions for both v1 and v2 of the API.
      * @param user_id
      */
-    public function user_manage_key_permissions_validate($id, $permissions, $user_id)
+    public function user_manage_key_permissions_validate($id, $data, $user_id)
     {
         // make sure this user_id owns this app key.
         $this->db->where('user_id', $user_id);
@@ -208,12 +208,37 @@ class UsersModel extends OBFModel
         }
 
         // make sure permissions are valid
-        if ($permissions !== '') {
-            $permissions = preg_split('/\r\n|\r|\n/', $permissions);
+        if ($data['permissions'] !== '') {
+            $permissions = preg_split('/\r\n|\r|\n/', $data['permissions']);
             foreach ($permissions as $permission) {
                 $controller_method = explode('/', $permission);
                 if (count($controller_method) != 2 || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[0]) || !preg_match('/^[A-Z0-9_]+$/i', $controller_method[1])) {
-                    return [false, 'One or more controller/methods are not valid.'];
+                    return [false, 'One or more v1 controller/methods are not valid.'];
+                }
+            }
+        }
+
+        // make sure V2 permissions are valid
+        if ($data['permissions_v2'] !== '') {
+            $routes = json_decode(file_get_contents('routes.json'), true);
+            $permissions = preg_split('/\r\n|\r|\n/', $data['permissions_v2']);
+            foreach ($permissions as $permission) {
+                [$method, $route] = explode(' ', $permission);
+                $route = '/api/v2' . $route;
+
+                if (! isset($routes[$method])) {
+                    return [false, 'One or more v2 routes are not valid.'];
+                }
+
+                $found = false;
+                foreach ($routes[$method] as $possible_routes) {
+                    if ($possible_routes[0] === $route) {
+                        $found = true;
+                    }
+                }
+
+                if (! $found) {
+                    return [false, 'Route ' . $permission . ' was not found in routes table.'];
                 }
             }
         }
@@ -226,18 +251,28 @@ class UsersModel extends OBFModel
      * Save App Key permisisons (will validate first).
      *
      * @param id
-     * @param permissions
+     * @param data Array of permissions for both v1 and v2 of the API.
      * @param user_id
      */
-    public function user_manage_key_permissions_save($id, $permissions, $user_id)
+    public function user_manage_key_permissions_save($id, $data, $user_id)
     {
-        $validation = $this->user_manage_key_permissions_validate($id, $permissions, $user_id);
+        $validation = $this->user_manage_key_permissions_validate($id, $data, $user_id);
         if ($validation[0] == false) {
             return $validation;
         }
 
+        // redo format for v2 permissions to make it easier to deal with later (TODO: fix v1 
+        // too even if it's currently dependent on newlines for api.php)
+        $permissions_v2 = json_encode(array_map(
+            fn($i) => explode(' ', $i), 
+            preg_split('/\r\n|\r|\n/', $data['permissions_v2'])
+        ));
+
         $this->db->where('id', $id);
-        $this->db->update('users_appkeys', ['permissions' => $permissions]);
+        $this->db->update('users_appkeys', [
+            'permissions'    => $data['permissions'],
+            'permissions_v2' => $permissions_v2
+        ]);
 
         return [true, 'Updated.'];
     }
@@ -281,6 +316,7 @@ class UsersModel extends OBFModel
         $this->db->what('created');
         $this->db->what('last_access');
         $this->db->what('permissions');
+        $this->db->what('permissions_v2');
         return $this->db->get('users_appkeys');
     }
 

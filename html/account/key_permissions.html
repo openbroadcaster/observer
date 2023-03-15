@@ -5,12 +5,23 @@
 <fieldset>
 <legend data-t>AppKey Permissions</legend>
 
-<p>Provide a list of allowed controller/methods, one per line.</p>
-
-<textarea id="appkey_permissions" placeholder="media/media_search
+<div class="appkey-permissions-wrapper" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem;">
+  <div class="appkey-api-wrapper">
+    <h4>API v1</h4>
+    <p style="max-width: 350px;">Provide a list of allowed controller/methods, one per line.</p>
+    <textarea id="appkey_permissions" placeholder="media/media_search
 media/get
 media/get_details
-schedule/shows" style="width: 400px; height: 250px;"></textarea>
+schedule/shows" style="width: 350px; height: 250px;"></textarea>
+  </div>
+  <div class="appkey-api-wrapper">
+    <h4>API v2</h4>
+    <p style="max-width: 350px;">Provide a list of allowed routes in the format &quot;HTTP-METHOD /route/&quot;, one per line.</p>
+    <textarea id="appkey_permissions_v2" placeholder="GET /media/(:id:)
+POST /playlists
+PUT /playlists/(:id:)" style="width: 350px; height: 250px;"></textarea>
+  </div>
+</div>
 
 <fieldset>
 <div class="fieldrow">

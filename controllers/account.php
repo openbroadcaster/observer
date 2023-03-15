@@ -326,9 +326,15 @@ class Account extends OBFController
 
         $id = $this->data('id');
         $permissions = trim($this->data('permissions'));
+        $permissions_v2 = trim($this->data('permissions_v2'));
         $user_id = $this->user->param('id');
 
-        return $this->models->users('user_manage_key_permissions_save', $id, $permissions, $user_id);
+        $data = [
+            'permissions' => $permissions,
+            'permissions_v2' => $permissions_v2
+        ];
+
+        return $this->models->users('user_manage_key_permissions_save', $id, $data, $user_id);
     }
 
     /**
@@ -349,6 +355,7 @@ class Account extends OBFController
         }
 
         $result = $this->models->users('user_manage_key_load', $id);
+
         return array(true, 'Successfully loaded App Keys.', $result);
     }
 

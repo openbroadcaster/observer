@@ -277,6 +277,7 @@ OB.Account.keyPermissionsOpen = function (elem)
 {
   OB.UI.openModalWindow('account/key_permissions.html');
   $('#appkey_permissions').val($(elem).parents('tr').first().data('appkey_permissions'));
+  $('#appkey_permissions_v2').val($(elem).parents('tr').first().data('appkey_permissions_v2'));
   $('#appkey_permissions_id').val($(elem).parents('tr').first().attr('data-id'));
 }
 
@@ -284,6 +285,7 @@ OB.Account.keyPermissionsSave = function()
 {
   var data = {};
   data['permissions'] = $('#appkey_permissions').val();
+  data['permissions_v2'] = $('#appkey_permissions_v2').val();
   data['id'] = $('#appkey_permissions_id').val();
 
   OB.API.post('account','key_permissions_save', data, function (response) {
@@ -326,6 +328,14 @@ OB.Account.keyLoad = function () {
       $tr.append($('<td/>').text(format_timestamp(row.last_access)));
       $tr.append($('<td/>').html('<button onclick="OB.Account.keyPermissionsOpen(this);">Permissions</button><button class="delete" onclick="OB.Account.keyDelete(this);">Delete</button>'));
       $tr.data('appkey_permissions', row.permissions);
+
+      try {
+        let permissions_v2 = JSON.parse(row.permissions_v2).map(route => route.join(" ")).join("\n");
+        $tr.data('appkey_permissions_v2', permissions_v2);
+      } catch (e) {
+        // empty string or no valid json in result
+        $tr.data('appkey_permissions_v2', row.permissions_v2);
+      }
 
       $('#account_appkey_table tbody').append($tr);
     });
