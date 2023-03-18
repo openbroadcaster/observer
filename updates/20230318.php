@@ -24,8 +24,7 @@ class OBUpdate20230318 extends OBUpdate
             . ' KEY `media_id` (`media_id`),'
             . ' KEY `playlist_id` (`playlist_id`),'
             . ' CONSTRAINT `players_log_ibfk_1` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,'
-            . ' CONSTRAINT `players_log_ibfk_2` FOREIGN KEY (`playlist_id`) REFERENCES `playlists` (`id`) ON DELETE SET NULL ON UPDATE CASCADE);'
-        );
+            . ' CONSTRAINT `players_log_ibfk_2` FOREIGN KEY (`playlist_id`) REFERENCES `playlists` (`id`) ON DELETE SET NULL ON UPDATE CASCADE);');
         if ($this->db->error()) {
             return false;
         }
