@@ -1183,6 +1183,7 @@ class Remote
             $current_show_name = null;
         }
 
+        // update current item in players table
         $db['current_playlist_id'] = $current_playlist_id;
         $db['current_playlist_end'] = $current_playlist_end;
         $db['current_media_id'] = $current_media_id;
@@ -1191,6 +1192,17 @@ class Remote
 
         $this->db->where('id', $_POST['id']);
         $this->db->update('players', $db);
+
+        // add entry to players log
+        $entry = [
+            'timestamp'    => time(),
+            'media_id'     => $current_media_id,
+            'playlist_id'  => $current_playlist_id,
+            'media_end'    => $current_media_end,
+            'playlist_end' => $current_playlist_end,
+            'show_name'    => $current_show_name
+        ];
+        $this->db->insert('players_log', $entry);
     }
 }
 

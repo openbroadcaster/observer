@@ -13,7 +13,7 @@ class OBUpdate20230318 extends OBUpdate
     public function run()
     {
         $this->db->query('CREATE TABLE `players_log` ('
-            . ' `id` int(10) unsigned NOT NULL,'
+            . ' `id` int(10) unsigned NOT NULL AUTO_INCREMENT,'
             . ' `timestamp` int(10) unsigned NOT NULL,'
             . ' `media_id` int(10) unsigned DEFAULT NULL,'
             . ' `playlist_id` int(10) unsigned DEFAULT NULL,'
