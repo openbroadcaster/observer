@@ -61,6 +61,16 @@
             "search"
         ],
         [
+            "/api/v2/playlog/(:start:)/(:end:)",
+            "playlog",
+            "get"
+        ],
+        [
+            "/api/v2/playlog/(:start:)",
+            "playlog",
+            "get"
+        ],
+        [
             "/api/v2/settings/version",
             "settings",
             "get_ob_version"
