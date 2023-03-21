@@ -33,27 +33,34 @@ class PlaylogModel extends OBFModel
 
     public function get($id, $start, $end)
     {
-        // intval should take care of any funny business, but escaping 
+        // intval should take care of any funny business, but escaping
         // just in case (and so it doesn't get forgotten if code is updated
         // in the future).
         $id    = $this->db->escape($id);
         $start = $this->db->escape($start);
         $end   = $this->db->escape($end);
 
+        // no $end specified, get all in log that start or end after $start
         $query = 'SELECT * FROM `players_log` WHERE '
         . '(`player_id` = ' . intval($id) . ') AND ('
         . '`timestamp` >= ' . intval($start) . ' OR '
         . '`media_end` >= ' . intval($start) . ' OR '
-        . '`playlist_end` >= ' . intval($start) . ')';
+        . '`playlist_end` >= ' . intval($start) . ');';
 
+        // $end specified, get all in log that start between $start and $end
+        // OR (inclusive) those that end in between $start and $end
+        // OR (inclusive) those that start before $start and end after $end (edge
+        // cases are weird).
         if ($end) {
-            $query .= ' AND ('
-            . '`timestamp` <= ' . intval($end) . ' OR '
-            . '`media_end` <= ' . intval($end) . ' OR '
-            . '`playlist_end` <= ' . intval($end) . ')';
+            $query = 'SELECT * FROM `players_log` WHERE '
+            . '(`player_id` = ' . intval($id) . ') AND ('
+            . '(`timestamp` >= ' . intval($start) . ' AND `timestamp` <= ' . intval($end) . ') OR '
+            . '(`media_end` >= ' . intval($start) . ' AND `media_end` <= ' . intval($end) . ') OR '
+            . '(`playlist_end` >= ' . intval($start) . ' AND `playlist_end` <= ' . intval($end) . ') OR '
+            . '(`timestamp` <= ' . intval($start) . ' AND `media_end` <= ' . intval($end) . ') OR '
+            . '(`timestamp` <= ' . intval($start) . ' AND `playlist_end` <= ' . intval($end) . ')'
+            . ');';
         }
-
-        $query .= ';';
 
         $this->db->query($query);
         $result = $this->db->assoc_list();
