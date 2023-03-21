@@ -61,12 +61,12 @@
             "search"
         ],
         [
-            "/api/v2/playlog/(:start:)/(:end:)",
+            "/api/v2/playlog/(:id:)/(:start:)/(:end:)",
             "playlog",
             "get"
         ],
         [
-            "/api/v2/playlog/(:start:)",
+            "/api/v2/playlog/(:id:)/(:start:)",
             "playlog",
             "get"
         ],

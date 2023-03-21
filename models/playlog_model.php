@@ -31,19 +31,29 @@ class PlaylogModel extends OBFModel
         parent::__construct();
     }
 
-    public function get($start, $end)
+    public function get($id, $start, $end)
     {
-        $query = 'SELECT * FROM `players_log` WHERE ('
-        . '(`timestamp` >= ' . intval($start) . ') OR '
-        . ' (`media_end` >= ' . intval($start) . ' AND `media_end` IS NOT NULL) OR '
-        . ' (`playlist_end` >= ' . intval($start) . ' AND `playlist_end` IS NOT NULL))';
+        // intval should take care of any funny business, but escaping 
+        // just in case (and so it doesn't get forgotten if code is updated
+        // in the future).
+        $id    = $this->db->escape($id);
+        $start = $this->db->escape($start);
+        $end   = $this->db->escape($end);
+
+        $query = 'SELECT * FROM `players_log` WHERE '
+        . '(`player_id` = ' . intval($id) . ') AND ('
+        . '`timestamp` >= ' . intval($start) . ' OR '
+        . '`media_end` >= ' . intval($start) . ' OR '
+        . '`playlist_end` >= ' . intval($start) . ')';
 
         if ($end) {
             $query .= ' AND ('
-            . '(`timestamp` <= ' . intval($end) . ') OR '
-            . '(`media_end` <= ' . intval($end) . ' AND `media_end` IS NOT NULL) OR '
-            . '(`playlist_end` <= ' . intval($end) . ' AND `playlist_end` IS NOT NULL))';
+            . '`timestamp` <= ' . intval($end) . ' OR '
+            . '`media_end` <= ' . intval($end) . ' OR '
+            . '`playlist_end` <= ' . intval($end) . ')';
         }
+
+        $query .= ';';
 
         $this->db->query($query);
         $result = $this->db->assoc_list();

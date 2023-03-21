@@ -1195,6 +1195,7 @@ class Remote
 
         // add entry to players log
         $entry = [
+            'player_id'    => $_POST['id'],
             'timestamp'    => time(),
             'media_id'     => $current_media_id,
             'playlist_id'  => $current_playlist_id,

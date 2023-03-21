@@ -35,19 +35,24 @@ class Playlog extends OBFController
     }
 
      /**
-     * Get logs between two timestamps.
+     * Get logs between two timestamps for a player.
      *
+     * @param id The player ID
      * @param start
      * @param end
      *
      * @return log
      *
-     * @route GET /v2/playlog/(:start:)/(:end:)
-     * @route GET /v2/playlog/(:start:)
+     * @route GET /v2/playlog/(:id:)/(:start:)/(:end:)
+     * @route GET /v2/playlog/(:id:)/(:start:)
      */
     public function get()
     {
-        $result = $this->models->playlog('get', $this->data('start'), $this->data('end'));
+        $id    = $this->data('id');
+        $start = $this->data('start');
+        $end   = $this->data('end');
+
+        $result = $this->models->playlog('get', $id, $start, $end);
         return [true, 'Playlog.', $result];
     }
 }
