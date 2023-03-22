@@ -65,6 +65,17 @@ class PlaylogModel extends OBFModel
         $this->db->query($query);
         $result = $this->db->assoc_list();
 
+        $now = time();
+        foreach ($result as &$item) {
+            if ($item['playlist_end']) {
+                $item['playlist_end'] = max(0, $item['playlist_end'] - $now);
+            }
+
+            if ($item['media_end']) {
+                $item['media_end'] = max(0, $item['media_end'] - $now);
+            }
+        }
+
         return $result;
     }
 }
