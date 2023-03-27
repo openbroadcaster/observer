@@ -295,65 +295,97 @@ class OBFUser
 
         // see if we have permission for all requests
         if ($valid) {
-       // Allow requests from remote locations
+            // Allow requests from remote locations
             header("Access-Control-Allow-Origin: *");
 
-            $permissions = preg_split('/\r\n|\r|\n/', $result['permissions']);
-            foreach ($requests as $request) {
-                $controller = $request[0];
-                $method = $request[1];
+            $version = str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/') ? 2 : 1;
 
-                if (!preg_match('/^[A-Z0-9_]+$/i', $controller) || !preg_match('/^[A-Z0-9_]+$/i', $method)) {
-                    $valid = false;
-                    break;
-                }
+            if ($version === 1) {
+                // Permissions check for old v1 API.
+                $permissions = preg_split('/\r\n|\r|\n/', $result['permissions']);
+                foreach ($requests as $request) {
+                    $controller = $request[0];
+                    $method = $request[1];
 
-                $request_valid = false;
-                foreach ($permissions as $permission) {
-                    if ($permission == $controller . '/' . $method) {
-                        $request_valid = true;
+                    if (!preg_match('/^[A-Z0-9_]+$/i', $controller) || !preg_match('/^[A-Z0-9_]+$/i', $method)) {
+                        $valid = false;
+                        break;
+                    }
+
+                    $request_valid = false;
+                    foreach ($permissions as $permission) {
+                        if ($permission == $controller . '/' . $method) {
+                            $request_valid = true;
+                        }
+                    }
+
+                    if (!$request_valid) {
+                        $valid = false;
+                        break;
                     }
                 }
+            } else {
+                // Permissions check for new v2 API.
+                $routes = json_decode(file_get_contents('routes.json'), true);
+                $permissions = json_decode($result['permissions_v2'], true);
 
-                if (!$request_valid) {
-                    $valid = false;
-                    break;
+                foreach ($requests as $request) {
+                    $request_valid = false;
+
+                    foreach ($routes[$_SERVER['REQUEST_METHOD']] ?? [] as $route) {
+                        if ($request[0] === $route[1] && $request[1] === $route[2]) {
+                            $req_permission = $route[0];
+
+                            $found = array_filter($permissions, function ($p) use ($req_permission) {
+                                return ($p[0] === $_SERVER['REQUEST_METHOD'] && ('/api/v2' . $p[1]) === $req_permission);
+                            });
+
+                            if ($found) {
+                                $request_valid = true;
+                            }
+                        }
+                    }
+
+                    if (! $request_valid) {
+                        $valid = false;
+                        break;
+                    }
                 }
             }
-        }
 
-        if ($valid) {
-            $this->db->where('id', $result['user_id']);
-            $user = $this->db->get_one('users');
+            if ($valid) {
+                $this->db->where('id', $result['user_id']);
+                $user = $this->db->get_one('users');
 
-            // Failed to find the user ID linked to the App Key.
-            if (!$user) {
-                return false;
+                // Failed to find the user ID linked to the App Key.
+                if (!$user) {
+                    return false;
+                }
+
+                $this->userdata = $user;
+
+                $this->db->where('user_id', $user['id']);
+                $settings = $this->db->get('users_settings');
+                foreach ($settings as $setting) {
+                    $this->userdata[$setting['setting']] = $setting['value'];
+                }
+
+                $this->db->where('user_id', $user['id']);
+                $this->db->where('group_id', 1);
+                if ($this->db->get_one('users_to_groups')) {
+                    $this->is_admin = true;
+                }
+
+                // Update last_access in App Keys table.
+                $this->db->where('id', $key_row);
+                $this->db->update('users_appkeys', [
+                'last_access' => time()
+                ]);
+
+                $this->using_appkey = true;
+
+                return true;
             }
-
-            $this->userdata = $user;
-
-            $this->db->where('user_id', $user['id']);
-            $settings = $this->db->get('users_settings');
-            foreach ($settings as $setting) {
-                $this->userdata[$setting['setting']] = $setting['value'];
-            }
-
-            $this->db->where('user_id', $user['id']);
-            $this->db->where('group_id', 1);
-            if ($this->db->get_one('users_to_groups')) {
-                $this->is_admin = true;
-            }
-
-            // Update last_access in App Keys table.
-            $this->db->where('id', $key_row);
-            $this->db->update('users_appkeys', [
-            'last_access' => time()
-            ]);
-
-            $this->using_appkey = true;
-
-            return true;
         }
 
         // No valid App Key found or some other error occurred.
