@@ -50,7 +50,7 @@ class OBFAPI
                     $route[3] = [
                         'pattern' => '/^\/api\/v2\/' . implode('\/', $route_parts) . '\/?$/',
                         'variables' => $variables
-                    ]; 
+                    ];
                 }
             }
 

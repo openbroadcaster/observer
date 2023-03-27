@@ -109,7 +109,7 @@ class OBFController
 
     /**
      * Get the API version used in the request.
-     * 
+     *
      * @return version
      */
     public function api_version()
@@ -125,7 +125,7 @@ class OBFController
 
     /**
      * Get the request method used.
-     * 
+     *
      * @return request_method
      */
     public function api_request_method()
