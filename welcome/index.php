@@ -20,7 +20,7 @@ $update_required = $models->updates('update_required');
 <html lang="en">
 <head>
   <meta charset="utf-8">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js?v=<?=filemtime('node_modules/jquery/dist/jquery.min.js')?>"></script>
     <script src="../extras/jquery.json.js"></script>
     <script src="welcome.js?v=<?=urlencode($version)?>"></script>
   <link type="text/css" href="../extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
