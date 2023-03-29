@@ -374,11 +374,10 @@ OB.Player.monitorFilterDel = function(id)
   if($('#monitor_results_container').is(':visible')) OB.Player.monitorSearch();
 }
 
-OB.Player.monitorSearch = function()
+OB.Player.monitorSearch = function(result_type = "json")
 {
 
   $('#monitor_results_container').hide();
-  $('#monitor_download_csv').hide();
 
   var date_start = $('#monitor_date_start').val();
   var date_end = $('#monitor_date_end').val();
@@ -397,7 +396,8 @@ OB.Player.monitorSearch = function()
   }
 
   var fields = new Object();
-  fields.limit = 2500;
+  fields.type = result_type;
+  if (result_type === "json") fields.limit = 2500;
   fields.offset = 0;
   fields.orderby = $('#monitor_orderby').val();
   fields.orderdesc = $('#monitor_orderdesc').val();
@@ -446,38 +446,48 @@ OB.Player.monitorSearch = function()
 
     else
     {
-      $('#monitor_no_results').hide();
-      $('#monitor_results_table tbody').html('');
-      $('#monitor_results_table').show();
+      if (result_type === "json") {
+        $('#monitor_no_results').hide();
+        $('#monitor_results_table tbody').html('');
+        $('#monitor_results_table').show();
 
-      // add results to table
-      $.each(results,function(index,row) {
+        // add results to table
+        $.each(results,function(index,row) {
 
-        var $tr = $('<tr/>');
-        $tr.append( $('<td/>').text(row.media_id) );
-        $tr.append( $('<td/>').text(row.artist) );
-        $tr.append( $('<td/>').text(row.title) );
-        $tr.append( $('<td/>').text(row.datetime) );
-        $tr.append( $('<td/>').text(row.context) );
-        $tr.append( $('<td/>').text(row.notes) );
+          var $tr = $('<tr/>');
+          $tr.append( $('<td/>').text(row.media_id) );
+          $tr.append( $('<td/>').text(row.artist) );
+          $tr.append( $('<td/>').text(row.title) );
+          $tr.append( $('<td/>').text(row.datetime) );
+          $tr.append( $('<td/>').text(row.context) );
+          $tr.append( $('<td/>').text(row.notes) );
 
-        $('#monitor_results_table tbody').append($tr);
+          $('#monitor_results_table tbody').append($tr);
 
-      });
+        });
+      }
 
     }
 
-    $('#monitor_results_container').show();
-    if(total_rows>0)
+    if (result_type === "json" || total_rows == 0) {
+      $('#monitor_results_container').show();
+    } else {
+      $('#monitor_results_container').hide();
+    }
+
+    if(result_type === "csv" && total_rows > 0)
     {
-      $('#monitor_download_csv').show();
-        var data = new Blob([data.data.csv], { type: 'application/octect-stream' });
-        var url = URL.createObjectURL(data);
-        var filename = 'player_monitor.csv';
-        $('#monitor_download_csv').attr({
-          href: url,
-          download: filename
-        });
+      var data = new Blob([data.data.results], { type: 'application/octect-stream' });
+      const url = URL.createObjectURL(data);
+      const filename = 'player_monitor.csv';
+
+      const linkElement = document.getElementById('csv_result_link');
+      if (linkElement) {
+        linkElement.setAttribute('href', url);
+        linkElement.setAttribute('download', filename);
+        linkElement.click();
+      }
+
     }
 
   });

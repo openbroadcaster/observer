@@ -72,7 +72,8 @@
 <fieldset>
 <div class="fieldrow">
   <button class="add" onclick="OB.Player.monitorSearch();" data-t>Load Data</button>
-  <a id="monitor_download_csv" role="button" class="button add hidden" data-t>Download CSV</a>
+  <button class="add" id="monitor_download_csv" onclick="OB.Player.monitorSearch('csv');" data-t>Download CSV</button>
+  <a style="display: none;" id="csv_result_link"></a>
 </div>
 </fieldset>
 
