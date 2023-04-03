@@ -159,3 +159,12 @@ OB.API.callbackAppend = function (controller, action, callback) {
 
   OB.API.callback_append_array[controller][action].push(callback);
 }
+
+OB.API.errorModal = function (message) {
+  OB.UI.openModalWindow('error.html');
+
+  if (message) {
+    document.getElementById('unexpected_error_message').textContent = message;
+    document.getElementById('unexpected_error_details').style.display = "block";
+  }
+}
