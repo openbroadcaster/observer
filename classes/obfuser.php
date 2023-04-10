@@ -203,8 +203,7 @@ class OBFUser
      */
     public function auth($id, $key)
     {
-
-    // if anything missing, return false. didn't work.
+        // if anything missing, return false. didn't work.
         if (empty($id) || empty($key)) {
             return false;
         }

@@ -59,6 +59,15 @@ OB.API.multiPost = function (post, callback_function, mode) {
     'data': { "m": post, "i": readCookie('ob_auth_id'), "k": readCookie('ob_auth_key') },
     'success': function (data) {
       OB.API.postSuccess(controllers, actions, callback_function, sdatas, data);
+    },
+    'error': function (data) {
+      OB.API.postError({
+        controller: controllers,
+        action:     actions,
+        callback:   callback_function,
+        sdata:      sdatas,
+        data:       data
+      });
     }
   }));
 
@@ -81,6 +90,15 @@ OB.API.post = function (controller, action, sdata, callback_function, mode) {
     'data': requestData,
     'success': function (data) {
       OB.API.postSuccess(controller, action, callback_function, sdata, data);
+    },
+    'error': function (data) {
+      OB.API.postError({
+        controller: controller,
+        action:     action,
+        callback:   callback_function,
+        sdata:      sdata,
+        data:       data
+      });
     }
   });
 
@@ -141,7 +159,25 @@ OB.API.postSuccess = function (controller, action, callback_function, sdata, dat
   });
 
   return true;
+}
 
+OB.API.postError = function (data) {
+  OB.UI.openModalWindow('error.html');
+
+  message = '';
+  Object.keys(data).forEach((key) => {
+    if (typeof(data[key]) === 'object' && !(data[key] instanceof Array)) {
+      data[key] = JSON.stringify(data[key]);
+    }
+    message = message + `<p><strong>${key}:</strong>&nbsp;${data[key]}</p>`;
+  })
+
+  if (message !== '') {
+    document.getElementById('unexpected_error_message').innerHTML = message;
+    document.getElementById('unexpected_error_details').style.display = "block";
+  }
+
+  return false;
 }
 
 OB.API.callback_prepend_array = [];
@@ -158,13 +194,4 @@ OB.API.callbackAppend = function (controller, action, callback) {
   if (!OB.API.callback_append_array[controller][action]) OB.API.callback_append_array[controller][action] = [];
 
   OB.API.callback_append_array[controller][action].push(callback);
-}
-
-OB.API.errorModal = function (message) {
-  OB.UI.openModalWindow('error.html');
-
-  if (message) {
-    document.getElementById('unexpected_error_message').textContent = message;
-    document.getElementById('unexpected_error_details').style.display = "block";
-  }
 }
