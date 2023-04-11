@@ -1,0 +1,139 @@
+{
+  "schedule": [
+  {
+    "title": "Morning Melodies",
+    "description": "Kickstart your day with the best mix of classic and contemporary tunes.",
+    "duration": 120
+  },
+  {
+    "title": "News Hour",
+    "description": "Stay informed with the latest local, national, and international news stories.",
+    "duration": 60
+  },
+  {
+    "title": "Community Spotlight",
+    "description": "Highlighting local events, organizations, and people making a difference.",
+    "duration": 120
+  },
+  {
+    "title": "Lunchtime Jazz",
+    "description": "Enjoy a selection of smooth jazz tracks during your lunch break.",
+    "duration": 60
+  },
+  {
+    "title": "Indie Hour",
+    "description": "Discover emerging indie artists and bands from around the world.",
+    "duration": 60
+  },
+  {
+    "title": "Drive Time",
+    "description": "Get the latest traffic updates and upbeat tunes for your drive home.",
+    "duration": 180
+  },
+  {
+    "title": "Evening Chill",
+    "description": "Wind down with a mix of calming tracks and ambient sounds.",
+    "duration": 120
+  },
+  {
+    "title": "Late Night Talk",
+    "description": "Join the conversation on various topics with expert guests and callers.",
+    "duration": 240
+  },
+  {
+    "title": "Overnight Mix",
+    "description": "A diverse playlist to keep you company through the night.",
+    "duration": 480
+  },
+  {
+    "title": "Morning Melodies",
+    "description": "Kickstart your day with the best mix of classic and contemporary tunes.",
+    "duration": 120
+  },
+  {
+    "title": "News Hour",
+    "description": "Stay informed with the latest local, national, and international news stories.",
+    "duration": 60
+  },
+  {
+    "title": "Health and Wellness",
+    "description": "Exploring the latest trends and tips for a healthier lifestyle.",
+    "duration": 120
+  },
+  {
+    "title": "Lunchtime Jazz",
+    "description": "Enjoy a selection of smooth jazz tracks during your lunch break.",
+    "duration": 60
+  },
+  {
+    "title": "World Music Hour",
+    "description": "Travel the globe with music from different cultures and genres.",
+    "duration": 60
+  },
+  {
+    "title": "Drive Time",
+    "description": "Get the latest traffic updates and upbeat tunes for your drive home.",
+    "duration": 180
+  },
+  {
+    "title": "Evening Chill",
+    "description": "Wind down with a mix of calming tracks and ambient sounds.",
+    "duration": 120
+  },
+  {
+    "title": "Late Night Talk",
+    "description": "Join the conversation on various topics with expert guests and callers.",
+    "duration": 240
+  },
+  {
+    "title": "Overnight Mix",
+    "description": "A diverse playlist to keep you company through the night.",
+    "duration": 480
+  },
+  {
+    "title": "Morning Melodies",
+    "description": "Kickstart your day with the best mix of classic and contemporary tunes.",
+    "duration": 120
+  },
+  {
+    "title": "News Hour",
+    "description": "Stay informed with the latest local, national, and international news stories.",
+    "duration": 60
+  },
+  {
+    "title": "Arts and Culture",
+    "description": "Explore the world of arts, culture, and creativity with interviews and discussions.",
+    "duration": 120
+  },
+  {
+    "title": "Lunchtime Jazz",
+    "description": "Enjoy a selection of smooth jazz tracks during your lunch break.",
+    "duration": 60
+  },
+  {
+    "title": "Rock Block",
+    "description": "Get ready to rock with the best classic and modern rock tracks.",
+    "duration": 60
+  },
+  {
+    "title": "Drive Time",
+    "description": "Get the latest traffic updates and upbeat tunes for your drive home.",
+    "duration": 180
+  },
+  {
+    "title": "Evening Chill",
+    "description": "Wind down with a mix of calming tracks and ambient sounds.",
+    "duration": 120
+  },
+  {
+    "title": "Late Night Talk",
+    "description": "Join the conversation on various topics with expert guests and callers.",
+    "duration": 240
+  },
+  {
+    "title": "Overnight Mix",
+    "description": "A diverse playlist to keep you company through the night.",
+    "duration": 480
+  }
+  ]
+}
