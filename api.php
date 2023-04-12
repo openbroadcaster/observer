@@ -164,15 +164,17 @@ class OBFAPI
             $auth_key = $_POST['k'];
         }
 
-        if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
+        if (empty($_SERVER['HTTP_AUTHORIZATION']) && !isset($_POST['appkey'])) {
             // authorize our user (from post data, cookie data, whatever.)
             $this->user->auth($auth_id, $auth_key);
         } else {
-            // authorization header set, auth using appkey and throw an error
-            // if invalid (needs to be done explicitly since above relies on
-            // controllers figuring out permission variables aren't set internally)
+            // appkey should be set in either POST appkey (for v1 API) or HTTP authorization
+            // header (for v2); throw an error if invalid key from either of those (needs
+            // to be done explicitly since above relies on controllers figuring out
+            // permission variables aren't set internally).)
+            $key = (isset($_POST['appkey']) ? 'Bearer ' . $_POST['appkey'] : $_SERVER['HTTP_AUTHORIZATION']);
             header('Content-Type: application/json');
-            $valid = $this->user->auth_appkey($_SERVER['HTTP_AUTHORIZATION'], $requests);
+            $valid = $this->user->auth_appkey($key, $requests);
             if (! $valid) {
                 $this->io->error(OB_ERROR_DENIED);
                 return;
