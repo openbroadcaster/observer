@@ -303,9 +303,9 @@ class Players extends OBFController
         }
 
         if ($data['type'] === 'csv') {
-          return [true, 'Playlog search results.', ['results' => $this->models->players('monitor_csv', $result[0]), 'total_rows' => $result[1]]];
+            return [true, 'Playlog search results.', ['results' => $this->models->players('monitor_csv', $result[0]), 'total_rows' => $result[1]]];
         } else {
-          return [true, 'Playlog search results.', ['results' => $result[0], 'total_rows' => $result[1]]];
+            return [true, 'Playlog search results.', ['results' => $result[0], 'total_rows' => $result[1]]];
         }
     }
 

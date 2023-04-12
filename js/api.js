@@ -66,6 +66,7 @@ OB.API.multiPost = function (post, callback_function, mode) {
         action:     actions,
         callback:   callback_function,
         sdata:      sdatas,
+      }, {
         data:       data
       });
     }
@@ -97,6 +98,7 @@ OB.API.post = function (controller, action, sdata, callback_function, mode) {
         action:     action,
         callback:   callback_function,
         sdata:      sdata,
+      }, {
         data:       data
       });
     }
@@ -161,21 +163,35 @@ OB.API.postSuccess = function (controller, action, callback_function, sdata, dat
   return true;
 }
 
-OB.API.postError = function (data) {
+OB.API.postError = function (data_request, data_response) {
   OB.UI.openModalWindow('error.html');
 
-  message = '';
-  Object.keys(data).forEach((key) => {
-    if (typeof(data[key]) === 'object' && !(data[key] instanceof Array)) {
-      data[key] = JSON.stringify(data[key]);
+  var message = '';
+  Object.keys(data_request).forEach((key) => {
+    if (typeof(data_request[key]) === 'object' && !(data_request[key] instanceof Array)) {
+      data_request[key] = JSON.stringify(data_request[key]);
     }
-    message = message + `<p><strong>${key}:</strong>&nbsp;${data[key]}</p>`;
+    message = message + `<p><strong>${key}:</strong>&nbsp;${data_request[key]}</p>`;
   })
 
   if (message !== '') {
-    document.getElementById('unexpected_error_message').innerHTML = message;
+    document.getElementById('unexpected_error_message_request').innerHTML = message;
     document.getElementById('unexpected_error_details').style.display = "block";
   }
+
+  message = '';
+  Object.keys(data_response).forEach((key) => {
+    if (typeof(data_response[key]) === 'object' && !(data_response[key] instanceof Array)) {
+      data_response[key] = JSON.stringify(data_response[key]);
+    }
+    message = message + `<p><strong>${key}:</strong>&nbsp;${data_response[key]}</p>`;
+  })
+
+  if (message !== '') {
+    document.getElementById('unexpected_error_message_response').innerHTML = message;
+    document.getElementById('unexpected_error_details').style.display = "block";
+  }
+
 
   return false;
 }
