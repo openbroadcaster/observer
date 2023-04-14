@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preact and HTM Web App</title>
+  <script type="module" src="./vendor.js"></script>
+  <script type="module" src="./InputText.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Custom Input Example</h1>
+  <ob-input-text id="custom" placeholder="Type something..." value="asdf"></ob-input-text>
+  <input type="text" id="input" />
+  <p>Input value: <span id="input-value"></span></p>
+
+  <script>
+    $(document).ready(function() { 
+      $('#custom').on('change', function(e) { 
+        // note, this is not fired when using the jQuery val() method
+        console.log('change event received', e);
+      });
+
+      document.getElementById('custom').value = 'Hello World';
+      document.getElementById('input').value = 'Hello World';
+
+      $('#input').val('Goodbye World');
+      $('#custom').val('Goodbye World');
+
+      console.log($('#custom').val());
+    });
+  </script>
+</body>
+</html>
