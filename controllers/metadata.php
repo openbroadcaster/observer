@@ -186,7 +186,7 @@ class Metadata extends OBFController
      * @param year
      * @param category_id
      * @param country_id
-     * @param language_id
+     * @param language
      * @param comments
      * @param dynamic_content_default
      * @param dynamic_content_hidden
@@ -209,7 +209,7 @@ class Metadata extends OBFController
         'year'                    => $this->data['year'],
         'category_id'             => $this->data['category_id'],
         'country_id'              => $this->data['country_id'],
-        'language_id'             => $this->data['language_id'],
+        'language'                => $this->data['language'],
         'comments'                => $this->data['comments'],
         'dynamic_content_default' => $this->data['dynamic_content_default'],
         'dynamic_content_hidden'  => $this->data['dynamic_content_hidden']

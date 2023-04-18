@@ -83,7 +83,7 @@ class OBFLoad
 
         // scan through modules.
 
-        $modules = $this->db->get('modules');
+        $modules = $this->db->get('modules') ?: [];
 
         foreach ($modules as $module_row) {
       // get dir, make sure dir exists.
