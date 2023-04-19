@@ -1,0 +1,508 @@
+[
+  {
+    "name": "Abenaki",
+    "iso639-1": null,
+    "iso639-2T": "alg",
+    "iso639-2B": "alg",
+    "iso639-3": "aaq"
+  },
+  {
+    "name": "Algonquian",
+    "iso639-1": null,
+    "iso639-2T": "alq",
+    "iso639-2B": "alq",
+    "iso639-3": "alq"
+  },
+  {
+    "name": "Arabic(Egyptian)",
+    "iso639-1": "ar",
+    "iso639-2T": "ara",
+    "iso639-2B": "ara",
+    "iso639-3": "arz"
+  },
+  {
+    "name": "Arabic(Levantine)",
+    "iso639-1": "ar",
+    "iso639-2T": "ara",
+    "iso639-2B": "ara",
+    "iso639-3": "apc"
+  },
+  {
+    "name": "Arabic(ModernStandard)",
+    "iso639-1": "ar",
+    "iso639-2T": "ara",
+    "iso639-2B": "ara",
+    "iso639-3": "arb"
+  },
+  {
+    "name": "Arabic(Moroccan)",
+    "iso639-1": "ar",
+    "iso639-2T": "ara",
+    "iso639-2B": "ara",
+    "iso639-3": "ary"
+  },
+  {
+    "name": "Aramaic",
+    "iso639-1": null,
+    "iso639-2T": "arc",
+    "iso639-2B": "arc",
+    "iso639-3": "arc"
+  },
+  {
+    "name": "Babine-Witsuwit’en",
+    "iso639-1": null,
+    "iso639-2T": "ath",
+    "iso639-2B": "ath",
+    "iso639-3": "bcr"
+  },
+  {
+    "name": "Bahasa",
+    "iso639-1": "id",
+    "iso639-2T": "ind",
+    "iso639-2B": "ind",
+    "iso639-3": "ind"
+  },
+  {
+    "name": "Balochi",
+    "iso639-1": null,
+    "iso639-2T": "bal",
+    "iso639-2B": "bal",
+    "iso639-3": "bal"
+  },
+  {
+    "name": "Berber",
+    "iso639-1": null,
+    "iso639-2T": "jbe",
+    "iso639-2B": "jbe",
+    "iso639-3": "jbe"
+  },
+  {
+    "name": "Berens-River-Ojibwe",
+    "iso639-1": "oj",
+    "iso639-2T": "oji",
+    "iso639-2B": "oji",
+    "iso639-3": "ojb"
+  },
+  {
+    "name": "Border-Lakes-Ojibwe",
+    "iso639-1": "oj",
+    "iso639-2T": "oji",
+    "iso639-2B": "oji",
+    "iso639-3": "ojc"
+  },
+  {
+    "name": "Cantonese",
+    "iso639-1": "zh",
+    "iso639-2T": "zho",
+    "iso639-2B": "chi",
+    "iso639-3": "yue"
+  },
+  {
+    "name": "Coast-Salish",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null
+  },
+  {
+    "name": "Dane-zaa",
+    "iso639-1": null,
+    "iso639-2T": "ath",
+    "iso639-2B": "ath",
+    "iso639-3": "bea"
+  },
+  {
+    "name": "Egyptian",
+    "iso639-1": null,
+    "iso639-2T": "egy",
+    "iso639-2B": "egy",
+    "iso639-3": "egy"
+  },
+  {
+    "name": "Farsi",
+    "iso639-1": "fa",
+    "iso639-2T": "fas",
+    "iso639-2B": "per",
+    "iso639-3": "fas"
+  },
+  {
+    "name": "Greek",
+    "iso639-1": "el",
+    "iso639-2T": "ell",
+    "iso639-2B": "gre",
+    "iso639-3": "ell"
+  },
+  {
+    "name": "Gwich’in",
+    "iso639-1": null,
+    "iso639-2T": "ath",
+    "iso639-2B": "ath",
+    "iso639-3": "gwi"
+  },
+  {
+    "name": "HaitianCreole",
+    "iso639-1": "ht",
+    "iso639-2T": "hat",
+    "iso639-2B": "hat",
+    "iso639-3": "hat"
+  },
+  {
+    "name": "HawaiianCreole",
+    "iso639-1": null,
+    "iso639-2T": "cpe",
+    "iso639-2B": "cpe",
+    "iso639-3": "hwc"
+  },
+  {
+    "name": "Ilokano",
+    "iso639-1": null,
+    "iso639-2T": "ilo",
+    "iso639-2B": "ilo",
+    "iso639-3": "ilo"
+  },
+  {
+    "name": "Indonesia",
+    "iso639-1": "id",
+    "iso639-2T": "ind",
+    "iso639-2B": "ind",
+    "iso639-3": "ind"
+  },
+  {
+    "name": "Inuktituk",
+    "iso639-1": "iu",
+    "iso639-2T": "iku",
+    "iso639-2B": "iku",
+    "iso639-3": "iku"
+  },
+  {
+    "name": "Iroquoian",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "Found under identifier 'iro', not in ISO-639-3.tab. Collective rather than individual language."
+  },
+  {
+    "name": "Klallam",
+    "iso639-1": null,
+    "iso639-2T": "sal",
+    "iso639-2B": "sal",
+    "iso639-3": "clm"
+  },
+  {
+    "name": "Kurdi",
+    "iso639-1": "ku",
+    "iso639-2T": "kur",
+    "iso639-2B": "kur",
+    "iso639-3": "kur"
+  },
+  {
+    "name": "Kyrgyz",
+    "iso639-1": "ky",
+    "iso639-2T": "kir",
+    "iso639-2B": "kir",
+    "iso639-3": "kir"
+  },
+  {
+    "name": "Malecite",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": "pqm"
+  },
+  {
+    "name": "Mandarin",
+    "iso639-1": "zh",
+    "iso639-2T": "zho",
+    "iso639-2B": "chi",
+    "iso639-3": "cmn"
+  },
+  {
+    "name": "Maya",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "Found under identifier 'myn', not in ISO-639-3.tab. Collective rather than individual language."
+  },
+  {
+    "name": "Melayu",
+    "iso639-1": "ms",
+    "iso639-2T": "msa",
+    "iso639-2B": "may",
+    "iso639-3": "msa"
+  },
+  {
+    "name": "Mi’kmaq",
+    "iso639-1": null,
+    "iso639-2T": "mic",
+    "iso639-2B": "mic",
+    "iso639-3": "mic"
+  },
+  {
+    "name": "Moose-Cree",
+    "iso639-1": "cr",
+    "iso639-2T": "cre",
+    "iso639-2B": "cre",
+    "iso639-3": "crm"
+  },
+  {
+    "name": "Nahuatl",
+    "iso639-1": null,
+    "iso639-2T": "nhe",
+    "iso639-2B": "nhe",
+    "iso639-3": "nhe",
+    "comment": "NOTE: Also used to refer to Nahuatl collective more broadly as 'nah'."
+  },
+  {
+    "name": "Nepali",
+    "iso639-1": "ne",
+    "iso639-2T": "nep",
+    "iso639-2B": "nep",
+    "iso639-3": "nep"
+  },
+  {
+    "name": "Netsilik",
+    "iso639-1": "iu",
+    "iso639-2T": "iku",
+    "iso639-2B": "iku",
+    "iso639-3": "ike"
+  },
+  {
+    "name": "Nicola",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "'mis' in official standard, no official encoding."
+  },
+  {
+    "name": "Nipissing",
+    "iso639-1": "oj",
+    "iso639-2T": "oji",
+    "iso639-2B": "oji",
+    "iso639-3": "ojb"
+  },
+  {
+    "name": "Nuxalk",
+    "iso639-1": null,
+    "iso639-2T": "sal",
+    "iso639-2B": "sal",
+    "iso639-3": "blc"
+  },
+  {
+    "name": "Oowekyala",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null
+  },
+  {
+    "name": "Oriya",
+    "iso639-1": "or",
+    "iso639-2T": "ori",
+    "iso639-2B": "ori",
+    "iso639-3": "ori"
+  },
+  {
+    "name": "Papuan",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "Found under identifier 'paa', not in ISO-639-3.tab. Collective rather than individual language."
+  },
+  {
+    "name": "Pashto",
+    "iso639-1": "ps",
+    "iso639-2T": "pus",
+    "iso639-2B": "pus",
+    "iso639-3": "pus"
+  },
+  {
+    "name": "Plateau",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null
+  },
+  {
+    "name": "Punjabi",
+    "iso639-1": "pa",
+    "iso639-2T": "pan",
+    "iso639-2B": "pan",
+    "iso639-3": "pan"
+  },
+  {
+    "name": "Quiche",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": "quc"
+  },
+  {
+    "name": "Saanich",
+    "iso639-1": null,
+    "iso639-2T": "sal",
+    "iso639-2B": "sal",
+    "iso639-3": "str"
+  },
+  {
+    "name": "Sarcee",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": "srs"
+  },
+  {
+    "name": "Sinixt",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null
+  },
+  {
+    "name": "Slavey",
+    "iso639-1": null,
+    "iso639-2T": "den",
+    "iso639-2B": "den",
+    "iso639-3": "den"
+  },
+  {
+    "name": "Southern-Tsimshian",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": "tsi"
+  },
+  {
+    "name": "Swahili",
+    "iso639-1": "sw",
+    "iso639-2T": "swa",
+    "iso639-2B": "swa",
+    "iso639-3": "swa"
+  },
+  {
+    "name": "Swampy-Cree",
+    "iso639-1": null,
+    "iso639-2T": "cre",
+    "iso639-2B": "cre",
+    "iso639-3": "csw"
+  },
+  {
+    "name": "TokPisin",
+    "iso639-1": "tpi",
+    "iso639-2T": "tpi",
+    "iso639-2B": "tpi",
+    "iso639-3": "tpi"
+  },
+  {
+    "name": "Tutchone",
+    "iso639-1": null,
+    "iso639-2T": "tce",
+    "iso639-2B": "tce",
+    "iso639-3": "tce",
+    "comment": "'ttm' for Northern variety included when old data was moved over."
+  },
+  {
+    "name": "Utkuhiksalik",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null
+  },
+  {
+    "name": "Uyghur",
+    "iso639-1": "ug",
+    "iso639-2T": "uig",
+    "iso639-2B": "uig",
+    "iso639-3": "uig"
+  },
+  {
+    "name": "Wakashan",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "Found under identifier 'wak', not in ISO-639-3.tab. Collective rather than individual language."
+  },
+  {
+    "name": "Yucatec",
+    "iso639-1": null,
+    "iso639-2T": "myn",
+    "iso639-2B": "myn",
+    "iso639-3": "yua"
+  },
+  {
+    "name": "Babine-Witsuwit'en",
+    "iso639-1": null,
+    "iso639-2T": "bcr",
+    "iso639-2B": "bcr",
+    "iso639-3": "bcr"
+    },
+  {
+    "name": "Blackfoot",
+    "iso639-1": null,
+    "iso639-2T": "bla",
+    "iso639-2B": "bla",
+    "iso639-3": "bla"
+  },
+  {
+    "name": "Gwich'in",
+    "iso639-1": null,
+    "iso639-2T": "gwi",
+    "iso639-2B": "gwi",
+    "iso639-3": "gwi"
+  },
+  {
+    "name": "Hän",
+    "iso639-1": null,
+    "iso639-2T": "haa",
+    "iso639-2B": "haa",
+    "iso639-3": "haa"
+  },
+  {
+    "name": "Kwak'wala",
+    "iso639-1": null,
+    "iso639-2T": "kwk",
+    "iso639-2B": "kwk",
+    "iso639-3": "kwk"
+  },
+  {
+    "name": "Ojibwe",
+    "iso639-1": "oj",
+    "iso639-2T": "oji",
+    "iso639-2B": "oji",
+    "iso639-3": "oji"
+  },
+  {
+    "name": "Old Montagnais",
+    "iso639-1": null,
+    "iso639-2T": "moe",
+    "iso639-2B": "moe",
+    "iso639-3": "moe"
+  },
+  {
+    "name": "Plateau Sign",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "'mis' in official standard, no official encoding."
+  },
+  {
+    "name": "Salish",
+    "iso639-1": null,
+    "iso639-2T": null,
+    "iso639-2B": null,
+    "iso639-3": null,
+    "comment": "Found under identifier 'sal', not in ISO-639-3.tab. Collective rather than individual language."
+  },
+  {
+    "name": "Southern Tsimshian",
+    "iso639-1": null,
+    "iso639-2T": "tsi",
+    "iso639-2B": "tsi",
+    "iso639-3": "tsi"
+  }
+]
