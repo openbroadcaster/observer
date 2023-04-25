@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preact and HTM Web App</title>
+
   <script type="module" src="./vendor.js"></script>
   <script type="module" src="./InputText.js"></script>
+  <script type="module" src="./InputLanguages.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
@@ -15,10 +17,11 @@
   <p>Input value: <span id="input-value"></span></p>
 
   <script>
-    $(document).ready(function() { 
-      $('#custom').on('change', function(e) { 
+    $(document).ready(function() {
+      $('#custom').on('change', function(e) {
         // note, this is not fired when using the jQuery val() method
         console.log('change event received', e);
+        console.log($('#custom').val());
       });
 
       document.getElementById('custom').value = 'Hello World';
@@ -28,6 +31,17 @@
       $('#custom').val('Goodbye World');
 
       console.log($('#custom').val());
+    });
+  </script>
+
+  <h1>Language Select</h1>
+  <ob-input-languages placeholder="Search for language..."></ob-input-languages>
+  <script>
+    $(document).ready(function() {
+      $('ob-input-languages').on('change', function(e) {
+        console.log(e);
+        console.log($('ob-input-languages').val());
+      });
     });
   </script>
 </body>
