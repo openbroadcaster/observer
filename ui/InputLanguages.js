@@ -1,4 +1,3 @@
-import { render, html } from './vendor.js';
 import { OBInput } from './Input.js';
 
 class OBInputLanguages extends OBInput
@@ -22,22 +21,40 @@ class OBInputLanguages extends OBInput
     const self = this;
     OB.API.post('metadata', 'language_list', {}, function(result) {
       if (!result.status) {
-        render(html`
-          <div>Failed to load languages.</div>
-        `, this._root);
         return false;
       }
 
       self._langs = result.data;
     });
 
-    render(html`
-      <input type="text" oninput=${() => this.autocompleteLang()} ref=${(el) => this._input = el}/>
-      <div id="lang-autocomplete"></div>
-    `, this._root);
+    const wrapperElem = document.createElement('div');
+    const inputElem   = document.createElement('input');
+    const langsElem   = document.createElement('div');
+    const styleElem   = document.createElement('style');
 
-    this.forwardAttributes(['placeholder', 'value'], this._input);
-    this.emitEvents(['change'], this._input);
+    wrapperElem.setAttribute('class', 'wrapper');
+    inputElem.setAttribute('type', 'text');
+    langsElem.setAttribute('id', 'lang-autocomplete');
+    // TODO: Figure out why including style in href isn't working so we can include
+    // items in /ui/style(/scss).
+    styleElem.textContent = `.wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+    }
+
+    .wrapper div#lang-autocomplete p {
+      margin: 0;
+      padding: 0.5rem 0 0 0;
+    }`;
+
+    this._root.appendChild(styleElem);
+    this._root.appendChild(wrapperElem);
+    wrapperElem.appendChild(inputElem);
+    wrapperElem.appendChild(langsElem);
+
+    this.forwardAttributes(['placeholder', 'value'], inputElem);
+    this.oninput = this.autocompleteLang;
 
     this._initialized = true;
   }
@@ -45,35 +62,35 @@ class OBInputLanguages extends OBInput
   autocompleteLang()
   {
     if (this.value.length >= 2) {
-      //console.log(this.value);
       const langs = this._langs.filter((lang) => lang.ref_name.toLowerCase().startsWith(this.value.toLowerCase()));
-      const autocompleteHtml = this._root.getElementById('lang-autocomplete');
+      const autocompleteElem = this._root.getElementById('lang-autocomplete');
 
-      var newHtml = ''; // setting div directly inside shadowroot causes weird behavior(?)
+      autocompleteElem.innerHTML = '';
       langs.forEach(function(elem) {
-        // TODO: figure out how to get selectLang in those elements somehow? May involve render()
-        // again
-        newHtml = newHtml + '<p>' + elem.ref_name + '</p>';
-        console.log(html`<p onclick=${() => this.selectLang()}>${elem.ref_name}</p>`);
-      });
+        const langElem = document.createElement('p');
+        langElem.setAttribute('data-lang', elem.id);
+        langElem.addEventListener('click', (event) => this.selectLang(event, this));
+        langElem.innerHTML = elem.ref_name;
 
-      autocompleteHtml.innerHTML = newHtml;
+        autocompleteElem.appendChild(langElem);
+      }, this);
     }
   }
 
-  selectLang()
+  selectLang(event, element)
   {
-    console.log("beep");
+    element.value = event.srcElement.innerText;
+    element._root.getElementById('lang-autocomplete').innerHTML = '';
   }
 
   get value()
   {
-    return this._input.value;
+    return this._root.querySelector('input').value;
   }
 
   set value(value)
   {
-    this._input.value = value;
+    this._root.querySelector('input').value = value;
   }
 }
 
