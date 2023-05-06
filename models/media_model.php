@@ -1962,9 +1962,9 @@ class MediaModel extends OBFModel
     $this->db->where('name','image_formats');
     $image = $this->db->get_one('settings');
 
-    $return['audio_formats']=explode(',',$audio['value']);
-    $return['video_formats']=explode(',',$video['value']);
-    $return['image_formats']=explode(',',$image['value']);
+    $return['audio_formats']=$audio['value'] ? explode(',',$audio['value']) : [];
+    $return['video_formats']=$video['value'] ? explode(',',$video['value']) : [];
+    $return['image_formats']=$image['value'] ? explode(',',$image['value']) : [];
 
     return $return;
 
