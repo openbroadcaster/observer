@@ -98,16 +98,17 @@ class PlayersModel extends OBFModel
         }
 
         foreach ($result as $index => $row) {
-      // get our default playlist name.
+            $default_playlist = null;
+
+            // get our default playlist name.
             if (!empty($row['default_playlist_id'])) {
-                $this->db->what('name');
                 $this->db->where('id', $row['default_playlist_id']);
                 $default_playlist = $this->db->get_one('playlists');
+            }
 
-                $result[$index]['default_playlist_name'] = $default_playlist['name'];
-            } else {
-                $result[$index]['default_playlist_name'] = null;
-                $result[$index]['default_playlist_id'] = null;
+            if ($default_playlist) {
+                $results[$index]['default_playlist_name']=$default_playlist['name'];
+                $results[$index]['default_playlist_id']=$default_playlist['id'];
             }
 
             // get our station ids
