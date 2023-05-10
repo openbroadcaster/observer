@@ -659,6 +659,8 @@ OB.Schedule.dateRangeText = function()
   {
 
     $('#schedule_days_'+count).text(tmp_date.getDate());
+    $('#schedule_days_'+count).attr('data-date', moment(tmp_date.getTime()).format('Y-MM-DD'));
+
     tmp_date.setDate(tmp_date.getDate() + 1);
 
   }
@@ -724,7 +726,9 @@ OB.Schedule.refreshData = function()
   var schedule_data = new Array();
 
   $.each(OB.Schedule.schedule_data,function(index,data) {
-    schedule_data.push(new CloneObject(data));
+    let newData = new CloneObject(data);
+    newData.block_date = data.exp_start.substr(0,10);
+    schedule_data.push(newData);
   });
 
   // split up blocks which go over midnight
@@ -771,6 +775,7 @@ OB.Schedule.refreshData = function()
         new_data.block_offset = 0;
         new_data.block_duration = Math.min(86400,seconds_over_midnight);
         new_data.day = (start.getUTCDay()+count)%7;
+        new_data.block_date = moment(new Date(start.getTime() + 86400000).getTime()).format('Y-MM-DD');
 
         schedule_data.push(new_data);
 
@@ -797,8 +802,8 @@ OB.Schedule.refreshData = function()
 
     if(data.day===null) return;
 
-    // skip if day number mismatch (occurs because extra data is obtained from server due to potential client/player timezone discrepancy)
-    if(parseInt(data.exp_start.substr(8,2), 10) != parseInt($('#schedule_days_'+data.day).text(), 10)) return;
+    // skip if date number mismatch (occurs because extra data is obtained from server due to potential client/player timezone discrepancy)
+    if($('#schedule_days_'+data.day).attr('data-date')!=data.block_date) return;
 
     // see if our block passes through an expanded hour
     var block_duration = parseInt(data.block_duration);
