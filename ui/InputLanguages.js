@@ -6,12 +6,14 @@ class OBInputLanguages extends OBInput {
   // languages are common to all instances of this element
   static languages = null;
 
+  // private properties now supported with #
+  #root;
+  #inputLangId = null;
+  #suggestions = [];
+
   constructor() {
     super();
-    this._root = this.attachShadow({ mode: 'open' });
-    this._input = null;
-    this._inputLangId = null;
-    this._suggestions = []
+    this.#root = this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
@@ -27,9 +29,6 @@ class OBInputLanguages extends OBInput {
 
         OBInputLanguages.languages = result.data;
       });
-    }
-    else {
-      this.renderComponent();
     }
 
     this.renderComponent();
@@ -56,29 +55,29 @@ class OBInputLanguages extends OBInput {
       <div class="wrapper">
         <input type="text" onInput=${this.onInput.bind(this)} />
         <div class="suggestions">
-          ${this._suggestions.map((lang) => html`<div data-lang=${lang.id} onClick=${() => this.selectSuggestion(lang.id)}>${lang.ref_name}</div>`)}
+          ${this.#suggestions.map((lang) => html`<div data-lang=${lang.id} onClick=${() => this.selectSuggestion(lang.id)}>${lang.ref_name}</div>`)}
         </div>
       </div>
-    `, this._root);
+    `, this.#root);
   }
 
   onInput(event) {
     const value = event.target.value;
     if (value.length >= 2) {
-      this._suggestions = OBInputLanguages.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
+      this.#suggestions = OBInputLanguages.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
     } else {
-      this._suggestions = [];
+      this.#suggestions = [];
     }
     this.renderComponent();
   }
 
   selectSuggestion(langId) {
-    this._suggestions = [];
+    this.#suggestions = [];
     this.value = langId;
   }
 
   get value() {
-    return this._inputLangId;
+    return this.#inputLangId;
   }
 
   set value(value) {
@@ -86,13 +85,13 @@ class OBInputLanguages extends OBInput {
 
     if (lang) {
       // input field gets language name, but we track language ID to return when value is requested
-      this._root.querySelector('input').value = lang.ref_name;
-      this._inputLangId = value;
+      this.#root.querySelector('input').value = lang.ref_name;
+      this.#inputLangId = value;
     }
     else {
       // set blank / null, language empty or not found
-      this._root.querySelector('input').value = '';
-      this._inputLangId = null;
+      this.#root.querySelector('input').value = '';
+      this.#inputLangId = null;
     }
 
     this.renderComponent();
