@@ -1,96 +1,101 @@
+import { html, render } from './vendor.js'
 import { OBInput } from './Input.js';
 
-class OBInputLanguages extends OBInput
-{
-  constructor()
-  {
+class OBInputLanguages extends OBInput {
+
+  // languages are common to all instances of this element
+  static languages = null;
+
+  constructor() {
     super();
-
-    this._langs = null;
-    this._root = this.attachShadow({mode: 'open'});
+    this._root = this.attachShadow({ mode: 'open' });
     this._input = null;
-    this._initialized = false;
+    this._inputLangId = null;
+    this._suggestions = []
   }
 
-  connectedCallback()
-  {
-    if (this._initialized) {
-      return;
+  connectedCallback() {
+    if (OBInputLanguages.languages === null) {
+
+      // prevent multiple calls if this element appears twice in one form
+      OBInputLanguages.languages = [];
+
+      OB.API.post('metadata', 'language_list', {}, function (result) {
+        if (!result.status) {
+          return false;
+        }
+
+        OBInputLanguages.languages = result.data;
+      });
+    }
+    else {
+      this.renderComponent();
     }
 
-    const self = this;
-    OB.API.post('metadata', 'language_list', {}, function(result) {
-      if (!result.status) {
-        return false;
-      }
+    this.renderComponent();
+  }
 
-      self._langs = result.data;
-    });
+  renderComponent() {
+    render(html`
+      <style>
+        .wrapper {
+          display: flex;
+          flex-direction: column;
+        }
+        .suggestions
+        {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+        .suggestions div {
+          cursor: default;
+          margin: 5px 0;
+        }
+      </style>
 
-    const wrapperElem = document.createElement('div');
-    const inputElem   = document.createElement('input');
-    const langsElem   = document.createElement('div');
-    const styleElem   = document.createElement('style');
+      <div class="wrapper">
+        <input type="text" onInput=${this.onInput.bind(this)} />
+        <div class="suggestions">
+          ${this._suggestions.map((lang) => html`<div data-lang=${lang.id} onClick=${() => this.selectSuggestion(lang.id)}>${lang.ref_name}</div>`)}
+        </div>
+      </div>
+    `, this._root);
+  }
 
-    wrapperElem.setAttribute('class', 'wrapper');
-    inputElem.setAttribute('type', 'text');
-    langsElem.setAttribute('id', 'lang-autocomplete');
-    // TODO: Figure out why including style in href isn't working so we can include
-    // items in /ui/style(/scss).
-    styleElem.textContent = `.wrapper {
-      display: flex;
-      flex-direction: column;
-      max-width: 400px;
+  onInput(event) {
+    const value = event.target.value;
+    if (value.length >= 2) {
+      this._suggestions = OBInputLanguages.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
+    } else {
+      this._suggestions = [];
+    }
+    this.renderComponent();
+  }
+
+  selectSuggestion(langId) {
+    this._suggestions = [];
+    this.value = langId;
+  }
+
+  get value() {
+    return this._inputLangId;
+  }
+
+  set value(value) {
+    const lang = OBInputLanguages.languages.find((lang) => lang.id === value);
+
+    if (lang) {
+      // input field gets language name, but we track language ID to return when value is requested
+      this._root.querySelector('input').value = lang.ref_name;
+      this._inputLangId = value;
+    }
+    else {
+      // set blank / null, language empty or not found
+      this._root.querySelector('input').value = '';
+      this._inputLangId = null;
     }
 
-    .wrapper div#lang-autocomplete p {
-      margin: 0;
-      padding: 0.5rem 0 0 0;
-    }`;
-
-    this._root.appendChild(styleElem);
-    this._root.appendChild(wrapperElem);
-    wrapperElem.appendChild(inputElem);
-    wrapperElem.appendChild(langsElem);
-
-    this.forwardAttributes(['placeholder', 'value'], inputElem);
-    this.oninput = this.autocompleteLang;
-
-    this._initialized = true;
-  }
-
-  autocompleteLang()
-  {
-    if (this.value.length >= 2) {
-      const langs = this._langs.filter((lang) => lang.ref_name.toLowerCase().startsWith(this.value.toLowerCase()));
-      const autocompleteElem = this._root.getElementById('lang-autocomplete');
-
-      autocompleteElem.innerHTML = '';
-      langs.forEach(function(elem) {
-        const langElem = document.createElement('p');
-        langElem.setAttribute('data-lang', elem.id);
-        langElem.addEventListener('click', (event) => this.selectLang(event, this));
-        langElem.innerHTML = elem.ref_name;
-
-        autocompleteElem.appendChild(langElem);
-      }, this);
-    }
-  }
-
-  selectLang(event, element)
-  {
-    element.value = event.srcElement.innerText;
-    element._root.getElementById('lang-autocomplete').innerHTML = '';
-  }
-
-  get value()
-  {
-    return this._root.querySelector('input').value;
-  }
-
-  set value(value)
-  {
-    this._root.querySelector('input').value = value;
+    this.renderComponent();
   }
 }
 
