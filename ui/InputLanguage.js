@@ -1,7 +1,7 @@
 import { html, render } from './vendor.js'
 import { OBInput } from './Input.js';
 
-class OBInputLanguages extends OBInput {
+class OBInputLanguage extends OBInput {
 
   // languages are common to all instances of this element
   static languages = null;
@@ -17,17 +17,17 @@ class OBInputLanguages extends OBInput {
   }
 
   connectedCallback() {
-    if (OBInputLanguages.languages === null) {
+    if (OBInputLanguage.languages === null) {
 
       // prevent multiple calls if this element appears twice in one form
-      OBInputLanguages.languages = [];
+      OBInputLanguage.languages = [];
 
       OB.API.post('metadata', 'language_list', {}, function (result) {
         if (!result.status) {
           return false;
         }
 
-        OBInputLanguages.languages = result.data;
+        OBInputLanguage.languages = result.data;
       });
     }
 
@@ -64,7 +64,7 @@ class OBInputLanguages extends OBInput {
   onInput(event) {
     const value = event.target.value;
     if (value.length >= 2) {
-      this.#suggestions = OBInputLanguages.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
+      this.#suggestions = OBInputLanguage.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
     } else {
       this.#suggestions = [];
     }
@@ -81,7 +81,7 @@ class OBInputLanguages extends OBInput {
   }
 
   set value(value) {
-    const lang = OBInputLanguages.languages.find((lang) => lang.id === value);
+    const lang = OBInputLanguage.languages.find((lang) => lang.id === value);
 
     if (lang) {
       // input field gets language name, but we track language ID to return when value is requested
@@ -98,4 +98,4 @@ class OBInputLanguages extends OBInput {
   }
 }
 
-customElements.define('ob-input-languages', OBInputLanguages);
+customElements.define('ob-input-language', OBInputLanguage);
