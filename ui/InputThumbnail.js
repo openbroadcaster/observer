@@ -60,8 +60,8 @@ class OBInputThumbnail extends OBInput {
                         height=${this.#imageHeight}
                     ></img>
                     <div class="button-wrapper hide">
-                        <div class="button" onclick=${this.deleteImage.bind(this)}>Delete</div>
                         <div class="button" onclick=${this.replaceImage.bind(this)}>Replace</div>
+                        <div class="button" onclick=${this.deleteImage.bind(this)}>Delete</div>
                     </div>
                 </div>
             </div>
