@@ -44,6 +44,7 @@ OB.Playlist.detailsPage = function(id)
     $('#playlist_details_id').text(id);
 
     $('#playlist_details_name').text(pldata.name);
+    $('#playlist_details_thumbnail').val(pldata.thumbnail);
     $('#playlist_details_description').text(pldata.description);
 
     //T Private

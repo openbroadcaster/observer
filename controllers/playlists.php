@@ -104,6 +104,12 @@ class Playlists extends OBFController
                 $playlist['permissions_groups'] = $permissions['groups'];
             }
 
+            // get playlist thumbnail, if one exists
+            $thumbnail = $this->models->uploads('thumbnail_get', $id, 'playlist');
+            if ($thumbnail[0]) {
+                $playlist['thumbnail'] = $thumbnail[1];
+            }
+
             $playlist['can_edit'] = $this->user_can_edit($playlist, $permissions);
 
             if ($this->data('where_used')) {
@@ -174,6 +180,7 @@ class Playlists extends OBFController
     {
         $id = trim($this->data('id'));
         $name = trim($this->data('name'));
+        $thumbnail = trim($this->data('thumbnail'));
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
         $type = trim($this->data('type'));
@@ -363,6 +370,16 @@ class Playlists extends OBFController
         if ($this->user->check_permission('playlists_advanced_permissions')) {
             $this->models->playlists('update_permissions_users', $id, $this->data('permissions_users'));
             $this->models->playlists('update_permissions_groups', $id, $this->data('permissions_groups'));
+        }
+
+        // Save playlist thumbnail.
+        $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
+        if (!$thmb_result[0]) {
+            // Note that if an error occurs, the playlist still gets saved. Deleting the playlist is not an
+            // option (tried this at first), since we might be editing an existing playlist instead of creating
+            // a new one. (TODO: Set editing/new initially and then check here.)
+
+            return [false, $thmb_result[1], $id];
         }
 
         return array(true,'Playlist saved.',$id);

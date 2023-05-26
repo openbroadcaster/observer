@@ -93,6 +93,7 @@ OB.Playlist.editPage = function(id)
     playlist_data = response[1].data;
 
     $('#playlist_name_input').val(playlist_data['name']);
+    $('#playlist_thumbnail_input').val(playlist_data['thumbnail']);
     $('#playlist_description_input').val(playlist_data['description']);
     $('#playlist_id').val(playlist_data['id']);
     $('#playlist_owner_id').val(playlist_data['owner_id']);
@@ -409,6 +410,7 @@ OB.Playlist.save = function()
 
   var id = $('#playlist_id').val();
   var playlist_name = $('#playlist_name_input').val();
+  var thumbnail = $('#playlist_thumbnail_input').val();
   var description = $('#playlist_description_input').val();
   var status = $('#playlist_status_input').val();
   var type = $('#playlist_type_input').val();
@@ -437,6 +439,7 @@ OB.Playlist.save = function()
   OB.API.post('playlists','save', {
     'id': id,
     'name': playlist_name,
+    'thumbnail': thumbnail,
     'description': description,
     'status': status,
     'type': type,
