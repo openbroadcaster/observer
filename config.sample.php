@@ -11,6 +11,7 @@ define('OB_HASH_SALT', 'CHANGEMEPLEASE'); // change to random characters for pas
 define('OB_MEDIA', '/where/to/put/media');
 define('OB_MEDIA_UPLOADS', '/where/to/put/media/uploads'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
 define('OB_MEDIA_ARCHIVE', '/where/to/put/media/archive'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
+define('OB_THUMBNAILS', '/where/to/put/thumbnails');
 define('OB_CACHE', '/where/to/put/cache/files');
 
 define('OB_SITE', 'http://example.com/'); // where do you access OB?
