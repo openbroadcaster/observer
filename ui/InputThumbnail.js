@@ -67,14 +67,13 @@ class OBInputThumbnail extends OBInput {
                 </div>
             </div>
         `, this.#root);
+
+        this.#toggleDisplay();
     }
 
     onChange(event) {
         const reader = new FileReader();
         const imgElem = this.#root.querySelector('.image-wrapper');
-
-        event.target.classList.add('hide');
-        imgElem.classList.remove('hide');
 
         reader.onload = (e) => {
             this.#imageData = e.target.result;
@@ -99,9 +98,6 @@ class OBInputThumbnail extends OBInput {
         this.#imageData = null;
         this.#root.querySelector('input').value = '';
 
-        this.#root.querySelector('.image-wrapper').classList.add('hide');
-        this.#root.querySelector('input').classList.remove('hide');
-
         this.renderComponent();
     }
 
@@ -114,7 +110,18 @@ class OBInputThumbnail extends OBInput {
     }
 
     set value(value) {
-        return; // don't allow setting value directly
+        this.#imageData = value;
+        this.renderComponent();
+    }
+
+    #toggleDisplay() {
+        if (this.#imageData == null) {
+            this.#root.querySelector('.image-wrapper').classList.add('hide');
+            this.#root.querySelector('input').classList.remove('hide');
+        } else {
+            this.#root.querySelector('.image-wrapper').classList.remove('hide');
+            this.#root.querySelector('input').classList.add('hide');
+        }
     }
 }
 
