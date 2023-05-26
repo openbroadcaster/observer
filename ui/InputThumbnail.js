@@ -44,6 +44,7 @@ class OBInputThumbnail extends OBInput {
 
                 .image-wrapper .button {
                     border: 1px white solid;
+                    border-radius: 4px;
                     background-color: black;
                     opacity: 0.8;
                     cursor: pointer;
