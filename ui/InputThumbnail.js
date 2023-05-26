@@ -7,14 +7,16 @@ class OBInputThumbnail extends OBInput {
     #imageData;
     #imageWidth;
     #imageHeight;
+    #readOnly;
 
     constructor() {
         super();
         this.#root = this.attachShadow({ mode: 'open'});
 
         this.#imageData = null;
-        this.#imageWidth = (this.getAttribute('width') ? this.getAttribute('width') : 128);
-        this.#imageHeight = (this.getAttribute('height') ? this.getAttribute('height') : 128);
+        this.#imageWidth = this.getAttribute('width') ? this.getAttribute('width') : 128;
+        this.#imageHeight = this.getAttribute('height') ? this.getAttribute('height') : 128;
+        this.#readOnly = ((this.getAttribute('readonly') !== null) && (this.getAttribute('readonly') !== "false")) ? true : false;
     }
 
     connectedCallback() {
@@ -83,13 +85,13 @@ class OBInputThumbnail extends OBInput {
     }
 
     onMouseOver(event) {
-        if (! this.#imageData) return;
+        if (! this.#imageData || this.#readOnly) return;
 
         this.#root.querySelector('.image-wrapper .button-wrapper').classList.remove('hide');
     }
 
     onMouseLeave(event) {
-        if (! this.#imageData) return; 
+        if (! this.#imageData || this.#readOnly) return; 
         
         this.#root.querySelector('.image-wrapper .button-wrapper').classList.add('hide');
     }
@@ -121,6 +123,12 @@ class OBInputThumbnail extends OBInput {
         } else {
             this.#root.querySelector('.image-wrapper').classList.remove('hide');
             this.#root.querySelector('input').classList.add('hide');
+        }
+
+        if (this.#readOnly) {
+            this.#root.querySelector('input').disabled = true;
+        } else {
+            this.#root.querySelector('input').disabled = false;
         }
     }
 }
