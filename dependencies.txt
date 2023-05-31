@@ -1,7 +1,5 @@
 Dependencies for OpenBroadcaster Server.  This list may be incomplete.
 
-Check for updated installation info at http://wiki.openbroadcaster.com 
-
 Dependencies are Debian/Ubuntu package names.
 
 - apache2
