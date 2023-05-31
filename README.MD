@@ -1,48 +1,18 @@
-#  OpenBroadcaster Multimedia Framework
+#  OpenBroadcaster Multimedia Server
 
 ## Overview
 
-OBServer is a multimedia framework application that focuses on reliability, accessibility and scalability over a having a bloated range of half baked/buggy features.  It has an organic AJAX interface built with Gstreamer, HTML5 and Javascript to deliver a web application in support of broadcast radio and TV automation, media asset management and dynamic community programming.  One OBServer may manage one or more OBPlayers in a synchronized network configuration or have the server and playout on one device or VM.   There is a robust Plugin Module Architecture with many modules extending the core server application.  The server has a documented API to enable sharing digital media assets and metadata with revocable secure keys.
-
-## Usage Scenarios
-
-<details>
-<summary>Broadcast Radio and TV</summary>
-<ul><li>Special interest, LPFM, community and multicultural broadcasters</li>
-<li>Time and theme based music segments for public spaces</li>
-<li>Dynamic Podcast assembler, logging and archiving</li></ul>
-</details>
-
-<details>
-<summary>CAP Emergency Alerting</summary>
-<ul><li>Broadcast Radio and TV</li>
-<li>LED Outdoor Signage</li>
-<li>CATV Alerts</li></ul>
-</details>
-
-<details>
-<summary>Video Streaming</summary>
-<ul><li>Low power community television</li>
-<li>User generated community IPTV channel on CATV</li>
-<li>Digital signage and visitor information</li></ul>
-</details>
-
-<details>
-<summary>Media Asset Management</summary>
-<ul><li>Media Asset Management</li>
-<li>Media library, versioning and archiving</li>
-<li>API Access and secure distribution</li></ul>
-</details>
+One OBServer may manage one or more OBPlayers in a synchronized network configuration or have the server and playout on one device or VM.   There is a robust Plugin Module Architecture with many modules extending the core server application.  The server has a documented API to enable sharing digital media assets and metadata with revocable secure keys.
 
 ## Installation
 
-To install OpenBroadcaster, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OpenBroadcaster's web interface.
+To install OBServer, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OBServer's web interface.
 
-Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/main/install.txt) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-server-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
+Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/main/install.txt) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-observer-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
 
 ## Support
 
-If you need help with OpenBroadcaster, the first place you should visit is our [Support](https://support.openbroadcaster.com/) page, which features solutions to a number of commonly encountered issues and questions.
+If you need help with OpenBroadcaster, the first place you should visit is our [Support](https://support.openbroadcaster.com/observer) page, which features solutions to a number of commonly encountered issues and questions.
 
 ## FAQ
 
@@ -58,7 +28,7 @@ Visit our [Change Log](https://openbroadcaster.com/resource/change-log) and proj
 
 ## API Access
 
-All of the functionality and metadata in OBServer, (Media, Playlists,Scheduling) is available through our [Documented API](https://docs.openbroadcaster.com/wip/)
+All of the functionality and metadata in OBServer, (Media, Playlists,Scheduling) is available through our [Documented API](https://docs.openbroadcaster.com/)
 
 ## New feature requests
 
@@ -74,23 +44,23 @@ Contributions are more than welcome! You can help us improve OpenBroadcaster by 
 
 Any help is welcome, big or small. We are all learning together.
 
-See our [Contributing Guide](https://github.com/openbroadcaster/observer/blob/main/docs/CONTRIBUTING.md) to learn how to get involved.
+See our [Contributing Guide](https://github.com/openbroadcaster/.github/blob/main/docs/CONTRIBUTING.md) to learn how to get involved.
 
 Please check out the various GIT projects and components on [OpenBroadcaster](https://github.com/openbroadcaster)
 
 ## Releases and Versioning
 
-See our [Releases Guide](https://github.com/openbroadcaster/observer/blob/main/docs/Releases.md) 
+See our [Releases Guide](https://github.com/openbroadcaster/.github/blob/main/docs/RELEASES.md) 
 
 ## Code of Conduct
 
-We abide by our [Code of Conduct](https://github.com/openbroadcaster/observer/blob/83c050d1c934b09f5c3c5e7ef0aa338e01af9bf2/CODE_OF_CONDUCT.md) and feel strongly about open, appreciative, and empathetic people joining us. 
+We abide by our [Code of Conduct](https://github.com/openbroadcaster/.github/blob/main/docs/CODE_OF_CONDUCT.md) and feel strongly about open, appreciative, and empathetic people joining us. 
 
 ## Support OpenBroadcaster
 
-OpenBroadcaster will always be available free of charge. OpenBroadcaster is built and maintained by passionate volunteers and broadcasters, so there may be some delays in getting back to you. We make the best effort possible to resolve issues and answer questions. If you find the software useful and would like to support the project, visit the links below. Your support is greatly appreciated.
+OpenBroadcaster will always be available free of charge. OpenBroadcaster is built and maintained by passionate volunteers and broadcasters, so there may be some delays in getting back to you. We make the best effort possible to resolve issues and answer questions. If you find the software useful and would like to support the project, become a [Sponsor](https://github.com/sponsors/openbroadcaster). Your support is greatly appreciated.
 
-Copyright 2012-2021 OpenBroadcaster, Inc.
+Copyright 2012-2022 OpenBroadcaster Inc.
 
 Licensed under GNU AGPLv3.  See COPYING.
 

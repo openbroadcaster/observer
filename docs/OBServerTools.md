@@ -1,13 +1,10 @@
 # OBServer Tools
 
-## apitest.php 
-
-Tests functionality of api
+## CLI Checktool
 
 ~~~~
-//IP_OF_SERVER/tools/apitest.php
+PHP tools/cli/ob.php check
 ~~~~
-
 ## mediacheck.php
 
 Output list of missing media files
@@ -19,8 +16,6 @@ Output list of missing media files
 ## Updates 
 
 Displays a list of availalble updates, errors or misconfigured services
-
-Note: Need to be logged to observer with admin user rights 
 
 ~~~~
 //IP_OF_SERVER/updates
@@ -43,3 +38,4 @@ Completes the rename.
 Covers all data change that is simply the result of a rename or moving.
 
 If file data changes as well as a rename, the rename will happen first but rsync will then update the file anyway.
+
