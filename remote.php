@@ -70,7 +70,12 @@ class Remote
     $this->PlaylistsModel = $this->load->model('Playlists');
 
     // development/testing mode
-    if(!empty($_GET['devmode']) && defined('OB_REMOTE_DEBUG') && $_GET['devmode']==OB_REMOTE_DEBUG) { $_POST=$_GET; $this->devmode=TRUE; }
+    if(!empty($_GET['devmode']) && defined('OB_REMOTE_DEBUG') && $_GET['devmode']==OB_REMOTE_DEBUG)
+    {
+      $_POST=$_GET;
+      $this->devmode=TRUE;
+      if(!isset($_POST['pw'])) $_POST['pw']='';
+    }
     else $this->devmode=FALSE;
 
     // get our action
@@ -721,7 +726,7 @@ class Remote
       $itemxml->addChild('archived',$media['is_archived']);
       $itemxml->addChild('approved',$media['is_approved']);
       $itemxml->addChild('thumbnail',$media['thumbnail']);
-      $itemxml->addChild('context',$track['context']);
+      $itemxml->context = $track['context'];
       if($track['crossfade'] ?? null) $itemxml->addChild('crossfade',$track['crossfade']);
     }
 
