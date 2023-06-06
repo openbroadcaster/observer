@@ -291,7 +291,7 @@ class Remote
       // best option might be to not allow playlist to overlap timeslots (which might be useful in itself).
       $timeslot = $this->TimeslotsModel('get_permissions',$show['start'],$show['start']+1,$this->schedule_player_id);
       // $timeslot = $timeslot[2];
-      if(!empty($timeslot)) $showxml->addChild('name',$timeslot[0]['description']);
+      if(!empty($timeslot)) $showxml->name = $timeslot[0]['description'];
 
       $mediaxml = $showxml->addChild('media');
 
@@ -312,7 +312,7 @@ class Remote
         if($media)
         {
           if(empty($timeslot)) $showxml->addChild('name','');
-          $showxml->addChild('description',$media['artist'].' - '.$media['title']);
+          $showxml->description = $media['artist'].' - '.$media['title'];
           $showxml->addChild('last_updated',$media['updated']);
 
           $media_items=array($media);
@@ -324,10 +324,10 @@ class Remote
 
         $this->db->where('id',$show['item_id']);
         $playlist = $this->db->get_one('playlists');
-        $showxml->addChild('description',$playlist['description']);
+        $showxml->description = $playlist['description'];
 
         // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
-        if(empty($timeslot)) $showxml->addChild('name',$playlist['name']);
+        if(empty($timeslot)) $showxml->name = $playlist['name'];
 
         // see if we have selected media in our cache.
         /*
@@ -624,7 +624,7 @@ class Remote
 
       $group_xml = $buttons_xml->addChild('group');
       $group_xml->addChild('last_updated', $cache_created);
-      $group_xml->addChild('name',$playlist['name']);
+      $group_xml->name = $playlist['name'];
       $media_xml = $group_xml->addChild('media');
 
       foreach($items as $item)
@@ -712,9 +712,9 @@ class Remote
 
       $filesize=filesize($fullfilepath);
       $itemxml->addChild('id',$track['id']);
-      $itemxml->addChild('filename',htmlspecialchars($media['filename']));
-      $itemxml->addChild('title',htmlspecialchars($media['title']));
-      $itemxml->addChild('artist',htmlspecialchars($media['artist']));
+      $itemxml->filename = $media['filename'];
+      $itemxml->title = $media['title'];
+      $itemxml->artist = $media['artist'];
       $itemxml->addChild('hash',$media['file_hash']);
       $itemxml->addChild('filesize',$filesize);
       $itemxml->addChild('location',$media['file_location']);
@@ -840,7 +840,7 @@ class Remote
     $showxml->addChild('id',0);
     $showxml->addChild('date',gmdate('Y-m-d',$start));
     $showxml->addChild('time',gmdate('H:i:s',$start));
-    $showxml->addChild('name',$playlist['name']);
+    $showxml->name = $playlist['name'];
     $showxml->addChild('type',$playlist['type']);
     $showxml->addChild('description','Default Playlist');
     // $showxml->addChild('last_updated',time());
@@ -987,12 +987,12 @@ class Remote
       $broadcastxml->addChild('start_timestamp',$broadcast['start']);
       $broadcastxml->addChild('end_timestamp',$broadcast['stop']);
       $broadcastxml->addChild('frequency',$broadcast['frequency']);
-      $broadcastxml->addChild('artist',htmlspecialchars($mediaInfo['artist']));
-      $broadcastxml->addChild('filename',htmlspecialchars($mediaInfo['filename']));
-      $broadcastxml->addChild('title',htmlspecialchars($mediaInfo['title']));
-      $broadcastxml->addChild('media_id',htmlspecialchars($mediaInfo['id']));
-      $broadcastxml->addChild('duration',htmlspecialchars($broadcast_duration));
-      $broadcastxml->addChild('media_type',htmlspecialchars($mediaInfo['type']));
+      $broadcastxml->artist = $mediaInfo['artist'];
+      $broadcastxml->filename = $mediaInfo['filename'];
+      $broadcastxml->title = $mediaInfo['title'];
+      $broadcastxml->media_id = $mediaInfo['id'];
+      $broadcastxml->duration = $broadcast_duration;
+      $broadcastxml->media_type = $mediaInfo['type'];
       $broadcastxml->addChild('hash',$mediaInfo['file_hash']);
       $broadcastxml->addChild('filesize',$filesize);
       $broadcastxml->addChild('location',$mediaInfo['file_location']);
@@ -1115,7 +1115,7 @@ class Remote
   private function send_xml_error($message)
   {
     $xml=new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
-    $xml->addChild('error',$message);
+    $xml->error = $message;
 
     header ("content-type: text/xml");
     echo $xml->asXML();
