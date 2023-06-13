@@ -82,17 +82,32 @@ class UploadsModel extends OBFModel
 
     /**
      * Upload a thumbnail for media or a playlist.
-     * 
+     *
      * @param id Media or playlist ID.
      * @param type Which thumbnail subdirectory to put things in (media or playlists, to make sure IDs don't overwrite each other).
      * @param data Thumbnail data in base64 format as provided by JS FileReader.
-     * 
+     *
      * @return [success, msg]
      */
     public function thumbnail_save($id, $type, $data)
     {
-        if (! file_exists(OB_THUMBNAILS . '/' . $type)) {
-            $can_create = mkdir(OB_THUMBNAILS . '/' . $type, 0755, true);
+        if ($type === 'media') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('media')[0]['file_location'] ?? null;
+        } elseif ($type === 'playlist') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('playlists')[0]['file_location'] ?? null;
+        } else {
+            return [false, 'Only media and playlists can have thumbnails.'];
+        }
+
+        if (! $file_location || strlen($file_location) !== 2) {
+            return [false, 'Could not get file location from ' . $type . ' table.'];
+        }
+
+        $dir_path = OB_THUMBNAILS . '/' . $type . '/' . $file_location[0] . '/' . $file_location[1];
+        if (! file_exists($dir_path)) {
+            $can_create = mkdir($dir_path, 0755, true);
             if (! $can_create) {
                 return [false, 'Failed to create thumbnails directory on server.'];
             }
@@ -102,17 +117,16 @@ class UploadsModel extends OBFModel
             return [false, 'No ID provided for thumbnail.'];
         }
 
-        if ($type !== 'media' && $type !== 'playlist') {
-            return [false, 'Only media and playlists can have thumbnails'];
-        }
-
-        // If an empty string or no data is provided, assume that user has cleared the thumbnail 
+        // If an empty string or no data is provided, assume that user has cleared the thumbnail
         // field and we can delete any thumbnails that have already been saved.
         if (! $data || $data === "") {
-            if (! file_exists(OB_THUMBNAILS . '/' . $type . '/' . $id . '.ext' )) {
+            if (! glob($dir_path . '/' . $id . '.*')) {
                 return [true, 'No thumbnail provided and none already exists. Skipping.'];
             } else {
-                return [unlink(OB_THUMBNAILS . '/' . $type . '/' . $id . '.ext'), 'Deleted thumbnail.'];
+                foreach (glob($dir_path . '/' . $id . '.*') as $file) {
+                    unlink($file);
+                }
+                return [true, 'Deleted thumbnail.'];
             }
         }
 
@@ -128,33 +142,41 @@ class UploadsModel extends OBFModel
 
         // Save thumbnail. Note that file_put_contents overwrites any existing thumbnail that
         // may already exist for this ID by default.
-        file_put_contents(OB_THUMBNAILS . '/' . $type . '/' . $id . '.ext', $data);
+        file_put_contents($dir_path . '/' . $id . '.ext', $data);
 
         return [true, 'Successfully saved thumbnail'];
     }
 
     /**
      * Retrieve a thumbnail for media or a playlist.
-     * 
+     *
      * @param id Media or playlist ID.
      * @param type Which thumbnail subdirectory to retrieve from (see thumbnail_save).
-     * 
+     *
      * @return [success, thumbnail_base64, msg]
      */
-    public function thumbnail_get($id, $type) {
+    public function thumbnail_get($id, $type)
+    {
         if (!$id) {
             return [false, 'No ID provided for thumbnail.'];
         }
 
-        if ($type !== 'media' && $type !== 'playlist') {
-            return [false, 'Only media and playlists can have thumbnails'];
+        if ($type === 'media') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('media')[0]['file_location'] ?? null;
+        } elseif ($type === 'playlist') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('playlists')[0]['file_location'] ?? null;
+        } else {
+            return [false, 'Only media and playlists can have thumbnails.'];
         }
 
-        if (! file_exists(OB_THUMBNAILS . '/' . $type . '/' . $id . '.ext')) {
+        $dir_path = OB_THUMBNAILS . '/' . $type . '/' . $file_location[0] . '/' . $file_location[1];
+        if (! glob($dir_path . '/' . $id . '.*')) {
             return [false, 'No thumbnail found.'];
         }
 
-        $data = file_get_contents(OB_THUMBNAILS . '/' . $type . '/' . $id . '.ext');
+        $data = file_get_contents(glob($dir_path . '/' . $id . '.*')[0]);
         if ($data === false) {
             return [false, 'Unable to read thumbnail data.'];
         }
