@@ -136,8 +136,15 @@ class UploadsModel extends OBFModel
         }
 
         [$header, $b64] = explode(',', $data, 2);
+
         if (base64_encode(base64_decode($b64, true)) !== $b64) {
             return [false, 'Invalid image base64 data. Uploaded thumbnail is not valid image.'];
+        }
+
+        // Only allow specific image formats in the header.
+        $ext = strtolower(explode(';', explode('/', $header)[1])[0]);
+        if (! in_array($ext, ['jpg', 'jpeg', 'png'])) {
+            return [false, 'Only JPEG and PNG images are allowed as thumbnails.'];
         }
 
         // Save thumbnail. Delete any previously saved thumbnail first.
@@ -145,7 +152,6 @@ class UploadsModel extends OBFModel
             unlink($file);
         }
 
-        $ext = explode(';', explode('/', $header)[1])[0];
         file_put_contents($dir_path . '/' . $id . '.' . $ext, base64_decode($b64, true));
 
         return [true, 'Successfully saved thumbnail'];
