@@ -2248,6 +2248,10 @@ class MediaModel extends OBFModel
         $requiredDirs[] = OB_MEDIA_ARCHIVE . '/' . $charA . '/' . $charB;
         $requiredDirs[] = OB_MEDIA_UPLOADS . '/' . $charA . '/' . $charB;
 
+        $requiredDirs[] = OB_THUMBNAILS . '/media';
+        $requiredDirs[] = OB_THUMBNAILS . '/media/' . $charA;
+        $requiredDirs[] = OB_THUMBNAILS . '/media/' . $charA . '/' . $charB;
+
         foreach ($requiredDirs as $checkDir) {
             if (!file_exists($checkDir)) {
                 mkdir($checkDir);
