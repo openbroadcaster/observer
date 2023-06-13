@@ -146,6 +146,9 @@ class OBFChecker
         if (!defined('OB_MEDIA_ARCHIVE')) {
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) not set.';
         }
+        if (!defined('OB_THUMBNAILS')) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) not set.';
+        }
         if (!defined('OB_CACHE')) {
             $errors[] = 'OB_CACHE (cache directory) not set.';
         }
@@ -257,6 +260,12 @@ class OBFChecker
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not a valid directory.';
         } elseif (!is_writable(OB_MEDIA_ARCHIVE)) {
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not writable by the server.';
+        }
+
+        if (!is_dir(OB_THUMBNAILS)) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) is not a valid directory.';
+        } elseif (!is_writable(OB_THUMBNAILS)) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) is not writable by the server.';
         }
 
         if (!is_dir(OB_CACHE)) {
