@@ -135,14 +135,18 @@ class UploadsModel extends OBFModel
             return [false, 'Invalid image MIME type provided. Uploaded thumbnail is not valid image.'];
         }
 
-        $b64 = explode(',', $data, 2)[1];
+        [$header, $b64] = explode(',', $data, 2);
         if (base64_encode(base64_decode($b64, true)) !== $b64) {
             return [false, 'Invalid image base64 data. Uploaded thumbnail is not valid image.'];
         }
 
-        // Save thumbnail. Note that file_put_contents overwrites any existing thumbnail that
-        // may already exist for this ID by default.
-        file_put_contents($dir_path . '/' . $id . '.ext', $data);
+        // Save thumbnail. Delete any previously saved thumbnail first.
+        foreach (glob($dir_path . '/' . $id . '.*') as $file) {
+            unlink($file);
+        }
+
+        $ext = explode(';', explode('/', $header)[1])[0];
+        file_put_contents($dir_path . '/' . $id . '.' . $ext, base64_decode($b64, true));
 
         return [true, 'Successfully saved thumbnail'];
     }
@@ -172,14 +176,19 @@ class UploadsModel extends OBFModel
         }
 
         $dir_path = OB_THUMBNAILS . '/' . $type . '/' . $file_location[0] . '/' . $file_location[1];
-        if (! glob($dir_path . '/' . $id . '.*')) {
+        $path = glob($dir_path . '/' . $id . '.*')[0] ?? null;
+
+        if (! $path) {
             return [false, 'No thumbnail found.'];
         }
 
-        $data = file_get_contents(glob($dir_path . '/' . $id . '.*')[0]);
+        $ext = explode('.', $path)[1];
+        $data = file_get_contents($path);
         if ($data === false) {
             return [false, 'Unable to read thumbnail data.'];
         }
+
+        $data = 'data:image/' . $ext . ';base64,' . base64_encode($data);
 
         return [true, $data];
     }
