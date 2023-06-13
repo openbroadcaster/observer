@@ -55,13 +55,8 @@ class OBInputThumbnail extends OBInput {
 
             <div class="wrapper">
                 <input type="file" accept="image/*" onchange=${this.onChange.bind(this)} />
-                <div class="image-wrapper hide">
-                    <img src="${this.#imageData}" class="thumbnail" 
-                        onmouseover=${this.onMouseOver.bind(this)} 
-                        onmouseleave=${this.onMouseLeave.bind(this)}
-                        width=${this.#imageWidth} 
-                        height=${this.#imageHeight}
-                    ></img>
+                <div class="image-wrapper hide" onmouseover=${this.onMouseOver.bind(this)} onmouseleave=${this.onMouseLeave.bind(this)}>
+                    <img src="${this.#imageData}" class="thumbnail" width=${this.#imageWidth} height=${this.#imageHeight}></img>
                     <div class="button-wrapper hide">
                         <div class="button" onclick=${this.replaceImage.bind(this)}>Replace</div>
                         <div class="button" onclick=${this.deleteImage.bind(this)}>Delete</div>
