@@ -289,9 +289,10 @@ class MediaModel extends OBFModel
         $this->db->where('media.id', $args['id']);
         $media = $this->db->get_one('media');
 
-        if ($media) {
+        // DEPRECATED: Old media thumbnail code (interferes with new thumbnail items).
+        /* if ($media) {
             $media['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $media]);
-        }
+        } */
 
         return $media;
     }
@@ -1325,6 +1326,7 @@ class MediaModel extends OBFModel
         unset($item['file_key']);
         unset($item['id']);
         unset($item['file_info']);
+        unset($item['thumbnail']);
 
         // separate out advanced permissions if we have them
         $advanced_permissions_users = $item['advanced_permissions_users'] ?? false;

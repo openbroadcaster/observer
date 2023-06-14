@@ -201,7 +201,9 @@ class Playlists extends OBFController
         }
 
         // editing playlist
+        $new_playlist = true;
         if (!empty($id)) {
+            $new_playlist = false;
             $original_playlist = $this->models->playlists('get_by_id', $id);
             //T Unable to edit this playlist.
             if (!$original_playlist) {
@@ -375,9 +377,9 @@ class Playlists extends OBFController
         // Save playlist thumbnail.
         $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
         if (!$thmb_result[0]) {
-            // Note that if an error occurs, the playlist still gets saved. Deleting the playlist is not an
-            // option (tried this at first), since we might be editing an existing playlist instead of creating
-            // a new one. (TODO: Set editing/new initially and then check here.)
+            if ($new_playlist === true) {
+                $this->models->playlists('delete', $id);
+            }
 
             return [false, $thmb_result[1], $id];
         }

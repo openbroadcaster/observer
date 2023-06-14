@@ -22,6 +22,12 @@
   </div>
 
   <div class="fieldrow">
+    <label data-t>Thumbnail</label>
+    <ob-input-thumbnail class="thumbnail_field"></ob-input-thumbnail>
+    <button class="copy_to_all" data-field="thumbnail_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
+  </div>
+
+  <div class="fieldrow">
     <label class="required" data-t>Artist</label>
     <input class="artist_field" type="text">
     <button class="copy_to_all" data-field="artist_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
