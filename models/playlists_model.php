@@ -745,7 +745,7 @@ class PlaylistsModel extends OBFModel
           if($media['type']=='image') $tmp['duration'] = $playlist_item['properties']['duration'];
           else $tmp['duration'] = $media['duration'];
           $media_offset += $tmp['duration'];
-          if($media['type']=='audio' && $playlist_item['properties']['crossfade']) $tmp['crossfade'] = $playlist_item['properties']['crossfade'];
+          if($media['type']=='audio' && isset($playlist_item['properties']['crossfade']) && $playlist_item['properties']['crossfade']) $tmp['crossfade'] = $playlist_item['properties']['crossfade'];
           $tmp['media_type'] = $media['type'];
           $tmp['context'] = 'Media';
           $media_items_tmp[] = $tmp;

@@ -570,6 +570,7 @@ class PlayersModel extends OBFModel
     $this->db->where('id',$player_id);
     $player = $this->db->get_one('players');
 
+    // specified player not found
     if(!$player) return false;
 
     $return = array();
@@ -580,6 +581,9 @@ class PlayersModel extends OBFModel
 
     $this->db->where('media.id',$player['current_media_id']);
     $media = $this->db->get_one('media');
+
+    // player media not found (likely deleted)
+    if(!$media) return false;
 
     $media_data = array();
     $media_data['id']=$media['id'];
