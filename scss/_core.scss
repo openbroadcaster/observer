@@ -175,6 +175,11 @@ legend
   content: '';
 }
 
+.fieldrow > ob-input-thumbnail
+{
+  display: inline-block;
+}
+
 
 
 input[type=text], input[type=password],
