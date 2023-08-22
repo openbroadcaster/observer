@@ -27,8 +27,8 @@ switch ($json->command) {
         $output = $converter->convert(implode($output));
 
         echo json_encode([
-            'message' => 'Running check command.', 
-            'result' => $output, 
+            'message' => 'Running check command.',
+            'result' => $output,
             'theme' => $theme->asCss()
         ]);
 
