@@ -30,6 +30,9 @@
     <main>
         <div id="cli-options">
             <button onclick="cliCheck()">Check installation for errors</button>
+            <button onclick="cliCronRun()">Run scheduled tasks</button>
+            <button onclick="cliUpdatesList()">List available updates</button>
+            <button onclick="cliUpdatesRun()">Run available updates</button>
         </div>
         <div id="cli-output" class="ansi_color_bg_black"></div>
     </main>
@@ -68,9 +71,13 @@
         .ansi_color_fg_brwhite { color: #fdf6e3 }
         .ansi_color_bg_brwhite { background-color: #fdf6e3 }        
 
+        #cli-options {
+            margin-bottom: 0.5rem;
+        }
+
         #cli-output {
             width: 800px;
-            height: 800px;
+            height: 500px;
             overflow-y: scroll;
         }
 
@@ -88,7 +95,8 @@
     </style>
 
     <script>
-        async function run(data) {
+        async function run(data)
+        {
             const response = await fetch("/admin/run.php", {
                 method: "POST",
                 body: JSON.stringify(data)
@@ -107,9 +115,37 @@
             });
         }
 
-        async function cliCheck() {
+        async function cliCheck()
+        {
             const data = {
                 command: "check"
+            };
+
+            run(data);
+        }
+
+        async function cliCronRun()
+        {
+            const data = {
+                command: "cron run"
+            };
+
+            run(data);
+        }
+
+        async function cliUpdatesList()
+        {
+            const data = {
+                command: "updates list"
+            };
+
+            run(data);
+        }
+
+        async function cliUpdatesRun()
+        {
+            const data = {
+                command: "updates run"
             };
 
             run(data);
