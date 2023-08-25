@@ -19,6 +19,15 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+require_once __DIR__ . '/../config.php';
+
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== OB_UPDATES_USER || (! password_verify($_SERVER['PHP_AUTH_PW'], OB_UPDATES_PW))) {
+    header('WWW-Authenticate: Basic realm="OpenBroadcaster Updates"');
+    header('HTTP/1.0 401 Unauthorized');
+
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -97,9 +106,15 @@
     <script>
         async function run(data)
         {
+            const json = JSON.stringify({
+                authUser: "<?=$_SERVER['PHP_AUTH_USER']?>",
+                authPass: "<?=$_SERVER['PHP_AUTH_PW']?>",
+                ...data
+            });
+
             const response = await fetch("/admin/run.php", {
                 method: "POST",
-                body: JSON.stringify(data)
+                body: json
             });
 
             const output = document.querySelector("#cli-output");

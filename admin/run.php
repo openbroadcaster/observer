@@ -20,6 +20,7 @@
 */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config.php';
 
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\SolarizedTheme;
@@ -30,6 +31,15 @@ $converter = new AnsiToHtmlConverter($theme, false);
 header('Content-type: application-json');
 
 $json = json_decode(file_get_contents('php://input'));
+
+$authUser = $json->authUser ?? null;
+$authPass = $json->authPass ?? null;
+if ($authUser !== OB_UPDATES_USER || (! password_verify($authPass, OB_UPDATES_PW))) {
+    http_response_code(401);
+    echo json_encode(['message' => 'Invalid username or password provided for running commands.']);
+
+    exit();
+}
 
 if (! $json || ! isset($json->command)) {
     http_response_code(400);
