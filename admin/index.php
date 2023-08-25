@@ -91,7 +91,7 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== OB_UPDATE
         }
 
         #cli-output p {
-            white-space: pre-line;
+            white-space: pre-wrap;
             font-family: monospace;
             margin: 0;
             margin-bottom: 1rem;

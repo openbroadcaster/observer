@@ -54,7 +54,7 @@ if (in_array($json->command, $validCommands)) {
     $resultCode = 0;
     exec(__DIR__ . "/../tools/cli/ob {$json->command}", $output);
 
-    $output = $converter->convert(implode($output));
+    $output = $converter->convert(implode(PHP_EOL, $output));
     if ($output === "" && $resultCode === 0) {
         $output = $converter->convert('No output. Command ran successfully.');
     } elseif ($output === "") {
