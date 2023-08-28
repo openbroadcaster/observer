@@ -12,24 +12,40 @@ Helpers::requireValid();
 switch ($argv[3]) {
     case 'all':
         echo "OB Core Updates" . PHP_EOL;
-        listCore();
+        listUpdates('core');
         echo PHP_EOL . "OB Module Updates" . PHP_EOL;
-        listModule();
+        listUpdates('module');
         break;
     case 'core':
-        listCore();
+        listUpdates('core');
         break;
     case 'module':
-        listModule($argv[4]);
+        listUpdates('module', $argv[4]);
         break;
     default:
         throw new Exception('Unreachable switch block; update requires either all, core, or module.');
 }
 
-function listCore()
+function listUpdates($type = 'core', $module = null)
 {
     require_once('updates/updates.php');
-    $list = $u->updates();
+
+    if ($type === 'core') {
+        // List all core updates.
+        $list = $u->updates();
+    } elseif ($module !== null) {
+        // List specified module updates.
+        $list = (new \OBFUpdates($module))->updates();
+    } else {
+        // List all module updates.
+        $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
+        foreach ($modules as $module) {
+            echo "Module: " . $module . PHP_EOL;
+            listUpdates('module', $module);
+        }
+        return false;
+    }
+
     $rows = [];
 
     $installed = 0;
@@ -51,13 +67,4 @@ function listCore()
     echo PHP_EOL .
     "\033[32m" . str_pad($installed, 2, ' ', STR_PAD_LEFT) . " installed\033[0m    " .
     "\033[33m" . str_pad($pending, 2, ' ', STR_PAD_LEFT) . " pending\033[0m" . PHP_EOL;
-}
-
-function listModule($module = null)
-{
-    if ($module === null) {
-        // TODO: list all modules
-    } else {
-        // TODO: list specified module
-    }
 }

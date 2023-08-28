@@ -23,6 +23,11 @@
 // if error is returned, subsequent methods will not be run.
 class OBFChecker
 {
+    public function __construct($module = null)
+    {
+        $this->module = $module;
+    }
+
     public function php_version()
     {
         if (version_compare(phpversion(), '5.4', '<')) {
@@ -362,14 +367,34 @@ class OBFChecker
         $db = new OBFDB();
         $latest = 0;
 
-        $db->where('name', 'dbver');
-        $dbver = $db->get_one('settings');
-
-        if (!$dbver) {
-            return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+        if ($this->module === null) {
+            $db->where('name', 'dbver');
+            $dbver = $db->get_one('settings');
+        } else {
+            $db->where('name', 'dbver-' . $this->module);
+            $dbver = $db->get_one('settings');
         }
 
-        $files = scandir(__DIR__);
+        if (!$dbver && $this->module === null) {
+            return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+        } elseif (!$dbver) {
+            $db->insert('settings', [
+                'name'  => 'dbver-' . $this->module,
+                'value' => '20230101'
+            ]);
+            return array('Database Version', 'Version for module not yet set. Setting to 20230101 (no module updates possible before this year).', 0);
+        }
+
+        if ($this->module === null) {
+            $files = scandir(__DIR__);
+        } else {
+            $dir = __DIR__ . "/../modules/{$this->module}/updates/";
+            if (file_exists($dir)) {
+                $files = scandir($dir);
+            } else {
+                $files = [];
+            }
+        }
         foreach ($files as $file) {
             $filename = pathinfo($file)['filename'];
             if (preg_match('/^[0-9]{8}$/', $filename)) {

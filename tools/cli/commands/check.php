@@ -10,6 +10,7 @@ require('updates/checker.php');
 
 $checker = new \OBFChecker();
 $methods = get_class_methods($checker);
+$methods = array_filter($methods, fn($x) => $x !== '__construct');
 $results = [];
 $rows = [];
 $errors = 0;
@@ -32,6 +33,8 @@ foreach ($methods as $method) {
         $result = $checker->$method();
     }
     $results[] = $result;
+
+    var_dump($results); die();
 
     $formatting1 = '';
     $formatting2 = '';

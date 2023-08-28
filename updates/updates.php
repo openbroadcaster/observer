@@ -34,10 +34,13 @@ class OBUpdate
 
 class OBFUpdates
 {
-    public function __construct()
+    public function __construct($module = null)
     {
-        $checker = new OBFChecker();
+        $this->module = $module;
+
+        $checker = new OBFChecker($module);
         $checker_methods = get_class_methods('OBFChecker');
+        $checker_methods = array_filter($checker_methods, fn($x) => $x !== '__construct');
         $this->checker_results = array();
 
         foreach ($checker_methods as $checker_method) {
@@ -84,7 +87,17 @@ class OBFUpdates
     // get an array of update classes.
     public function updates()
     {
-        $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
+        if ($this->module === null) {
+            $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
+        } else {
+            $dir = "./modules/{$this->module}/updates/";
+            if (file_exists($dir)) {
+                $scandir = scandir($dir, SCANDIR_SORT_ASCENDING);
+            } else {
+                $scandir = [];
+            }
+        }
+
         $updates = array();
         foreach ($scandir as $file) {
             if (!preg_match('/^[0-9]{8}\.php$/', $file)) {
@@ -93,7 +106,11 @@ class OBFUpdates
             $file_explode = explode('.', $file);
             $version = $file_explode[0];
 
-            require($version . '.php');
+            if ($this->module === null) {
+                require($version . '.php');
+            } else {
+                require("./modules/{$this->module}/updates/{$version}.php");
+            }
 
             $class_name = 'OBUpdate' . $version;
             $update_class = new $class_name();
@@ -113,7 +130,11 @@ class OBFUpdates
 
         // if update was successful, update our database version number.
         if ($result) {
-            $this->db->where('name', 'dbver');
+            if ($this->module === null) {
+                $this->db->where('name', 'dbver');
+            } else {
+                $this->db->where('name', 'dbver-' . $this->module);
+            }
             $this->db->update('settings', array('value' => $update->version));
         }
 
