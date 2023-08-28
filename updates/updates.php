@@ -108,11 +108,14 @@ class OBFUpdates
 
             if ($this->module === null) {
                 require($version . '.php');
+                $class_name = 'OBUpdate' . $version;
             } else {
                 require("./modules/{$this->module}/updates/{$version}.php");
+                $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));
+                $class_name = "{$moduleClass}Update{$version}";
             }
 
-            $class_name = 'OBUpdate' . $version;
+            
             $update_class = new $class_name();
             $update_class->needed = $version > $this->dbver;
             $update_class->version = $version;

@@ -1,6 +1,6 @@
 <?php
 
-class LoggerUpdate20230828 extends OBUpdate
+class NowPlayingUpdate20230828 extends OBUpdate
 {
     public function items()
     {
