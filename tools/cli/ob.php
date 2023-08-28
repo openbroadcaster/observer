@@ -65,8 +65,12 @@ Commands:
         echo Helpers::table(spacing: 5, rows: [
             ['check', 'check installation for errors'],
             ['cron run', 'run scheduled tasks'],
-            ['updates list', 'list available updates'],
-            ['updates run', 'run available updates'],
+            ['updates list all', 'list all available updates'],
+            ['updates list core', 'list core ob updates'],
+            ['updates list module <name>', 'list updates for specified module'],
+            ['updates run all', 'run all available updates'],
+            ['updates run core', 'run core ob updates'],
+            ['updates run module <name>', 'run updates for specified module'],
             ['passwd <username>', 'change password for user']
         ]);
     }
@@ -88,10 +92,28 @@ Commands:
 
     public function updates()
     {
-        global $subcommand;
-        if ($subcommand == 'run') {
+        global $argv;
+        if (count($argv) < 4 || ! (in_array($argv[3], ['all', 'core', 'module']))) {
+            $this->help();
+            return false;
+        }
+
+        if ($argv[3] === 'module') {
+            if (count($argv) < 5) {
+                $this->help();
+                return false;
+            }
+
+            $modules = array_filter(scandir(__DIR__ . '/../../modules/'), fn($f) => $f[0] !== '.');
+            if (! in_array($argv[4], $modules)) {
+                $this->moduleNotFound($argv[4]);
+                return false;
+            }
+        }
+
+        if ($argv[2] == 'run') {
             require(__DIR__ . '/commands/updates_run.php');
-        } elseif ($subcommand == 'list') {
+        } elseif ($argv[2] == 'list') {
             require(__DIR__ . '/commands/updates_list.php');
         } else {
             $this->help();
@@ -106,5 +128,10 @@ Commands:
         } else {
             $this->help();
         }
+    }
+
+    private function moduleNotFound($module)
+    {
+        echo "Module {$module} could not be found in the OpenBroadcaster installation.";
     }
 }

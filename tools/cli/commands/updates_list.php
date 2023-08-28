@@ -9,26 +9,55 @@ if (!defined('OB_CLI')) {
 // only show update list if check passes
 Helpers::requireValid();
 
-require_once('updates/updates.php');
-$list = $u->updates();
-$rows = [];
-
-$installed = 0;
-$pending = 0;
-
-foreach ($list as $update) {
-    if ($update->needed) {
-        $pending++;
-        $formatting = "\033[33m";
-    } else {
-        $installed++;
-        $formatting = "\033[32m";
-    }
-    $rows[] = [[$formatting, $update->version], [$formatting, implode(' ', $update->items())]];
+switch ($argv[3]) {
+    case 'all':
+        echo "OB Core Updates" . PHP_EOL;
+        listCore();
+        echo PHP_EOL . "OB Module Updates" . PHP_EOL;
+        listModule();
+        break;
+    case 'core':
+        listCore();
+        break;
+    case 'module':
+        listModule($argv[4]);
+        break;
+    default:
+        throw new Exception('Unreachable switch block; update requires either all, core, or module.');
 }
 
-echo Helpers::table(spacing: 3, rows: $rows);
+function listCore()
+{
+    require_once('updates/updates.php');
+    $list = $u->updates();
+    $rows = [];
 
-echo PHP_EOL .
-"\033[32m" . str_pad($installed, 2, ' ', STR_PAD_LEFT) . " installed\033[0m    " .
-"\033[33m" . str_pad($pending, 2, ' ', STR_PAD_LEFT) . " pending\033[0m" . PHP_EOL;
+    $installed = 0;
+    $pending = 0;
+
+    foreach ($list as $update) {
+        if ($update->needed) {
+            $pending++;
+            $formatting = "\033[33m";
+        } else {
+            $installed++;
+            $formatting = "\033[32m";
+        }
+        $rows[] = [[$formatting, $update->version], [$formatting, implode(' ', $update->items())]];
+    }
+
+    echo Helpers::table(spacing: 3, rows: $rows);
+
+    echo PHP_EOL .
+    "\033[32m" . str_pad($installed, 2, ' ', STR_PAD_LEFT) . " installed\033[0m    " .
+    "\033[33m" . str_pad($pending, 2, ' ', STR_PAD_LEFT) . " pending\033[0m" . PHP_EOL;
+}
+
+function listModule($module = null)
+{
+    if ($module === null) {
+        // TODO: list all modules
+    } else {
+        // TODO: list specified module
+    }
+}
