@@ -45,7 +45,7 @@ async function cliCronRun()
 async function cliUpdatesList()
 {
     const data = {
-        command: "updates list"
+        command: "updates list all"
     };
 
     run(data);
@@ -54,7 +54,7 @@ async function cliUpdatesList()
 async function cliUpdatesRun()
 {
     const data = {
-        command: "updates run"
+        command: "updates run all"
     };
 
     run(data);
