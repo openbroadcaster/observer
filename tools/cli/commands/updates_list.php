@@ -40,7 +40,8 @@ function listUpdates($type = 'core', $module = null)
         // List all module updates.
         $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
         foreach ($modules as $module) {
-            echo "Module: " . $module . PHP_EOL;
+            $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $module)));
+            echo "Module: " . $moduleClass . PHP_EOL;
             listUpdates('module', $module);
         }
         return false;

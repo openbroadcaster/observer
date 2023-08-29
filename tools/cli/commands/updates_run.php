@@ -12,15 +12,15 @@ Helpers::requireValid();
 switch ($argv[3]) {
     case 'all':
         echo 'Updating OB Core' . PHP_EOL;
-        updateCore();
+        runUpdates('core');
         echo PHP_EOL . 'Updating OB Modules' . PHP_EOL;
-        updateModule();
+        runUpdates('module');
         break;
     case 'core':
-        updateCore();
+        runUpdates('core');
         break;
     case 'module':
-        updateModule($argv[4]);
+        runUpdates('module', $argv[4]);
         break;
     default:
         throw new Exception('Unreachable switch block; update requires either all, core, or module.');
@@ -28,26 +28,38 @@ switch ($argv[3]) {
 
 exit(0);
 
-function updateCore()
+function runUpdates($type = 'core', $module = null)
 {
     require_once('updates/updates.php');
-    $list = $u->updates();
+
+    if ($type === 'core') {
+        // Run all core updates.
+        $list = $u->updates();
+    } elseif ($module !== null) {
+        // Run specified module updates.
+        $u = new \OBFUpdates($module);
+        $list = $u->updates();
+    } else {
+        // Run all module updates.
+        $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
+        foreach ($modules as $module) {
+            runUpdates('module', $module);
+        }
+        return false;
+    }
+
     foreach ($list as $update) {
         if ($update->needed) {
             if (!$u->run($update)) {
-                echo 'Update failed, exiting.' . PHP_EOL;
+                echo ucwords($type) . ': Update failed, exiting.' . PHP_EOL;
                 exit(1);
             }
-            echo 'Update ' . $update->version . ' installed.' . PHP_EOL;
-        }
-    }
-}
 
-function updateModule($module = null)
-{
-    if ($module === null) {
-        // TODO: update all modules
-    } else {
-        // TODO: update specified module
+            $prefix = 'Core: ';
+            if ($module !== null) {
+                $prefix = implode('', array_map(fn($x) => ucwords($x), explode('_', $module))) . ': ';
+            }
+            echo $prefix . 'Update ' . $update->version . ' installed.' . PHP_EOL;
+        }
     }
 }
