@@ -11,9 +11,9 @@ Helpers::requireValid();
 
 switch ($argv[3]) {
     case 'all':
-        echo "OB Core Updates" . PHP_EOL;
+        echo "\033[94;1mOB Core Updates\033[0m" . PHP_EOL;
         listUpdates('core');
-        echo PHP_EOL . "OB Module Updates" . PHP_EOL;
+        echo PHP_EOL . "\033[94;1mOB Module Updates\033[0m" . PHP_EOL;
         listUpdates('module');
         break;
     case 'core':
@@ -41,7 +41,7 @@ function listUpdates($type = 'core', $module = null)
         $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
         foreach ($modules as $module) {
             $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $module)));
-            echo "Module: " . $moduleClass . PHP_EOL;
+            echo "\033[94mModule:\033[0m " . $moduleClass . PHP_EOL;
             listUpdates('module', $module);
         }
         return false;

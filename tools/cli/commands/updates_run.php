@@ -11,9 +11,9 @@ Helpers::requireValid();
 
 switch ($argv[3]) {
     case 'all':
-        echo 'Updating OB Core' . PHP_EOL;
+        echo "\033[94;1mUpdating OB Core\033[0m" . PHP_EOL;
         runUpdates('core');
-        echo PHP_EOL . 'Updating OB Modules' . PHP_EOL;
+        echo PHP_EOL . "\033[94;1mUpdating OB Modules\033[0m" . PHP_EOL;
         runUpdates('module');
         break;
     case 'core':
@@ -55,9 +55,9 @@ function runUpdates($type = 'core', $module = null)
                 exit(1);
             }
 
-            $prefix = 'Core: ';
+            $prefix = "\033[94mCore:\033[0m ";
             if ($module !== null) {
-                $prefix = implode('', array_map(fn($x) => ucwords($x), explode('_', $module))) . ': ';
+                $prefix = "\033[94m" . implode('', array_map(fn($x) => ucwords($x), explode('_', $module))) . ":\033[0m ";
             }
             echo $prefix . 'Update ' . $update->version . ' installed.' . PHP_EOL;
         }
