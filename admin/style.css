@@ -31,6 +31,13 @@
 .ansi_color_fg_brwhite { color: #fdf6e3 }
 .ansi_color_bg_brwhite { background-color: #fdf6e3 }        
 
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #cli-options {
     margin-bottom: 0.5rem;
 }
@@ -39,6 +46,7 @@
     width: 800px;
     height: 500px;
     overflow-y: scroll;
+    border-radius: 4px;
 }
 
 #cli-output p {
