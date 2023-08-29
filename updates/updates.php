@@ -115,7 +115,7 @@ class OBFUpdates
                 $class_name = "{$moduleClass}Update{$version}";
             }
 
-            
+
             $update_class = new $class_name();
             $update_class->needed = $version > $this->dbver;
             $update_class->version = $version;
