@@ -34,8 +34,6 @@ foreach ($methods as $method) {
     }
     $results[] = $result;
 
-    var_dump($results); die();
-
     $formatting1 = '';
     $formatting2 = '';
 
