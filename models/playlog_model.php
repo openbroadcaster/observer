@@ -40,26 +40,26 @@ class PlaylogModel extends OBFModel
         $start = $this->db->escape($start);
         $end   = $this->db->escape($end);
 
-        // no $end specified, get all in log that start or end after $start
-        $query = 'SELECT * FROM `players_log` WHERE '
-        . '(`player_id` = ' . intval($id) . ') AND ('
-        . '`timestamp` >= ' . intval($start) . ' OR '
-        . '`media_end` >= ' . intval($start) . ' OR '
-        . '`playlist_end` >= ' . intval($start) . ');';
+        $id_intval = intval($id);
+        $start_intval = intval($start);
+        $end_intval = intval($end);
 
-        // $end specified, get all in log that start between $start and $end
-        // OR (inclusive) those that end in between $start and $end
-        // OR (inclusive) those that start before $start and end after $end (edge
-        // cases are weird).
+        $query = "  SELECT
+                        players_log.*,
+                        media.artist as media_artist,
+                        media.title AS media_title,
+                        playlists.name AS playlist_name,
+                        playlists.description AS playlist_description
+                    FROM `players_log`
+                    LEFT JOIN media ON players_log.media_id = media.id
+                    LEFT JOIN playlists ON players_log.playlist_id = playlists.id
+                    WHERE
+                        players_log.player_id = $id_intval AND
+                        players_log.media_end > $start_intval";
+
+        // add end condition if specified
         if ($end) {
-            $query = 'SELECT * FROM `players_log` WHERE '
-            . '(`player_id` = ' . intval($id) . ') AND ('
-            . '(`timestamp` >= ' . intval($start) . ' AND `timestamp` <= ' . intval($end) . ') OR '
-            . '(`media_end` >= ' . intval($start) . ' AND `media_end` <= ' . intval($end) . ') OR '
-            . '(`playlist_end` >= ' . intval($start) . ' AND `playlist_end` <= ' . intval($end) . ') OR '
-            . '(`timestamp` <= ' . intval($start) . ' AND `media_end` <= ' . intval($end) . ') OR '
-            . '(`timestamp` <= ' . intval($start) . ' AND `playlist_end` <= ' . intval($end) . ')'
-            . ');';
+            $query .= " AND players_log.timestamp < $end_intval";
         }
 
         $this->db->query($query);
