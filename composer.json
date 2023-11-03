@@ -1,6 +1,7 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.6"
+        "phpmailer/phpmailer": "^6.6",
+        "sensiolabs/ansi-to-html": "^1.2"
     },
     "config": {
         "allow-plugins": {

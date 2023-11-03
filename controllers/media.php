@@ -298,7 +298,7 @@ class Media extends OBFController
         $validation = array();
 
         // Split POST and PUT when using v2 api: one for creating new media,
-        // one for updating existing ones. This means id should be unset on POST, 
+        // one for updating existing ones. This means id should be unset on POST,
         // while it should be required on PUT with file_id and file_key set to empty
         // strings.
         if ($this->api_version() === 2) {
@@ -369,7 +369,12 @@ class Media extends OBFController
         if ($all_valid) {
             $items = array();
             foreach ($media as $item) {
-                $items[] = $this->models->media('save', ['item' => $item]);
+                $id = $this->models->media('save', ['item' => $item]);
+                $items[] = $id;
+
+                if (isset($item['thumbnail'])) {
+                    $this->models->uploads('thumbnail_save', $id, 'media', $item['thumbnail']);
+                }
             }
             //T Media has been saved.
             return array(true,'Media has been saved.',$items);
@@ -636,6 +641,12 @@ class Media extends OBFController
         if ($this->data('where_used')) {
             $where_used = $this->models->media('where_used', ['id' => $id, 'include_dynamic' => true]);
             $media['where_used'] = $where_used;
+        }
+
+        // get thumbnail, if one exists
+        $thumbnail = $this->models->uploads('thumbnail_get', $id, 'media');
+        if ($thumbnail[0]) {
+            $media['thumbnail'] = $thumbnail[1];
         }
 
         return array(true,'Media data.',$media);

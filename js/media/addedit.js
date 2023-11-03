@@ -404,6 +404,8 @@ OB.Media.save = function()
 
     if($(element).attr('data-edit')) item.id = $(element).attr('data-id');
 
+    item.thumbnail = $(element).find('.thumbnail_field').val();
+
     item.artist = $(element).find('.artist_field').val();
     item.title = $(element).find('.title_field').val();
     item.album = $(element).find('.album_field').val();
@@ -539,6 +541,8 @@ OB.Media.editPage = function(ids)
       $form = $('.media_addedit').last();
 
       $form.attr('data-edit',1);
+
+      $form.find('.thumbnail_field').val( media.thumbnail );
 
       $form.find('.artist_field').val( media.artist );
       $form.find('.title_field').val( media.title );
