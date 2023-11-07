@@ -81,6 +81,11 @@
             "get"
         ],
         [
+            "/api/v2/shows/(:id:)/thumbnail",
+            "shows",
+            "thumbnail"
+        ],
+        [
             "/api/v2/shows",
             "shows",
             "search"
