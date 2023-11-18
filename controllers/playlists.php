@@ -375,13 +375,15 @@ class Playlists extends OBFController
         }
 
         // Save playlist thumbnail.
-        $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
-        if (!$thmb_result[0]) {
-            if ($new_playlist === true) {
-                $this->models->playlists('delete', $id);
-            }
+        if($thumbnail) {
+            $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
+            if (!$thmb_result[0]) {
+                if ($new_playlist === true) {
+                    $this->models->playlists('delete', $id);
+                }
 
-            return [false, $thmb_result[1], $id];
+                return [false, $thmb_result[1], $id];
+            }
         }
 
         return array(true,'Playlist saved.',$id);
