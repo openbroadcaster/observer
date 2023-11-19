@@ -1099,7 +1099,7 @@ class Remote
         $now = time();
 
         $addsql = ' where player_id=' . $player . ' and (start<=' . $timelimit . ' or start IS NULL) and (stop>' . $now . ' or stop IS NULL ) ';
-        $sql = 'select *,TIME_TO_SEC(duration) as duration from emergencies' . $addsql . ' order by start';
+        $sql = 'select *,TIME_TO_SEC(duration) as duration from alerts' . $addsql . ' order by start';
 
         $this->db->query($sql);
         $r = $this->db->assoc_list();
