@@ -59,6 +59,8 @@ class Remote
 
     public function __construct()
     {
+        remoteDebug('remote.php called by '.$_SERVER['REMOTE_ADDR'].' with '.json_encode($_REQUEST));
+
         $this->io = OBFIO::get_instance();
         $this->load = OBFLoad::get_instance();
         $this->user = OBFUser::get_instance();
@@ -463,20 +465,35 @@ class Remote
 
         // fill in blank spots with default playlist, if we have one.
         if (!empty($this->default_playlist_id)) {
-      // default starting time is now. but we'll check to see whether there is an earlier starting time from a cached default playlist which is still playing.
+            // default starting time is now. but we'll check to see whether there is an earlier starting time from a cached default playlist which is still playing.
             $timestamp_pointer = time();
-            $this->db->query('SELECT start FROM shows_cache WHERE show_expanded_id IS NULL AND start < ' . $this->db->escape($timestamp_pointer) . ' AND start+duration > ' . $this->db->escape($timestamp_pointer));
+
+            remoteDebug('looking for cached playlist at time '.gmdate('Y-m-d H:i:s', $timestamp_pointer));
+
+            $this->db->query('SELECT start FROM shows_cache WHERE player_id = '.$this->db->escape($this->default_playlist_player_id).' AND show_expanded_id IS NULL AND start <= ' . $this->db->escape($timestamp_pointer) . ' AND start+duration > ' . $this->db->escape($timestamp_pointer));
+
+            if($this->db->num_rows() > 1) {
+                remoteDebug('found more than one cached playlist ('.$this->db->num_rows().'), this shouldn\'t happen');
+            }
             if ($this->db->num_rows() > 0) {
                 $cached_default_playlist = $this->db->assoc_row();
                 $timestamp_pointer = $cached_default_playlist['start'];
+                remoteDebug('found, updating timestamp pointer to '.gmdate('Y-m-d H:i:s', $timestamp_pointer));
+            }
+            else {
+                remoteDebug('not found');
             }
 
-            $default_playlist_finished = false;
-
             for ($default_playlist_counter = 0; $timestamp_pointer < $end_timestamp; $default_playlist_counter++) {
+
+                // handling for default playlist during current gap (before first show in the outputted schedule)
                 if ($default_playlist_counter == 0 && (count($show_times) == 0 || $show_times[0]['start'] > $timestamp_pointer)) {
                     $default_start = $timestamp_pointer;
 
+                    remoteDebug('FOUND GAP, setting default start to '.gmdate('Y-m-d H:i:s', $default_start));
+
+                    // if no show times, then we are an indefinite gap
+                    // otherwise, gap until the start of the first show
                     if (count($show_times) == 0) {
                         $default_end = $end_timestamp;
                     } else {
@@ -485,7 +502,11 @@ class Remote
 
                     $default_start_tmp = $default_start;
 
+                    // loop to fill with default playlist to fill the gap
                     while ($default_start_tmp < $default_end) {
+
+                        remoteDebug('FILL GAP LOOP 1 with start '.gmdate('Y-m-d H:i:s', $default_start_tmp).' and end '.gmdate('Y-m-d H:i:s', $default_end));
+
                         if ($default_start_tmp > $end_timestamp) {
                             break(2);
                         } // end of buffer, we're done.
@@ -502,6 +523,7 @@ class Remote
                     }
                 }
 
+                // handling for default playlist during current gap (between or at the end of shows in the outputted schedule)
                 if (!empty($show_times[$default_playlist_counter])) {
                     $default_start = ceil($show_times[$default_playlist_counter]['end']); // need ceiling since we store start times in whole numbers.
 
@@ -513,7 +535,10 @@ class Remote
 
                     // this will be false if there is no gap between shows, or at the end where a show goes over our end timestamp.
                     if ($default_start < $default_end) {
+
                         $default_start_tmp = $default_start;
+
+                        remoteDebug('FILL GAP LOOP 2 with start '.gmdate('Y-m-d H:i:s', $default_start_tmp).' and end '.gmdate('Y-m-d H:i:s', $default_end));
 
                         while ($default_start_tmp < $default_end) {
                             if ($default_start_tmp > $end_timestamp) {
@@ -699,6 +724,9 @@ class Remote
     // returns duration.
     private function default_playlist_show_xml(&$showxml, $start, $max_duration)
     {
+
+        remoteDebug('default_playlist_show_xml called with start ' . gmdate('Y-m-d H:i:s', $start) . ' max duration '. $max_duration);
+
         if (empty($this->default_playlist_id)) {
             return 0;
         }
@@ -732,7 +760,13 @@ class Remote
             } // convert object to assoc. array
             $showxml->addChild('last_updated', $cache['created']);
             $duration = $cache['duration'];
+
+            remoteDebug('default_playlist_show_xml FOUND CACHED default playlist with duration ' . $duration);
+
         } elseif ($this->cache_player_id != $this->player['id'] && $this->player['use_parent_playlist']) {
+
+            remoteDebug('default_playlist_show_xml NO FOUND CACHED default playlist, using parent player for cache');
+
             // are we using a parent player for cache (and playlist)?
             // see if parent has a cache entry.
             $this->db->where('player_id', $this->cache_player_id);
@@ -744,7 +778,9 @@ class Remote
 
             // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet.
             if (!$cache) {
-                $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start, $max_duration);
+                // don't specify max duration for playlist resolve since it's likely we'll need more items on subsequent sync.
+                // no max duration means the whole playlist will be rendered.
+                $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start);
                 $cache_created = time();
                 $duration = $this->total_items_duration($show_media_items, $playlist['type'] == 'advanced');
                 $this->db->insert('shows_cache', [
@@ -781,9 +817,18 @@ class Remote
             ]);
         }
 
+        elseif(!$cache) {
+            remoteDebug('default_playlist_show_xml NO FOUND CACHED default playlist');
+        }
+
         // still don't have media items?
         if (empty($show_media_items)) {
-            $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start, $max_duration);
+
+            remoteDebug('default_playlist_show_xml NO MEDIA ITEMS default playlist, generating');
+
+            // don't specify max duration for playlist resolve since it's likely we'll need more items on subsequent sync.
+            // no max duration means the whole playlist will be rendered.
+            $show_media_items = $this->PlaylistsModel('resolve', $this->default_playlist_id, $this->default_playlist_player_id, false, $show_start);
 
             $duration = $this->total_items_duration($show_media_items, $playlist['type'] == 'advanced');
 
@@ -791,13 +836,15 @@ class Remote
             $showxml->addChild('last_updated', $cache_created);
 
             $this->db->insert('shows_cache', [
-            'show_expanded_id' => null,
-            'player_id' => $this->player['id'],
-            'start' => $start,
-            'duration' => $duration,
-            'data' => json_encode($show_media_items),
-            'created' => $cache_created
+                'show_expanded_id' => null,
+                'player_id' => $this->player['id'],
+                'start' => $start,
+                'duration' => $duration,
+                'data' => json_encode($show_media_items),
+                'created' => $cache_created
             ]);
+
+            remoteDebug('default_playlist_show_xml CREATING NEW CACHE default playlist with start ' . gmdate('Y-m-d H:i:s', $start) . ' duration ' . $duration);
         }
 
         // generate XML for show/media items.
@@ -858,7 +905,6 @@ class Remote
 
             if ($playlist['type'] == 'standard') {
                 $media_offset += $media_item['duration'] - ($media_item['crossfade'] ?? 0);
-                ;
                 if ($media_offset > $max_duration) {
                     break;
                 } // our next media offset is beyond max_duration, no more items to add.
@@ -866,6 +912,8 @@ class Remote
 
             $order_count++;
         }
+
+        remoteDebug('default_playlist_show_xml finished with max_duration '.$max_duration. ' duration '.$duration);
 
         return min($max_duration, $duration);
     }
@@ -1208,3 +1256,16 @@ class Remote
 }
 
 $remote = new Remote();
+
+
+// debug function that outputs/appends contents __DIR__ . '/debug.txt'
+function remoteDebug($data)
+{
+    return; // TODO disabled
+    $file = __DIR__ . '/debug.txt';
+    $fh = fopen($file, 'a');
+    // add date to data
+    $string = '['.$_REQUEST['id'].']['.gmdate('Y-m-d H:i:s').'] '. $data . "\n";
+    fwrite($fh, $string);
+    fclose($fh);
+}
