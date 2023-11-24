@@ -1,5 +1,5 @@
-import { html, render } from './vendor.js'
-import { OBInput } from './Input.js';
+import { html, render } from '../vendor.js'
+import { OBInput } from '../base/field.js';
 
 class OBInputLanguage extends OBInput {
 
@@ -17,6 +17,9 @@ class OBInputLanguage extends OBInput {
   }
 
   connectedCallback() {
+
+    console.log('connected callback languages');
+
     if (OBInputLanguage.languages === null) {
 
       // prevent multiple calls if this element appears twice in one form

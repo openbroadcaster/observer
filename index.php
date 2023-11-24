@@ -59,8 +59,16 @@ $js_dependencies = [
 foreach ($js_dependencies as $file) {
     echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime($file) . '"></script>' . PHP_EOL;
 }
+
+// get a recursive list of files in "ui" and add them as js modules
+$jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('ui'));
+foreach ($jsModuleIterator as $file) {
+    if($file->getExtension() !== 'js') {
+        continue;
+    }
+    echo '<script type="module" src="/' . $file->getPathname() . '?v='. filemtime($file->getPathname()).'"></script>'.PHP_EOL;
+}
 ?>
-  <script type="module" src="ui/InputText.js?v=<?=filemtime('ui/InputText.js')?>"></script>
   <script type="text/javascript" src="extras/jquery-ui.min.js?v=<?=filemtime('extras/jquery-ui.min.js')?>"></script>
   <script type="text/javascript" src="extras/jquery-ui-timepicker-addon.js?v=<?=filemtime('extras/jquery-ui-timepicker-addon.js')?>"></script>
   <script type="text/javascript" src="extras/jquery.ba-dotimeout.min.js?v=<?=filemtime('extras/jquery.ba-dotimeout.min.js')?>"></script>

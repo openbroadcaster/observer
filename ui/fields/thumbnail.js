@@ -1,5 +1,5 @@
-import { html, render } from './vendor.js'
-import { OBInput } from './Input.js';
+import { html, render } from '../vendor.js'
+import { OBInput } from '../base/field.js';
 
 class OBInputThumbnail extends OBInput {
 
@@ -11,7 +11,7 @@ class OBInputThumbnail extends OBInput {
 
     constructor() {
         super();
-        this.#root = this.attachShadow({ mode: 'open'});
+        this.#root = this.attachShadow({ mode: 'open' });
 
         this.#imageData = null;
         this.#imageWidth = this.getAttribute('width') ? this.getAttribute('width') : 128;
@@ -80,14 +80,14 @@ class OBInputThumbnail extends OBInput {
     }
 
     onMouseOver(event) {
-        if (! this.#imageData || this.#readOnly) return;
+        if (!this.#imageData || this.#readOnly) return;
 
         this.#root.querySelector('.image-wrapper .button-wrapper').classList.remove('hide');
     }
 
     onMouseLeave(event) {
-        if (! this.#imageData || this.#readOnly) return; 
-        
+        if (!this.#imageData || this.#readOnly) return;
+
         this.#root.querySelector('.image-wrapper .button-wrapper').classList.add('hide');
     }
 

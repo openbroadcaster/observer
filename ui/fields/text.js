@@ -1,5 +1,5 @@
-import { render, html } from './vendor.js';
-import { OBInput } from './Input.js';
+import { html, render } from '../vendor.js'
+import { OBInput } from '../base/field.js';
 
 class OBInputText extends OBInput {
   constructor() {
