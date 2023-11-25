@@ -1,7 +1,7 @@
 import { html, render } from '../vendor.js'
-import { OBInput } from '../base/field.js';
+import { OBField } from '../base/field.js';
 
-class OBInputLanguage extends OBInput {
+class OBFieldLanguage extends OBField {
 
   // languages are common to all instances of this element
   static languages = null;
@@ -101,4 +101,4 @@ class OBInputLanguage extends OBInput {
   }
 }
 
-customElements.define('ob-input-language', OBInputLanguage);
+customElements.define('ob-field-language', OBFieldLanguage);

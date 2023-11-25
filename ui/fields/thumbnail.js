@@ -1,7 +1,7 @@
 import { html, render } from '../vendor.js'
-import { OBInput } from '../base/field.js';
+import { OBField } from '../base/field.js';
 
-class OBInputThumbnail extends OBInput {
+class OBFieldThumbnail extends OBField {
 
     #root;
     #imageData;
@@ -26,6 +26,7 @@ class OBInputThumbnail extends OBInput {
     renderComponent() {
         render(html`
             <style>
+                :host { display: inline-block; }
                 .hide {
                     display: none !important;
                 }
@@ -128,4 +129,4 @@ class OBInputThumbnail extends OBInput {
     }
 }
 
-customElements.define('ob-input-thumbnail', OBInputThumbnail);
+customElements.define('ob-field-thumbnail', OBFieldThumbnail);

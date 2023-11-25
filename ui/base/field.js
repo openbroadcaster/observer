@@ -1,11 +1,10 @@
-export class OBInput extends HTMLElement
-{
+export class OBField extends HTMLElement {
   // forward attributes from the custom element to the ref element
   forwardAttributes(attributes, ref) {
     attributes.forEach((attribute) => {
-        if (this.hasAttribute(attribute)) {
-            ref.setAttribute(attribute, this.getAttribute(attribute));
-        }
+      if (this.hasAttribute(attribute)) {
+        ref.setAttribute(attribute, this.getAttribute(attribute));
+      }
     });
   }
 

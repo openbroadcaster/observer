@@ -1,7 +1,7 @@
 import { html, render } from '../vendor.js'
-import { OBInput } from '../base/field.js';
+import { OBField } from '../base/field.js';
 
-class OBInputText extends OBInput {
+class OBFieldText extends OBField {
   constructor() {
     super();
     this._root = this.attachShadow({ mode: 'open' });
@@ -43,4 +43,4 @@ class OBInputText extends OBInput {
   }
 }
 
-customElements.define('ob-input-text', OBInputText);
+customElements.define('ob-field-text', OBFieldText);
