@@ -16,30 +16,32 @@ class OBFieldLanguage extends OBField {
     this.#root = this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    if (OBFieldLanguage.languages === null) {
 
-    console.log('connected callback languages');
-
-    if (OBInputLanguage.languages === null) {
+      console.log('fetch languages');
 
       // prevent multiple calls if this element appears twice in one form
-      OBInputLanguage.languages = [];
+      OBFieldLanguage.languages = [];
 
-      OB.API.post('metadata', 'language_list', {}, function (result) {
-        if (!result.status) {
-          return false;
-        }
+      const result = await OB.API.postPromise('metadata', 'language_list', {});
 
-        OBInputLanguage.languages = result.data;
-      });
+      if (!result.status) return false;
+      OBFieldLanguage.languages = result.data;
     }
 
-    this.renderComponent();
+    // get "value" attribute and set
+    // setting value already runs renderComponent after
+    this.value = this.getAttribute('value');
   }
 
-  renderComponent() {
+  async renderComponent() {
+    console.log('render component');
+
     render(html`
       <style>
+        :host { display: inline-block; }
+
         .wrapper {
           display: flex;
           flex-direction: column;
@@ -67,7 +69,7 @@ class OBFieldLanguage extends OBField {
   onInput(event) {
     const value = event.target.value;
     if (value.length >= 2) {
-      this.#suggestions = OBInputLanguage.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
+      this.#suggestions = OBFieldLanguage.languages.filter((lang) => lang.ref_name.toLowerCase().startsWith(value.toLowerCase()));
     } else {
       this.#suggestions = [];
     }
@@ -84,14 +86,14 @@ class OBFieldLanguage extends OBField {
   }
 
   set value(value) {
-    const lang = OBInputLanguage.languages.find((lang) => lang.id === value);
+    const lang = OBFieldLanguage.languages.find((lang) => lang.id === value);
 
     if (lang) {
       // input field gets language name, but we track language ID to return when value is requested
       this.#root.querySelector('input').value = lang.ref_name;
       this.#inputLangId = value;
     }
-    else {
+    else if (this.#root.querySelector('input')) {
       // set blank / null, language empty or not found
       this.#root.querySelector('input').value = '';
       this.#inputLangId = null;

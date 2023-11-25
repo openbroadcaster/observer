@@ -1,4 +1,9 @@
 export class OBField extends HTMLElement {
+
+  async connectedCallback(renderComponent) {
+    if (renderComponent !== false && typeof (this.renderComponent) === 'function') await this.renderComponent();
+  }
+
   // forward attributes from the custom element to the ref element
   forwardAttributes(attributes, ref) {
     attributes.forEach((attribute) => {
