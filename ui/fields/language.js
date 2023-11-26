@@ -7,14 +7,8 @@ class OBFieldLanguage extends OBField {
   static languages = null;
 
   // private properties now supported with #
-  #root;
   #inputLangId = null;
   #suggestions = [];
-
-  constructor() {
-    super();
-    this.#root = this.attachShadow({ mode: 'open' });
-  }
 
   async connectedCallback() {
     if (OBFieldLanguage.languages === null) {
@@ -63,7 +57,9 @@ class OBFieldLanguage extends OBField {
           ${this.#suggestions.map((lang) => html`<div data-lang=${lang.id} onClick=${() => this.selectSuggestion(lang.id)}>${lang.ref_name}</div>`)}
         </div>
       </div>
-    `, this.#root);
+    `, this.root);
+
+    this.renderEdit();
   }
 
   onInput(event) {
@@ -73,7 +69,7 @@ class OBFieldLanguage extends OBField {
     } else {
       this.#suggestions = [];
     }
-    this.renderComponent();
+    this.refresh();
   }
 
   selectSuggestion(langId) {
@@ -90,16 +86,16 @@ class OBFieldLanguage extends OBField {
 
     if (lang) {
       // input field gets language name, but we track language ID to return when value is requested
-      this.#root.querySelector('input').value = lang.ref_name;
+      this.root.querySelector('input').value = lang.ref_name;
       this.#inputLangId = value;
     }
-    else if (this.#root.querySelector('input')) {
+    else if (this.root.querySelector('input')) {
       // set blank / null, language empty or not found
-      this.#root.querySelector('input').value = '';
+      this.root.querySelector('input').value = '';
       this.#inputLangId = null;
     }
 
-    this.renderComponent();
+    this.refresh();
   }
 }
 

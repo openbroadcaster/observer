@@ -1,36 +1,28 @@
-export class OBField extends HTMLElement {
+import { html, render } from '../vendor.js';
+import { OBElement } from '../base/element.js';
 
+export class OBField extends OBElement {
   async connectedCallback(renderComponent) {
-    if (renderComponent !== false && typeof (this.renderComponent) === 'function') await this.renderComponent();
+    if (renderComponent !== false) await this.renderComponent();
   }
 
-  // forward attributes from the custom element to the ref element
-  forwardAttributes(attributes, ref) {
-    attributes.forEach((attribute) => {
-      if (this.hasAttribute(attribute)) {
-        ref.setAttribute(attribute, this.getAttribute(attribute));
-      }
-    });
+  renderView() {
+    render(html`
+            ${this.value}
+        `, this.root);
   }
 
-  // forward events from the custom element to the ref element
-  // is this useful?
-  /*
-  forwardEvents(events, ref) {
-      events.forEach((event) => {
-          this.addEventListener(event, (e) => {
-              ref.dispatchEvent(new CustomEvent(event, { e }));
-          });
-      });
+  renderEdit() {
+    render(html`<input onChange=${this.handleChange} type="text" value="${this.value}" />`, this.root);
   }
-  */
 
-  // emit events from the ref element to the custom element
-  emitEvents(events, ref) {
-    events.forEach((event) => {
-      ref.addEventListener(event, (e) => {
-        this.dispatchEvent(new CustomEvent(event, { e }));
-      });
-    });
+  handleChange = (event) => {
+    this.value = event.target.value;
+  }
+
+  async renderComponent() {
+    const edit = this.hasAttribute('data-edit');
+    if (edit) this.renderEdit();
+    else this.renderView();
   }
 }

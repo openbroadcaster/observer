@@ -47,14 +47,21 @@ $image_files = $models->ui('image_files');
 $js_dependencies = [
   'node_modules/jquery/dist/jquery.min.js',
   'node_modules/jquery-migrate/dist/jquery-migrate.min.js'
-]
+];
 
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>OpenBroadcaster</title>
-
+  <script type="importmap">
+      {
+          "imports": {
+          "immutable": "./node_modules/immutable/dist/immutable.es.js",
+          "sass": "./node_modules/sass/sass.default.js"
+          }
+      }
+  </script>
 <?php
 foreach ($js_dependencies as $file) {
     echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime($file) . '"></script>' . PHP_EOL;
