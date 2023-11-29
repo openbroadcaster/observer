@@ -4,6 +4,12 @@
 
 @import "../../scss/all";
 
+html
+{
+    --field-background: #2e3436;
+    --field-color: #eeeeec;
+}
+
 body, 
 #main_container,
 #footer_box_left a,

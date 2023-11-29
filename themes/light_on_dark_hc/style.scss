@@ -6,6 +6,12 @@
 
 /* Light On Dark (High Contrast) Theme */
 
+html
+{
+    --field-background: #ffffff;
+    --field-color: #17171b;
+}
+
 body, 
 #main_container,
 #footer_box_left a,
