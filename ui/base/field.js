@@ -13,11 +13,24 @@ export class OBField extends OBElement {
   }
 
   renderEdit() {
-    render(html`<input onChange=${this.handleChange} type="text" value="${this.value}" />`, this.root);
+    render(html`<input id="input" type="text" />`, this.root);
   }
 
-  handleChange = (event) => {
-    this.value = event.target.value;
+  scss() {
+    return `
+        :host {
+            display: inline-block;
+        }
+    `;
+  }
+
+  get value() {
+    return this.root.querySelector('input').value;
+  }
+
+  set value(value) {
+    this.root.querySelector('input').value = value;
+    this.renderComponent();
   }
 
   async renderComponent() {

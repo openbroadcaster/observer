@@ -9,8 +9,6 @@ class OBFieldLanguage extends OBField {
   async connectedCallback() {
     if (OBFieldLanguage.languages === null) {
 
-      console.log('getting languages');
-
       // prevent multiple calls if this element appears twice in one form
       OBFieldLanguage.languages = {};
 
@@ -27,16 +25,19 @@ class OBFieldLanguage extends OBField {
     this.renderComponent();
   }
 
-  set value(id) {
-    console.log('setting value', id);
+  get value() {
+    return this.fieldSelect?.value;
   }
 
-  changeEvent(e) {
-    this.value = e.target.value;
+  set value(value) {
+    if (this.fieldSelect) {
+      this.fieldSelect.value = value;
+    }
+    else { console.log('language field not ready'); }
   }
 
   async renderEdit() {
-    render(html`<ob-field-select data-edit onChange=${this.changeEvent.bind(this)}></ob-field-select>`, this.root);
+    render(html`<ob-field-select data-edit></ob-field-select>`, this.root);
 
     // set our field options if we don't have them already
     this.fieldSelect = this.root.querySelector('ob-field-select');

@@ -6,13 +6,13 @@ class OBFieldSelect extends OBField {
     filterVal = '';
 
     addSelected(option) {
-        if (this.multiple && !this.value.includes(option)) {
+        if (this.multiple && !this.selected.includes(option)) {
             // add option to selected
-            this.value.push(option);
+            this.selected.push(option);
         }
 
         else if (!this.multiple) {
-            this.value = option;
+            this.selected = option;
         }
 
         // update selected and blur to hide dropdown
@@ -21,17 +21,17 @@ class OBFieldSelect extends OBField {
     }
 
     deleteSelected(option) {
-        // remove option from this.value
-        const index = this.value.indexOf(option);
+        // remove option from this.selected
+        const index = this.selected.indexOf(option);
         if (index > -1) {
-            this.value.splice(index, 1);
+            this.selected.splice(index, 1);
         }
 
         this.updateSelected();
     }
 
     updateSelected() {
-        if (this.value === undefined || this.value === null) {
+        if (this.selected === undefined || this.selected === null) {
             return;
         }
 
@@ -40,7 +40,7 @@ class OBFieldSelect extends OBField {
             this.root.querySelector('#input-selected-multiple').innerHTML = '';
 
             // create tags for each value
-            for (const option of this.value) {
+            for (const option of this.selected) {
                 // create tag and add it to input-selected
                 const tag = document.createElement('span');
                 tag.classList.add('tag');
@@ -55,13 +55,13 @@ class OBFieldSelect extends OBField {
             }
         }
         else {
-            this.root.querySelector('#input-selected').innerHTML = this.options[this.value] ?? '';
+            this.root.querySelector('#input-selected').innerHTML = this.options[this.selected] ?? '';
         }
 
         // emit change
         this.dispatchEvent(new CustomEvent('change', {
             detail: {
-                value: this.value
+                value: this.selected
             }
         }));
     }
@@ -191,17 +191,24 @@ class OBFieldSelect extends OBField {
             }`;
     }
 
+    get value() {
+        return this.selected;
+    }
+
+    set value(value) {
+        this.selected = value;
+        this.updateSelected();
+    }
+
     renderEdit() {
         // get options from data-options and json decode
         if (!this.options) this.options = JSON.parse(this.getAttribute('data-options'));
-        if (!this.value) this.value = JSON.parse(this.getAttribute('data-value'));
+        if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
         this.multiple = this.hasAttribute('data-multiple');
 
         if (!this.options) this.options = {};
-        if (!this.value && this.multiple) this.value = [];
-        if (!this.value && !this.multiple) this.value = '';
-
-
+        if (!this.selected && this.multiple) this.selected = [];
+        if (!this.selected && !this.multiple) this.selected = '';
 
         render(html`
             <div id="input" class="field" tabindex="0" onkeydown=${(e) => this.filter(e)} onblur=${(e) => this.filterReset()}>
@@ -217,15 +224,6 @@ class OBFieldSelect extends OBField {
     `, this.root);
 
         this.updateSelected();
-
-        // figure out selected and render
-        /*
-        for (const option of this.options) {
-            if (option == this.value || option.value == this.value) {
-                this.updateSelectedLabel(option);
-            }
-        }
-        */
     }
 
 }

@@ -113,12 +113,6 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
     if(OB.Settings.categories[i].is_default==1) $form.find('.category_field').val(OB.Settings.categories[i].id);
   }
 
-  // fill language list
-  for(var i in OB.Settings.languages)
-  {
-    $form.find('.language_field').append('<option value="'+OB.Settings.languages[i].language_id+'">'+htmlspecialchars(OB.t(OB.Settings.languages[i].ref_name))+'</option>');
-  }
-
   // fill country list
   for(var i in OB.Settings.countries)
   {
