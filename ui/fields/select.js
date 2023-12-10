@@ -170,6 +170,9 @@ class OBFieldSelect extends OBField {
             #input-selected-multiple:empty::after {
                 content: "\\00A0";
             }
+            #input-selected-multiple:empty::after {
+                padding: 4px 8px;
+            }
 
             #input-selected-multiple {
                 display: flex;
