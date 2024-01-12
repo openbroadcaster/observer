@@ -636,7 +636,8 @@ OB.Sidebar.mediaSearch = function(more)
     else OB.Sidebar.media_search_last_advanced = search_query;
 
     if(data.status!=false && media.length>0) {
-      $('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
+      // old jquery draggable event
+      /*$('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
         start: function(event, ui) {
 
           var keypress = null;
@@ -687,7 +688,9 @@ OB.Sidebar.mediaSearch = function(more)
 
         }
 
-      });
+      });*/
+      // new draggable attribute
+      $('.sidebar_search_media_result').not('[draggable]').attr('draggable', 'true');
 
       OB.Layout.tableFixedHeaders($('#sidebar_search_media_headings'),$('#sidebar_search_media_results'));
     }
