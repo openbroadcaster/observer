@@ -1,15 +1,15 @@
 import { html, render } from '../vendor.js'
 import { OBField } from '../base/field.js';
 
-class OBFieldMedia extends OBField {
+class OBFieldPlaylist extends OBField {
 
-    #mediaItems;
-    #mediaContent;
+    #playlistItems;
+    #playlistContent;
     #init;
 
     connectedCallback() {
-        this.#mediaItems = [];
-        this.#mediaContent = {};
+        this.#playlistItems = [];
+        this.#playlistContent = {};
 
         this.renderComponent();
 
@@ -23,12 +23,12 @@ class OBFieldMedia extends OBField {
 
     renderEdit() {
         render(html`
-            <div id="media" class="media-editable" 
+            <div id="playlist" class="playlist-editable" 
             onmouseup=${this.onMouseUp.bind(this)}>
-                ${this.#mediaItems.map((mediaItem) => html`
-                    <div class="media-item" data-id=${mediaItem}>
-                        ${this.#mediaContent[mediaItem]}
-                        <span class="media-item-remove" onclick=${this.mediaRemove.bind(this)}></span>
+                ${this.#playlistItems.map((playlistItem) => html`
+                    <div class="playlist-item" data-id=${playlistItem}>
+                        ${this.#playlistContent[playlistItem]}
+                        <span class="playlist-item-remove" onclick=${this.playlistRemove.bind(this)}></span>
                     </div>
                 `)}
             </div>
@@ -37,9 +37,9 @@ class OBFieldMedia extends OBField {
 
     renderView() {
         render(html`
-            <div id="media" class="media-viewable">
-                ${this.#mediaItems.map((mediaItem) => html`
-                    <div class="media-item" data-id=${mediaItem}>${this.#mediaContent[mediaItem]}</div>
+            <div id="playlist" class="playlist-viewable">
+                ${this.#playlistItems.map((playlistItem) => html`
+                    <div class="media-item" data-id=${playlistItem}>${this.#playlistContent[playlistItem]}</div>
                 `)}
             </div>
         `, this.root);
@@ -48,29 +48,29 @@ class OBFieldMedia extends OBField {
     scss() {
         return `
             :host {
-                #media:empty {
+                #playlist:empty {
                     border: 2px dashed #eeeeec;
                 }
 
-                .media-editable:empty::after {
-                    content: "Drop Media Here";
+                .playlist-editable:empty::after {
+                    content: "Drop Playlists Here";
                     display: block;
                     text-align: center;
                     line-height: 96px;
                 }
 
-                #media.media-editable.dragging {
+                #playlist.playlist-editable.dragging {
                     border: 2px dashed #e09529;
                 }
 
-                .media-viewable:empty::after {
-                    content: "No Media";
+                .playlist-viewable:empty::after {
+                    content: "No Playlists";
                     display: block;
                     text-align: center;
                     line-height: 96px;
                 }
 
-                #media {
+                #playlist {
                     box-sizing: border-box;
                     width: 350px;
                     max-width: 350px;
@@ -78,7 +78,7 @@ class OBFieldMedia extends OBField {
                     display: inline-block;
                 }
 
-                .media-item {
+                .playlist-item {
                     background-color: #eeeeec;
                     color: #000;
                     padding: 5px;
@@ -89,7 +89,7 @@ class OBFieldMedia extends OBField {
                     box-sizing: border-box;
                     max-width: 350px;
 
-                    .media-item-remove {
+                    .playlist-item-remove {
                         cursor: pointer;
                         padding-left: 10px;
                         padding-right:  10px;
@@ -99,7 +99,7 @@ class OBFieldMedia extends OBField {
                         right: 0;
                     }
 
-                    .media-item-remove::after {
+                    .playlist-item-remove::after {
                         content: "x";
                     }
                 }
@@ -108,7 +108,7 @@ class OBFieldMedia extends OBField {
     }
 
     onDragStart(event) {
-        let editable = this.root.querySelector("#media.media-editable");
+        let editable = this.root.querySelector("#playlist.playlist-editable");
 
         if  (! editable) {
             return false;
@@ -118,64 +118,64 @@ class OBFieldMedia extends OBField {
     }
 
     onDragEnd(event) {
-        let editable = this.root.querySelector("#media.media-editable");
+        let editable = this.root.querySelector("#playlist.playlist-editable");
 
         if (! editable) {
             return false;
         }
-
+        
         editable.classList.remove("dragging");
     }
 
     onMouseUp(event) {
-        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
             return false;
         }
-
-        var selectedMedia = this.#mediaItems;
+        
+        var selectedPlaylist = this.#playlistItems;
 
         Object.keys(window.dragHelperData).forEach((key) => {
             if (! window.dragHelperData[key].dataset) {
                 return false;
             }
 
-            if (selectedMedia.includes(parseInt(window.dragHelperData[key].dataset.id))) {
+            if (selectedPlaylist.includes(parseInt(window.dragHelperData[key].dataset.id))) {
                 return false;
             }
 
-            selectedMedia.push(parseInt(window.dragHelperData[key].dataset.id));
+            selectedPlaylist.push(parseInt(window.dragHelperData[key].dataset.id));
         });
 
-        this.#mediaItems = selectedMedia;
-        this.mediaContent().then(() => this.refresh());
+        this.#playlistItems = selectedPlaylist;
+        this.playlistContent().then(() => this.refresh());
     }
 
-    async mediaContent() {
-        return Promise.all(this.#mediaItems.map(async (mediaItem) => {
-            if (this.#mediaContent[mediaItem]) {
+    async playlistContent() {
+        return Promise.all(this.#playlistItems.map(async (playlistItem) => {
+            if (this.#playlistContent[playlistItem]) {
                 return;
             }
 
-            const result = await OB.API.postPromise('media', 'get', { id: mediaItem });
+            const result = await OB.API.postPromise('playlists', 'get', { id: playlistItem });
             if (!result.status) {
                 return;
             }
 
             const data = result.data;
-            this.#mediaContent[mediaItem] = data.artist + " - " + data.title;
+            this.#playlistContent[playlistItem] = data.name;
             this.refresh();
         }));
     }
 
-    mediaRemove(event) {
-        this.#mediaItems = this.#mediaItems.filter((item) => {
+    playlistRemove(event) {
+        this.#playlistItems = this.#playlistItems.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
-        this.mediaContent().then(() => this.refresh());
+        this.playlistContent().then(() => this.refresh());
     }
 
     get value() {
-        return this.#mediaItems;
+        return this.#playlistItems;
     }
 
     set value(value) {
@@ -189,9 +189,9 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        this.#mediaItems = value;
-        this.mediaContent().then(() => this.refresh());
+        this.#playlistItems = value;
+        this.playlistContent().then(() => this.refresh());
     }
 }
 
-customElements.define('ob-field-media', OBFieldMedia);
+customElements.define('ob-field-playlist', OBFieldPlaylist);

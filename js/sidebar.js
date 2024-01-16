@@ -995,12 +995,29 @@ OB.Sidebar.playlistSearch = function(more)
 
           $('.droppable_target_playlist').addClass('droppable_target_highlighted');
 
+          // dispatch dragstart to ob-field-playlist elements, since jquery overrides draggable
+          document.querySelectorAll('ob-field-playlist').forEach((element) => {
+            element.dispatchEvent(new Event("dragstart"));
+          });
+
         },
 
         stop: function(event, ui) {
           $('.droppable_target_playlist').removeClass('droppable_target_highlighted');
           OB.UI.dragHelperOff();
+
+          // dispatch dragend to ob-field-playlist elements, since jquery overrides draggable
+          document.querySelectorAll('ob-field-playlist').forEach((element) => {
+            element.dispatchEvent(new Event("dragend"));
+          });
         }
+      });
+      // new draggable attribute
+      document.querySelectorAll('.sidebar_search_playlist_result').forEach((element) => {
+        element.setAttribute('draggable', 'true');
+        element.addEventListener('dragstart', function (e) {
+          console.log("Dragging test");
+        });
       });
 
       OB.Layout.tableFixedHeaders($('#sidebar_search_playlist_headings'),$('#sidebar_search_playlist_results'));
