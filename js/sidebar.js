@@ -637,7 +637,7 @@ OB.Sidebar.mediaSearch = function(more)
 
     if(data.status!=false && media.length>0) {
       // old jquery draggable event
-      /*$('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
+      $('.sidebar_search_media_result').not('.ui-draggable').draggable({helper: 'clone',
         start: function(event, ui) {
 
           var keypress = null;
@@ -656,7 +656,7 @@ OB.Sidebar.mediaSearch = function(more)
           else var helper_html = htmlspecialchars(num_selected+' items');
 
           $(ui.helper).html('');
-          OB.UI.dragHelperOn(helper_html);
+          OB.UI.dragHelperOn(helper_html, $('.sidebar_search_media_selected'));
 
           var data_status = $(ui.helper).attr('data-status');
 
@@ -668,6 +668,11 @@ OB.Sidebar.mediaSearch = function(more)
 
           else if(data_status == 'archived')
             $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
+
+          // dispatch dragstart to ob-field-media elements, since jquery overrides draggable
+          document.querySelectorAll('ob-field-media').forEach((element) => {
+            element.dispatchEvent(new Event("dragstart"));
+          });
 
         },
 
@@ -686,11 +691,20 @@ OB.Sidebar.mediaSearch = function(more)
           else if(data_status == 'archived')
             $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
 
+          // dispatch dragend to ob-field-media elements, since jquery overrides draggable
+          document.querySelectorAll('ob-field-media').forEach((element) => {
+            element.dispatchEvent(new Event("dragend"));
+          });
         }
 
-      });*/
+      });
       // new draggable attribute
-      $('.sidebar_search_media_result').not('[draggable]').attr('draggable', 'true');
+      document.querySelectorAll('.sidebar_search_media_result').forEach((element) => {
+        element.setAttribute('draggable', 'true');
+        element.addEventListener('dragstart', function (e) {
+          console.log("Dragging test");
+        });
+      });
 
       OB.Layout.tableFixedHeaders($('#sidebar_search_media_headings'),$('#sidebar_search_media_results'));
     }
@@ -977,7 +991,7 @@ OB.Sidebar.playlistSearch = function(more)
           else var helper_html = htmlspecialchars(num_selected+' items');
 
           $(ui.helper).html('');
-          OB.UI.dragHelperOn(helper_html);
+          OB.UI.dragHelperOn(helper_html, $('.sidebar_search_playlist_selected'));
 
           $('.droppable_target_playlist').addClass('droppable_target_highlighted');
 

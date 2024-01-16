@@ -5,6 +5,7 @@ class OBFieldMedia extends OBField {
 
     #mediaItems;
     #mediaContent;
+    #init;
 
     connectedCallback() {
         this.#mediaItems = [];
@@ -12,15 +13,18 @@ class OBFieldMedia extends OBField {
 
         this.renderComponent();
 
-        document.addEventListener("dragstart", this.onDragStart.bind(this));
-        document.addEventListener("dragend", this.onDragEnd.bind(this))
+        if (!this.#init) {
+            this.#init = true;
+
+            this.addEventListener("dragstart", this.onDragStart.bind(this));
+            this.addEventListener("dragend", this.onDragEnd.bind(this));
+        }
     }
 
     renderEdit() {
         render(html`
             <div id="media" class="media-editable" 
-            ondragover=${this.onDragOver.bind(this)}
-            ondrop=${this.onDrop.bind(this)}>
+            onmouseup=${this.onMouseUp.bind(this)}>
                 ${this.#mediaItems.map((mediaItem) => html`
                     <div class="media-item" data-id=${mediaItem}>
                         ${this.#mediaContent[mediaItem]}
@@ -103,24 +107,7 @@ class OBFieldMedia extends OBField {
         `;
     }
 
-    onDragOver(event) {
-        event.preventDefault();
-    }
-
     onDragStart(event) {
-        // Remove other selected elements if the element hasn't already been selected AND 
-        // shift or ctrl isn't being held down.
-        if (! event.target.classList.contains("sidebar_search_media_selected") && ! event.shiftKey && ! event.ctrlKey) {
-            document.querySelectorAll(".sidebar_search_media_selected").forEach((element) => {
-                element.classList.remove("sidebar_search_media_selected");
-            });
-        }
-
-        // Add item currently being dragged to selected media items.
-        if (event.target.classList.contains("sidebar_search_media_result")) {
-            event.target.classList.add("sidebar_search_media_selected");
-        }
-
         let editable = this.root.querySelector("#media.media-editable");
         editable.classList.add("dragging");
     }
@@ -130,17 +117,23 @@ class OBFieldMedia extends OBField {
         editable.classList.remove("dragging");
     }
 
-    onDrop(event) {
-        event.preventDefault();
+    onMouseUp(event) {
+        if (! window.dragHelperData) {
+            return false;
+        }
 
         var selectedMedia = this.#mediaItems;
 
-        document.querySelectorAll(".sidebar_search_media_selected").forEach((element) => {
-            if (selectedMedia.includes(parseInt(element.dataset.id))) {
+        Object.keys(window.dragHelperData).forEach((key) => {
+            if (! window.dragHelperData[key].dataset) {
                 return false;
             }
-            
-            selectedMedia.push(parseInt(element.dataset.id));
+
+            if (selectedMedia.includes(parseInt(window.dragHelperData[key].dataset.id))) {
+                return false;
+            }
+
+            selectedMedia.push(parseInt(window.dragHelperData[key].dataset.id));
         });
 
         this.#mediaItems = selectedMedia;
@@ -153,8 +146,8 @@ class OBFieldMedia extends OBField {
                 return;
             }
 
-            const result = await OB.API.postPromise('media', 'get', {id: mediaItem});
-            if (! result.status) {
+            const result = await OB.API.postPromise('media', 'get', { id: mediaItem });
+            if (!result.status) {
                 return;
             }
 
@@ -176,13 +169,13 @@ class OBFieldMedia extends OBField {
     }
 
     set value(value) {
-        if (! Array.isArray(value)) {
+        if (!Array.isArray(value)) {
             return false;
         }
 
         value = value.map((x) => parseInt(x));
 
-        if (! value.every(Number.isInteger)) {
+        if (!value.every(Number.isInteger)) {
             return false;
         }
 
