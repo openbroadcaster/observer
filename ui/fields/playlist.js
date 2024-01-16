@@ -146,8 +146,7 @@ class OBFieldPlaylist extends OBField {
             selectedPlaylist.push(parseInt(window.dragHelperData[key].dataset.id));
         });
 
-        this.#playlistItems = selectedPlaylist;
-        this.playlistContent().then(() => this.refresh());
+        this.value = selectedPlaylist;
     }
 
     async playlistContent() {

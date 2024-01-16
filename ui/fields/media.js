@@ -23,7 +23,7 @@ class OBFieldMedia extends OBField {
 
     renderEdit() {
         render(html`
-            <div id="media" class="media-editable" 
+            <div id="media" class="media-editable" data-single="${this.dataset.hasOwnProperty('single')}"
             onmouseup=${this.onMouseUp.bind(this)}>
                 ${this.#mediaItems.map((mediaItem) => html`
                     <div class="media-item" data-id=${mediaItem}>
@@ -59,6 +59,10 @@ class OBFieldMedia extends OBField {
                     line-height: 96px;
                 }
 
+                .media-editable[data-single="true"]:empty::after {
+                    content: "Drop Media Here (Single)";
+                }
+
                 #media.media-editable.dragging {
                     border: 2px dashed #e09529;
                 }
@@ -68,6 +72,10 @@ class OBFieldMedia extends OBField {
                     display: block;
                     text-align: center;
                     line-height: 96px;
+                }
+               
+                .media-viewable[data-single="true"]:empty::after {
+                    content: "No Media (Single)";
                 }
 
                 #media {
@@ -146,8 +154,7 @@ class OBFieldMedia extends OBField {
             selectedMedia.push(parseInt(window.dragHelperData[key].dataset.id));
         });
 
-        this.#mediaItems = selectedMedia;
-        this.mediaContent().then(() => this.refresh());
+        this.value = selectedMedia;
     }
 
     async mediaContent() {
@@ -187,6 +194,10 @@ class OBFieldMedia extends OBField {
 
         if (!value.every(Number.isInteger)) {
             return false;
+        }
+
+        if (this.dataset.hasOwnProperty('single')) {
+            value = value.slice(-1);
         }
 
         this.#mediaItems = value;
