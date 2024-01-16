@@ -23,7 +23,9 @@ class OBFieldMedia extends OBField {
 
     renderEdit() {
         render(html`
-            <div id="media" class="media-editable" data-single="${this.dataset.hasOwnProperty('single')}"
+            <div id="media" class="media-editable" 
+            data-single="${this.dataset.hasOwnProperty('single')}"
+            data-record="${this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')}"
             onmouseup=${this.onMouseUp.bind(this)}>
                 ${this.#mediaItems.map((mediaItem) => html`
                     <div class="media-item" data-id=${mediaItem}>
@@ -32,6 +34,11 @@ class OBFieldMedia extends OBField {
                     </div>
                 `)}
             </div>
+            ${
+                (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
+                ? html`<span class="media-record"><span class="button-record">⏺️</span><span class="button-stop">⏹️</span></span>`
+                : html``
+            }
         `, this.root);
     }
 
@@ -63,8 +70,27 @@ class OBFieldMedia extends OBField {
                     content: "Drop Media Here (Single)";
                 }
 
+                .media-editable[data-record="true"]:empty::after {
+                    content: "Drop Media Here or Press Record";
+                }
+
                 #media.media-editable.dragging {
                     border: 2px dashed #e09529;
+                }
+
+                .media-record {
+                    position: relative;
+                    right:48px;
+                    top: 32px;
+                    
+                    .button-record, .button-stop {
+                        filter: hue-rotate(180deg) brightness(1);
+                        cursor: pointer;
+                        
+                        &:hover {
+                            filter: hue-rotate(180deg) brightness(2);
+                        }
+                    }
                 }
 
                 .media-viewable:empty::after {
