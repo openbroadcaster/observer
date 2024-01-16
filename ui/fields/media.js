@@ -109,11 +109,21 @@ class OBFieldMedia extends OBField {
 
     onDragStart(event) {
         let editable = this.root.querySelector("#media.media-editable");
+
+        if  (! editable) {
+            return false;
+        }
+
         editable.classList.add("dragging");
     }
 
     onDragEnd(event) {
         let editable = this.root.querySelector("#media.media-editable");
+
+        if (! editable) {
+            return false;
+        }
+        
         editable.classList.remove("dragging");
     }
 
