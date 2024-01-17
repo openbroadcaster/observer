@@ -73,7 +73,8 @@ class OBFieldMedia extends OBField {
             </div>
             ${
                 (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
-                ? html`<span class="media-record">
+                ? html`<span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
+                    <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
                     <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
                     <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
                 </span>`
@@ -119,7 +120,7 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-editable[data-record="true"][data-status="cached"]::after {
-                    content: "Recorded Media. Click to save.";
+                    //content: "Recorded Media. Click to save.";
                 }
 
                 #media.media-editable.dragging {
@@ -128,16 +129,56 @@ class OBFieldMedia extends OBField {
 
                 .media-record {
                     position: relative;
-                    right:48px;
+                    right: 48px;
                     top: 32px;
-                    
-                    .button-record, .button-stop {
+                }
+
+                .media-record[data-status="none"] {
+                    right: 30px; 
+
+                    .button-save, .button-stop {
+                        display: none;
+                    }
+
+                    .button-record {
                         filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
                         
                         &:hover {
                             filter: hue-rotate(180deg) brightness(2);
                         }
+                    }
+                }
+
+                .media-record[data-status="recording"] {
+                    right: 30px; 
+
+                    .button-record, .button-save {
+                        display: none;
+                    }
+
+                    .button-stop {
+                        filter: hue-rotate(180deg) brightness(1);
+                        cursor: pointer;
+
+                        &:hover {
+                            filter: hue-rotate(180deg) brightness(2);
+                        }
+                    }
+                }
+
+                .media-record[data-status="cached"] {
+                    .button-save, .button-record {
+                        filter: hue-rotate(180deg) brightness(1);
+                        cursor: pointer;
+                        
+                        &:hover {
+                            filter: hue-rotate(180deg) brightness(2);
+                        }
+                    }
+
+                    .button-stop {
+                        display: none;
                     }
                 }
 
@@ -280,6 +321,10 @@ class OBFieldMedia extends OBField {
             this.refresh();
         }
         this.#mediaRecorder.stop();
+    }
+
+    mediaRecordSave(event) {
+        console.log("TODO");
     }
 
     get value() {
