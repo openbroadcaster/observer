@@ -324,7 +324,48 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRecordSave(event) {
-        console.log("TODO");
+        if (this.dataset.status !== "cached") {
+            return false;
+        }
+
+        const blob = new Blob(this.#recordData, { type: this.#mediaRecorder.mimeType });
+        fetch('/upload.php', {
+            method: 'POST',
+            body: blob
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            const fileKey = data.file_key;
+            const fileId  = data.file_id;
+            const date    = new Date();
+            const dateStr = date.getFullYear() + "-" + ('0' + date.getMonth() + 1).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+
+            const media = OB.API.postPromise('media', 'save', {
+                media: {
+                    0: {
+                        file_id: fileId,
+                        file_key: fileKey,
+                        artist: OB.Account.userdata.display_name,
+                        title: "Media Field Recording " + dateStr,
+                        local_id: 1,
+                        status: "private",
+                        language: 25571,
+                        is_copyright_owner: 1,
+                        is_approved: 1,
+                        dynamic_select: 0
+                    }
+                }
+            });
+            media.then((data) => {
+                if (! data.status) {
+                    console.error(msg);
+                } else {
+                    this.value = data.data;
+                }
+            });
+        }).catch((error) => {
+            console.error(error);
+        });
     }
 
     get value() {
