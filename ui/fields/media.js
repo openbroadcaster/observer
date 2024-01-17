@@ -5,11 +5,20 @@ class OBFieldMedia extends OBField {
 
     #mediaItems;
     #mediaContent;
+
+    #mediaRecorder;
+    #recordData;
+    #recordUrl;
+
     #init;
 
     connectedCallback() {
-        this.#mediaItems = [];
-        this.#mediaContent = {};
+        this.#mediaItems    = [];
+        this.#mediaContent  = {};
+
+        this.#recordData    = [];
+        this.#recordUrl     = "";
+        this.#mediaRecorder = null;
 
         this.renderComponent();
 
@@ -18,6 +27,28 @@ class OBFieldMedia extends OBField {
 
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
+
+            if (this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) {
+                if (navigator.mediaDevices.getUserMedia) {
+                    var self = this;
+                    let onSuccess = function (stream) {
+                        self.#mediaRecorder = new MediaRecorder(stream);
+                        self.#mediaRecorder.ondataavailable = function (e) {
+                            self.#recordData.push(e.data);
+                        }
+                    }
+
+                    let onError = function (stream) {
+                        // TODO: Update element look
+                        console.error(`The following getUserMedia error occurred: ${err}`);
+                    }
+
+                    this.#mediaRecorder = navigator.mediaDevices.getUserMedia({audio: true}).then(onSuccess, onError);
+                } else {
+                    // TODO: Update element look.
+                    console.error('getUserMedia not supported on your browser!');
+                }
+            }
         }
     }
 
@@ -26,6 +57,7 @@ class OBFieldMedia extends OBField {
             <div id="media" class="media-editable" 
             data-single="${this.dataset.hasOwnProperty('single')}"
             data-record="${this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')}"
+            data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}"
             onmouseup=${this.onMouseUp.bind(this)}>
                 ${this.#mediaItems.map((mediaItem) => html`
                     <div class="media-item" data-id=${mediaItem}>
@@ -33,10 +65,18 @@ class OBFieldMedia extends OBField {
                         <span class="media-item-remove" onclick=${this.mediaRemove.bind(this)}></span>
                     </div>
                 `)}
+                ${
+                    this.dataset.status === "cached"
+                    ? html`<audio id="audio" controls src=${this.#recordUrl}></audio>`
+                    : html``
+                }
             </div>
             ${
                 (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
-                ? html`<span class="media-record"><span class="button-record">⏺️</span><span class="button-stop">⏹️</span></span>`
+                ? html`<span class="media-record">
+                    <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
+                    <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
+                </span>`
                 : html``
             }
         `, this.root);
@@ -72,6 +112,14 @@ class OBFieldMedia extends OBField {
 
                 .media-editable[data-record="true"]:empty::after {
                     content: "Drop Media Here or Press Record";
+                }
+
+                .media-editable[data-record="true"][data-status="recording"]::after {
+                    content: "Recording...";
+                }
+
+                .media-editable[data-record="true"][data-status="cached"]::after {
+                    content: "Recorded Media. Click to save.";
                 }
 
                 #media.media-editable.dragging {
@@ -207,6 +255,33 @@ class OBFieldMedia extends OBField {
         this.mediaContent().then(() => this.refresh());
     }
 
+    mediaRecordStart(event) {
+        if (this.#mediaRecorder.state !== "inactive") {
+            return false;
+        }
+
+        this.#recordData = [];
+        this.dataset.status = "recording";
+        this.#mediaRecorder.start();
+        this.refresh();
+    }
+
+    mediaRecordStop(event) {
+        if (this.#mediaRecorder.state !== "recording") {
+            return false;
+        }
+
+        this.#mediaRecorder.onstop = () => {
+            const blob = new Blob(this.#recordData, { type: this.#mediaRecorder.mimeType });
+            const audioURL = window.URL.createObjectURL(blob);
+            this.#recordUrl = audioURL;
+
+            this.dataset.status = "cached";
+            this.refresh();
+        }
+        this.#mediaRecorder.stop();
+    }
+
     get value() {
         return this.#mediaItems;
     }
@@ -225,6 +300,10 @@ class OBFieldMedia extends OBField {
         if (this.dataset.hasOwnProperty('single')) {
             value = value.slice(-1);
         }
+
+        this.dataset.status = "none";
+        this.#recordUrl = "";
+        this.#recordData = [];
 
         this.#mediaItems = value;
         this.mediaContent().then(() => this.refresh());
