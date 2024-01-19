@@ -360,7 +360,7 @@ class OBFieldMedia extends OBField {
             });
             media.then((data) => {
                 if (! data.status) {
-                    console.error(msg);
+                    console.error(data.msg);
                 } else {
                     this.value = data.data;
                 }
