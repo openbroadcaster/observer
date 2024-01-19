@@ -303,10 +303,17 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        this.#recordData = [];
-        this.dataset.status = "recording";
-        this.#mediaRecorder.start();
-        this.refresh();
+        if (this.dataset.status === "cached") {
+            OB.UI.confirm("Are you sure you want to overwrite the existing recording?", () => {
+                this.dataset.status = "none";
+                this.mediaRecordStart(event);
+            }, "Yes", "No");
+        } else {
+            this.#recordData = [];
+            this.dataset.status = "recording";
+            this.#mediaRecorder.start();
+            this.refresh();
+        }
     }
 
     mediaRecordStop(event) {
