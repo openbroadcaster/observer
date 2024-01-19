@@ -129,12 +129,14 @@ class OBFieldMedia extends OBField {
 
                 .media-record {
                     position: relative;
-                    right: 48px;
+                    right: 60px;
                     top: 32px;
+
+                    font-size: 22px;
                 }
 
                 .media-record[data-status="none"] {
-                    right: 30px; 
+                    right: 36px; 
 
                     .button-save, .button-stop {
                         display: none;
@@ -151,7 +153,7 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-record[data-status="recording"] {
-                    right: 30px; 
+                    right: 36px; 
 
                     .button-record, .button-save {
                         display: none;
