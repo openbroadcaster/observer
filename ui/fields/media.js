@@ -292,10 +292,10 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRemove(event) {
-        this.#mediaItems = this.#mediaItems.filter((item) => {
+        const newItems = this.#mediaItems.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
-        this.mediaContent().then(() => this.refresh());
+        this.value = newItems;
     }
 
     mediaRecordStart(event) {
@@ -401,7 +401,12 @@ class OBFieldMedia extends OBField {
         this.#recordData = [];
 
         this.#mediaItems = value;
-        this.mediaContent().then(() => this.refresh());
+        this.mediaContent().then(() => {
+            this.#mediaItems = this.#mediaItems.filter((item) => {
+                return Object.keys(this.#mediaContent).includes(item.toString());
+            });
+            this.refresh();
+        });
     }
 }
 

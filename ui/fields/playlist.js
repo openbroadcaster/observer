@@ -167,10 +167,10 @@ class OBFieldPlaylist extends OBField {
     }
 
     playlistRemove(event) {
-        this.#playlistItems = this.#playlistItems.filter((item) => {
+        const newItems = this.#playlistItems.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
-        this.playlistContent().then(() => this.refresh());
+        this.value = newItems;
     }
 
     get value() {
@@ -189,7 +189,12 @@ class OBFieldPlaylist extends OBField {
         }
 
         this.#playlistItems = value;
-        this.playlistContent().then(() => this.refresh());
+        this.playlistContent().then(() => {
+            this.#playlistItems = this.#playlistItems.filter((item) => {
+                return Object.keys(this.#playlistContent).includes(item.toString());
+            });
+            this.refresh();
+        });
     }
 }
 
