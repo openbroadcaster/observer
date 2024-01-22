@@ -292,11 +292,13 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
     if($('#playlist_type_input').val()=='standard')
     {
       $('#audio_properties_crossfade').val($('#playlist_addedit_item_'+id).attr('data-crossfade'));
+      $('#audio_properties_voicetrack').val([$('#playlist_addedit_item_'+id).attr('data-voicetrack')]);
     }
 
     else // advanced
     {
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
+        $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
     }
   }
 
@@ -361,6 +363,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       if($('#playlist_type_input').val()=='standard')
       {
         $('#playlist_addedit_item_'+id).attr('data-crossfade', $('#audio_properties_crossfade').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack', $('#audio_properties_voicetrack').val());
         OB.UI.closeModalWindow();
       }
 
@@ -368,6 +371,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       else
       {
         OB.Playlist.advanced_items[id].crossfade = $('#audio_properties_crossfade').val();
+        OB.Playlist.advanced_items[id].voicetrack = $('#audio_properties_voicetrack').val()[0];
         OB.UI.closeModalWindow();
       }
     }

@@ -336,8 +336,14 @@ class Playlists extends OBFController
                 }
 
                 // audio properties
-                if ($media['type'] == 'audio' && ($item['crossfade'] ?? false)) {
-                    $properties['crossfade'] = (float) $item['crossfade'];
+                if ($media['type'] == 'audio') {
+                    if ($item['crossfade'] ?? false) {
+                        $properties['crossfade'] = (float) $item['crossfade'];
+                    }
+
+                    if ($item['voicetrack'] ?? false) {
+                        $properties['voicetrack'] = (int) $item['voicetrack'];
+                    }
                 }
 
                 // set properties
