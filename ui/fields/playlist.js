@@ -23,7 +23,8 @@ class OBFieldPlaylist extends OBField {
 
     renderEdit() {
         render(html`
-            <div id="playlist" class="playlist-editable" 
+            <div id="playlist" class="playlist-editable"
+            data-single="${this.dataset.hasOwnProperty('single')}"
             onmouseup=${this.onMouseUp.bind(this)}>
                 ${this.#playlistItems.map((playlistItem) => html`
                     <div class="playlist-item" data-id=${playlistItem}>
@@ -57,6 +58,10 @@ class OBFieldPlaylist extends OBField {
                     display: block;
                     text-align: center;
                     line-height: 96px;
+                }
+
+                .playlist-editable[data-single="true"]:empty::after {
+                    content: "Drop Playlist Here";
                 }
 
                 #playlist.playlist-editable.dragging {
@@ -186,6 +191,10 @@ class OBFieldPlaylist extends OBField {
 
         if (!value.every(Number.isInteger)) {
             return false;
+        }
+
+        if (this.dataset.hasOwnProperty('single')) {
+            value = value.slice(-1);
         }
 
         this.#playlistItems = value;
