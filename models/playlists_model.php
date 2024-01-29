@@ -731,6 +731,15 @@ class PlaylistsModel extends OBFModel
                     }
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Media';
+                    if (isset($playlist_item['properties']['voicetrack'])) {
+                        $voicetrack = $this->models->media('get_by_id', ['id' => $playlist_item['properties']['voicetrack']]);
+                        if ($voicetrack) {
+                            $tmp['voicetrack'] = [
+                                'id'         => $voicetrack['id'],
+                                'duration'   => $voicetrack['duration'],
+                            ];
+                        }
+                    }
                     $media_items_tmp[] = $tmp;
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {
