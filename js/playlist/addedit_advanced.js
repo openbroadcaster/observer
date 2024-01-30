@@ -142,6 +142,11 @@ OB.Playlist.advancedGetItems = function()
     new_item.type = 'media';
     new_item.id = item.id;
     new_item.duration = item.duration;
+    
+    if (item.voicetrack) {
+      new_item.voicetrack = item.voicetrack;
+    }
+    console.log(new_item);
 
     items.push(new_item);
   });
@@ -152,6 +157,13 @@ OB.Playlist.advancedGetItems = function()
 // add item. we can skip display refresh if adding a bunch and not wanting to refresh until the end.
 OB.Playlist.advancedAddItem = function(item,skip_display)
 {
+  if (item.properties) {
+    item.voicetrack = item.properties.voicetrack;
+    item.crossfade = item.properties.crossfade;
+
+    delete item.properties;
+  }
+
   OB.Playlist.advanced_items.push(item);
   if(!skip_display) OB.Playlist.advancedItemsDisplay();
 }

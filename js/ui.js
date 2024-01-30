@@ -50,9 +50,10 @@ OB.UI.initLayout = function()
   $(window).resize(OB.UI.domChangeCallback);
 }
 
-OB.UI.dragHelperOn = function(html)
+OB.UI.dragHelperOn = function(html, data)
 {
   $('#drag_helper').html(html).addClass('active');
+  window.dragHelperData = data;
 }
 
 OB.UI.dragHelperOff = function()
@@ -62,6 +63,7 @@ OB.UI.dragHelperOff = function()
     'left': '-1000px',
     'top': '-1000px'
   });
+  window.dragHelperData = null;
 }
 
 OB.UI.dragHelperMove = function(e)

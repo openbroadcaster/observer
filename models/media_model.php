@@ -76,6 +76,19 @@ class MediaModel extends OBFModel
                 return $return;
             }
 
+            // if it's a webm file, it's probably headerless on account of MediaRecorder not including these by
+            // default when uploading a blob (a problem on Chrome in particular), so we need to add them back in.
+            // this can be done by copying the file with ffmpeg, which automatically adds the headers.
+            if ($mediainfo->format->format_name == 'matroska,webm') {
+                shell_exec('mv ' . escapeshellarg($args['filename']) . ' ' . escapeshellarg($args['filename']) . 'webm');
+                shell_exec('ffmpeg -i ' . escapeshellarg($args['filename']) . 'webm -vcodec copy -acodec copy ' . escapeshellarg($args['filename']) . '-header.webm');
+                shell_exec('mv ' . escapeshellarg($args['filename']) . '-header.webm ' . escapeshellarg($args['filename']));
+                shell_exec('rm ' . escapeshellarg($args['filename']) . 'webm');
+
+                $mediainfo = json_decode(shell_exec('avprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                $mediainfo->format->format_name = 'webm';
+            }
+
             // if missing information or duration is zero, not valid.
             if (empty($mediainfo->streams) || empty($mediainfo->format) || empty($mediainfo->format->duration)) {
                 return $return;
@@ -97,7 +110,7 @@ class MediaModel extends OBFModel
             $has_video_stream = false;
             $has_audio_stream = false;
 
-            $possibly_audio = array_search($mediainfo->format->format_name, array('flac','mp3','ogg','wav')) !== false || $mediainfo->format->format_long_name == 'QuickTime / MOV';
+            $possibly_audio = array_search($mediainfo->format->format_name, array('flac','mp3','ogg','webm','wav')) !== false || $mediainfo->format->format_long_name == 'QuickTime / MOV';
 
             foreach ($mediainfo->streams as $stream) {
                 if (!isset($stream->codec_name) || !isset($stream->codec_type)) {
@@ -153,6 +166,10 @@ class MediaModel extends OBFModel
 
                         case 'wav':
                             $return['format'] = 'wav';
+                            break;
+
+                        case 'webm':
+                            $return['format'] = 'webm';
                             break;
                     }
                 }
@@ -2076,7 +2093,7 @@ class MediaModel extends OBFModel
         // list of valid formats...
         $valid_video_formats = array('avi','mpg','ogg','wmv','mov');
         $valid_image_formats = array('jpg','png','svg');
-        $valid_audio_formats = array('flac','mp3','ogg','mp4','wav');
+        $valid_audio_formats = array('flac','mp3','ogg','webm','mp4','wav');
 
         // verify image formats
         if (!is_array($video_formats) || !is_array($image_formats) || !is_array($audio_formats)) {

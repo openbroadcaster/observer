@@ -306,8 +306,9 @@ class Remote
             } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
                 $playlist = $this->db->get_one('playlists');
+                $voicetrackxml = $showxml->addChild('voicetrack');
                 $showxml->addChild('description', $playlist['description']);
-
+                
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
                 if (empty($timeslot)) {
                     $showxml->addChild('name', $playlist['name']);
@@ -429,6 +430,11 @@ class Remote
                 $itemxml = $mediaxml->addChild('item');
                 $media_item['context'] = 'show';
                 $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
+
+                if (isset($media_item['voicetrack'])) {
+                    $voicetrackitemxml = $voicetrackxml->addChild('item');
+                    $this->voicetrack_item_xml($voicetrackitemxml, (array) $media_item['voicetrack'], $order_count, $media_offset);
+                }
 
                 if ($show['type'] == 'standard' || $show['type'] == 'live_assist') {
                     $media_offset += ($media_item['duration'] ?? 0) - ($media_item['crossfade'] ?? 0);
@@ -652,6 +658,45 @@ class Remote
         return $new_items;
     }
 
+    private function voicetrack_item_xml(&$itemxml, $track, $ord = false, $offset = false)
+    {
+        $voicetrack = $this->MediaModel('get_by_id', ['id' => $track['id']]);
+        if (! $voicetrack) {
+            return false;
+        }
+        
+        $itemxml->addChild('duration', $track['duration']);
+        if ($ord !== false) {
+            $itemxml->addChild('order', $ord);
+        }
+        if ($offset !== false) {
+            $itemxml->addChild('offset', $offset);
+        } 
+
+        if (! empty($voicetrack['is_archived'])) {
+            $filerootdir = OB_MEDIA_ARCHIVE;
+        } elseif (! empty($voicetrack['is_approved'])) {
+            $filerootdir = OB_MEDIA;
+        } else {
+            $filerootdir = OB_MEDIA_UPLOADS;
+        }
+        $fullfilepath = $filerootdir . '/' . $voicetrack['file_location'][0] . '/' . $voicetrack['file_location'][1] . '/' . $voicetrack['filename'];
+
+        $filesize = filesize($fullfilepath);
+        $itemxml->addChild('id', $track['id']);
+        $itemxml->addChild('filename', htmlspecialchars($voicetrack['filename']));
+        $itemxml->addChild('title', htmlspecialchars($voicetrack['title']));
+        $itemxml->addChild('artist', htmlspecialchars($voicetrack['artist']));
+        $itemxml->addChild('hash', $voicetrack['file_hash']);
+        $itemxml->addChild('filesize', $filesize);
+        $itemxml->addChild('location', $voicetrack['file_location']);
+        $itemxml->addChild('archived', $voicetrack['is_archived']);
+        $itemxml->addChild('approved', $voicetrack['is_approved']);
+        if (isset($voicetrack['thumbnail'])) $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
+
+        return true;
+    }
+
     private function media_item_xml(&$itemxml, $track, $ord = false, $offset = false)
     {
         // special handling for 'breakpoint' (not really a media item, more of an instruction).
@@ -708,7 +753,7 @@ class Remote
             $itemxml->addChild('location', $media['file_location']);
             $itemxml->addChild('archived', $media['is_archived']);
             $itemxml->addChild('approved', $media['is_approved']);
-            $itemxml->addChild('thumbnail', $media['thumbnail']);
+            if (isset($media['thumbnail'])) $itemxml->addChild('thumbnail', $media['thumbnail']);
             $itemxml->addChild('context', $track['context']);
             if ($track['crossfade'] ?? null) {
                 $itemxml->addChild('crossfade', $track['crossfade']);

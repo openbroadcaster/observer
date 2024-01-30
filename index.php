@@ -52,6 +52,22 @@ $js_dependencies = [
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+      /*
+        // List of events to monitor
+        var eventsToMonitor = ['mousedown', 'mouseup', 'click', 'dragstart', 'drag', 'dragend'];
+
+        // Function to handle logging
+        function logEvent(event) {
+            console.log('Event:', event.type, 'on element:', event.target);
+        }
+
+        // Attaching event listeners
+        eventsToMonitor.forEach(function(eventType) {
+            document.addEventListener(eventType, logEvent, true); // using capture phase
+        });
+      */
+  </script>
   <meta charset="utf-8">
   <title>OpenBroadcaster</title>
   <script type="importmap">
@@ -70,10 +86,10 @@ foreach ($js_dependencies as $file) {
 // get a recursive list of files in "ui" and add them as js modules
 $jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('ui'));
 foreach ($jsModuleIterator as $file) {
-    if($file->getExtension() !== 'js') {
+    if ($file->getExtension() !== 'js') {
         continue;
     }
-    echo '<script type="module" src="/' . $file->getPathname() . '?v='. filemtime($file->getPathname()).'"></script>'.PHP_EOL;
+    echo '<script type="module" src="/' . $file->getPathname() . '?v=' . filemtime($file->getPathname()) . '"></script>' . PHP_EOL;
 }
 ?>
   <script type="text/javascript" src="extras/jquery-ui.min.js?v=<?=filemtime('extras/jquery-ui.min.js')?>"></script>

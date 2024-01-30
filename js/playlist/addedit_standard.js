@@ -140,7 +140,15 @@ OB.Playlist.addeditInsertItem = function(id,description,duration,type,properties
     .append($('<span></span>').text(duration_text).addClass('playlist_addedit_duration'))
   );
   //'+htmlspecialchars(description)+'<span class="playlist_addedit_duration">'+duration_text+'</span></div>');
-  if(properties && properties['crossfade']) $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-crossfade', properties['crossfade']);
+  if (properties) {
+    if (properties['crossfade']) {
+      $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-crossfade', properties['crossfade']);
+    }
+
+    if (properties['voicetrack']) {
+      $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-voicetrack', properties['voicetrack']);
+    }
+  }
 
   $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-duration',duration);
 
@@ -343,7 +351,8 @@ OB.Playlist.addeditGetItems = function()
       'type': 'media',
       'id': $(element).attr('data-id'),
       'duration': $(element).attr('data-duration'),
-      'crossfade': $(element).attr('data-crossfade')
+      'crossfade': $(element).attr('data-crossfade'),
+      'voicetrack': $(element).attr('data-voicetrack')
     });
 
   });
