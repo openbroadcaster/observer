@@ -143,8 +143,8 @@ class UploadsModel extends OBFModel
 
         // Only allow specific image formats in the header.
         $ext = strtolower(explode(';', explode('/', $header)[1])[0]);
-        if (! in_array($ext, ['jpg', 'jpeg', 'png'])) {
-            return [false, 'Only JPEG and PNG images are allowed as thumbnails.'];
+        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            return [false, 'Only JPEG, PNG, and WEBP images are allowed as thumbnails.'];
         }
 
         // Save thumbnail. Delete any previously saved thumbnail first.
