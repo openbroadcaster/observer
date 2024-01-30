@@ -3,25 +3,51 @@
 <div>
 
 <fieldset>
-<legend data-t>Audio Properties</legend>
+  <legend data-t>Audio Properties</legend>
+  
+  <div class="fieldrow" hidden>
+    <label class="required" data-t>Crossfade With Next</label>
+    <input type="number" min="0" max="30" value="0" step="0.1" id="audio_properties_crossfade"> <span data-t>seconds</span>
+  </div>
+  
+</fieldset>
+    
 
-<div class="fieldrow">
-  <label data-t>Voice Track</label>
-  <ob-field-media id="audio_properties_voicetrack" type="audio" data-edit data-single data-record></ob-field-media>
-</div>
+<fieldset>
+  <legend data-t>Voicetrack Properties</legend>
 
-<div class="fieldrow" hidden>
-  <label class="required" data-t>Crossfade With Next</label>
-  <input type="number" min="0" max="30" value="0" step="0.1" id="audio_properties_crossfade"> <span data-t>seconds</span>
-</div>
+  <div class="fieldrow">
+    <label data-t>Voice Track</label>
+    <ob-field-media id="audio_properties_voicetrack" type="audio" data-edit data-single data-record></ob-field-media>
+  </div>
+
+  <div class="fieldrow">
+    <label data-t>Offset Time</label>
+    <ob-field-range id="audio_properties_voicetrack_offset" data-suffix="s" data-step="0.1" data-min="0"></ob-field-range>
+  </div>
+
+  <div class="fieldrow">
+    <label data-t>Song Fade-Out Before</label>
+    <ob-field-range id="audio_properties_voicetrack_fadeout_before" data-suffix="s" data-step="0.1" data-min="0"></ob-field-range>
+  </div>
+
+  <div class="fieldrow">
+    <label data-t>Song Fade-Out After</label>
+    <ob-field-range id="audio_properties_voicetrack_fadeout_after" data-suffix="s" data-step="0.1" data-min="0"></ob-field-range>
+  </div>
+
+  <div class="fieldrow">
+    <label data-t>Preview</label>
+    <button id="audio_properties_voicetrack_preview" data-t disabled>Coming Soon</button>
+  </div>
 
 </fieldset>
 
 <fieldset>
-<div class="fieldrow">
-  <button class="add" id="item_properties_save" data-t>Save</button>
-  <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
+  <div class="fieldrow">
+    <button class="add" id="item_properties_save" data-t>Save</button>
+    <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+  </div>
 </fieldset>
 
 </div>

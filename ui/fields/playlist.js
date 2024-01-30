@@ -83,6 +83,10 @@ class OBFieldPlaylist extends OBField {
                     display: inline-block;
                 }
 
+                #playlist[data-single="true"] {
+                    min-height: 38px;
+                }
+
                 .playlist-item {
                     background-color: #eeeeec;
                     color: #000;

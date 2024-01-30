@@ -203,6 +203,10 @@ class OBFieldMedia extends OBField {
                     display: inline-block;
                 }
 
+                #media[data-single="true"][data-status="none"] {
+                    min-height: 38px;
+                }
+
                 .media-item {
                     background-color: #eeeeec;
                     color: #000;
