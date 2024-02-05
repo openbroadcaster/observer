@@ -146,7 +146,18 @@ OB.Playlist.advancedGetItems = function()
     if (item.voicetrack) {
       new_item.voicetrack = item.voicetrack;
     }
-    console.log(new_item);
+
+    if (item.voicetrack_offset) {
+      new_item.voicetrack_offset = item.voicetrack_offset;
+    }
+
+    if (item.voicetrack_fadeout_before) {
+      new_item.voicetrack_fadeout_before = item.voicetrack_fadeout_before;
+    }
+
+    if (item.voicetrack_fadein_after) {
+      new_item.voicetrack_fadein_after = item.voicetrack_fadein_after;
+    }
 
     items.push(new_item);
   });
@@ -160,6 +171,9 @@ OB.Playlist.advancedAddItem = function(item,skip_display)
   if (item.properties) {
     item.voicetrack = item.properties.voicetrack;
     item.crossfade = item.properties.crossfade;
+    item.voicetrack_offset = item.properties.voicetrack_offset;
+    item.voicetrack_fadeout_before = item.properties.voicetrack_fadeout_before;
+    item.voicetrack_fadein_after = item.properties.voicetrack_fadein_after;
 
     delete item.properties;
   }

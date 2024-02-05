@@ -293,12 +293,18 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
     {
       $('#audio_properties_crossfade').val($('#playlist_addedit_item_'+id).attr('data-crossfade'));
       $('#audio_properties_voicetrack').val([$('#playlist_addedit_item_'+id).attr('data-voicetrack')]);
+      $('#audio_properties_voicetrack_offset').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_offset'));
+      $('#audio_properties_voicetrack_fadeout_before').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before'));
+      $('#audio_properties_voicetrack_fadein_after').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after'));
     }
 
     else // advanced
     {
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
-        $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
+      $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
+      $('#audio_properties_voicetrack_offset').val(OB.Playlist.advanced_items[id].voicetrack_offset);
+      $('#audio_properties_voicetrack_fadeout_before').val(OB.Playlist.advanced_items[id].voicetrack_fadeout_before);
+      $('#audio_properties_voicetrack_fadein_after').val(OB.Playlist.advanced_items[id].voicetrack_fadein_after);
     }
   }
 
@@ -364,6 +370,9 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       {
         $('#playlist_addedit_item_'+id).attr('data-crossfade', $('#audio_properties_crossfade').val());
         $('#playlist_addedit_item_'+id).attr('data-voicetrack', $('#audio_properties_voicetrack').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_offset', $('#audio_properties_voicetrack_offset').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before', $('#audio_properties_voicetrack_fadeout_before').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after', $('#audio_properties_voicetrack_fadein_after').val());
         OB.UI.closeModalWindow();
       }
 
@@ -372,6 +381,9 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       {
         OB.Playlist.advanced_items[id].crossfade = $('#audio_properties_crossfade').val();
         OB.Playlist.advanced_items[id].voicetrack = $('#audio_properties_voicetrack').val()[0];
+        OB.Playlist.advanced_items[id].voicetrack_offset = $('#audio_properties_voicetrack_offset').val();
+        OB.Playlist.advanced_items[id].voicetrack_fadeout_before = $('#audio_properties_voicetrack_fadeout_before').val();
+        OB.Playlist.advanced_items[id].voicetrack_fadein_after = $('#audio_properties_voicetrack_fadein_after').val();
         OB.UI.closeModalWindow();
       }
     }
@@ -407,6 +419,11 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   });
 
+}
+
+OB.Playlist.voicetrackChange = function ()
+{
+  console.log($('#audio_properties_voicetrack').val());
 }
 
 OB.Playlist.save = function()

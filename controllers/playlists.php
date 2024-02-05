@@ -344,6 +344,18 @@ class Playlists extends OBFController
                     if ($item['voicetrack'] ?? false) {
                         $properties['voicetrack'] = (int) $item['voicetrack'];
                     }
+
+                    if ($item['voicetrack_offset'] ?? false) {
+                        $properties['voicetrack_offset'] = (int) $item['voicetrack_offset'];
+                    }
+
+                    if ($item['voicetrack_fadeout_before'] ?? false) {
+                        $properties['voicetrack_fadeout_before'] = (int) $item['voicetrack_fadeout_before'];
+                    }
+
+                    if ($item['voicetrack_fadein_after'] ?? false) {
+                        $properties['voicetrack_fadein_after'] = (int) $item['voicetrack_fadein_after'];
+                    }
                 }
 
                 // set properties
