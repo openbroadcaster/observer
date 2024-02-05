@@ -664,7 +664,7 @@ class Remote
         if (! $voicetrack) {
             return false;
         }
-        
+
         $itemxml->addChild('duration', $track['duration']);
         if ($ord !== false) {
             $itemxml->addChild('order', $ord);
@@ -692,7 +692,14 @@ class Remote
         $itemxml->addChild('location', $voicetrack['file_location']);
         $itemxml->addChild('archived', $voicetrack['is_archived']);
         $itemxml->addChild('approved', $voicetrack['is_approved']);
-        if (isset($voicetrack['thumbnail'])) $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
+        
+        $itemxml->addChild('offset', $track['offset']);
+        $itemxml->addChild('fadeout-before', $track['fadeout-before']);
+        $itemxml->addChild('fadein-after', $track['fadein-after']);
+        
+        if (isset($voicetrack['thumbnail'])) {
+            $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
+        }
 
         return true;
     }

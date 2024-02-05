@@ -346,15 +346,15 @@ class Playlists extends OBFController
                     }
 
                     if ($item['voicetrack_offset'] ?? false) {
-                        $properties['voicetrack_offset'] = (int) $item['voicetrack_offset'];
+                        $properties['voicetrack_offset'] = (float) $item['voicetrack_offset'];
                     }
 
                     if ($item['voicetrack_fadeout_before'] ?? false) {
-                        $properties['voicetrack_fadeout_before'] = (int) $item['voicetrack_fadeout_before'];
+                        $properties['voicetrack_fadeout_before'] = (float) $item['voicetrack_fadeout_before'];
                     }
 
                     if ($item['voicetrack_fadein_after'] ?? false) {
-                        $properties['voicetrack_fadein_after'] = (int) $item['voicetrack_fadein_after'];
+                        $properties['voicetrack_fadein_after'] = (float) $item['voicetrack_fadein_after'];
                     }
                 }
 

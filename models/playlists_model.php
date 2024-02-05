@@ -735,8 +735,11 @@ class PlaylistsModel extends OBFModel
                         $voicetrack = $this->models->media('get_by_id', ['id' => $playlist_item['properties']['voicetrack']]);
                         if ($voicetrack) {
                             $tmp['voicetrack'] = [
-                                'id'         => $voicetrack['id'],
-                                'duration'   => $voicetrack['duration'],
+                                'id'             => $voicetrack['id'],
+                                'duration'       => $voicetrack['duration'],
+                                'offset'         => $playlist_item['properties']['voicetrack_offset'] ?? 0.0,
+                                'fadeout-before' => $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0,
+                                'fadein-after'   => $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0,
                             ];
                         }
                     }
