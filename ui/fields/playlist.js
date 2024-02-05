@@ -207,6 +207,8 @@ class OBFieldPlaylist extends OBField {
                 return Object.keys(this.#playlistContent).includes(item.toString());
             });
             this.refresh();
+
+            this.dispatchEvent(new Event('change'));
         });
     }
 }

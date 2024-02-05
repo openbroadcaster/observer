@@ -410,6 +410,8 @@ class OBFieldMedia extends OBField {
                 return Object.keys(this.#mediaContent).includes(item.toString());
             });
             this.refresh();
+
+            this.dispatchEvent(new Event('change'));
         });
     }
 }

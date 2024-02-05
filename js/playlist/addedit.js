@@ -419,11 +419,18 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   });
 
+  // enable/disable voicetrack sliders
+  OB.Playlist.voicetrackChange();
+
 }
 
 OB.Playlist.voicetrackChange = function ()
 {
-  console.log($('#audio_properties_voicetrack').val());
+  const editable = document.querySelector('#audio_properties_voicetrack').value.length !== 0;
+  console.log(editable);
+  document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
+  document.querySelector('#audio_properties_voicetrack_fadeout_before').editable = editable;
+  document.querySelector('#audio_properties_voicetrack_fadein_after').editable = editable;
 }
 
 OB.Playlist.save = function()

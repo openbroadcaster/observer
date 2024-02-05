@@ -33,6 +33,20 @@ export class OBField extends OBElement {
     this.renderComponent();
   }
 
+  get editable() {
+    return this.hasAttribute('data-edit');
+  }
+
+  set editable(value) {
+    if (value) {
+      this.setAttribute('data-edit', '');
+    } else {
+      this.removeAttribute('data-edit');
+    }
+    
+    this.renderComponent();
+  }
+
   async renderComponent() {
     const edit = this.hasAttribute('data-edit');
     if (edit) this.renderEdit();
