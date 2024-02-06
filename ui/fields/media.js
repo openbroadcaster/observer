@@ -69,7 +69,10 @@ class OBFieldMedia extends OBField {
                 `)}
                 ${
                     this.dataset.status === "cached"
-                    ? html`<audio id="audio" controls src=${this.#recordUrl}></audio>`
+                    ? html`
+                        <canvas height="100" width="350" id="waveform"></canvas>
+                        <audio id="audio" controls src=${this.#recordUrl}></audio>
+                    `
                     : html``
                 }
             </div>
@@ -82,7 +85,6 @@ class OBFieldMedia extends OBField {
                 </span>`
                 : html``
             }
-            <canvas id="waveform"></canvas>
         `, this.root);
     }
 
@@ -173,6 +175,8 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-record[data-status="cached"] {
+                    top: 26px;
+
                     .button-save, .button-record {
                         filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
@@ -204,10 +208,18 @@ class OBFieldMedia extends OBField {
                     max-width: 350px;
                     min-height: 100px;
                     display: inline-block;
+
+                    audio {
+                        width: 350px;
+                    }
                 }
 
                 #media[data-single="true"][data-status="none"] {
                     min-height: 38px;
+                }
+
+                #media[data-single="true"][data-status="cached"] {
+                    min-height: 180px;
                 }
 
                 .media-item {
@@ -333,61 +345,10 @@ class OBFieldMedia extends OBField {
             const audioURL = window.URL.createObjectURL(blob);
             this.#recordUrl = audioURL;
 
-            const canvas = this.root.querySelector('#waveform');
-            const canvasCtx = canvas.getContext('2d');
-
-            var ctx = new window.AudioContext();
-            var analyser = ctx.createAnalyser();
-            blob.arrayBuffer().then((arrayBuffer) => {
-                ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-                    const height = 300;
-                    const width = 500;
-                    const rawData = audioBuffer.getChannelData(0);
-                    const samples = 1000;
-                    const blockSize = Math.floor(rawData.length / samples);
-                    const filteredData = [];
-                    for (let i = 0; i < samples; i++) {
-                        let blockStart = blockSize * i;
-                        let sum = 0;
-                        for (let j = 0; j < blockSize; j++) {
-                            sum = sum  + Math.abs(rawData[blockStart + j]);
-                        }
-                        filteredData.push(sum / blockSize);
-                    }
-                    console.log(filteredData);
-
-                    canvasCtx.clearRect(0, 0, width, height);
-                    canvasCtx.fillStyle = "rgb(200, 200, 200)";
-                    canvasCtx.fillRect(0, 0, width, height);
-            
-                    canvasCtx.lineWidth = 2;
-                    canvasCtx.strokeStyle = "rgb(0, 0, 0)";
-            
-                    canvasCtx.beginPath();
-            
-                    const sliceWidth = (width * 1.0) / samples;
-                    let x = 0;
-            
-                    for (let i = 0; i < samples; i++) {
-                        const v = filteredData[i];
-                        const y = (v * height) / 2;
-            
-                        if (i === 0) {
-                            canvasCtx.moveTo(x, y);
-                        } else {
-                            canvasCtx.lineTo(x, y);
-                        }
-            
-                        x += sliceWidth;
-                    }
-            
-                    canvasCtx.lineTo(width, height / 2);
-                    canvasCtx.stroke();
-                });
-            });
-
             this.dataset.status = "cached";
-            this.refresh();
+            this.refresh().then(() => {
+                this.drawWaveform(blob);
+            });
         }
         this.#mediaRecorder.stop();
     }
@@ -434,6 +395,65 @@ class OBFieldMedia extends OBField {
             });
         }).catch((error) => {
             console.error(error);
+        });
+    }
+
+    drawWaveform(blob) {
+        const canvas = this.root.querySelector('#waveform');
+        const canvasCtx = canvas.getContext('2d');
+
+        var ctx = new window.AudioContext();
+        var analyser = ctx.createAnalyser();
+        blob.arrayBuffer().then((arrayBuffer) => {
+            ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+                const height = 100;
+                const width = 350;
+                const rawData = audioBuffer.getChannelData(0);
+                const samples = 10000;
+                const blockSize = Math.floor(rawData.length / samples);
+
+                const filteredData = [];
+                var max = 0;
+                for (let i = 0; i < samples; i++) {
+                    let blockStart = blockSize * i;
+                    let sum = 0;
+                    for (let j = 0; j < blockSize; j++) {
+                        sum = sum  + Math.abs(rawData[blockStart + j]);
+                    }
+                    if (max < (sum / blockSize)) {
+                        max = sum / blockSize;
+                    }
+                    filteredData.push(sum / blockSize);
+                }
+                console.log(filteredData);
+
+                canvasCtx.clearRect(0, 0, width, height);
+                canvasCtx.fillStyle = "rgb(200, 200, 200)";
+                canvasCtx.fillRect(0, 0, width, height);
+        
+                canvasCtx.lineWidth = 0.1;
+                canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+        
+                canvasCtx.beginPath();
+        
+                const sliceWidth = (width * 1.0) / samples;
+                let x = 0;
+
+                for (let i = 0; i < samples; i++) {
+                    const v = filteredData[i];
+                    const y = ((v / max) * (height / 2)) + (height / 2);
+                    const yNeg = ((-v / max) * (height / 2)) + (height / 2);
+
+                    canvasCtx.moveTo(x, height / 2);
+                    canvasCtx.lineTo(x, y);
+                    canvasCtx.moveTo(x, height / 2);
+                    canvasCtx.lineTo(x, yNeg);
+
+                    x += sliceWidth;
+                }
+
+                canvasCtx.stroke();
+            });
         });
     }
 
