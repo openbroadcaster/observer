@@ -10,6 +10,9 @@ class OBFieldMedia extends OBField {
     #recordData;
     #recordUrl;
 
+    #blob;
+    #playback;
+
     #init;
 
     connectedCallback() {
@@ -19,6 +22,9 @@ class OBFieldMedia extends OBField {
         this.#recordData    = [];
         this.#recordUrl     = "";
         this.#mediaRecorder = null;
+
+        this.#blob          = null;
+        this.#playback      = null;
 
         this.renderComponent();
 
@@ -71,7 +77,7 @@ class OBFieldMedia extends OBField {
                     this.dataset.status === "cached"
                     ? html`
                         <canvas height="100" width="350" id="waveform"></canvas>
-                        <audio id="audio" controls src=${this.#recordUrl}></audio>
+                        <audio style="display: none;" id="audio" controls src=${this.#recordUrl}></audio>
                     `
                     : html``
                 }
@@ -79,9 +85,18 @@ class OBFieldMedia extends OBField {
             ${
                 (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
                 ? html`<span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
-                    <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
-                    <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
-                    <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
+                    <div class="trim-container">
+                        <span class="trim">Trim Start</span>
+                        <input type="number" class="trim" id="trim-start" value="0" step="0.1" min="0" max="100" />
+                        <span class="trim">Trim End</span>
+                        <input type="number" class="trim" id="trim-end" value="0" step="0.1" min="0" max="100" />
+                    </div>
+                    <div class="button-container">
+                        <span class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>▶️</span>
+                        <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
+                        <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
+                        <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
+                    </div>
                 </span>`
                 : html``
             }
@@ -133,17 +148,31 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-record {
-                    position: relative;
-                    right: 60px;
-                    top: 32px;
+                    /*position: relative;
+                    right: 88px;
+                    top: 32px;*/
+                    display: flex;
+                    justify-content: space-between;
+                    max-width: 350px;
 
-                    font-size: 22px;
+                    .trim-container {
+                        align-self: center;
+                        font-size: 14px;
+
+                        .trim {
+                            margin-right: 0.5em;
+                        }
+                    }
+
+                    .button-container {
+                        font-size: 20px;
+                    }
                 }
 
                 .media-record[data-status="none"] {
-                    right: 36px; 
+                    /*right: 36px; */
 
-                    .button-save, .button-stop {
+                    .button-save, .button-stop, .button-play, .trim {
                         display: none;
                     }
 
@@ -158,9 +187,9 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-record[data-status="recording"] {
-                    right: 36px; 
+                    /*right: 36px; */
 
-                    .button-record, .button-save {
+                    .button-record, .button-save, .button-play, .trim {
                         display: none;
                     }
 
@@ -175,15 +204,19 @@ class OBFieldMedia extends OBField {
                 }
 
                 .media-record[data-status="cached"] {
-                    top: 26px;
+                    /*top: 26px;*/
 
-                    .button-save, .button-record {
+                    .button-save, .button-record, .button-play {
                         filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
                         
                         &:hover {
                             filter: hue-rotate(180deg) brightness(2);
                         }
+                    }
+
+                    input.trim {
+                        width: 50px;
                     }
 
                     .button-stop {
@@ -206,7 +239,7 @@ class OBFieldMedia extends OBField {
                     box-sizing: border-box;
                     width: 350px;
                     max-width: 350px;
-                    min-height: 100px;
+                    /*min-height: 100px;*/
                     display: inline-block;
 
                     audio {
@@ -215,11 +248,11 @@ class OBFieldMedia extends OBField {
                 }
 
                 #media[data-single="true"][data-status="none"] {
-                    min-height: 38px;
+                    /*min-height: 38px;*/
                 }
 
                 #media[data-single="true"][data-status="cached"] {
-                    min-height: 180px;
+                    /*min-height: 180px;*/
                 }
 
                 .media-item {
@@ -310,6 +343,22 @@ class OBFieldMedia extends OBField {
         }));
     }
 
+    mediaRecordPlay(event) {
+        var ctx = new window.AudioContext();
+        this.#blob.arrayBuffer().then((arrayBuffer) => {
+            ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+                if (this.#playback !== null) {
+                    this.#playback.stop();
+                }
+
+                this.#playback = ctx.createBufferSource();
+                this.#playback.buffer = audioBuffer;
+                this.#playback.connect(ctx.destination);
+                this.#playback.start();
+            });
+        });
+    }
+
     mediaRemove(event) {
         const newItems = this.#mediaItems.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
@@ -344,10 +393,11 @@ class OBFieldMedia extends OBField {
             const blob = new Blob(this.#recordData, { type: this.#mediaRecorder.mimeType });
             const audioURL = window.URL.createObjectURL(blob);
             this.#recordUrl = audioURL;
+            this.#blob = blob;
 
             this.dataset.status = "cached";
             this.refresh().then(() => {
-                this.drawWaveform(blob);
+                this.drawWaveform();
             });
         }
         this.#mediaRecorder.stop();
@@ -398,13 +448,12 @@ class OBFieldMedia extends OBField {
         });
     }
 
-    drawWaveform(blob) {
+    drawWaveform() {
         const canvas = this.root.querySelector('#waveform');
         const canvasCtx = canvas.getContext('2d');
 
         var ctx = new window.AudioContext();
-        var analyser = ctx.createAnalyser();
-        blob.arrayBuffer().then((arrayBuffer) => {
+        this.#blob.arrayBuffer().then((arrayBuffer) => {
             ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
                 const height = 100;
                 const width = 350;
