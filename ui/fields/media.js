@@ -12,6 +12,11 @@ class OBFieldMedia extends OBField {
 
     #blob;
     #playback;
+    #duration;
+    #waveformWidth;
+    #waveformHeight;
+    #trimStart;
+    #trimEnd;
 
     #init;
 
@@ -23,8 +28,13 @@ class OBFieldMedia extends OBField {
         this.#recordUrl     = "";
         this.#mediaRecorder = null;
 
-        this.#blob          = null;
-        this.#playback      = null;
+        this.#blob           = null;
+        this.#playback       = null;
+        this.#duration       = 0.0;
+        this.#waveformWidth  = 350;
+        this.#waveformHeight = 100;
+        this.#trimStart      = 0.0;
+        this.#trimEnd        = 0.0;
 
         this.renderComponent();
 
@@ -77,6 +87,7 @@ class OBFieldMedia extends OBField {
                     this.dataset.status === "cached"
                     ? html`
                         <canvas height="100" width="350" id="waveform"></canvas>
+                        <canvas style="display: none;" height="100" width="350" id="waveform-unedited"></canvas>
                         <audio style="display: none;" id="audio" controls src=${this.#recordUrl}></audio>
                     `
                     : html``
@@ -87,9 +98,9 @@ class OBFieldMedia extends OBField {
                 ? html`<span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
                     <div class="trim-container">
                         <span class="trim">Trim Start</span>
-                        <input type="number" class="trim" id="trim-start" value="0" step="0.1" min="0" max="100" />
+                        <input type="number" class="trim" id="trim-start" value="0" step="0.1" min="0" max="100" onchange=${this.drawTrimStart.bind(this)} />
                         <span class="trim">Trim End</span>
-                        <input type="number" class="trim" id="trim-end" value="0" step="0.1" min="0" max="100" />
+                        <input type="number" class="trim" id="trim-end" value="0" step="0.1" min="0" max="100" onchange=${this.drawTrimEnd.bind(this)} />
                     </div>
                     <div class="button-container">
                         <span class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>▶️</span>
@@ -448,6 +459,31 @@ class OBFieldMedia extends OBField {
         });
     }
 
+    drawTrimStart(event) {
+        const trim = this.root.querySelector('#trim-start').value;
+        const trimFrac = trim / this.#duration;
+        this.#trimStart = trimFrac * this.#waveformWidth;
+        this.modifyWaveform();
+    }
+
+    drawTrimEnd(event) {
+        const trim = this.root.querySelector('#trim-end').value;
+        const trimFrac = trim / this.#duration;
+        this.#trimEnd = trimFrac * this.#waveformWidth;
+        this.modifyWaveform();
+    }
+
+    modifyWaveform() {
+        const canvas = this.root.querySelector('#waveform');
+        const canvasCtx = canvas.getContext('2d');
+        canvasCtx.clearRect(0, 0, this.#waveformWidth, this.#waveformHeight);
+        canvasCtx.drawImage(this.root.querySelector('#waveform-unedited'), 0, 0);
+
+        canvasCtx.fillStyle = 'rgba(51, 51, 204, 0.8)';
+        canvasCtx.fillRect(0, 0, this.#trimStart, this.#waveformHeight);
+        canvasCtx.fillRect(this.#waveformWidth - this.#trimEnd, 0, this.#trimEnd, this.#waveformHeight);
+    }
+
     drawWaveform() {
         const canvas = this.root.querySelector('#waveform');
         const canvasCtx = canvas.getContext('2d');
@@ -455,11 +491,13 @@ class OBFieldMedia extends OBField {
         var ctx = new window.AudioContext();
         this.#blob.arrayBuffer().then((arrayBuffer) => {
             ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-                const height = 100;
-                const width = 350;
+                const height = this.#waveformHeight;
+                const width = this.#waveformWidth;
                 const rawData = audioBuffer.getChannelData(0);
                 const samples = 10000;
                 const blockSize = Math.floor(rawData.length / samples);
+
+                this.#duration = audioBuffer.duration;
 
                 const filteredData = [];
                 var max = 0;
@@ -474,7 +512,6 @@ class OBFieldMedia extends OBField {
                     }
                     filteredData.push(sum / blockSize);
                 }
-                console.log(filteredData);
 
                 canvasCtx.clearRect(0, 0, width, height);
                 canvasCtx.fillStyle = "rgb(200, 200, 200)";
@@ -502,6 +539,12 @@ class OBFieldMedia extends OBField {
                 }
 
                 canvasCtx.stroke();
+                
+                // copy to waveform-unedited to use for overwriting any potential changes 
+                // from trim
+                const canvasUnedited = this.root.querySelector('#waveform-unedited');
+                const canvasCtxUnedited = canvasUnedited.getContext('2d');
+                canvasCtxUnedited.drawImage(canvas, 0, 0);
             });
         });
     }
