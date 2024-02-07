@@ -354,16 +354,39 @@ class OBFieldMedia extends OBField {
         }));
     }
 
+    mediaTrimBuffer(buffer, trimStart, trimEnd) {
+        const rate = buffer.sampleRate;
+        const duration = buffer.duration;
+        const channels = buffer.numberOfChannels;
+        const startOffset = trimStart * rate;
+        const endOffset = (duration - trimEnd) * rate;
+        const frameCount = endOffset - startOffset;
+
+        var ctx = new window.AudioContext();
+        const trimmedBuffer = ctx.createBuffer(channels, frameCount, rate);
+
+        for (let channel = 0; channel < channels; channel++) {
+            const sourceData = buffer.getChannelData(channel).subarray(startOffset, endOffset);
+            trimmedBuffer.getChannelData(channel).set(sourceData);
+        }
+
+        return trimmedBuffer;
+    }
+
     mediaRecordPlay(event) {
         var ctx = new window.AudioContext();
         this.#blob.arrayBuffer().then((arrayBuffer) => {
             ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+                const trimStart = this.root.querySelector('#trim-start').value;
+                const trimEnd = this.root.querySelector('#trim-end').value;
+                const trimmedBuffer = this.mediaTrimBuffer(audioBuffer, trimStart, trimEnd);
+
                 if (this.#playback !== null) {
                     this.#playback.stop();
                 }
 
                 this.#playback = ctx.createBufferSource();
-                this.#playback.buffer = audioBuffer;
+                this.#playback.buffer = trimmedBuffer;
                 this.#playback.connect(ctx.destination);
                 this.#playback.start();
             });
@@ -389,6 +412,8 @@ class OBFieldMedia extends OBField {
             }, "Yes", "No");
         } else {
             this.#recordData = [];
+            this.#trimStart = 0.0;
+            this.#trimEnd = 0.0;
             this.dataset.status = "recording";
             this.#mediaRecorder.start();
             this.refresh();
