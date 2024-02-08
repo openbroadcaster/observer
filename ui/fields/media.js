@@ -357,18 +357,14 @@ class OBFieldMedia extends OBField {
     mediaTrimBuffer(buffer, trimStart, trimEnd) {
         const rate = buffer.sampleRate;
         const duration = buffer.duration;
-        const channels = buffer.numberOfChannels;
         const startOffset = trimStart * rate;
         const endOffset = (duration - trimEnd) * rate;
         const frameCount = endOffset - startOffset;
 
         var ctx = new window.AudioContext();
-        const trimmedBuffer = ctx.createBuffer(channels, frameCount, rate);
-
-        for (let channel = 0; channel < channels; channel++) {
-            const sourceData = buffer.getChannelData(channel).subarray(startOffset, endOffset);
-            trimmedBuffer.getChannelData(channel).set(sourceData);
-        }
+        const trimmedBuffer = ctx.createBuffer(1, frameCount, rate);
+        const sourceData = buffer.getChannelData(0).subarray(startOffset, endOffset);
+        trimmedBuffer.getChannelData(0).set(sourceData);
 
         return trimmedBuffer;
     }
@@ -426,7 +422,7 @@ class OBFieldMedia extends OBField {
         }
 
         this.#mediaRecorder.onstop = () => {
-            const blob = new Blob(this.#recordData, { type: this.#mediaRecorder.mimeType });
+            const blob = new Blob(this.#recordData, { type: "audio/webm" });
             const audioURL = window.URL.createObjectURL(blob);
             this.#recordUrl = audioURL;
             this.#blob = blob;
@@ -444,10 +440,9 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        const blob = new Blob(this.#recordData, { type: this.#mediaRecorder.mimeType });
         fetch('/upload.php', {
             method: 'POST',
-            body: blob
+            body: this.#blob
         }).then((response) => {
             return response.json();
         }).then((data) => {
