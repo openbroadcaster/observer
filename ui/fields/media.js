@@ -449,7 +449,7 @@ class OBFieldMedia extends OBField {
             const fileKey = data.file_key;
             const fileId  = data.file_id;
             const date    = new Date();
-            const dateStr = date.getFullYear() + "-" + ('0' + date.getMonth() + 1).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+            const dateStr = date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
 
             const media = OB.API.postPromise('media', 'save', {
                 media: {
