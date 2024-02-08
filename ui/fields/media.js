@@ -463,7 +463,9 @@ class OBFieldMedia extends OBField {
                         language: 25571,
                         is_copyright_owner: 1,
                         is_approved: 1,
-                        dynamic_select: 0
+                        dynamic_select: 0,
+                        trim_start: this.root.querySelector('#trim-start').value,
+                        trim_end: this.root.querySelector('#trim-end').value
                     }
                 }
             });

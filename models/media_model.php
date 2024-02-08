@@ -1251,6 +1251,9 @@ class MediaModel extends OBFModel
         $file_id = $item['file_id'];
         $file_info = (isset($item['file_info']) ? $item['file_info'] : null);
 
+        $trimStart = $item['trim_start'] ?? null;
+        $trimEnd = $item['trim_end'] ?? null;
+
         // get our original item before edit (we may need this)
         if ($id) {
             $this->db->where('id', $id);
@@ -1344,6 +1347,8 @@ class MediaModel extends OBFModel
         unset($item['id']);
         unset($item['file_info']);
         unset($item['thumbnail']);
+        unset($item['trim_start']);
+        unset($item['trim_end']);
 
         // separate out advanced permissions if we have them
         $advanced_permissions_users = $item['advanced_permissions_users'] ?? false;
@@ -1452,13 +1457,21 @@ class MediaModel extends OBFModel
 
             // move our file to its home
             $file_src = OB_ASSETS . '/uploads/' . $file_id;
+
             if ($item['is_approved'] == 0) {
                 $file_dest = OB_MEDIA_UPLOADS . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA . $media_location . $filename;
             }
-            rename($file_src, $file_dest);
 
+            // trim file first if trim_start and/or trim_end are set
+            if ($trimStart || $trimEnd) {
+                $mediaStart = floatval($trimStart ?? 0.0);
+                $mediaEnd   = floatval($item['duration']) - $mediaStart - floatval($trimEnd ?? 0.0);
+                shell_exec('ffmpeg -ss ' . escapeshellarg($mediaStart) . ' -i ' . escapeshellarg($file_src) . ' -t ' . escapeshellarg($mediaEnd) . ' -c copy ' . escapeshellarg($file_dest));
+            } else {
+                rename($file_src, $file_dest);
+            }
 
             // remove file upload row from uploads table.
             $this->db->where('id', $file_id);
