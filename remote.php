@@ -314,6 +314,12 @@ class Remote
                     $showxml->addChild('name', $playlist['name']);
                 }
 
+                // add any playlist properties to xml
+                $propertiesxml = $showxml->addChild('properties');
+                foreach (json_decode($playlist['properties'], true) as $propertyKey => $propertyValue) {
+                    $propertiesxml->addChild($propertyKey, $propertyValue);
+                }
+
                 // see if we have selected media in our cache.
                 /*
                 $this->db->where('schedule_id',$show['id']);
