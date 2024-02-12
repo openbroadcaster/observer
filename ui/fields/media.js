@@ -43,30 +43,6 @@ class OBFieldMedia extends OBField {
 
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-
-            if (this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) {
-                if (navigator.mediaDevices.getUserMedia) {
-                    var self = this;
-                    let onSuccess = function (stream) {
-                        self.#mediaRecorder = new MediaRecorder(stream, {
-                            mimetype: "audio/webm"
-                        });
-                        self.#mediaRecorder.ondataavailable = function (e) {
-                            self.#recordData.push(e.data);
-                        }
-                    }
-
-                    let onError = function (stream) {
-                        // TODO: Update element look
-                        console.error(`The following getUserMedia error occurred: ${err}`);
-                    }
-
-                    this.#mediaRecorder = navigator.mediaDevices.getUserMedia({audio: true}).then(onSuccess, onError);
-                } else {
-                    // TODO: Update element look.
-                    console.error('getUserMedia not supported on your browser!');
-                }
-            }
         }
     }
 
@@ -397,22 +373,50 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRecordStart(event) {
-        if (this.#mediaRecorder.state !== "inactive") {
-            return false;
-        }
+        if (this.#mediaRecorder === null && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) {
+            if (navigator.mediaDevices.getUserMedia) {
+                var self = this;
+                let onSuccess = function (stream) {
+                    self.#mediaRecorder = new MediaRecorder(stream, {
+                        mimetype: "audio/webm"
+                    });
+                    self.#mediaRecorder.ondataavailable = function (e) {
+                        self.#recordData.push(e.data);
+                    }
 
-        if (this.dataset.status === "cached") {
-            OB.UI.confirm("Are you sure you want to overwrite the existing recording?", () => {
-                this.dataset.status = "none";
-                this.mediaRecordStart(event);
-            }, "Yes", "No");
+                    // 250ms timeout because browsers may not be ready to record immediately 
+                    // after creating MediaRecorder, causing a small gap in the initial recording
+                    setTimeout(() => self.mediaRecordStart(event), "250");
+                }
+
+                let onError = function (stream) {
+                    // TODO: Update element look
+                    console.error(`The following getUserMedia error occurred: ${err}`);
+                }
+
+                this.#mediaRecorder = navigator.mediaDevices.getUserMedia({audio: true}).then(onSuccess, onError);
+            } else {
+                // TODO: Update element look.
+                console.error('getUserMedia not supported on your browser!');
+            }
         } else {
-            this.#recordData = [];
-            this.#trimStart = 0.0;
-            this.#trimEnd = 0.0;
-            this.dataset.status = "recording";
-            this.#mediaRecorder.start();
-            this.refresh();
+            if (this.#mediaRecorder.state !== "inactive") {
+                return false;
+            }
+
+            if (this.dataset.status === "cached") {
+                OB.UI.confirm("Are you sure you want to overwrite the existing recording?", () => {
+                    this.dataset.status = "none";
+                    this.mediaRecordStart(event);
+                }, "Yes", "No");
+            } else {
+                this.#recordData = [];
+                this.#trimStart = 0.0;
+                this.#trimEnd = 0.0;
+                this.dataset.status = "recording";
+                this.#mediaRecorder.start();
+                this.refresh();
+            }
         }
     }
 
@@ -426,6 +430,7 @@ class OBFieldMedia extends OBField {
             const audioURL = window.URL.createObjectURL(blob);
             this.#recordUrl = audioURL;
             this.#blob = blob;
+            console.log(this.#blob);
 
             this.dataset.status = "cached";
             this.refresh().then(() => {
