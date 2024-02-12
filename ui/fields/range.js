@@ -90,8 +90,9 @@ class OBFieldRange extends OBField {
             :host {
                 #field {
                     display: flex;
-                    width: 350px;
                     justify-content: space-between;
+                    max-width: 350px;
+                    gap: 1em;
 
                     #range {
                         display: flex;
