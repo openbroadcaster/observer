@@ -117,6 +117,10 @@ class Playlists extends OBFController
                 $playlist['where_used'] = $where_used;
             }
 
+            if ($playlist['properties']) {
+                $playlist['properties'] = json_decode($playlist['properties'], true);
+            }
+
             return array(true,'Playlist found.',$playlist);
         }
 
@@ -184,6 +188,7 @@ class Playlists extends OBFController
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
         $type = trim($this->data('type'));
+        $properties = $this->data('properties');
         $items = $this->data('items');
         $liveassist_button_items = $this->data('liveassist_button_items');
 
@@ -253,6 +258,7 @@ class Playlists extends OBFController
         $data['status'] = $status;
         $data['type'] = $type;
         $data['updated'] = time();
+        $data['properties'] = json_encode($properties);
 
         if (!$id) {
             $data['created'] = time();

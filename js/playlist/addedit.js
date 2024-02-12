@@ -101,6 +101,10 @@ OB.Playlist.editPage = function(id)
     $('#playlist_status_input').val(playlist_data['status']);
     $('#playlist_type_input').val(playlist_data['type']);
 
+    if (playlist_data['properties'] && playlist_data['properties']['last_track_fadeout']) {
+      $('#playlist_last_fadeout').val(playlist_data['properties']['last_track_fadeout']);
+    }
+
     OB.Playlist.addeditTypeChange();
 
     $.each(playlist_data['items'], function(index, item) {
@@ -443,6 +447,10 @@ OB.Playlist.save = function()
   var status = $('#playlist_status_input').val();
   var type = $('#playlist_type_input').val();
 
+  var properties = {};
+  var fadeout = $('#playlist_last_fadeout').val();
+  properties['last_track_fadeout'] = fadeout;
+
   var permissions_users = null;
   var permissions_groups = null;
 
@@ -471,6 +479,7 @@ OB.Playlist.save = function()
     'description': description,
     'status': status,
     'type': type,
+    'properties': properties,
     'items': items,
     'liveassist_button_items': liveassist_button_items,
     'permissions_users': permissions_users,
