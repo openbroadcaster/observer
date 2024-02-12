@@ -430,7 +430,6 @@ class OBFieldMedia extends OBField {
             const audioURL = window.URL.createObjectURL(blob);
             this.#recordUrl = audioURL;
             this.#blob = blob;
-            console.log(this.#blob);
 
             this.dataset.status = "cached";
             this.refresh().then(() => {
