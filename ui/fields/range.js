@@ -114,6 +114,14 @@ class OBFieldRange extends OBField {
     rangeLabelUpdate(event) {
         this.#value = this.value.toFixed(this.#decimals);
         this.refresh();
+
+        if (event && event.type === 'change') {
+            this.dispatchEvent(new Event('change'));
+        }
+
+        if (event && event.type === 'input') {
+            this.dispatchEvent(new Event('input'));
+        }
     }
 
     get value() {
@@ -129,6 +137,8 @@ class OBFieldRange extends OBField {
 
         this.rangeLabelUpdate(null);
         this.refresh();
+
+        this.dispatchEvent(new Event('change'));
     }
 
     get step() {
