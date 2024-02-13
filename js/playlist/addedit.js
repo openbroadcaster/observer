@@ -295,6 +295,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
   {
     if($('#playlist_type_input').val()=='standard')
     {
+      document.querySelector('#audio_properties_media_id').value = document.querySelector('#playlist_addedit_item_' + id).dataset.id;
       $('#audio_properties_crossfade').val($('#playlist_addedit_item_'+id).attr('data-crossfade'));
       $('#audio_properties_voicetrack').val([$('#playlist_addedit_item_'+id).attr('data-voicetrack')]);
       $('#audio_properties_voicetrack_offset').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_offset'));
@@ -304,6 +305,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
     else // advanced
     {
+      document.querySelector('#audio_properties_media_id').value = OB.Playlist.advanced_items[id].id;
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
       $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
       $('#audio_properties_voicetrack_offset').val(OB.Playlist.advanced_items[id].voicetrack_offset);
@@ -434,6 +436,46 @@ OB.Playlist.voicetrackChange = function ()
   document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
   document.querySelector('#audio_properties_voicetrack_fadeout_before').editable = editable;
   document.querySelector('#audio_properties_voicetrack_fadein_after').editable = editable;
+
+  OB.Playlist.voicetrackValidate();
+}
+
+OB.Playlist.voicetrackValidate = function ()
+{
+  if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
+    return true;
+  }
+
+  const post = [
+    ['media', 'get', { 'id': document.querySelector('#audio_properties_media_id').value }],
+    ['media', 'get', { 'id': document.querySelector('#audio_properties_voicetrack').value[0] }]
+  ];
+
+  OB.API.multiPost(post, function (response) {
+    if (response[0].status === false || response[1].status === false) {
+      console.warn('Media and voicetrack were specified but one or both could not be found: ' + response[0].msg + ' ' + response[1].msg);
+      return false;
+    }
+
+    const mediaDuration = parseFloat(response[0].data.duration);
+    const voicetrackDuration = parseFloat(response[1].data.duration);
+
+    if (voicetrackDuration > mediaDuration) {
+      $('#audio_properties_voicetrack_message').obWidget('error', 'Voicetrack duration is longer than media duration.');
+      return false;
+    }
+
+    const voicetrackOffset = document.querySelector('#audio_properties_voicetrack_offset').value;
+    const voicetrackFadeoutBefore = document.querySelector('#audio_properties_voicetrack_fadeout_before').value;
+    const voicetrackFadeinAfter = document.querySelector('#audio_properties_voicetrack_fadein_after').value;
+    const voicetrackTotal = voicetrackDuration + voicetrackOffset + voicetrackFadeoutBefore + voicetrackFadeinAfter;
+    if (voicetrackTotal > mediaDuration) {
+      $('#audio_properties_voicetrack_message').obWidget('error', 'Total of voicetrack duration and offsets are longer than media duration.');
+      return false;
+    } else {
+      $('#audio_properties_voicetrack_message').obWidget('hide');
+    }
+  });
 }
 
 OB.Playlist.save = function()
