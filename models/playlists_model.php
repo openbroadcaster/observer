@@ -737,6 +737,7 @@ class PlaylistsModel extends OBFModel
                             $tmp['voicetrack'] = [
                                 'id'             => $voicetrack['id'],
                                 'duration'       => $voicetrack['duration'],
+                                'volume'         => $playlist_item['properties']['voicetrack_volume'] ?? 0.0,
                                 'offset'         => $playlist_item['properties']['voicetrack_offset'] ?? 0.0,
                                 'fadeout-before' => $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0,
                                 'fadein-after'   => $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0,

@@ -351,6 +351,10 @@ class Playlists extends OBFController
                         $properties['voicetrack'] = (int) $item['voicetrack'];
                     }
 
+                    if ($item['voicetrack_volume'] ?? false) {
+                        $properties['voicetrack_volume'] = (float) $item['voicetrack_volume'];
+                    }
+
                     if ($item['voicetrack_offset'] ?? false) {
                         $properties['voicetrack_offset'] = (float) $item['voicetrack_offset'];
                     }

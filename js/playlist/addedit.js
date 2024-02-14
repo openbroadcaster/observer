@@ -298,6 +298,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       document.querySelector('#audio_properties_media_id').value = document.querySelector('#playlist_addedit_item_' + id).dataset.id;
       $('#audio_properties_crossfade').val($('#playlist_addedit_item_'+id).attr('data-crossfade'));
       $('#audio_properties_voicetrack').val([$('#playlist_addedit_item_'+id).attr('data-voicetrack')]);
+      $('#audio_properties_voicetrack_volume').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_volume'));
       $('#audio_properties_voicetrack_offset').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_offset'));
       $('#audio_properties_voicetrack_fadeout_before').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before'));
       $('#audio_properties_voicetrack_fadein_after').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after'));
@@ -308,6 +309,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       document.querySelector('#audio_properties_media_id').value = OB.Playlist.advanced_items[id].id;
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
       $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
+      $('#audio_properties_voicetrack_volume').val(OB.Playlist.advanced_items[id].voicetrack_volume);
       $('#audio_properties_voicetrack_offset').val(OB.Playlist.advanced_items[id].voicetrack_offset);
       $('#audio_properties_voicetrack_fadeout_before').val(OB.Playlist.advanced_items[id].voicetrack_fadeout_before);
       $('#audio_properties_voicetrack_fadein_after').val(OB.Playlist.advanced_items[id].voicetrack_fadein_after);
@@ -376,6 +378,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       {
         $('#playlist_addedit_item_'+id).attr('data-crossfade', $('#audio_properties_crossfade').val());
         $('#playlist_addedit_item_'+id).attr('data-voicetrack', $('#audio_properties_voicetrack').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_volume', $('#audio_properties_voicetrack_volume').val());
         $('#playlist_addedit_item_'+id).attr('data-voicetrack_offset', $('#audio_properties_voicetrack_offset').val());
         $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before', $('#audio_properties_voicetrack_fadeout_before').val());
         $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after', $('#audio_properties_voicetrack_fadein_after').val());
@@ -387,6 +390,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       {
         OB.Playlist.advanced_items[id].crossfade = $('#audio_properties_crossfade').val();
         OB.Playlist.advanced_items[id].voicetrack = $('#audio_properties_voicetrack').val()[0];
+        OB.Playlist.advanced_items[id].voicetrack_volume = $('#audio_properties_voicetrack_volume').val();
         OB.Playlist.advanced_items[id].voicetrack_offset = $('#audio_properties_voicetrack_offset').val();
         OB.Playlist.advanced_items[id].voicetrack_fadeout_before = $('#audio_properties_voicetrack_fadeout_before').val();
         OB.Playlist.advanced_items[id].voicetrack_fadein_after = $('#audio_properties_voicetrack_fadein_after').val();
@@ -433,6 +437,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 OB.Playlist.voicetrackChange = function ()
 {
   const editable = document.querySelector('#audio_properties_voicetrack').value.length !== 0;
+  document.querySelector('#audio_properties_voicetrack_volume').editable = editable;
   document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
   document.querySelector('#audio_properties_voicetrack_fadeout_before').editable = editable;
   document.querySelector('#audio_properties_voicetrack_fadein_after').editable = editable;

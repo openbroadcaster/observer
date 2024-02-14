@@ -147,6 +147,10 @@ OB.Playlist.advancedGetItems = function()
       new_item.voicetrack = item.voicetrack;
     }
 
+    if (item.voicetrack_volume) {
+      new_item.voicetrack_volume = item.voicetrack_volume;
+    }
+
     if (item.voicetrack_offset) {
       new_item.voicetrack_offset = item.voicetrack_offset;
     }
@@ -170,6 +174,7 @@ OB.Playlist.advancedAddItem = function(item,skip_display)
 {
   if (item.properties) {
     item.voicetrack = item.properties.voicetrack;
+    item.voicetrack_volume = item.properties.voicetrack_volume;
     item.crossfade = item.properties.crossfade;
     item.voicetrack_offset = item.properties.voicetrack_offset;
     item.voicetrack_fadeout_before = item.properties.voicetrack_fadeout_before;

@@ -149,6 +149,10 @@ OB.Playlist.addeditInsertItem = function(id,description,duration,type,properties
       $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-voicetrack', properties['voicetrack']);
     }
 
+    if (properties['voicetrack_volume']) {
+      $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-voicetrack_volume', properties['voicetrack_volume']);
+    }
+
     if (properties['voicetrack_offset']) {
       $('#playlist_addedit_item_'+OB.Playlist.addedit_item_last_id).attr('data-voicetrack_offset', properties['voicetrack_offset']);
     }
@@ -365,6 +369,7 @@ OB.Playlist.addeditGetItems = function()
       'duration': $(element).attr('data-duration'),
       'crossfade': $(element).attr('data-crossfade'),
       'voicetrack': $(element).attr('data-voicetrack'),
+      'voicetrack_volume': $(element).attr('data-voicetrack_volume'),
       'voicetrack_offset': $(element).attr('data-voicetrack_offset'),
       'voicetrack_fadeout_before': $(element).attr('data-voicetrack_fadeout_before'),
       'voicetrack_fadein_after': $(element).attr('data-voicetrack_fadein_after')
