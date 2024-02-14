@@ -46,10 +46,9 @@ class OBFieldRange extends OBField {
                 this.#max = parseFloat(this.dataset.max).toFixed(this.#decimals);
             } 
 
+            this.value = this.#min;
             if (this.getAttribute('value') !== null) {
-                this.#value = parseFloat(this.getAttribute('value')).toFixed(this.#decimals);
-            } else {
-                this.value = 0;
+                this.value = parseFloat(this.getAttribute('value')).toFixed(this.#decimals);
             }
 
             this.refresh();

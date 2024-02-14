@@ -25,6 +25,11 @@
   </div>
 
   <div class="fieldrow">
+    <label data-t>Volume</label>
+    <ob-field-range id="audio_properties_voicetrack_volume" data-edit data-step="0.05" data-min="0.00" data-max="1.00" value="0.1"></ob-field-range>  
+  </div>
+
+  <div class="fieldrow">
     <label data-t>Offset Time</label>
     <ob-field-range id="audio_properties_voicetrack_offset" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
   </div>
