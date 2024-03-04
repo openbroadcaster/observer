@@ -334,12 +334,19 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
   if(required)
   {
     $('#item_properties_cancel').click(function() {
+      OB.Playlist.voicetrackPreviewStop();
       OB.UI.closeModalWindow();
       OB.Playlist.addeditRemoveItem(id);
+    });
+  } else {
+    $('#item_properties_cancel').click(function() {
+      OB.Playlist.voicetrackPreviewStop();
+      OB.UI.closeModalWindow();
     });
   }
 
   $('#item_properties_save').click(function() {
+    OB.Playlist.voicetrackPreviewStop();
 
     // dynamic used only for standard playlist right now.
     if(type=='dynamic')
@@ -490,6 +497,8 @@ OB.Playlist.voicetrackValidate = function ()
 
 OB.Playlist.voicetrackPreview = function ()
 {
+  OB.Playlist.voicetrackPreviewStop();
+
   const mediaId = document.querySelector('#audio_properties_media_id').value;
   const voicetrackId = document.querySelector('#audio_properties_voicetrack').value[0];
   const voicetrackVolume = document.querySelector('#audio_properties_voicetrack_volume').value;
@@ -508,7 +517,7 @@ OB.Playlist.voicetrackPreview = function ()
     document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = false;
 
     // Play voicetrack after offset.
-    setTimeout(() => { OB.Playlist.voicetrackAudio.play()}, (voicetrackFadeoutBefore + voicetrackOffset) * 1000);
+    OB.Playlist.voicetrackAudioTimeout = setTimeout(() => { OB.Playlist.voicetrackAudio.play()}, (voicetrackFadeoutBefore + voicetrackOffset) * 1000);
 
     // Start fading out media to specified volume after offset.
     setTimeout(() => {
@@ -573,8 +582,18 @@ OB.Playlist.voicetrackPreview = function ()
 OB.Playlist.voicetrackPreviewStop = function ()
 {
   document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = true;
-  OB.Playlist.voicetrackAudio.pause();
-  OB.Playlist.mediaAudio.pause();
+  
+  if (OB.Playlist.voicetrackAudio) {
+    OB.Playlist.voicetrackAudio.pause();
+  }
+
+  if (OB.Playlist.mediaAudio) {
+    OB.Playlist.mediaAudio.pause();
+  }
+
+  if (OB.Playlist.voicetrackAudioTimeout) {
+    clearTimeout(OB.Playlist.voicetrackAudioTimeout);
+  }
   
 }
 
