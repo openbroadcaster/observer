@@ -492,18 +492,62 @@ OB.Playlist.voicetrackPreview = function ()
 {
   const mediaId = document.querySelector('#audio_properties_media_id').value;
   const voicetrackId = document.querySelector('#audio_properties_voicetrack').value[0];
+  const voicetrackVolume = document.querySelector('#audio_properties_voicetrack_volume').value;
   const voicetrackOffset = document.querySelector('#audio_properties_voicetrack_offset').value;
   const voicetrackFadeoutBefore = document.querySelector('#audio_properties_voicetrack_fadeout_before').value;
   const voicetrackFadeinAfter = document.querySelector('#audio_properties_voicetrack_fadein_after').value;
-
-  /*$('#audio_preview_voicetrack').html('<audio preload="auto" autoplay="autoplay" controls="controls">\
-    <source src="/preview.php?x='+new Date().getTime()+'&id='+voicetrackId+'&format=mp3" type="audio/mpeg">\
-    <source src="/preview.php?x='+new Date().getTime()+'&id='+voicetrackId+'&format=ogg" type="audio/ogg">\
-  </audio>');*/
   
   OB.Playlist.voicetrackAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + voicetrackId);
   OB.Playlist.mediaAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + mediaId);
 
+  // Function for playing both audio tracks in the preview (function is helpful because it can get called in 
+  // two separate ways, see comments below about the 'playthroughboth' event). 
+  function playModifiedPreview() {
+    // Play media.
+    OB.Playlist.mediaAudio.play();
+    $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+
+    // Play voicetrack after offset.
+    setTimeout(() => { OB.Playlist.voicetrackAudio.play()}, (voicetrackFadeoutBefore + voicetrackOffset) * 1000);
+
+    // Start fading out media to specified volume after offset.
+    setTimeout(() => {
+      const steps = 10;
+      const fadeoutInterval = setInterval(() => {
+        const totalVolDifference = 1 - voicetrackVolume;
+        const newVolume = OB.Playlist.mediaAudio.volume - (totalVolDifference / steps);
+        if (newVolume <= voicetrackVolume) {
+          OB.Playlist.mediaAudio.volume = voicetrackVolume;
+          clearInterval(fadeoutInterval);
+        } else {
+          OB.Playlist.mediaAudio.volume = newVolume;
+        }
+        console.log(OB.Playlist.mediaAudio.volume);
+      }, (voicetrackFadeoutBefore * 1000) / steps);
+    }, voicetrackOffset * 1000);
+
+    // Start fading media back in to 100% volume after voicetrack is over.
+    setTimeout(() => {
+      const steps = 10;
+      const fadeinInterval = setInterval(() => {
+        const totalVolDifference = 1 - voicetrackVolume;
+        const newVolume = OB.Playlist.mediaAudio.volume + (totalVolDifference / steps);
+        if (newVolume >= 1) {
+          OB.Playlist.mediaAudio.volume = 1;
+          clearInterval(fadeinInterval);
+        } else {
+          OB.Playlist.mediaAudio.volume = newVolume;
+        }
+        console.log(OB.Playlist.mediaAudio.volume);
+      }, (voicetrackFadeinAfter * 1000) / steps);
+    }, (voicetrackOffset + voicetrackFadeoutBefore + OB.Playlist.voicetrackAudio.duration) * 1000);
+  };
+  
+  // Note that we need both audio tracks to be playable to avoid buffering getting the timings of 
+  // all the offsets and fades correct. For this we have two different variables to check if either
+  // track is playable through the end, which we set using the usual oncanplaythrough event. In that
+  // same event, we fire a custom event called 'playthroughboth', which checks that BOTH variables are
+  // set. It's only then that we actually start playing the audio. 
   bufferedVoicetrack = false;
   bufferedMedia = false;
 
@@ -518,17 +562,12 @@ OB.Playlist.voicetrackPreview = function ()
 
   OB.Playlist.voicetrackAudio.addEventListener("playthroughboth", (event) => {
     if (bufferedVoicetrack && bufferedMedia) {
-      OB.Playlist.mediaAudio.play();
-      OB.Playlist.voicetrackAudio.play();
-      $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+      playModifiedPreview();
     }
   });
   OB.Playlist.mediaAudio.addEventListener("playthroughboth", (event) => {
     if (bufferedVoicetrack && bufferedMedia) {
-      OB.Playlist.voicetrackAudio.currentTime = -5;
-      OB.Playlist.mediaAudio.play();
-      OB.Playlist.voicetrackAudio.play();
-      $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+      playModifiedPreview();
     }
   });
 }
