@@ -448,6 +448,7 @@ OB.Playlist.voicetrackChange = function ()
 OB.Playlist.voicetrackValidate = function ()
 {
   if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
+    $('#audio_properties_voicetrack_preview').prop('disabled', true);
     return true;
   }
 
@@ -459,6 +460,7 @@ OB.Playlist.voicetrackValidate = function ()
   OB.API.multiPost(post, function (response) {
     if (response[0].status === false || response[1].status === false) {
       console.warn('Media and voicetrack were specified but one or both could not be found: ' + response[0].msg + ' ' + response[1].msg);
+      $('#audio_properties_voicetrack_preview').prop('disabled', true);
       return false;
     }
 
@@ -467,6 +469,7 @@ OB.Playlist.voicetrackValidate = function ()
 
     if (voicetrackDuration > mediaDuration) {
       $('#audio_properties_voicetrack_message').obWidget('error', 'Voicetrack duration is longer than media duration.');
+      $('#audio_properties_voicetrack_preview').prop('disabled', true);
       return false;
     }
 
@@ -476,11 +479,66 @@ OB.Playlist.voicetrackValidate = function ()
     const voicetrackTotal = voicetrackDuration + voicetrackOffset + voicetrackFadeoutBefore + voicetrackFadeinAfter;
     if (voicetrackTotal > mediaDuration) {
       $('#audio_properties_voicetrack_message').obWidget('error', 'Total of voicetrack duration and offsets are longer than media duration.');
+      $('#audio_properties_voicetrack_preview').prop('disabled', true);
       return false;
     } else {
       $('#audio_properties_voicetrack_message').obWidget('hide');
+      $('#audio_properties_voicetrack_preview').prop('disabled', false);
     }
   });
+}
+
+OB.Playlist.voicetrackPreview = function ()
+{
+  const mediaId = document.querySelector('#audio_properties_media_id').value;
+  const voicetrackId = document.querySelector('#audio_properties_voicetrack').value[0];
+  const voicetrackOffset = document.querySelector('#audio_properties_voicetrack_offset').value;
+  const voicetrackFadeoutBefore = document.querySelector('#audio_properties_voicetrack_fadeout_before').value;
+  const voicetrackFadeinAfter = document.querySelector('#audio_properties_voicetrack_fadein_after').value;
+
+  /*$('#audio_preview_voicetrack').html('<audio preload="auto" autoplay="autoplay" controls="controls">\
+    <source src="/preview.php?x='+new Date().getTime()+'&id='+voicetrackId+'&format=mp3" type="audio/mpeg">\
+    <source src="/preview.php?x='+new Date().getTime()+'&id='+voicetrackId+'&format=ogg" type="audio/ogg">\
+  </audio>');*/
+  
+  OB.Playlist.voicetrackAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + voicetrackId);
+  OB.Playlist.mediaAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + mediaId);
+
+  bufferedVoicetrack = false;
+  bufferedMedia = false;
+
+  OB.Playlist.voicetrackAudio.oncanplaythrough = (event) => {
+    bufferedVoicetrack = true;
+    OB.Playlist.voicetrackAudio.dispatchEvent(new Event('playthroughboth'));
+  };
+  OB.Playlist.mediaAudio.oncanplaythrough = (event) => {
+    bufferedMedia = true;
+    OB.Playlist.voicetrackAudio.dispatchEvent(new Event('playthroughboth'));
+  };
+
+  OB.Playlist.voicetrackAudio.addEventListener("playthroughboth", (event) => {
+    if (bufferedVoicetrack && bufferedMedia) {
+      OB.Playlist.mediaAudio.play();
+      OB.Playlist.voicetrackAudio.play();
+      $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+    }
+  });
+  OB.Playlist.mediaAudio.addEventListener("playthroughboth", (event) => {
+    if (bufferedVoicetrack && bufferedMedia) {
+      OB.Playlist.voicetrackAudio.currentTime = -5;
+      OB.Playlist.mediaAudio.play();
+      OB.Playlist.voicetrackAudio.play();
+      $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+    }
+  });
+}
+
+OB.Playlist.voicetrackPreviewStop = function ()
+{
+  $('#audio_properties_voicetrack_preview_stop').prop('disabled', true);
+  OB.Playlist.voicetrackAudio.pause();
+  OB.Playlist.mediaAudio.pause();
+  
 }
 
 OB.Playlist.save = function()
