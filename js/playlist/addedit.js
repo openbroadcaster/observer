@@ -448,7 +448,7 @@ OB.Playlist.voicetrackChange = function ()
 OB.Playlist.voicetrackValidate = function ()
 {
   if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
-    $('#audio_properties_voicetrack_preview').prop('disabled', true);
+    document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
     return true;
   }
 
@@ -460,7 +460,7 @@ OB.Playlist.voicetrackValidate = function ()
   OB.API.multiPost(post, function (response) {
     if (response[0].status === false || response[1].status === false) {
       console.warn('Media and voicetrack were specified but one or both could not be found: ' + response[0].msg + ' ' + response[1].msg);
-      $('#audio_properties_voicetrack_preview').prop('disabled', true);
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
       return false;
     }
 
@@ -469,7 +469,7 @@ OB.Playlist.voicetrackValidate = function ()
 
     if (voicetrackDuration > mediaDuration) {
       $('#audio_properties_voicetrack_message').obWidget('error', 'Voicetrack duration is longer than media duration.');
-      $('#audio_properties_voicetrack_preview').prop('disabled', true);
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
       return false;
     }
 
@@ -479,11 +479,11 @@ OB.Playlist.voicetrackValidate = function ()
     const voicetrackTotal = voicetrackDuration + voicetrackOffset + voicetrackFadeoutBefore + voicetrackFadeinAfter;
     if (voicetrackTotal > mediaDuration) {
       $('#audio_properties_voicetrack_message').obWidget('error', 'Total of voicetrack duration and offsets are longer than media duration.');
-      $('#audio_properties_voicetrack_preview').prop('disabled', true);
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
       return false;
     } else {
       $('#audio_properties_voicetrack_message').obWidget('hide');
-      $('#audio_properties_voicetrack_preview').prop('disabled', false);
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = false;
     }
   });
 }
@@ -505,7 +505,7 @@ OB.Playlist.voicetrackPreview = function ()
   function playModifiedPreview() {
     // Play media.
     OB.Playlist.mediaAudio.play();
-    $('#audio_properties_voicetrack_preview_stop').prop('disabled', false);
+    document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = false;
 
     // Play voicetrack after offset.
     setTimeout(() => { OB.Playlist.voicetrackAudio.play()}, (voicetrackFadeoutBefore + voicetrackOffset) * 1000);
@@ -522,7 +522,6 @@ OB.Playlist.voicetrackPreview = function ()
         } else {
           OB.Playlist.mediaAudio.volume = newVolume;
         }
-        console.log(OB.Playlist.mediaAudio.volume);
       }, (voicetrackFadeoutBefore * 1000) / steps);
     }, voicetrackOffset * 1000);
 
@@ -538,7 +537,6 @@ OB.Playlist.voicetrackPreview = function ()
         } else {
           OB.Playlist.mediaAudio.volume = newVolume;
         }
-        console.log(OB.Playlist.mediaAudio.volume);
       }, (voicetrackFadeinAfter * 1000) / steps);
     }, (voicetrackOffset + voicetrackFadeoutBefore + OB.Playlist.voicetrackAudio.duration) * 1000);
   };
@@ -574,7 +572,7 @@ OB.Playlist.voicetrackPreview = function ()
 
 OB.Playlist.voicetrackPreviewStop = function ()
 {
-  $('#audio_properties_voicetrack_preview_stop').prop('disabled', true);
+  document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = true;
   OB.Playlist.voicetrackAudio.pause();
   OB.Playlist.mediaAudio.pause();
   
