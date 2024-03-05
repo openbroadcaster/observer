@@ -48,6 +48,9 @@ $(function(){
 
     $(document).bind("keydown keypress", function(e){
         if( e.which == 8 ){ // 8 == backspace
+            if (customElements.get(e.target.tagName.toLowerCase()) && (e.target.getAttribute('data-edit') !== null)) {
+                return;
+            }
             if(!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly ){
                 e.preventDefault();
             }
