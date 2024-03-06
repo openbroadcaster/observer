@@ -869,6 +869,21 @@ class OBFDB
     }
 
   /**
+   * Check if a table column exists.
+   */
+    public function column_exists($table, $column)
+    {
+        $escaped_table = $this->escape($table);
+        $escaped_column = $this->escape($column);
+        $result = $this->query("SHOW COLUMNS FROM `$escaped_table` LIKE '$escaped_column'");
+        if ($this->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+  /**
    * Enable or disable autocommit. Useful for limiting model methods to validation only, or otherwise testing before writing changes to the database.
    *
    * @param bool value

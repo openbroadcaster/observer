@@ -57,7 +57,7 @@ class OBFUpdates
             } // fatal error encountered.
         }
 
-        $this->dbver = $checker->dbver;
+        $this->dbver = $checker->dbver ?? 0;
         $this->checker_status = true;
 
         $this->db = new OBFDB();
