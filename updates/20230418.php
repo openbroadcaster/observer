@@ -23,6 +23,9 @@ class OBUpdate20230418 extends OBUpdate
 
     public function run()
     {
+        // keep track of old language ID to new language ID so we can update some JSON data referencing the old language ID
+        $old_to_new_lang_id = [];
+
         // Add new languages table and import ISO-639-3 into it. NOTE: This may take a minute or so.
 
         $this->db->query("CREATE TABLE IF NOT EXISTS `languages` (
@@ -115,8 +118,10 @@ class OBUpdate20230418 extends OBUpdate
             // (so this doesn't need to be done manually).
             $this->db->where('language_id', $old['id']);
             $this->db->update('media', [
-              'language' => $matches[0]['id']
+              'language' => $matches[0]['language_id']
             ]);
+
+            $old_to_new_lang_id[$old['id']] = $matches[0]['language_id'];
 
             $this->db->where('id', $old['id']);
             $this->db->delete('media_languages');
@@ -137,7 +142,7 @@ class OBUpdate20230418 extends OBUpdate
         // is not an expert on the distinctions between various languages, and as a result
         // media items may still end up with an inaccurate language designation and require
         // some further manual input.
-        $remaining_json = json_decode(file_get_contents(__DIR__ . '/data/languages_remaining.json'), true);
+        $remaining_json = json_decode(file_get_contents(__DIR__ . '/data/language_map.json'), true);
         $iso_new_code = 'qaa';
         foreach ($remaining_json as $remain_lang) {
             // Get IDs of remaining languages in media_languages table.
@@ -150,34 +155,17 @@ class OBUpdate20230418 extends OBUpdate
             // iterate over all the media items with old language IDs and set the language
             // to the ones in the new table.
             $iso_lang = null;
-            if ($remain_lang['iso639-3']) {
-                $this->db->where('id', $remain_lang['iso639-3']);
-                $iso_lang = $this->db->get('languages')[0]['language_id'] ?? null;
+            $this->db->where('id', $remain_lang['iso639-3']);
+            $iso_lang = $this->db->get('languages')[0]['language_id'] ?? null;
 
-                if (! $iso_lang) die('Failed to find language for ISO 639-3 code ' . $remain_lang['iso639-3']);
+            if (! $iso_lang) die('Failed to find language for ISO 639-3 code ' . $remain_lang['iso639-3']);
 
-                // Add comment if available even for pre-existing language codes.
-                if (isset($remain_lang['comment'])) {
-                    $this->db->where('language_id', $iso_lang);
-                    $this->db->update('languages', [
-                        'comment' => $remain_lang['comment']
-                    ]);
-                }
-            // No ISO-639-3 code in table. Create a new code starting from 'qaa'
-            // and going to 'qtz', then map all media items to the new ID before
-            // deleting the old media language.
-            } else {
-                $iso_lang = $this->db->insert('languages', [
-                    'id'            => $iso_new_code,
-                    'scope'         => 'I', // treat new languages as Individual
-                    'language_type' => 'S', // treat new languages as Special
-                    'ref_name'      => $remain_lang['name'],
-                    'comment'       => $remain_lang['comment'] ?? null
+            // Add comment if available even for pre-existing language codes.
+            if (isset($remain_lang['comment'])) {
+                $this->db->where('language_id', $iso_lang);
+                $this->db->update('languages', [
+                    'comment' => $remain_lang['comment']
                 ]);
-
-                if (! $iso_lang) die('Failed to create new language with ISO 639-3 code '. $iso_new_code);
-
-                $iso_new_code = $this->increment_string($iso_new_code);
             }
 
             foreach ($old_langs as $old) {
@@ -186,9 +174,36 @@ class OBUpdate20230418 extends OBUpdate
                     'language' => $iso_lang
                 ]);
 
+                $old_to_new_lang_id[$old['id']] = $iso_lang;
+
                 $this->db->where('id', $old['id']);
                 $this->db->delete('media_languages');
             }
+        }
+
+        // anything left in media_languages, transfer over to new languages table
+        $remaining_old_langs = $this->db->get('media_languages');
+        foreach ($remaining_old_langs as $old) {
+            $iso_lang = $this->db->insert('languages', [
+                'id'            => $iso_new_code,
+                'scope'         => 'I', // treat new languages as Individual
+                'language_type' => 'S', // treat new languages as Special
+                'ref_name'      => $old['name']
+            ]);
+
+            if (! $iso_lang) die('Failed to create new language with ISO 639-3 code '. $iso_new_code);
+
+            $this->db->where('language_id', $old['id']);
+            $this->db->update('media', [
+                'language' => $iso_lang
+            ]);
+
+            $old_to_new_lang_id[$old['id']] = $iso_lang;
+
+            $this->db->where('id', $old['id']);
+            $this->db->delete('media_languages');
+
+            $iso_new_code = $this->increment_string($iso_new_code);
         }
 
         // Rename field in core metadata setting.
@@ -207,6 +222,10 @@ class OBUpdate20230418 extends OBUpdate
         if ($this->db->error()) {
             return false;
         }
+
+        // TODO update dayparting JSON
+        // TODO update media_searches JSON
+        // TODO update playlists_items JSON
 
         return true;
     }

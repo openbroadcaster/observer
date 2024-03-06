@@ -98,13 +98,6 @@
     "iso639-3": "yue"
   },
   {
-    "name": "Coast-Salish",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null
-  },
-  {
     "name": "Dane-zaa",
     "iso639-1": null,
     "iso639-2T": "ath",
@@ -175,14 +168,6 @@
     "iso639-3": "iku"
   },
   {
-    "name": "Iroquoian",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "Found under identifier 'iro', not in ISO-639-3.tab. Collective rather than individual language."
-  },
-  {
     "name": "Klallam",
     "iso639-1": null,
     "iso639-2T": "sal",
@@ -204,26 +189,11 @@
     "iso639-3": "kir"
   },
   {
-    "name": "Malecite",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": "pqm"
-  },
-  {
     "name": "Mandarin",
     "iso639-1": "zh",
     "iso639-2T": "zho",
     "iso639-2B": "chi",
     "iso639-3": "cmn"
-  },
-  {
-    "name": "Maya",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "Found under identifier 'myn', not in ISO-639-3.tab. Collective rather than individual language."
   },
   {
     "name": "Melayu",
@@ -269,14 +239,6 @@
     "iso639-3": "ike"
   },
   {
-    "name": "Nicola",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "'mis' in official standard, no official encoding."
-  },
-  {
     "name": "Nipissing",
     "iso639-1": "oj",
     "iso639-2T": "oji",
@@ -291,26 +253,11 @@
     "iso639-3": "blc"
   },
   {
-    "name": "Oowekyala",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null
-  },
-  {
     "name": "Oriya",
     "iso639-1": "or",
     "iso639-2T": "ori",
     "iso639-2B": "ori",
     "iso639-3": "ori"
-  },
-  {
-    "name": "Papuan",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "Found under identifier 'paa', not in ISO-639-3.tab. Collective rather than individual language."
   },
   {
     "name": "Pashto",
@@ -320,25 +267,11 @@
     "iso639-3": "pus"
   },
   {
-    "name": "Plateau",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null
-  },
-  {
     "name": "Punjabi",
     "iso639-1": "pa",
     "iso639-2T": "pan",
     "iso639-2B": "pan",
     "iso639-3": "pan"
-  },
-  {
-    "name": "Quiche",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": "quc"
   },
   {
     "name": "Saanich",
@@ -348,32 +281,11 @@
     "iso639-3": "str"
   },
   {
-    "name": "Sarcee",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": "srs"
-  },
-  {
-    "name": "Sinixt",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null
-  },
-  {
     "name": "Slavey",
     "iso639-1": null,
     "iso639-2T": "den",
     "iso639-2B": "den",
     "iso639-3": "den"
-  },
-  {
-    "name": "Southern-Tsimshian",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": "tsi"
   },
   {
     "name": "Swahili",
@@ -405,26 +317,11 @@
     "comment": "'ttm' for Northern variety included when old data was moved over."
   },
   {
-    "name": "Utkuhiksalik",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null
-  },
-  {
     "name": "Uyghur",
     "iso639-1": "ug",
     "iso639-2T": "uig",
     "iso639-2B": "uig",
     "iso639-3": "uig"
-  },
-  {
-    "name": "Wakashan",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "Found under identifier 'wak', not in ISO-639-3.tab. Collective rather than individual language."
   },
   {
     "name": "Yucatec",
@@ -481,22 +378,6 @@
     "iso639-2T": "moe",
     "iso639-2B": "moe",
     "iso639-3": "moe"
-  },
-  {
-    "name": "Plateau Sign",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "'mis' in official standard, no official encoding."
-  },
-  {
-    "name": "Salish",
-    "iso639-1": null,
-    "iso639-2T": null,
-    "iso639-2B": null,
-    "iso639-3": null,
-    "comment": "Found under identifier 'sal', not in ISO-639-3.tab. Collective rather than individual language."
   },
   {
     "name": "Southern Tsimshian",
