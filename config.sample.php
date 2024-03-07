@@ -33,6 +33,9 @@ define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "ech
 // define('OB_EMAIL_TYPE', 'ssl');
 // define('OB_EMAIL_PORT', 443);
 
+// show all languages
+// define('OB_SHOW_ALL_LANGUAGES', true);
+
 // verify audio/video media validity. skip verify (false), default verify command (true), or custom verify command (string)
 // define('OB_MEDIA_VERIFY',true);
 

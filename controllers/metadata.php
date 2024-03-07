@@ -500,7 +500,15 @@ class Metadata extends OBFController
      */
     public function language_list()
     {
-        $types = $this->models->medialanguages('get_all');
+        // limited to individual living languages
+        if(!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+            $types = $this->models->medialanguages('get_main');
+        }
+
+        // all languages
+        else {
+            $types = $this->models->medialanguages('get_all');
+        }
 
         if ($types === false) {
             return array(false,'An unknown error occured while fetching languages.');

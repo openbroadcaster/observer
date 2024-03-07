@@ -38,4 +38,21 @@ class MediaLanguagesModel extends OBFModel
 
         return $types;
     }
+
+    /**
+     * Get main languages only.
+     * 
+     * @return languages
+     */
+    public function get_main()
+    {
+        $this->db->query('SELECT * FROM `languages` 
+        WHERE 
+            (`scope` = "I" AND `language_type` = "L") OR
+            (`scope` = "I" AND `language_type` = "S")
+        ORDER BY `ref_name`');
+        $types = $this->db->assoc_list();
+
+        return $types;
+    }
 }
