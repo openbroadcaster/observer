@@ -36,6 +36,10 @@ class OBFieldLanguage extends OBField {
     else { console.log('language field not ready'); }
   }
 
+  currentLanguageName() {
+    return OBFieldLanguage.languages[this.value];
+  }
+
   async renderEdit() {
     render(html`<ob-field-select data-edit></ob-field-select>`, this.root);
 
