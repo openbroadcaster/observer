@@ -292,7 +292,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   // initialize properties window for audio item.
   else if(type=='audio')
-  {
+  {    
     if($('#playlist_type_input').val()=='standard')
     {
       document.querySelector('#audio_properties_media_id').value = document.querySelector('#playlist_addedit_item_' + id).dataset.id;
@@ -304,7 +304,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       $('#audio_properties_voicetrack_fadein_after').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after'));
     }
 
-    else // advanced
+    else if(type=='advanced') // advanced
     {
       document.querySelector('#audio_properties_media_id').value = OB.Playlist.advanced_items[id].id;
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
