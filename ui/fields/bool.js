@@ -1,7 +1,7 @@
 import { html, render } from '../vendor.js'
 import { OBField } from '../base/field.js';
 
-class OBFieldPassword extends OBField {
+class OBFieldBool extends OBField {
     #init;
 
     connectedCallback() {
@@ -14,38 +14,28 @@ class OBFieldPassword extends OBField {
             if (this.getAttribute('value')) {
                 this.value = this.getAttribute('value');
             }
-
-            if (this.getAttribute('placeholder')) {
-                this.root.querySelector('input').placeholder = this.getAttribute('placeholder');
-            }
         });;
     }
 
     renderEdit() {
         render(html`
-            <input type="password" autocomplete="off" value=${this.value} />
+            <input type="checkbox" ${this.value === true ? 'checked="checked"' : ''} />
         `, this.root);
     }
 
     renderView() {
         render(html`
-            <input type="password" autocomplete="off" value=${this.value} disabled />
+            <input type="checkbox" ${this.value === true ? 'checked="checked"' : ''} disabled />
         `, this.root);
     }
-    
+
     scss() {
         return `
             :host {
                 input {
                     font: inherit;
                     font-size: 13px;
-                    display: inline-block;
                     color: #2e3436;
-                    border-radius: 2px;
-                    border: 0;
-                    padding: 5px;
-                    width: 250px;
-                    vertical-align: middle;
                 }
             }
         `;
@@ -53,16 +43,20 @@ class OBFieldPassword extends OBField {
 
     get value() {
         if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').value;
+            return this.root.querySelector('input').getAttribute('checked') === 'checked';
         } else {
-            return '';
+            return null;
         }
     }
 
     set value(value) {
-        this.root.querySelector('input').value = value;
+        if (value == true) {
+            this.root.querySelector('input').setAttribute('checked', 'checked');
+        } else {
+            this.root.querySelector('input').removeAttribute('checked');
+        }
         this.renderComponent();
     }
 }
 
-customElements.define('ob-field-password', OBFieldPassword);
+customElements.define('ob-field-bool', OBFieldBool);
