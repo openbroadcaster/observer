@@ -351,9 +351,9 @@ OB.Media.categoryDelete = function(confirm)
 OB.Media.formatsSave = function()
 {
 
-  var audio_formats = $('.audio_formats:checked').map(function(i,n) { return $(n).val(); }).get();
-  var image_formats = $('.image_formats:checked').map(function(i,n) { return $(n).val(); }).get();
-  var video_formats = $('.video_formats:checked').map(function(i,n) { return $(n).val(); }).get();
+  var audio_formats = Array.from(document.querySelectorAll('.audio_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
+  var image_formats = Array.from(document.querySelectorAll('.image_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
+  var video_formats = Array.from(document.querySelectorAll('.video_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
 
   OB.API.post('media','formats_save', { 'audio_formats': audio_formats, 'video_formats': video_formats, 'image_formats': image_formats },function(data) {
     $('#formats_message').obWidget('success',data.msg);
