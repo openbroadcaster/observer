@@ -12,20 +12,24 @@ class OBFieldBool extends OBField {
 
         this.renderComponent().then(() => {
             if (this.getAttribute('value')) {
-                this.value = this.getAttribute('value');
+                this.root.querySelector('input').value = this.getAttribute('value');
+            }
+
+            if (this.hasAttribute('checked')) {
+                this.root.querySelector('input').checked = true;
             }
         });;
     }
 
     renderEdit() {
         render(html`
-            <input type="checkbox" ${this.value === true ? 'checked="checked"' : ''} />
+            <input type="checkbox" />
         `, this.root);
     }
 
     renderView() {
         render(html`
-            <input type="checkbox" ${this.value === true ? 'checked="checked"' : ''} disabled />
+            <input type="checkbox" disabled />
         `, this.root);
     }
 
@@ -43,18 +47,20 @@ class OBFieldBool extends OBField {
 
     get value() {
         if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').getAttribute('checked') === 'checked';
+            return this.root.querySelector('input').value;
+        } 
+    }
+
+    get checked() {
+        if (this.root.querySelector('input')) {
+            return this.root.querySelector('input').checked;
         } else {
-            return null;
+            return false;
         }
     }
 
-    set value(value) {
-        if (value == true) {
-            this.root.querySelector('input').setAttribute('checked', 'checked');
-        } else {
-            this.root.querySelector('input').removeAttribute('checked');
-        }
+    set checked(check) {
+        this.root.querySelector('input').checked = check;
         this.renderComponent();
     }
 }
