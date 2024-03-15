@@ -59,7 +59,7 @@ class Remote
 
     public function __construct()
     {
-        remoteDebug('remote.php called by '.$_SERVER['REMOTE_ADDR'].' with '.json_encode($_REQUEST));
+        remoteDebug('remote.php called by ' . $_SERVER['REMOTE_ADDR'] . ' with ' . json_encode($_REQUEST));
 
         $this->io = OBFIO::get_instance();
         $this->load = OBFLoad::get_instance();
@@ -308,7 +308,7 @@ class Remote
                 $playlist = $this->db->get_one('playlists');
                 $voicetrackxml = $showxml->addChild('voicetrack');
                 $showxml->addChild('description', $playlist['description']);
-                
+
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
                 if (empty($timeslot)) {
                     $showxml->addChild('name', $playlist['name']);
@@ -316,8 +316,10 @@ class Remote
 
                 // add any playlist properties to xml
                 $propertiesxml = $showxml->addChild('properties');
-                foreach (json_decode($playlist['properties'], true) as $propertyKey => $propertyValue) {
-                    $propertiesxml->addChild($propertyKey, $propertyValue);
+                if ($playlist['properties']) {
+                    foreach (json_decode($playlist['properties'], true) as $propertyKey => $propertyValue) {
+                        $propertiesxml->addChild($propertyKey, $propertyValue);
+                    }
                 }
 
                 // see if we have selected media in our cache.
@@ -480,29 +482,27 @@ class Remote
             // default starting time is now. but we'll check to see whether there is an earlier starting time from a cached default playlist which is still playing.
             $timestamp_pointer = time();
 
-            remoteDebug('looking for cached playlist at time '.gmdate('Y-m-d H:i:s', $timestamp_pointer));
+            remoteDebug('looking for cached playlist at time ' . gmdate('Y-m-d H:i:s', $timestamp_pointer));
 
-            $this->db->query('SELECT start FROM shows_cache WHERE player_id = '.$this->db->escape($this->default_playlist_player_id).' AND show_expanded_id IS NULL AND start <= ' . $this->db->escape($timestamp_pointer) . ' AND start+duration > ' . $this->db->escape($timestamp_pointer));
+            $this->db->query('SELECT start FROM shows_cache WHERE player_id = ' . $this->db->escape($this->default_playlist_player_id) . ' AND show_expanded_id IS NULL AND start <= ' . $this->db->escape($timestamp_pointer) . ' AND start+duration > ' . $this->db->escape($timestamp_pointer));
 
-            if($this->db->num_rows() > 1) {
-                remoteDebug('found more than one cached playlist ('.$this->db->num_rows().'), this shouldn\'t happen');
+            if ($this->db->num_rows() > 1) {
+                remoteDebug('found more than one cached playlist (' . $this->db->num_rows() . '), this shouldn\'t happen');
             }
             if ($this->db->num_rows() > 0) {
                 $cached_default_playlist = $this->db->assoc_row();
                 $timestamp_pointer = $cached_default_playlist['start'];
-                remoteDebug('found, updating timestamp pointer to '.gmdate('Y-m-d H:i:s', $timestamp_pointer));
-            }
-            else {
+                remoteDebug('found, updating timestamp pointer to ' . gmdate('Y-m-d H:i:s', $timestamp_pointer));
+            } else {
                 remoteDebug('not found');
             }
 
             for ($default_playlist_counter = 0; $timestamp_pointer < $end_timestamp; $default_playlist_counter++) {
-
                 // handling for default playlist during current gap (before first show in the outputted schedule)
                 if ($default_playlist_counter == 0 && (count($show_times) == 0 || $show_times[0]['start'] > $timestamp_pointer)) {
                     $default_start = $timestamp_pointer;
 
-                    remoteDebug('FOUND GAP, setting default start to '.gmdate('Y-m-d H:i:s', $default_start));
+                    remoteDebug('FOUND GAP, setting default start to ' . gmdate('Y-m-d H:i:s', $default_start));
 
                     // if no show times, then we are an indefinite gap
                     // otherwise, gap until the start of the first show
@@ -516,8 +516,7 @@ class Remote
 
                     // loop to fill with default playlist to fill the gap
                     while ($default_start_tmp < $default_end) {
-
-                        remoteDebug('FILL GAP LOOP 1 with start '.gmdate('Y-m-d H:i:s', $default_start_tmp).' and end '.gmdate('Y-m-d H:i:s', $default_end));
+                        remoteDebug('FILL GAP LOOP 1 with start ' . gmdate('Y-m-d H:i:s', $default_start_tmp) . ' and end ' . gmdate('Y-m-d H:i:s', $default_end));
 
                         if ($default_start_tmp > $end_timestamp) {
                             break(2);
@@ -547,10 +546,9 @@ class Remote
 
                     // this will be false if there is no gap between shows, or at the end where a show goes over our end timestamp.
                     if ($default_start < $default_end) {
-
                         $default_start_tmp = $default_start;
 
-                        remoteDebug('FILL GAP LOOP 2 with start '.gmdate('Y-m-d H:i:s', $default_start_tmp).' and end '.gmdate('Y-m-d H:i:s', $default_end));
+                        remoteDebug('FILL GAP LOOP 2 with start ' . gmdate('Y-m-d H:i:s', $default_start_tmp) . ' and end ' . gmdate('Y-m-d H:i:s', $default_end));
 
                         while ($default_start_tmp < $default_end) {
                             if ($default_start_tmp > $end_timestamp) {
@@ -677,7 +675,7 @@ class Remote
         }
         if ($offset !== false) {
             $itemxml->addChild('offset', $offset);
-        } 
+        }
 
         if (! empty($voicetrack['is_archived'])) {
             $filerootdir = OB_MEDIA_ARCHIVE;
@@ -698,12 +696,20 @@ class Remote
         $itemxml->addChild('location', $voicetrack['file_location']);
         $itemxml->addChild('archived', $voicetrack['is_archived']);
         $itemxml->addChild('approved', $voicetrack['is_approved']);
-        
-        $itemxml->addChild('volume', $track['volume']);
-        $itemxml->addChild('offset', $track['offset']);
-        $itemxml->addChild('fadeout-before', $track['fadeout-before']);
-        $itemxml->addChild('fadein-after', $track['fadein-after']);
-        
+
+        if ($track['volume'] ?? null) {
+            $itemxml->addChild('volume', $track['volume']);
+        }
+        if ($track['offset'] ?? null) {
+            $itemxml->addChild('offset', $track['offset']);
+        }
+        if ($track['fadeout-before'] ?? null) {
+            $itemxml->addChild('fadeout-before', $track['fadeout-before']);
+        }
+        if ($track['fadein-after'] ?? null) {
+            $itemxml->addChild('fadein-after', $track['fadein-after']);
+        }
+
         if (isset($voicetrack['thumbnail'])) {
             $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
         }
@@ -767,7 +773,9 @@ class Remote
             $itemxml->addChild('location', $media['file_location']);
             $itemxml->addChild('archived', $media['is_archived']);
             $itemxml->addChild('approved', $media['is_approved']);
-            if (isset($media['thumbnail'])) $itemxml->addChild('thumbnail', $media['thumbnail']);
+            if (isset($media['thumbnail'])) {
+                $itemxml->addChild('thumbnail', $media['thumbnail']);
+            }
             $itemxml->addChild('context', $track['context']);
             if ($track['crossfade'] ?? null) {
                 $itemxml->addChild('crossfade', $track['crossfade']);
@@ -784,7 +792,7 @@ class Remote
     private function default_playlist_show_xml(&$showxml, $start, $max_duration)
     {
 
-        remoteDebug('default_playlist_show_xml called with start ' . gmdate('Y-m-d H:i:s', $start) . ' max duration '. $max_duration);
+        remoteDebug('default_playlist_show_xml called with start ' . gmdate('Y-m-d H:i:s', $start) . ' max duration ' . $max_duration);
 
         if (empty($this->default_playlist_id)) {
             return 0;
@@ -821,9 +829,7 @@ class Remote
             $duration = $cache['duration'];
 
             remoteDebug('default_playlist_show_xml FOUND CACHED default playlist with duration ' . $duration);
-
         } elseif ($this->cache_player_id != $this->player['id'] && $this->player['use_parent_playlist']) {
-
             remoteDebug('default_playlist_show_xml NO FOUND CACHED default playlist, using parent player for cache');
 
             // are we using a parent player for cache (and playlist)?
@@ -874,15 +880,12 @@ class Remote
             'data' => json_encode($show_media_items),
             'created' => $cache_created
             ]);
-        }
-
-        elseif(!$cache) {
+        } elseif (!$cache) {
             remoteDebug('default_playlist_show_xml NO FOUND CACHED default playlist');
         }
 
         // still don't have media items?
         if (empty($show_media_items)) {
-
             remoteDebug('default_playlist_show_xml NO MEDIA ITEMS default playlist, generating');
 
             // don't specify max duration for playlist resolve since it's likely we'll need more items on subsequent sync.
@@ -972,7 +975,7 @@ class Remote
             $order_count++;
         }
 
-        remoteDebug('default_playlist_show_xml finished with max_duration '.$max_duration. ' duration '.$duration);
+        remoteDebug('default_playlist_show_xml finished with max_duration ' . $max_duration . ' duration ' . $duration);
 
         return min($max_duration, $duration);
     }
@@ -1324,7 +1327,7 @@ function remoteDebug($data)
     $file = __DIR__ . '/debug.txt';
     $fh = fopen($file, 'a');
     // add date to data
-    $string = '['.$_REQUEST['id'].']['.gmdate('Y-m-d H:i:s').'] '. $data . "\n";
+    $string = '[' . $_REQUEST['id'] . '][' . gmdate('Y-m-d H:i:s') . '] ' . $data . "\n";
     fwrite($fh, $string);
     fclose($fh);
 }
