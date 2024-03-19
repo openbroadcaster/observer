@@ -1,7 +1,7 @@
 import { html, render } from '../vendor.js'
 import { OBField } from '../base/field.js';
 
-class OBFieldBool extends OBField {
+class OBFieldCheckbox extends OBField {
     #init;
 
     connectedCallback() {
@@ -65,4 +65,4 @@ class OBFieldBool extends OBField {
     }
 }
 
-customElements.define('ob-field-bool', OBFieldBool);
+customElements.define('ob-field-checkbox', OBFieldCheckbox);
