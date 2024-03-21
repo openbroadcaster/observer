@@ -30,7 +30,7 @@ if (!file_exists(OB_CACHE.'/thumbnails')) {
 while (true) {
     echo 'getting items requiring genres'.PHP_EOL;
 
-    $db->query('SELECT media_id as id, sync_releasegroup_id  FROM `media_metadata` WHERE sync_musicbrainz_raw is null and sync_releasegroup_id is not null and sync_releasegroup_id!="" order by media_id desc limit 25');
+    $db->query('SELECT id, metadata_sync_releasegroup_id  FROM `media` WHERE sync_musicbrainz_raw is null and sync_releasegroup_id is not null and sync_releasegroup_id!="" order by media_id desc limit 25');
     $rows = $db->assoc_list();
 
     foreach ($rows as $row) {
@@ -59,22 +59,22 @@ while (true) {
             }
         }
 
-        $db->where('media_id', $row['id']);
-        $db->update('media_metadata', [
-      'sync_musicbrainz_raw'=>$musicbrainz_raw_response
+        $db->where('id', $row['id']);
+        $db->update('media', [
+      'metadata_sync_musicbrainz_raw'=>$musicbrainz_raw_response
     ]);
 
         // update database with genres
         if (!empty($genres)) {
             echo $row['id'].': '.implode(', ', $genres).PHP_EOL;
-            $db->where('media_id', $row['id']);
-            $db->update('media_metadata', [
-        'genres'=>implode(',', $genres)
+            $db->where('id', $row['id']);
+            $db->update('media', [
+        'metadata_genres'=>implode(',', $genres)
       ]);
             $db->where('media_id', $row['id']);
-            $db->delete('media_metadata_tags');
+            $db->delete('media_tags');
             foreach ($genres as $genre) {
-                $db->insert('media_metadata_tags', ['media_id'=>$row['id'], 'media_metadata_column_id'=>1, 'tag'=>$genre]);
+                $db->insert('media_tags', ['media_id'=>$row['id'], 'media_metadata_column_id'=>1, 'tag'=>$genre]);
             }
         }
     }

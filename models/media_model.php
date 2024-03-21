@@ -250,16 +250,12 @@ class MediaModel extends OBFModel
         $this->db->what('users.display_name', 'owner_name');
 
         foreach ($args['metadata_fields'] as $metadata_field) {
-            if (isset($metadata_field['settings']->default)) {
-                $default = $metadata_field['settings']->default;
-                if (is_array($default)) {
-                    $default = implode(',', $default);
-                }
-
-                $this->db->what('COALESCE(' . $this->db->format_table_column('media_metadata.' . $metadata_field['name']) . ',"' . $this->db->escape($default) . '")', 'metadata_' . $metadata_field['name'], false);
-            } else {
-                $this->db->what('media_metadata.' . $metadata_field['name'], 'metadata_' . $metadata_field['name']);
+            $default = $metadata_field['settings']->default ?? null;
+            if (is_array($default)) {
+                $default = implode(',', $default);
             }
+
+            $this->db->what('COALESCE(media.metadata_' . $metadata_field['name'] . ',"' . $this->db->escape($default) . '")', 'metadata_' . $metadata_field['name'], false);
         }
     }
 
@@ -275,7 +271,6 @@ class MediaModel extends OBFModel
         $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('users', 'media.owner_id', 'users.id');
-        $this->db->leftjoin('media_metadata', 'media_metadata.media_id', 'media.id');
     }
 
     /**
@@ -704,7 +699,6 @@ class MediaModel extends OBFModel
 
         // put all the where data together.
         $this->db->where_string(implode(' AND ', $where_array));
-        $this->db->leftjoin('media_metadata', 'media.id', 'media_metadata.media_id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
         $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
@@ -876,7 +870,7 @@ class MediaModel extends OBFModel
             $metadata_fields = $this->models->mediametadata('get_all');
             $metadata_defaults = [];
             foreach ($metadata_fields as $metadata_field) {
-                $column_array['metadata_' . $metadata_field['name']] = 'media_metadata.' . $metadata_field['name'];
+                $column_array['metadata_' . $metadata_field['name']] = 'media.metadata_' . $metadata_field['name'];
                 if (isset($metadata_field['settings']->default)) {
                     $default = $metadata_field['settings']->default;
 
@@ -1384,9 +1378,9 @@ class MediaModel extends OBFModel
                         }
                     }
                 }
-                $metadata[$metadata_field['name']] = implode(',', $tags);
+                $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
             } else {
-                $metadata[$metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
+                $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
             }
 
             unset($item['metadata_' . $metadata_field['name']]);
@@ -1412,21 +1406,15 @@ class MediaModel extends OBFModel
         }
 
         // update or insert custom metadata
-        $this->db->where('media_id', $id);
-        if ($this->db->get_one('media_metadata')) {
-            $this->db->where('media_id', $id);
-            $this->db->update('media_metadata', $metadata);
-        } else {
-            $metadata['media_id'] = $id;
-            $this->db->insert('media_metadata', $metadata);
-        }
+        $this->db->where('id', $id);
+        $this->db->update('media', $metadata);
 
         // update custom metadata tags
         $this->db->where('media_id', $id);
-        $this->db->delete('media_metadata_tags');
+        $this->db->delete('media_tags');
         foreach ($metadata_tags as $row) {
             $row['media_id'] = $id;
-            $this->db->insert('media_metadata_tags', $row);
+            $this->db->insert('media_tags', $row);
         }
 
         // determine our file's name (may be used if we have a new file, or file requires renaming)
@@ -2032,10 +2020,6 @@ class MediaModel extends OBFModel
             // main delete
             $this->db->where('id', $id);
             $this->db->delete('media');
-
-            // metadata delete
-            $this->db->where('media_id', $id);
-            $this->db->delete('media_metadata');
 
             if ($original_media[$id]['is_archived'] == 1) {
                 $media_file = OB_MEDIA_ARCHIVE . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];

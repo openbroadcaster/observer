@@ -61,15 +61,15 @@ echo 'found '.count($files).' files'.PHP_EOL;
 echo 'getting data to check duplicates'.PHP_EOL;
 
 // get our data for checking duplicates
-$rows = $db->get('media_metadata');
+$rows = $db->get('media');
 $duplicate_file = [];
 $duplicate_acoustid = [];
 foreach ($rows as $row) {
-    if (!empty($row['sync_path']) && !empty($row['sync_size'])) {
-        $duplicate_file[$row['sync_path']] = $row['sync_size'];
+    if (!empty($row['metadata_sync_path']) && !empty($row['metadata_sync_size'])) {
+        $duplicate_file[$row['metadata_sync_path']] = $row['metadata_sync_size'];
     }
-    if (!empty($row['sync_acoustid'])) {
-        $duplicate_acoustid[$row['sync_acoustid']] = true;
+    if (!empty($row['metadata_sync_acoustid'])) {
+        $duplicate_acoustid[$row['metadata_sync_acoustid']] = true;
     }
 }
 

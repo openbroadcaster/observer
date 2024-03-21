@@ -30,7 +30,7 @@ if (!file_exists(OB_CACHE.'/thumbnails')) {
 while (true) {
     echo 'getting items requiring cover art'.PHP_EOL;
 
-    $db->query('SELECT media.file_location, media.id, sync_releasegroup_id  FROM `media_metadata` left join media on media_metadata.media_id = media.id WHERE sync_coverart_raw is null and sync_releasegroup_id is not null and sync_releasegroup_id!="" order by media_id desc limit 25');
+    $db->query('SELECT file_location, id, sync_releasegroup_id  FROM `media` WHERE metadata_sync_coverart_raw is null and metadata_sync_releasegroup_id is not null and metadata_sync_releasegroup_id!="" order by id desc limit 25');
     $rows = $db->assoc_list();
 
     foreach ($rows as $row) {
@@ -79,9 +79,9 @@ while (true) {
             }
         }
 
-        $db->where('media_id', $row['id']);
-        $db->update('media_metadata', [
-      'sync_coverart_raw'=>$coverart_raw_response
+        $db->where('id', $row['id']);
+        $db->update('media', [
+      'metadata_sync_coverart_raw'=>$coverart_raw_response
     ]);
     }
 

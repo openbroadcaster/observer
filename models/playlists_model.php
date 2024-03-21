@@ -615,7 +615,7 @@ class PlaylistsModel extends OBFModel
 
         // 'all items' selected.
         if (empty($num_items)) {
-            $this->db->query('select sum(if(duration is null, ' . $image_duration . ', duration)) as total from media left join media_metadata on media.id=media_metadata.media_id where ' . implode(' AND ', $where));
+            $this->db->query('select sum(if(duration is null, ' . $image_duration . ', duration)) as total from media where ' . implode(' AND ', $where));
             $result = $this->db->assoc_list();
 
             if (empty($result[0]['total'])) {
@@ -624,7 +624,7 @@ class PlaylistsModel extends OBFModel
             return $result[0]['total'];
         } else {
             // complete
-            $this->db->query('select avg(if(duration is null, ' . $image_duration . ', duration)) as avg from media left join media_metadata on media.id=media_metadata.media_id where ' . implode(' AND ', $where));
+            $this->db->query('select avg(if(duration is null, ' . $image_duration . ', duration)) as avg from media where ' . implode(' AND ', $where));
             $result = $this->db->assoc_list();
 
             if (empty($result[0]['avg'])) {

@@ -47,9 +47,9 @@ $genre_id = trim($genre_id);
 $media_id = trim($media_id);
 
 // get metadata columns to add
-$metadata = $db->get('media_metadata_columns');
+$metadata = $db->get('media_metadata');
 foreach ($metadata as $metadata_column) {
-    $db->what('media_metadata.'.$metadata_column['name'], 'metadata_'.$metadata_column['name']);
+    $db->what('media.metadata_' . $metadata_column['name'], 'metadata_' . $metadata_column['name']);
 }
 
 // add other columns
@@ -95,7 +95,6 @@ if ($limit) {
 }
 
 // the rest
-$db->leftjoin('media_metadata', 'media.id', 'media_metadata.media_id');
 $db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
 $db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
 $db->leftjoin('media_languages', 'media.language_id', 'media_languages.id');
