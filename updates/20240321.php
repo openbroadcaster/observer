@@ -15,15 +15,9 @@ class OBUpdate20240321 extends OBUpdate
 
     public function run()
     {
-        //$this->db->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'media_metadata';");
-        /*if ($this->db->error()) {
-            echo $this->db->error();
-            return false;
-        }*/
-
         // Add metadata columns to media table directly.
         $metadataColumns = $this->models->mediametadata('get_all');
-        /*foreach ($metadataColumns as $metadataColumn) {
+        foreach ($metadataColumns as $metadataColumn) {
             switch ($metadataColumn['type']) {
                 case 'text':
                     $colType = 'VARCHAR(255)';
@@ -55,10 +49,10 @@ class OBUpdate20240321 extends OBUpdate
                 echo $this->db->error();
                 return false;
             }
-        }*/
+        }
 
         // Move metadata rows from media_metadata to media tables.
-        /*$this->db->query("SELECT * FROM media_metadata;");
+        $this->db->query("SELECT * FROM media_metadata;");
         if ($this->db->error()) {
             echo $this->db->error();
             return false;
@@ -80,7 +74,7 @@ class OBUpdate20240321 extends OBUpdate
                 echo $this->db->error();
                 return false;
             }
-        }*/
+        }
 
         // Rename metadata tables for future code changes.
         $this->db->query("RENAME TABLE media_metadata TO _media_metadata;");
