@@ -19,10 +19,6 @@
 
 OB.Sidebar = new Object();
 
-OB.Sidebar.defaults = {
-  results_per_page: 250
-}
-
 OB.Sidebar.init = function()
 {
   OB.Callbacks.add('ready',-5,OB.Sidebar.sidebarInit);
@@ -374,12 +370,8 @@ OB.Sidebar.media_search_offset = 0;
 
 OB.Sidebar.mediaSearchMore = function()
 {
-  var results_per_page = OB.Settings.store('results-per-page');
-  if (typeof results_per_page !== "undefined") {
-    OB.Sidebar.media_search_offset += results_per_page;
-  } else {
-    OB.Sidebar.media_search_offset += OB.Sidebar.defaults.results_per_page;
-  }
+  var results_per_page = 100;
+  OB.Sidebar.media_search_offset += results_per_page;
 
   OB.Sidebar.mediaSearch(true);
 }
@@ -478,8 +470,7 @@ OB.Sidebar.mediaSearch = function(more)
   $('#sidebar_search_media_loading').show();
   $('#sidebar_search_media_loadmore').hide();
 
-  var results_per_page = OB.Settings.store('results-per-page');
-  if (typeof results_per_page === "undefined") results_per_page = OB.Sidebar.defaults.results_per_page;
+  var results_per_page = 100;
   OB.API.post('media','search',{ save_history: true, sort_by: OB.Sidebar.media_search_sort_by, sort_dir: OB.Sidebar.media_search_sort_dir, q: search_query, s: OB.Sidebar.media_search_filters.mode, l: results_per_page, o: OB.Sidebar.media_search_offset, my: OB.Sidebar.media_search_filters.my },function (data)
   {
     var media_class = media; // media singleton is needed, but media local variable below overrides.
@@ -844,8 +835,7 @@ OB.Sidebar.playlist_search_offset = 0;
 
 OB.Sidebar.playlistSearchMore = function()
 {
-  var results_per_page = OB.Settings.store('results-per-page');
-  if (typeof results_per_page === "undefined") results_per_page = OB.Sidebar.defaults.results_per_page;
+  var results_per_page = 100;
   OB.Sidebar.playlist_search_offset += results_per_page;
 
   OB.Sidebar.playlistSearch(true);
@@ -885,8 +875,7 @@ OB.Sidebar.playlistSearch = function(more)
   $('#sidebar_search_playlist_loading').show();
   $('#sidebar_search_playlist_loadmore').hide();
 
-  var results_per_page = OB.Settings.store('results-per-page');
-  if (typeof results_per_page === "undefined") results_per_page = OB.Sidebar.defaults.results_per_page;
+  var results_per_page = 100;
 
   OB.API.post('playlists','search',{ sort_by: OB.Sidebar.playlist_search_sort_by, sort_dir: OB.Sidebar.playlist_search_sort_dir, q: $('#sidebar_search_playlist_input').val(), l: results_per_page, o: OB.Sidebar.playlist_search_offset, my: OB.Sidebar.playlist_search_filters.my },function (data) {
 
