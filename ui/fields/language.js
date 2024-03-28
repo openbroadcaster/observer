@@ -5,6 +5,7 @@ class OBFieldLanguage extends OBField {
 
   // languages are common to all instances of this element
   static languages = null;
+  valuePending = false;
 
   async connectedCallback() {
     if (OBFieldLanguage.languages === null) {
@@ -33,7 +34,7 @@ class OBFieldLanguage extends OBField {
     if (this.fieldSelect) {
       this.fieldSelect.value = value;
     }
-    else { console.log('language field not ready'); }
+    else { this.initValue = value; }
   }
 
   currentLanguageName() {
@@ -48,6 +49,11 @@ class OBFieldLanguage extends OBField {
     if (!this.fieldSelect.options.length) {
       this.fieldSelect.options = OBFieldLanguage.languages;
       this.fieldSelect.refresh();
+    }
+
+    if(this.initValue) {
+      this.value = this.initValue;
+      this.initValue = false;
     }
   }
 }
