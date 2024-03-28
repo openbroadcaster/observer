@@ -603,17 +603,19 @@ class Remote
             $this->db->where('start', $show['start']);
             $this->db->where('playlists_liveassist_button_id', $button['id']);
 
-            $cache = $this->db->get_one('schedules_liveassist_buttons_cache');
+            // $cache = $this->db->get_one('schedules_liveassist_buttons_cache');
 
+            /*
             if ($cache) {
                 $items = (array) json_decode($cache['data']);
                 $cache_created = $cache['created'];
             } else {
+            */
                 $items = $this->PlaylistsModel('resolve', $button['button_playlist_id'], $this->player['id'], false, $show_start);
                 $cache_created = time();
                 // $showxml->addChild('last_updated',$cache_created);
-                $this->db->insert('schedules_liveassist_buttons_cache', array('player_id' => $this->player['id'],'start' => $show['start'],'playlists_liveassist_button_id' => $button['id'],'data' => json_encode($items),'created' => $cache_created));
-            }
+                // $this->db->insert('schedules_liveassist_buttons_cache', array('player_id' => $this->player['id'],'start' => $show['start'],'playlists_liveassist_button_id' => $button['id'],'data' => json_encode($items),'created' => $cache_created));
+            // }
 
             $group_xml = $buttons_xml->addChild('group');
             $group_xml->addChild('last_updated', $cache_created);

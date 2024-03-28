@@ -46,11 +46,16 @@ class MediaLanguagesModel extends OBFModel
      */
     public function get_main()
     {
-        $this->db->query('SELECT * FROM `languages` 
-        WHERE 
-            (`scope` = "I" AND `language_type` = "L") OR
-            (`scope` = "I" AND `language_type` = "S")
-        ORDER BY `ref_name`');
+        $this->db->query('
+          SELECT * FROM `languages`
+          WHERE
+            (`id` LIKE "%q" AND `language_type` = "S") OR
+            (
+	      /* `part2t` IS NOT NULL AND `part2t` != "" AND  */
+              `scope` = "I" AND `language_type` = "L"
+            ) 
+          ORDER BY `ref_name`
+        ');
         $types = $this->db->assoc_list();
 
         return $types;

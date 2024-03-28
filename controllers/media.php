@@ -639,7 +639,7 @@ class Media extends OBFController
 
         // get where used information...
         if ($this->data('where_used')) {
-            $where_used = $this->models->media('where_used', ['id' => $id, 'include_dynamic' => true]);
+            $where_used = $this->models->media('where_used', ['id' => $id, 'include_dynamic' => false]);
             $media['where_used'] = $where_used;
         }
 
