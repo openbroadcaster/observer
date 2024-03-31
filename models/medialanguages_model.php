@@ -40,7 +40,7 @@ class MediaLanguagesModel extends OBFModel
     }
 
     /**
-     * Get main languages only.
+     * Get living languages only.
      * 
      * @return languages
      */
@@ -49,15 +49,35 @@ class MediaLanguagesModel extends OBFModel
         $this->db->query('
           SELECT * FROM `languages`
           WHERE
-            (`id` LIKE "%q" AND `language_type` = "S") OR
-            (
-	      /* `part2t` IS NOT NULL AND `part2t` != "" AND  */
-              `scope` = "I" AND `language_type` = "L"
-            ) 
+            (`id` LIKE "%q" AND `language_type` = "S") OR `language_type` = "L"
           ORDER BY `ref_name`
         ');
         $types = $this->db->assoc_list();
 
         return $types;
+    }
+
+
+    /** 
+     * Get top languages by media count.
+     * 
+     * @return languages
+     */
+    public function get_top($args = [])
+    {
+        $languages = [];
+
+        $this->db->query('SELECT m.language, COUNT(m.language) AS count
+        FROM media m
+        GROUP BY m.language
+        ORDER BY count DESC');
+
+        $tmp = $this->db->assoc_list();
+
+        foreach($tmp as $language) {
+          $languages[] = $language['language'];
+        }
+
+        return $languages;
     }
 }
