@@ -3,6 +3,8 @@ body
   font-size: 15px;
   color: #eeeeec;
   background-color: #000;
+
+  scrollbar-color: #919191 rgba(0,0,0,0);
 }
 
 body.font-default
@@ -55,11 +57,6 @@ p
 {
   background-color: #bf2121;
   color: #eeeeec;
-}
-
-.simplebar-scrollbar:before
-{
-  background-color: #eeeeec;
 }
 
 button, input[type=submit], input[type=reset], input[type=button], a.button

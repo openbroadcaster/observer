@@ -16,6 +16,8 @@ body,
 #footer_box_right
 {
   color: #333336;
+
+  scrollbar-color: #8d9090 rgba(0,0,0,0); 
 }
 
 a
@@ -31,11 +33,6 @@ body, #main_container, ob-tag-suggestions
 fieldset, #layout_footer
 {
   border-top-color: #333336;
-}
-
-.simplebar-scrollbar:before
-{
-  background-color: #2e3436;
 }
 
 ob-tab-select button

@@ -42,9 +42,14 @@
   text-align: center;
   background-color: rgba(0,0,0,0.3);
   height: 200px;
-  overflow: hidden;
   border-radius: 5px;
   flex: none;
+
+  scrollbar-width: thin;
+  
+  &:not(:hover) {
+    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
+  }
 }
 
 #sidebar_player.closed #sidebar_player_main
@@ -120,10 +125,13 @@
 
 #sidebar_search_media_results_container, #sidebar_search_playlist_results_container
 {
-/*
   overflow-y: scroll;
   overflow-x: hidden;
-*/
+  scrollbar-width: thin;
+  &:not(:hover) {
+    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
+  }
+
   flex: 1 1 0px;
 }
 
@@ -348,7 +356,7 @@ body.sidebar-left .sidebar_search_media_container_detailed #media_detailed_toggl
   font-size: 0.8em;
   border-bottom: 1px solid #777;
   word-wrap: break-word;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #sidebar_search_media_results .sidebar_search_media_type

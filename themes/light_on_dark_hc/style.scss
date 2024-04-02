@@ -18,6 +18,8 @@ body,
 #footer_box_right
 {
   color: #ffffff; /**/
+
+  scrollbar-color: #ffffff rgba(0,0,0,0);
 }
 
 a
@@ -38,16 +40,6 @@ fieldset, #layout_footer
 .table td
 {
   border-bottom: 1px solid #aaa;
-}
-
-.simplebar-scrollbar:before
-{
-  background-color: #ffffff;
-}
-
-.simplebar-scrollbar.simplebar-visible:before
-{
-  opacity: 1 !important;
 }
 
 ob-tab-select button

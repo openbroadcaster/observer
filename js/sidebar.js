@@ -79,20 +79,6 @@ OB.Sidebar.sidebarInit = function()
   OB.Sidebar.playlistEditDeleteVisibility();
   OB.Sidebar.mediaSearchFilter('approved');
   OB.Sidebar.playlistSearch();
-
-  var media_simplebar = new SimpleBar(document.getElementById('sidebar_search_media_results_container'));
-  media_simplebar.getScrollElement().addEventListener('scroll', function()
-  {
-    var distance_to_bottom = $('#sidebar_search_media_results_container .simplebar-content').height() - $(this).scrollTop() - $('#sidebar_search_media_results_container').height();
-    if(distance_to_bottom<50 && $('#sidebar_search_media_loadmore').is(':visible')) OB.Sidebar.mediaSearchMore();
-  });
-
-  var playlist_simplebar = new SimpleBar(document.getElementById('sidebar_search_playlist_results_container'));
-  playlist_simplebar.getScrollElement().addEventListener('scroll', function()
-  {
-    var distance_to_bottom = $('#sidebar_search_playlist_results_container .simplebar-content').height() - $(this).scrollTop() - $('#sidebar_search_playlist_results_container').height();
-    if(distance_to_bottom<50 && $('#sidebar_search_playlist_loadmore').is(':visible')) OB.Sidebar.playlistSearchMore();
-  });
 }
 
 OB.Sidebar.playerToggle = function()

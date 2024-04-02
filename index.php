@@ -107,9 +107,6 @@ foreach ($jsModuleIterator as $file) {
   <script type="text/javascript" src="extras/parseduration.js?v=<?=filemtime('extras/parseduration.js')?>"></script>
   <script type="text/javascript" src="extras/tinymce/js/tinymce/tinymce.min.js?v=<?=filemtime('extras/tinymce/js/tinymce/tinymce.min.js')?>"></script>
 
-  <script type="text/javascript" src="extras/simplebar/simplebar.min.js?v=<?=filemtime('extras/simplebar/simplebar.min.js')?>"></script>
-  <link rel="stylesheet" type="text/css" href="extras/simplebar/simplebar.min.css?v=<?=filemtime('extras/simplebar/simplebar.min.css')?>">
-
   <link type="text/css" href="extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
   <link type="text/css" href="extras/jquery-ui-darkness/jquery-ui.min.css?v=<?=filemtime('extras/jquery-ui-darkness/jquery-ui.min.css')?>" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="extras/jquery-ui-timepicker-addon.css?v=<?=filemtime('extras/jquery-ui-timepicker-addon.css')?>">

@@ -1255,9 +1255,6 @@ OB.UI.openModalWindow = function(file)
   }
   else $('#layout_modal_window').html('');
 
-  // reset/init simplebar
-  new SimpleBar(document.getElementById('layout_modal_window'));
-
   // trigger dom callback, mutation observer not always called in time.
   OB.UI.domChangeCallback();
 }

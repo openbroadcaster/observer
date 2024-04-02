@@ -5,6 +5,7 @@ html, body {
 body
 {
   overflow: hidden;
+  // TODO: overflow scroll styling here maybe?
 }
 
 #main_container
@@ -39,13 +40,12 @@ body.sidebar-left #layout_container
 
 #layout_main_container
 {
-  /* overflow-y: auto; */
+  overflow-y: auto;
   flex: 1 1 auto;
-  
-  > .simplebar-track.simplebar-vertical
-  {
-    top: 5px;
-    bottom: 5px;
+
+  scrollbar-width: thin;
+  &:not(:hover) {
+    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
   }
 }
 
@@ -235,15 +235,13 @@ body.modal-open #layout_modal_container
   background-color: #333336;
   border: 1px solid #eeeeec;
   padding: 10px;
-/*  overflow: auto; */
+  overflow: auto;
   max-height: 90%;
   width: 100%;
   
-  > .simplebar-track.simplebar-vertical
-  {
-    right: 1px;
-    top: 3px;
-    bottom: -5px;
+  scrollbar-width: thin;
+  &:not(:hover) {
+    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
   }
 }
 
