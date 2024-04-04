@@ -44,13 +44,13 @@ composer install && npm install
 
 6. Copy the `config.sample.php` file to `config.php` and open it in a text editor. Set the required configuration items, such as database connection details and other settings specific to your environment.
 
-7. Run the following command to validate your configuration file. If there are any errors or missing configurations, correct them in the `config.php` file.
+7. Run the following command to validate your configuration file. Correct any errors displayed in red.
 
 ```
 tools/cli/ob check
 ```
 
-6. Run the following command to install database updates. This step may take a few minutes to complete.
+6. Run the following command to install database updates. This may take a few minutes to complete.
 
 ```
 tools/cli/ob updates run all
@@ -62,7 +62,7 @@ tools/cli/ob updates run all
 tools/cli/ob passwd admin
 ```
 
-9. Set up a cron job to run the `cron.php` script regularly. This script is responsible for clearing old cache and unused upload files. For example, you can set the cron job to run every 5 minutes with the following command. Replace `/path/to/openbroadcaster` with the actual path to your OpenBroadcaster installation directory.
+9. Set up a cron job to run the `cron.php` script regularly. This script is responsible for clearing old cache and unused upload files. The following is an example crontab entry.
 
 ```
 */5 * * * * php /path/to/openbroadcaster/cron.php
