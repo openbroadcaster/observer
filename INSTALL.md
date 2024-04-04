@@ -30,7 +30,7 @@ Install the following Ubuntu / Debian packages, or the equivalent for your opera
 - libavfilter-extra (extra filters for ffmpeg)
 - vorbis-tools (for Ogg Vorbis audio encoding)
 
-# Installation Steps
+## Installation Steps
 
 1. Copy the OpenBroadcaster Server files to your web server's document root directory.
 
