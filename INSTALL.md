@@ -32,7 +32,7 @@ Install the following Ubuntu / Debian packages, or the equivalent for your opera
 
 # Installation Steps
 
-1. Clone the OpenBroadcaster repository to your web server's document root directory.
+1. Copy the OpenBroadcaster Server files to your web server's document root directory.
 
 2. Navigate to the cloned repository directory within the web document root and run the following command to install PHP and JavaScript dependencies.
 
