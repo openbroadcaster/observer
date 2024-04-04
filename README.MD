@@ -1,6 +1,6 @@
 #  OpenBroadcaster Multimedia Server
 
-See latest [5.3.2](https://github.com/openbroadcaster/observer/releases/tag/v5.3.2)
+See latest [Release v5.3.2](https://github.com/openbroadcaster/observer/releases/tag/v5.3.2)
 
 ## Overview
 
