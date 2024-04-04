@@ -1,5 +1,7 @@
 #  OpenBroadcaster Multimedia Server
 
+See latest [5.3.2](https://github.com/openbroadcaster/observer/releases/tag/v5.3.2)
+
 ## Overview
 
 One OBServer may manage one or more OBPlayers in a synchronized network configuration or have the server and playout on one device or VM.   There is a robust Plugin Module Architecture with many modules extending the core server application.  The server has a documented API to enable sharing digital media assets and metadata with revocable secure keys.
@@ -8,7 +10,7 @@ One OBServer may manage one or more OBPlayers in a synchronized network configur
 
 To install OBServer, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OBServer's web interface.
 
-Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/main/install.txt) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-observer-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
+Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/v5.3.2/INSTALL.md) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-observer-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
 
 ## Support
 
