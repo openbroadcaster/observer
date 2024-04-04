@@ -65,5 +65,5 @@ tools/cli/ob passwd admin
 9. Set up a cron job to run the `cron.php` script regularly. This script is responsible for clearing old cache and unused upload files. The following is an example crontab entry.
 
 ```
-*/5 * * * * php /path/to/openbroadcaster/cron.php
+*/30 * * * * /path/to/openbroadcaster/tools/cli/ob cron run
 ```
