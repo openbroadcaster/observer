@@ -88,7 +88,7 @@ foreach ($media as $item) {
 
     // transcode video
     if ($item['type']=='video') {
-        $info = json_decode(shell_exec('avprobe -show_format -show_streams -of json '.escapeshellarg($filename)));
+        $info = json_decode(shell_exec('ffprobe -show_format -show_streams -of json '.escapeshellarg($filename)));
 
         // if didn't get info properly, ignore this item.
         if (!$info) {
@@ -151,7 +151,7 @@ foreach ($media as $item) {
         }
 
 
-        $command = 'avconv -i '.escapeshellarg($filename).' '.$videoargs.' '.$audioargs.' -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/360p.m3u8').' -hide_banner';
+        $command = 'ffmpeg -i '.escapeshellarg($filename).' '.$videoargs.' '.$audioargs.' -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/360p.m3u8').' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         passthru($command, $transcode_return);
 
@@ -180,7 +180,7 @@ foreach ($media as $item) {
                 $audioargs = "-b:a 192k";
             }
 
-            $command = 'avconv -i '.escapeshellarg($filename).' '.$videoargs.' '.$audioargs.' -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/1080p.m3u8').' -hide_banner';
+            $command = 'ffmpeg -i '.escapeshellarg($filename).' '.$videoargs.' '.$audioargs.' -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/1080p.m3u8').' -hide_banner';
             echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
             passthru($command, $transcode_return);
 
@@ -195,7 +195,7 @@ foreach ($media as $item) {
 
     // transcode audio
     elseif ($item['type']=='audio') {
-        $command = 'avconv -i '.escapeshellarg($filename).' -map 0:a -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/audio.m3u8').' -hide_banner';
+        $command = 'ffmpeg -i '.escapeshellarg($filename).' -map 0:a -hls_list_size 0 -hls_time 6 -strict -2 '.escapeshellarg($output_dir.'/audio.m3u8').' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         passthru($command, $transcode_return);
     }
@@ -264,7 +264,7 @@ foreach ($media as $item) {
             mkdir($tmp_dir);
 
             // get 5 keyframes starting at 25% into the video.
-            $command = 'avconv -ss '.escapeshellarg($start).' -i '.escapeshellarg($input_file).' -vf "select=eq(pict_type\,I), scale=w=300:h=300:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 '.escapeshellarg($tmp_dir.'/thumb%04d.jpg').' -hide_banner';
+            $command = 'ffmpeg -ss '.escapeshellarg($start).' -i '.escapeshellarg($input_file).' -vf "select=eq(pict_type\,I), scale=w=300:h=300:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 '.escapeshellarg($tmp_dir.'/thumb%04d.jpg').' -hide_banner';
             passthru($command);
 
             // pick thumbnail with largest filesize
@@ -299,12 +299,12 @@ foreach ($media as $item) {
             rmdir($tmp_dir);
         }
     } elseif ($item['type']=='audio') {
-        $command = 'avconv -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
+        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         passthru($command);
         $success = true; // assume success, because will fail if no album art, but that's okay.
     } elseif ($item['type']=='image') {
-        $command = 'avconv -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
+        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         $return = null;
         passthru($command, $return);

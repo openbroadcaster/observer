@@ -104,10 +104,10 @@ class OBFChecker
 
     public function avconv()
     {
-        if (!exec('which avconv')) {
-            return array('Audio & Video Support','Audio and video support requires program avconv. Install libav-tools package on Debian/Ubuntu.',1);
+        if (!exec('which ffmpeg')) {
+            return array('Audio & Video Support','Audio and video support requires program ffmpeg. Install ffmpeg package on Debian/Ubuntu.',1);
         } else {
-            return array('Audio & Video Support','AVConv found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
+            return array('Audio & Video Support','FFmpeg found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
         }
     }
 
