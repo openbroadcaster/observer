@@ -4,6 +4,23 @@
 :small_orange_diamond: Enhancement or Code Improvement\
 :small_red_triangle: Bug Fix
 
+## 5.3.2
+
+:small_blue_diamond: new language field now using ISO-639-3 languages and showing most used languages at the top\
+:small_blue_diamond: add support for module update files\
+:small_blue_diamond: improved OB CLI tool output and added functionality (list and run updates, run cron, change user password)\
+:small_blue_diamond: config file setting for custom media verify command\
+:small_orange_diamond: improved manual installation instructions\
+:small_orange_diamond: switch back from libav-tools to ffmpeg by default\
+:small_orange_diamond: removed "results per page" setting (no longer used)\
+:small_orange_diamond: support for automatic routes generation from controller code (@route)\
+:small_orange_diamond: support for using API v2 from client-side javascript code\
+:small_orange_diamond: begin switchover to single-file-components for UI code\
+:small_orange_diamond: other code cleanup and refactoring\
+:small_red_triangle: removed outdated installer\
+:small_red_triangle: fixes necessary for newer PHP versions (8.1+)\
+:small_red_triangle: numerous other fixes and quality of life improvements
+
 ## 5.3.1
 
 :small_blue_diamond: API v2 using more modern RESTful implementation (alpha)\
