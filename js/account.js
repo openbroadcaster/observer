@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -159,7 +159,6 @@ OB.Account.settings = function()
   post.push(['ui','get_languages',{}]);
   post.push(['ui','get_themes',{}]);
   post.push(['account', 'permissions', {}]);
-  post.push(['account', 'store', {'name': 'results-per-page'}]);
 
   OB.API.multiPost(post,function(data) {
 
@@ -167,7 +166,6 @@ OB.Account.settings = function()
     var languages = data[1];
     var themes = data[2];
     var permissions = data[3];
-    var results_per_page = data[4];
 
     OB.UI.replaceMain('account/settings.html');
 
@@ -177,11 +175,6 @@ OB.Account.settings = function()
     $('#account_name_input').val(userdata['name']);
     $('#account_email_input').val(userdata['email']);
     $('#account_display_name_input').val(userdata['display_name']);
-
-    // user settings
-    if (results_per_page.status) {
-      $('#account_user_results_per_page').val(results_per_page.data);
-    }
 
     if(languages && languages.data) $.each(languages.data, function(value,language)
     {
@@ -243,10 +236,6 @@ OB.Account.settingsSubmit = function()
   OB.API.post('account','update_settings',data,function(response) {
     $('#account_settings_message').obWidget(response.status ? 'success' : 'error',response.msg);
   });
-
-  var settings = {};
-  settings.results_per_page = parseInt($('#account_user_results_per_page').val());
-  OB.API.post('account', 'store', { 'name': 'results-per-page', 'value': settings.results_per_page }, function (result) {});
 }
 
 OB.Account.keyAdd = function () {
@@ -278,6 +267,7 @@ OB.Account.keyPermissionsOpen = function (elem)
 {
   OB.UI.openModalWindow('account/key_permissions.html');
   $('#appkey_permissions').val($(elem).parents('tr').first().data('appkey_permissions'));
+  $('#appkey_permissions_v2').val($(elem).parents('tr').first().data('appkey_permissions_v2'));
   $('#appkey_permissions_id').val($(elem).parents('tr').first().attr('data-id'));
 }
 
@@ -285,6 +275,7 @@ OB.Account.keyPermissionsSave = function()
 {
   var data = {};
   data['permissions'] = $('#appkey_permissions').val();
+  data['permissions_v2'] = $('#appkey_permissions_v2').val();
   data['id'] = $('#appkey_permissions_id').val();
 
   OB.API.post('account','key_permissions_save', data, function (response) {
@@ -294,6 +285,7 @@ OB.Account.keyPermissionsSave = function()
     }
 
     $('#appkey_permissions_message').obWidget('success', 'Permissions saved.');
+    OB.Account.keyLoad();
   });
 }
 
@@ -318,6 +310,7 @@ OB.Account.keyLoad = function () {
       return;
     }
 
+    $('#account_appkey_table tbody').empty();
     $.each(response.data, function (index, row) {
       $tr = $('<tr/>').attr('data-id', row.id);
       $tr.append($('<td/>').html('<input type="text" class="account_appkey_name" value="' + row.name + '">'));
@@ -325,6 +318,14 @@ OB.Account.keyLoad = function () {
       $tr.append($('<td/>').text(format_timestamp(row.last_access)));
       $tr.append($('<td/>').html('<button onclick="OB.Account.keyPermissionsOpen(this);">Permissions</button><button class="delete" onclick="OB.Account.keyDelete(this);">Delete</button>'));
       $tr.data('appkey_permissions', row.permissions);
+
+      try {
+        let permissions_v2 = JSON.parse(row.permissions_v2).map(route => route.join(" ")).join("\n");
+        $tr.data('appkey_permissions_v2', permissions_v2);
+      } catch (e) {
+        // empty string or no valid json in result
+        $tr.data('appkey_permissions_v2', row.permissions_v2);
+      }
 
       $('#account_appkey_table tbody').append($tr);
     });

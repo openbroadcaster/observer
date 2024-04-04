@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -135,6 +135,8 @@ class OBFHelpers
                 return 'jpg';
             case 'image/png':
                 return 'png';
+            case 'image/webp':
+                return 'webp';
         }
 
         // backup in case mime type failed

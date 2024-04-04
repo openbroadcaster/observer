@@ -1,0 +1,204 @@
+{
+  "schedule": [
+    {
+      "title": "Morning News",
+      "description": "A roundup of local and national news stories",
+      "duration": "120"
+    },
+    {
+      "title": "Community Spotlight",
+      "description": "Interviews with community leaders and organizers",
+      "duration": "60"
+    },
+    {
+      "title": "Music Mix",
+      "description": "A mix of different genres of music",
+      "duration": "180"
+    },
+    {
+      "title": "Afternoon News",
+      "description": "More news stories, with a focus on local issues",
+      "duration": "60"
+    },
+    {
+      "title": "Arts and Culture",
+      "description": "Interviews with local artists, writers, and performers",
+      "duration": "90"
+    },
+    {
+      "title": "Evening Music",
+      "description": "A mix of classical and contemporary music",
+      "duration": "120"
+    },
+    {
+      "title": "Late Night Talk",
+      "description": "Discussions on current events and politics",
+      "duration": "120"
+    },
+    {
+      "title": "Overnight Music",
+      "description": "Relaxing instrumental music to wind down the day",
+      "duration": "240"
+    },
+    {
+      "title": "Morning Meditation",
+      "description": "Guided meditation to start the day",
+      "duration": "60"
+    },
+    {
+      "title": "Local Politics",
+      "description": "Discussions on local political issues",
+      "duration": "60"
+    },
+    {
+      "title": "Music Mix",
+      "description": "A mix of different genres of music",
+      "duration": "120"
+    },
+    {
+      "title": "Afternoon News",
+      "description": "More news stories, with a focus on local issues",
+      "duration": "60"
+    },
+    {
+      "title": "Book Club",
+      "description": "Discussions on a featured book with special guests",
+      "duration": "90"
+    },
+    {
+      "title": "Evening Music",
+      "description": "A mix of classical and contemporary music",
+      "duration": "120"
+    },
+    {
+      "title": "Late Night Talk",
+      "description": "Discussions on current events and politics",
+      "duration": "120"
+    },
+    {
+      "title": "Overnight Music",
+      "description": "Relaxing instrumental music to wind down the day",
+      "duration": "240"
+    },
+    {
+      "title": "Morning News",
+      "description": "A roundup of local and national news stories",
+      "duration": "120"
+    },
+    {
+      "title": "Community Spotlight",
+      "description": "Interviews with community leaders and organizers",
+      "duration": "60"
+    },
+    {
+      "title": "Music Mix",
+      "description": "A mix of different genres of music",
+      "duration": "180"
+    },
+    {
+      "title": "Afternoon News",
+      "description": "More news stories, with a focus on local issues",
+      "duration": "60"
+    },
+    {
+      "title": "Arts and Culture",
+      "description": "Interviews with local artists, writers, and performers",
+      "duration": "90"
+    },
+    {
+      "title": "Evening Music",
+      "description": "A mix of classical and contemporary music",
+      "duration": "120"
+    },
+    {
+"title": "Late Night Talk",
+"description": "Discussions on current events and politics",
+"duration": "120"
+},
+{
+"title": "Overnight Music",
+"description": "Relaxing instrumental music to wind down the day",
+"duration": "240"
+},
+{
+"title": "Morning Meditation",
+"description": "Guided meditation to start the day",
+"duration": "60"
+},
+{
+"title": "Local Politics",
+"description": "Discussions on local political issues",
+"duration": "60"
+},
+{
+"title": "Music Mix",
+"description": "A mix of different genres of music",
+"duration": "120"
+},
+{
+"title": "Afternoon News",
+"description": "More news stories, with a focus on local issues",
+"duration": "60"
+},
+{
+"title": "Book Club",
+"description": "Discussions on a featured book with special guests",
+"duration": "90"
+},
+{
+"title": "Evening Music",
+"description": "A mix of classical and contemporary music",
+"duration": "120"
+},
+{
+"title": "Late Night Talk",
+"description": "Discussions on current events and politics",
+"duration": "120"
+},
+{
+"title": "Overnight Music",
+"description": "Relaxing instrumental music to wind down the day",
+"duration": "240"
+},
+{
+"title": "Morning News",
+"description": "A roundup of local and national news stories",
+"duration": "120"
+},
+{
+"title": "Community Spotlight",
+"description": "Interviews with community leaders and organizers",
+"duration": "60"
+},
+{
+"title": "Music Mix",
+"description": "A mix of different genres of music",
+"duration": "180"
+},
+{
+"title": "Afternoon News",
+"description": "More news stories, with a focus on local issues",
+"duration": "60"
+},
+{
+"title": "Arts and Culture",
+"description": "Interviews with local artists, writers, and performers",
+"duration": "90"
+},
+{
+"title": "Evening Music",
+"description": "A mix of classical and contemporary music",
+"duration": "120"
+},
+{
+"title": "Late Night Talk",
+"description": "Discussions on current events and politics",
+"duration": "120"
+},
+{
+"title": "Overnight Music",
+"description": "Relaxing instrumental music to wind down the day",
+"duration": "240"
+}
+]
+}

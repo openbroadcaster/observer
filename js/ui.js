@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -50,9 +50,10 @@ OB.UI.initLayout = function()
   $(window).resize(OB.UI.domChangeCallback);
 }
 
-OB.UI.dragHelperOn = function(html)
+OB.UI.dragHelperOn = function(html, data)
 {
   $('#drag_helper').html(html).addClass('active');
+  window.dragHelperData = data;
 }
 
 OB.UI.dragHelperOff = function()
@@ -62,6 +63,7 @@ OB.UI.dragHelperOff = function()
     'left': '-1000px',
     'top': '-1000px'
   });
+  window.dragHelperData = null;
 }
 
 OB.UI.dragHelperMove = function(e)
@@ -970,7 +972,7 @@ OB.UI.tagSuggestions = function(tag)
     OB.UI.tagInputXhr[id] = undefined;
   }
 
-  var xhrid = OB.API.post('settings','metadata_tag_search',{'id':id, 'search':search},function(response)
+  var xhrid = OB.API.post('metadata','metadata_tag_search',{'id':id, 'search':search},function(response)
   {
     $suggestions = $(tag).find('ob-tag-suggestions');
     if(!$suggestions.attr('data-simplebar')) new SimpleBar($suggestions[0]);

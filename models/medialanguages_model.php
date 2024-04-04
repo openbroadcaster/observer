@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -33,9 +33,51 @@ class MediaLanguagesModel extends OBFModel
      */
     public function get_all()
     {
-        $this->db->orderby('name');
-        $types = $this->db->get('media_languages');
+        $this->db->orderby('ref_name');
+        $types = $this->db->get('languages');
 
         return $types;
+    }
+
+    /**
+     * Get living languages only.
+     * 
+     * @return languages
+     */
+    public function get_main()
+    {
+        $this->db->query('
+          SELECT * FROM `languages`
+          WHERE
+            (`id` LIKE "%q" AND `language_type` = "S") OR `language_type` = "L"
+          ORDER BY `ref_name`
+        ');
+        $types = $this->db->assoc_list();
+
+        return $types;
+    }
+
+
+    /** 
+     * Get top languages by media count.
+     * 
+     * @return languages
+     */
+    public function get_top($args = [])
+    {
+        $languages = [];
+
+        $this->db->query('SELECT m.language, COUNT(m.language) AS count
+        FROM media m
+        GROUP BY m.language
+        ORDER BY count DESC');
+
+        $tmp = $this->db->assoc_list();
+
+        foreach($tmp as $language) {
+          $languages[] = $language['language'];
+        }
+
+        return $languages;
     }
 }

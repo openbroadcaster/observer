@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2022 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -23,6 +23,11 @@
 // if error is returned, subsequent methods will not be run.
 class OBFChecker
 {
+    public function __construct($module = null)
+    {
+        $this->module = $module;
+    }
+
     public function php_version()
     {
         if (version_compare(phpversion(), '5.4', '<')) {
@@ -99,10 +104,10 @@ class OBFChecker
 
     public function avconv()
     {
-        if (!exec('which avconv')) {
-            return array('Audio & Video Support','Audio and video support requires program avconv. Install libav-tools package on Debian/Ubuntu.',1);
+        if (!exec('which ffmpeg')) {
+            return array('Audio & Video Support','Audio and video support requires program ffmpeg. Install ffmpeg package on Debian/Ubuntu.',1);
         } else {
-            return array('Audio & Video Support','AVConv found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
+            return array('Audio & Video Support','FFmpeg found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
         }
     }
 
@@ -145,6 +150,9 @@ class OBFChecker
         }
         if (!defined('OB_MEDIA_ARCHIVE')) {
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) not set.';
+        }
+        if (!defined('OB_THUMBNAILS')) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) not set.';
         }
         if (!defined('OB_CACHE')) {
             $errors[] = 'OB_CACHE (cache directory) not set.';
@@ -259,6 +267,12 @@ class OBFChecker
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) is not writable by the server.';
         }
 
+        if (!is_dir(OB_THUMBNAILS)) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) is not a valid directory.';
+        } elseif (!is_writable(OB_THUMBNAILS)) {
+            $errors[] = 'OB_THUMBNAILS (thumbnails directory) is not writable by the server.';
+        }
+
         if (!is_dir(OB_CACHE)) {
             $errors[] = 'OB_CACHE (cache directory) is not a valid directory.';
         } elseif (!is_writable(OB_CACHE)) {
@@ -353,14 +367,34 @@ class OBFChecker
         $db = new OBFDB();
         $latest = 0;
 
-        $db->where('name', 'dbver');
-        $dbver = $db->get_one('settings');
-
-        if (!$dbver) {
-            return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+        if ($this->module === null) {
+            $db->where('name', 'dbver');
+            $dbver = $db->get_one('settings');
+        } else {
+            $db->where('name', 'dbver-' . $this->module);
+            $dbver = $db->get_one('settings');
         }
 
-        $files = scandir(__DIR__);
+        if (!$dbver && $this->module === null) {
+            return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+        } elseif (!$dbver) {
+            $db->insert('settings', [
+                'name'  => 'dbver-' . $this->module,
+                'value' => '20230101'
+            ]);
+            return array('Database Version', 'Version for module not yet set. Setting to 20230101 (no module updates possible before this year).', 0);
+        }
+
+        if ($this->module === null) {
+            $files = scandir(__DIR__);
+        } else {
+            $dir = __DIR__ . "/../modules/{$this->module}/updates/";
+            if (file_exists($dir)) {
+                $files = scandir($dir);
+            } else {
+                $files = [];
+            }
+        }
         foreach ($files as $file) {
             $filename = pathinfo($file)['filename'];
             if (preg_match('/^[0-9]{8}$/', $filename)) {

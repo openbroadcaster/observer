@@ -1,6 +1,6 @@
 <?php
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -47,17 +47,49 @@ $image_files = $models->ui('image_files');
 $js_dependencies = [
   'node_modules/jquery/dist/jquery.min.js',
   'node_modules/jquery-migrate/dist/jquery-migrate.min.js'
-]
+];
 
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+      /*
+        // List of events to monitor
+        var eventsToMonitor = ['mousedown', 'mouseup', 'click', 'dragstart', 'drag', 'dragend'];
+
+        // Function to handle logging
+        function logEvent(event) {
+            console.log('Event:', event.type, 'on element:', event.target);
+        }
+
+        // Attaching event listeners
+        eventsToMonitor.forEach(function(eventType) {
+            document.addEventListener(eventType, logEvent, true); // using capture phase
+        });
+      */
+  </script>
   <meta charset="utf-8">
   <title>OpenBroadcaster</title>
-
+  <script type="importmap">
+      {
+          "imports": {
+          "immutable": "./node_modules/immutable/dist/immutable.es.js",
+          "sass": "./node_modules/sass/sass.default.js"
+          }
+      }
+  </script>
 <?php
 foreach ($js_dependencies as $file) {
     echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime($file) . '"></script>' . PHP_EOL;
+}
+
+// get a recursive list of files in "ui" and add them as js modules
+$jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('ui'));
+foreach ($jsModuleIterator as $file) {
+    if ($file->getExtension() !== 'js') {
+        continue;
+    }
+    echo '<script type="module" src="/' . $file->getPathname() . '?v=' . filemtime($file->getPathname()) . '"></script>' . PHP_EOL;
 }
 ?>
   <script type="text/javascript" src="extras/jquery-ui.min.js?v=<?=filemtime('extras/jquery-ui.min.js')?>"></script>

@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -83,7 +83,7 @@ class OBFLoad
 
         // scan through modules.
 
-        $modules = $this->db->get('modules');
+        $modules = $this->db->get('modules') ?: [];
 
         foreach ($modules as $module_row) {
       // get dir, make sure dir exists.

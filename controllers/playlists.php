@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -104,11 +104,21 @@ class Playlists extends OBFController
                 $playlist['permissions_groups'] = $permissions['groups'];
             }
 
+            // get playlist thumbnail, if one exists
+            $thumbnail = $this->models->uploads('thumbnail_get', $id, 'playlist');
+            if ($thumbnail[0]) {
+                $playlist['thumbnail'] = $thumbnail[1];
+            }
+
             $playlist['can_edit'] = $this->user_can_edit($playlist, $permissions);
 
             if ($this->data('where_used')) {
                 $where_used = $this->models->playlists('where_used', $id);
                 $playlist['where_used'] = $where_used;
+            }
+
+            if ($playlist['properties']) {
+                $playlist['properties'] = json_decode($playlist['properties'], true);
             }
 
             return array(true,'Playlist found.',$playlist);
@@ -168,19 +178,37 @@ class Playlists extends OBFController
      * @return id
      *
      * @route POST /v2/playlists
+     * @route PUT /v2/playlists/(:id:)
      */
     public function save()
     {
         $id = trim($this->data('id'));
         $name = trim($this->data('name'));
+        $thumbnail = trim($this->data('thumbnail'));
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
         $type = trim($this->data('type'));
+        $properties = $this->data('properties');
         $items = $this->data('items');
         $liveassist_button_items = $this->data('liveassist_button_items');
 
+        // Split POST and PUT when using v2 api: one for creating new playlists,
+        // one for updating existing ones. This means id should be unset on POST,
+        // and fail if it's *not* set on a PUT.
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST' && ! empty($id)) {
+                $id = null;
+            }
+
+            if ($this->api_request_method() === 'PUT' && empty($id)) {
+                return array(false, 'Playlist id required when updating a playlist.');
+            }
+        }
+
         // editing playlist
+        $new_playlist = true;
         if (!empty($id)) {
+            $new_playlist = false;
             $original_playlist = $this->models->playlists('get_by_id', $id);
             //T Unable to edit this playlist.
             if (!$original_playlist) {
@@ -203,6 +231,9 @@ class Playlists extends OBFController
         }
 
         // check each playlist item.
+        if (! $items) {
+            $items = [];
+        }
         foreach ($items as $item) {
             $validate_item = $this->models->playlists('validate_playlist_item', $item, $id);
             if ($validate_item[0] == false) {
@@ -227,6 +258,7 @@ class Playlists extends OBFController
         $data['status'] = $status;
         $data['type'] = $type;
         $data['updated'] = time();
+        $data['properties'] = json_encode($properties);
 
         if (!$id) {
             $data['created'] = time();
@@ -310,8 +342,30 @@ class Playlists extends OBFController
                 }
 
                 // audio properties
-                if ($media['type'] == 'audio' && ($item['crossfade'] ?? false)) {
-                    $properties['crossfade'] = (float) $item['crossfade'];
+                if ($media['type'] == 'audio') {
+                    if ($item['crossfade'] ?? false) {
+                        $properties['crossfade'] = (float) $item['crossfade'];
+                    }
+
+                    if ($item['voicetrack'] ?? false) {
+                        $properties['voicetrack'] = (int) $item['voicetrack'];
+                    }
+
+                    if ($item['voicetrack_volume'] ?? false) {
+                        $properties['voicetrack_volume'] = (float) $item['voicetrack_volume'];
+                    }
+
+                    if ($item['voicetrack_offset'] ?? false) {
+                        $properties['voicetrack_offset'] = (float) $item['voicetrack_offset'];
+                    }
+
+                    if ($item['voicetrack_fadeout_before'] ?? false) {
+                        $properties['voicetrack_fadeout_before'] = (float) $item['voicetrack_fadeout_before'];
+                    }
+
+                    if ($item['voicetrack_fadein_after'] ?? false) {
+                        $properties['voicetrack_fadein_after'] = (float) $item['voicetrack_fadein_after'];
+                    }
                 }
 
                 // set properties
@@ -346,6 +400,18 @@ class Playlists extends OBFController
         if ($this->user->check_permission('playlists_advanced_permissions')) {
             $this->models->playlists('update_permissions_users', $id, $this->data('permissions_users'));
             $this->models->playlists('update_permissions_groups', $id, $this->data('permissions_groups'));
+        }
+
+        // Save playlist thumbnail.
+        if($thumbnail) {
+            $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
+            if (!$thmb_result[0]) {
+                if ($new_playlist === true) {
+                    $this->models->playlists('delete', $id);
+                }
+
+                return [false, $thmb_result[1], $id];
+            }
         }
 
         return array(true,'Playlist saved.',$id);

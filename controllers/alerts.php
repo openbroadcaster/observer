@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -140,14 +140,20 @@ class Alerts extends OBFController
      * @param stop
      *
      * @route POST /v2/alerts
+     * @route PUT /v2/alerts/(:id:)
      */
     public function save()
     {
         $id = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
+
         $data['item_id'] = trim($this->data('item_id'));
-
         $data['player_id'] = trim($this->data('player_id'));
-
         $data['name'] = trim($this->data('name'));
 
         $data['frequency'] = trim($this->data('frequency'));

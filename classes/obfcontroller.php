@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -105,5 +105,31 @@ class OBFController
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get the API version used in the request.
+     *
+     * @return version
+     */
+    public function api_version()
+    {
+        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+            return 2;
+        } elseif (str_starts_with($_SERVER['REQUEST_URI'], '/api/v1/')) {
+            return 1;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get the request method used.
+     *
+     * @return request_method
+     */
+    public function api_request_method()
+    {
+        return $_SERVER['REQUEST_METHOD'];
     }
 }

@@ -4,7 +4,19 @@ namespace ob\tools\cli;
 
 class Helpers
 {
-    public static function table(array $rows)
+    // require a valid installation, exit with error code if not
+    public static function requireValid()
+    {
+        $result_code = null;
+        exec(command: 'tools/cli/ob check', result_code: $result_code);
+        if ($result_code == 1) {
+            echo 'OpenBroadcaster installation is not valid. Run "ob check" for more information.' . PHP_EOL;
+            exit(1);
+        }
+    }
+
+    // output a formatted table
+    public static function table(array $rows, int $spacing = 1)
     {
         $cols = [];
 
@@ -18,7 +30,7 @@ class Helpers
             $longest_col1 = max(strlen($text), $longest_col1);
         }
         $longest_col1 = min(40, $longest_col1);
-        $longest_col1++;
+        $longest_col1 += $spacing;
 
         $cols = [
             ['length' => $longest_col1],

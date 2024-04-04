@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -113,12 +113,6 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
     if(OB.Settings.categories[i].is_default==1) $form.find('.category_field').val(OB.Settings.categories[i].id);
   }
 
-  // fill language list
-  for(var i in OB.Settings.languages)
-  {
-    $form.find('.language_field').append('<option value="'+OB.Settings.languages[i].id+'">'+htmlspecialchars(OB.t(OB.Settings.languages[i].name))+'</option>');
-  }
-
   // fill country list
   for(var i in OB.Settings.countries)
   {
@@ -177,7 +171,7 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
     OB.Media.update_required_field(req_fields.category_id, 'category_field');
     OB.Media.update_required_field(req_fields.category_id, 'genre_field');
     OB.Media.update_required_field(req_fields.country_id,  'country_field');
-    OB.Media.update_required_field(req_fields.language_id, 'language_field');
+    OB.Media.update_required_field(req_fields.language,    'language_field');
     OB.Media.update_required_field(req_fields.comments,    'comments_field');
   }
 
@@ -404,6 +398,8 @@ OB.Media.save = function()
 
     if($(element).attr('data-edit')) item.id = $(element).attr('data-id');
 
+    item.thumbnail = $(element).find('.thumbnail_field').val();
+
     item.artist = $(element).find('.artist_field').val();
     item.title = $(element).find('.title_field').val();
     item.album = $(element).find('.album_field').val();
@@ -411,7 +407,7 @@ OB.Media.save = function()
 
     item.country_id = $(element).find('.country_field').val();
     item.category_id = $(element).find('.category_field').val();
-    item.language_id = $(element).find('.language_field').val();
+    item.language = $(element).find('.language_field').val();
     item.genre_id = $(element).find('.genre_field').val();
 
     item.comments = $(element).find('.comments_field').val();
@@ -540,6 +536,8 @@ OB.Media.editPage = function(ids)
 
       $form.attr('data-edit',1);
 
+      $form.find('.thumbnail_field').val( media.thumbnail );
+
       $form.find('.artist_field').val( media.artist );
       $form.find('.title_field').val( media.title );
       $form.find('.album_field').val( media.album );
@@ -549,7 +547,7 @@ OB.Media.editPage = function(ids)
       OB.Media.updateGenreList(id);
 
       $form.find('.country_field').val( media.country_id );
-      $form.find('.language_field').val( media.language_id );
+      $form.find('.language_field').val( media.language );
       $form.find('.genre_field').val( media.genre_id);
 
       $form.find('.comments_field').val( media.comments );

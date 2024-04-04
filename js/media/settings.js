@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2021 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -57,7 +57,7 @@ OB.Media.settings = function()
 OB.Media.genresGet = function()
 {
 
-  OB.API.post('settings','genre_list',{},function(response)
+  OB.API.post('metadata','genre_list',{},function(response)
   {
 
     if(!response.status) return;
@@ -159,7 +159,7 @@ OB.Media.genreSave = function()
   postfields.media_category_id = $('#genre_categories').val();
   postfields.default = $('#genre_default').val();
 
-  OB.API.post('settings','genre_save',postfields,function(data)
+  OB.API.post('metadata','genre_save',postfields,function(data)
   {
 
     if(data.status==true)
@@ -185,7 +185,7 @@ OB.Media.genreDelete = function(confirm)
 {
   if(confirm){
 
-    OB.API.post('settings','genre_delete', {'id': $('#genre_addedit_id').val()}, function(data)
+    OB.API.post('metadata','genre_delete', {'id': $('#genre_addedit_id').val()}, function(data)
     {
       if(data.status==false)
         {
@@ -195,7 +195,7 @@ OB.Media.genreDelete = function(confirm)
       {
         OB.UI.closeModalWindow();
         OB.Media.categoriesGet();
-        
+
         //T Genre Deleted.
         $('#media_categories_message').obWidget('success', 'Genre Deleted.');
         OB.Settings.getSettings(); // refresh the client-side media settings data
@@ -223,7 +223,7 @@ OB.Media.categoriesGet = function()
 
   $('#media_categories').html('');
 
-  OB.API.post('settings','category_list',{},function(response)
+  OB.API.post('metadata','category_list',{},function(response)
   {
 
     if(!response.status) return;
@@ -297,7 +297,7 @@ OB.Media.categorySave = function()
   postfields.name = $('#category_name_input').val();
   postfields.default = $('#category_default').val();
 
-  OB.API.post('settings','category_save',postfields,function(response)
+  OB.API.post('metadata','category_save',postfields,function(response)
   {
 
     if(response.status==false) { $('#category_addedit_message').obWidget('error',response.msg); }
@@ -330,14 +330,14 @@ OB.Media.categoryDelete = function(confirm)
 
   else
   {
-    OB.API.post('settings','category_delete', {'id': cat_id}, function(response)
+    OB.API.post('metadata','category_delete', {'id': cat_id}, function(response)
     {
       if(response.status==false) { $('#category_addedit_message').obWidget('error',response.msg); }
       else
       {
         OB.UI.closeModalWindow();
         OB.Media.categoriesGet();
-        
+
         //T Category deleted.
         $('#media_categories_message').obWidget('success', 'Category deleted.');
         OB.Settings.getSettings(); // refresh the client-side media settings data
@@ -417,7 +417,7 @@ OB.Media.metadataAddEditTypeChange = function()
   // hidden type does not have a default
   if(datatype=='hidden') $('.metadata_default').parent().hide();
   else $('.metadata_default').parent().show();
-  
+
 
   $('.metadata_default').hide().removeAttr('id');
   $('.metadata_default_'+datatype).show().attr('id','metadata_default');
@@ -434,7 +434,7 @@ OB.Media.metadataAddEditTypeChange = function()
   $('.metadata_default_select').val(select_value);
 
   $('#metadata_select_options').parent().toggle(datatype=='select');
-  
+
   // handle tag field
   $('#metadata_tag_suggestions').parent().toggle(datatype=='tags');
 }
@@ -450,7 +450,7 @@ OB.Media.metadataSave = function()
   field.tag_suggestions = $('#metadata_tag_suggestions').val();
   field.default = $('#metadata_default').val();
 
-  OB.API.post('settings','metadata_save',field,function(response)
+  OB.API.post('metadata','metadata_save',field,function(response)
   {
     if(response.status==false) { $('#metadata_addedit_message').obWidget('error',response.msg); }
     else
@@ -476,13 +476,13 @@ OB.Media.metadataDelete = function(confirm)
 
   else
   {
-    OB.API.post('settings','metadata_delete', {'id': field_id}, function(response)
+    OB.API.post('metadata','metadata_delete', {'id': field_id}, function(response)
     {
       if(response.status==false) { $('#metadata_addedit_message').obWidget('error',response.msg); }
       else
       {
         OB.UI.closeModalWindow();
-        
+
         //T Metadata field deleted.
         $('#media_settings_metadata_message').obWidget('success', 'Metadata field deleted.');
         OB.Settings.getSettings( OB.Media.metadataGet ); // refresh the client-side media settings data
@@ -525,7 +525,7 @@ OB.Media.metadataSaveOrder = function()
     order.push($(element).attr('data-id'));
   });
 
-  OB.API.post('settings','metadata_order', {'order': order}, function(data)
+  OB.API.post('metadata','metadata_order', {'order': order}, function(data)
   {
     $('#media_settings_metadata_message').obWidget(data.status ? 'success' : 'error',data.msg);
     OB.Settings.getSettings(); // refresh the client-side media settings data
@@ -533,13 +533,13 @@ OB.Media.metadataSaveOrder = function()
 }
 
 OB.Media.fieldsGet = function () {
-  OB.API.post('settings', 'media_get_fields', {}, function (result) {
+  OB.API.post('metadata', 'media_get_fields', {}, function (result) {
     for (var item in result.data) {
       $('#media_fields_' + item + ' input[type="radio"]')
         .filter('[value=' + result.data[item] + ']')
         .prop('checked', true);
     }
-    
+
     $('#media_fields_dynamic input[type="radio"]').filter('[value=' + result.data['dynamic_content_default'] + ']').prop('checked', true);
     $('#media_fields_dynamic input[type="checkbox"]').prop('checked', result.data['dynamic_content_hidden']);
 
@@ -554,12 +554,12 @@ OB.Media.fieldsSave = function () {
   post.year                    = $('#media_fields_year input[type="radio"]:checked').val();
   post.category_id             = $('#media_fields_category_id input[type="radio"]:checked').val();
   post.country_id              = $('#media_fields_country_id input[type="radio"]:checked').val();
-  post.language_id             = $('#media_fields_language_id input[type="radio"]:checked').val();
+  post.language                = $('#media_fields_language input[type="radio"]:checked').val();
   post.comments                = $('#media_fields_comments input[type="radio"]:checked').val();
   post.dynamic_content_default = $('#media_fields_dynamic input[type="radio"]:checked').val();
   post.dynamic_content_hidden  = $('#media_fields_dynamic input[type="checkbox"]').is(':checked');
 
-  OB.API.post('settings', 'media_required_fields', post, function (data) {
+  OB.API.post('metadata', 'media_required_fields', post, function (data) {
     $('#media_settings_fields_message').obWidget(data.status ? 'success' : 'error', data.msg);
     OB.Settings.getSettings();
   });

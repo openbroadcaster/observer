@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2021 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -54,6 +54,50 @@ class Shows extends OBFController
         }
         //T Scheduled show.
         return array(true, 'Scheduled show.', $show);
+    }
+
+    /**
+     * Get a show thumbnail.
+     *
+     * @param id
+     *
+     * @route GET /v2/shows/(:id:)/thumbnail
+     */
+    public function thumbnail()
+    {
+        $this->user->require_authenticated();
+
+        $id = $this->data('id');
+
+        $show = $this->models->shows('get_show_by_id', $id);
+
+        if (!$show || array_search($show['item_type'], array('playlist')) === false) {
+            http_response_code(404);
+            exit();
+        }
+
+        // get playlist thumbnail, if one exists
+        $thumbnail = $this->models->uploads('thumbnail_get', $show['item_id'], 'playlist');
+        if ($thumbnail[0]) {
+            $data = $thumbnail[1];
+
+            if (preg_match('/^data:(.*?);base64,(.*)$/', $data, $matches)) {
+                $mime_type = $matches[1];
+                $base64_data = $matches[2];
+
+                // If you want to decode the base64 data
+                $image_data = base64_decode($base64_data);
+
+                // output appropriate header and data
+                header('Content-Type: ' . $mime_type);
+                echo $image_data;
+                exit();
+            }
+        }
+
+        // invalid thumbnail
+        http_response_code(500);
+        exit();
     }
 
     /**
@@ -183,12 +227,19 @@ class Shows extends OBFController
      * @param item_id
      *
      * @route POST /v2/shows
+     * @route PUT /v2/shows/(:id:)
      */
     public function save()
     {
         $this->user->require_authenticated();
 
         $id             = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
 
         $data['player_id'] = trim($this->data('player_id'));
         $data['mode']      = trim($this->data('mode'));

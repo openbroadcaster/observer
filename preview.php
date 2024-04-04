@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -20,20 +20,6 @@
 */
 
 require_once('components.php');
-
-// set default transcoding commands
-if (!defined('OB_TRANSCODE_AUDIO_MP3')) {
-    define('OB_TRANSCODE_AUDIO_MP3', 'avconv -i {infile} -q 9 -ac 1 -ar 22050 {outfile}');
-}
-if (!defined('OB_TRANSCODE_AUDIO_OGG')) {
-    define('OB_TRANSCODE_AUDIO_OGG', 'avconv -i {infile} -acodec libvorbis -q 0 -ac 1 -ar 22050 {outfile}');
-}
-if (!defined('OB_TRANSCODE_VIDEO_MP4')) {
-    define('OB_TRANSCODE_VIDEO_MP4', 'avconv -i {infile} -crf 40 -vcodec libx264 -s {width}x{height} -ac 1 -ar 22050 {outfile}');
-}
-if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
-    define('OB_TRANSCODE_VIDEO_OGV', 'avconv -i {infile} -q 0 -s {width}x{height} -acodec libvorbis -ac 1 -ar 22050 {outfile}');
-}
 
 // Sanity check on ID
 if (!empty($_GET['id']) && preg_match('/^[0-9]+$/', $_GET['id'])) {

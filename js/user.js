@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -49,83 +49,71 @@ OB.User.allowRegistrationToggle = function()
   var checked = $('#users_allow_registration_checkbox').is(':checked');
   OB.API.post('users','user_registration_set',{'user_registration': checked}, function(response) { });
 }
-
-OB.User.manage_users_sort_col = false;
-OB.User.manage_users_sort_desc = false;
-
 OB.User.manageUsersSort = function(column)
 {
-
-  if(column == OB.User.manage_users_sort_col)
-  {
-    OB.User.manage_users_sort_desc=!OB.User.manage_users_sort_desc;
-  }
-
-  else
-  {
-    OB.User.manage_users_sort_col = column;
-    OB.User.manage_users_sort_desc=false;
-  }
-
-  OB.User.manageUsersList();
-
+    var prev = OB.Settings.store('manage-users-sort');
+    var sorting = {
+        'sort_col': column,
+        'sort_desc': false
+    };
+    if (typeof prev !== "undefined") {
+      if (prev.sort_col === column) sorting.sort_desc = !prev.sort_desc;
+    }
+    OB.Settings.store('manage-users-sort', sorting);
+    OB.User.manageUsersList();
 }
 
 OB.User.manageUsersList = function()
 {
-
-  var postfields = new Object();
-  postfields.sort_col = OB.User.manage_users_sort_col;
-  postfields.sort_desc = OB.User.manage_users_sort_desc;
-
-  OB.API.post('users','user_manage_list',postfields,function(data)
-  {
-
-    $('#user_list_table tbody').html('');
-
-    if(data.status!=true) return false;
-
-    OB.User.manage_users_sort_col = data.data[1];
-    OB.User.manage_users_sort_desc = data.data[2];
-
-    $.each(data.data[0],function(index,userdata)
+    var sort_vals = OB.Settings.store('manage-users-sort');
+    if (typeof sort_vals === "undefined") sort_vals = {};
+    OB.API.post('users', 'user_manage_list', sort_vals, function(data)
     {
 
-      var $html = $('<tr></tr>');
+      $('#user_list_table tbody').html('');
 
-      $html.append('<td>'+htmlspecialchars(userdata.display_name)+'</td>');
-      $html.append('<td><a href="mailto:'+htmlspecialchars(userdata.email)+'">'+htmlspecialchars(userdata.email)+'</a></td>');
+      if(data.status!=true) return false;
 
-      $html.append('<td>'+format_timestamp(userdata.created)+'</td>');
-      $html.append('<td>'+format_timestamp(userdata.last_access)+'</td>');
+      OB.User.manage_users_sort_col = data.data[1];
+      OB.User.manage_users_sort_desc = data.data[2];
 
-      $html.append('<td class="user_groups"></td>');
-      //T Edit
-      $html.append('<td><button onclick="OB.User.manageUsersEdit('+userdata.id+');" >'+OB.t("Edit")+'</button></td>');
+      $.each(data.data[0],function(index,userdata)
+      {
 
-      $html.attr('id','user_'+userdata.id);
-      $html.attr('data-id',userdata.id);
-      $html.attr('data-username',userdata.username);
-      $html.attr('data-display_name',userdata.display_name);
-      $html.attr('data-name',userdata.name);
-      $html.attr('data-email',userdata.email);
-      $html.attr('data-enabled',userdata.enabled);
+        var $html = $('<tr></tr>');
 
-      $('#user_list_table tbody').append($html);
+        $html.append('<td>'+htmlspecialchars(userdata.display_name)+'</td>');
+        $html.append('<td><a href="mailto:'+htmlspecialchars(userdata.email)+'">'+htmlspecialchars(userdata.email)+'</a></td>');
 
-      // $('#user_'+userdata.id).dblclick(function() { OB.User.manageUsersEdit(userdata.id); });
+        $html.append('<td>'+format_timestamp(userdata.created)+'</td>');
+        $html.append('<td>'+format_timestamp(userdata.last_access)+'</td>');
 
-      $.each(userdata.groups,function(index,group) {
-        var $groupname = $('#user_'+userdata.id+' .user_groups');
-        $groupname.append('<span data-group_id="'+group.id+'">'+htmlspecialchars(group.name));
-        if (typeof(userdata.groups[index+1]) != 'undefined') $groupname.append(', ');
-        $groupname.append('</span>');
+        $html.append('<td class="user_groups"></td>');
+        //T Edit
+        $html.append('<td><button onclick="OB.User.manageUsersEdit('+userdata.id+');" >'+OB.t("Edit")+'</button></td>');
+
+        $html.attr('id','user_'+userdata.id);
+        $html.attr('data-id',userdata.id);
+        $html.attr('data-username',userdata.username);
+        $html.attr('data-display_name',userdata.display_name);
+        $html.attr('data-name',userdata.name);
+        $html.attr('data-email',userdata.email);
+        $html.attr('data-enabled',userdata.enabled);
+
+        $('#user_list_table tbody').append($html);
+
+        // $('#user_'+userdata.id).dblclick(function() { OB.User.manageUsersEdit(userdata.id); });
+
+        $.each(userdata.groups,function(index,group) {
+          var $groupname = $('#user_'+userdata.id+' .user_groups');
+          $groupname.append('<span data-group_id="'+group.id+'">'+htmlspecialchars(group.name));
+          if (typeof(userdata.groups[index+1]) != 'undefined') $groupname.append(', ');
+          $groupname.append('</span>');
+        });
+
       });
 
     });
-
-  });
-
 }
 
 OB.User.manageUsersGroupList = function(callback)

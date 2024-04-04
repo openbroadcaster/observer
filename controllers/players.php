@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -78,9 +78,9 @@ class Players extends OBFController
     }
 
     /**
-     * Edit a player. Requires 'manage_players' permission.
+     * Create or edit a player. Requires 'manage_players' permission.
      *
-     * @param id
+     * @param id ID of player. Update a pre-existing player if set.
      * @param station_ids IDs of stations played by this player.
      * @param name
      * @param description
@@ -104,12 +104,20 @@ class Players extends OBFController
      * @return player_id
      *
      * @route POST /v2/players
+     * @route PUT /v2/players/(:id:)
      */
     public function save()
     {
         $this->user->require_permission('manage_players');
 
         $id = trim($this->data('id'));
+
+        if ($this->api_version() === 2) {
+            if ($this->api_request_method() === 'POST') {
+                $id = null;
+            }
+        }
+
         $data['station_ids'] = $this->data('station_ids');
 
         $data['name'] = trim($this->data('name'));
@@ -247,6 +255,7 @@ class Players extends OBFController
      * Search the player monitor, which logs what a player has played so far.
      * Requires the 'view_player_monitor' permission.
      *
+     * @param type Whether to return the data as "json" or "csv".
      * @param player_id
      * @param date_start
      * @param date_end
@@ -262,6 +271,8 @@ class Players extends OBFController
      */
     public function monitor_search()
     {
+        $data['type'] = $this->data['type'];
+
         $data['player_id'] = $this->data('player_id');
         $data['date_start'] = $this->data('date_start');
         $data['date_end'] = $this->data('date_end');
@@ -291,7 +302,11 @@ class Players extends OBFController
             return array(false,'An unknown error occurred while searching the playlog.');
         }
 
-        return array(true,'Playlog search results.',array('results' => $result[0],'total_rows' => $result[1], 'csv' => $this->models->players('monitor_csv', $result[0])));
+        if ($data['type'] === 'csv') {
+            return [true, 'Playlog search results.', ['results' => $this->models->players('monitor_csv', $result[0]), 'total_rows' => $result[1]]];
+        } else {
+            return [true, 'Playlog search results.', ['results' => $result[0], 'total_rows' => $result[1]]];
+        }
     }
 
     /**

@@ -17,6 +17,11 @@
       <input id="playlist_name_input" type="text">
     </div>
 
+    <div class="fieldrow" style="display: none;">
+      <label data-t>Thumbnail</label>
+      <ob-field-thumbnail id="playlist_thumbnail_input"></ob-field-thumbnail>
+    </div>
+
     <div class="fieldrow">
       <label data-t>Description</label>
       <input id="playlist_description_input" type="text">
@@ -36,6 +41,11 @@
       </select>
     </div>
 
+    <div class="fieldrow" style="display: none;">
+      <label data-t>Last Track Fade-Out</label>
+      <ob-field-range id="playlist_last_fadeout" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="5"></ob-field-range>
+    </div>
+
   </fieldset>
 
   <fieldset data-permissions="playlists_advanced_permissions">
@@ -43,12 +53,12 @@
 
     <div class="fieldrow">
       <label data-t>User Permissions</label>
-      <ob-user-input id="playlist_users_permissions_input"></ob-user-input>
+      <ob-field-user id="playlist_users_permissions_input" data-edit></ob-field-user>
     </div>
 
     <div class="fieldrow">
       <label data-t>Group Permissions</label>
-      <ob-group-input id="playlist_groups_permissions_input"></ob-group-input>
+      <ob-field-group id="playlist_groups_permissions_input" data-edit></ob-field-group>
     </div>
   </fieldset>
 

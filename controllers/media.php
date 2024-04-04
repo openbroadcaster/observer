@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -282,8 +282,12 @@ class Media extends OBFController
      * This method gets information from the Uploads model and makes sure to add
      * that to the media items.
      *
+     * Note that the PUT request does not take an id in the URL because multiple media
+     * items can be updated at the same time.
+     *
      * @param media The media items to update.
      *
+     * @route POST /v2/media
      * @route PUT /v2/media
      */
     public function save()
@@ -292,6 +296,29 @@ class Media extends OBFController
 
         $all_valid = true;
         $validation = array();
+
+        // Split POST and PUT when using v2 api: one for creating new media,
+        // one for updating existing ones. This means id should be unset on POST,
+        // while it should be required on PUT with file_id and file_key set to empty
+        // strings.
+        if ($this->api_version() === 2) {
+            foreach ($media as $media_key => $media_item) {
+                if ($this->api_request_method() === 'POST') {
+                    unset($media[$media_key]['id']);
+
+                    if (empty($media_item['file_id']) || empty($media_item['file_key'])) {
+                        return [false, 'File id and key required to create new media item.'];
+                    }
+                } elseif ($this->api_request_method() === 'PUT') {
+                    $media[$media_key]['file_id'] = '';
+                    $media[$media_key]['file_key'] = '';
+
+                    if (empty($media_item['id'])) {
+                        return [false, 'Media id required to update media item.'];
+                    }
+                }
+            }
+        }
 
         // add our file info to our media array. (this also validates the file upload id/key)
         // also trim artist/title (which is used to determine filename)
@@ -342,7 +369,12 @@ class Media extends OBFController
         if ($all_valid) {
             $items = array();
             foreach ($media as $item) {
-                $items[] = $this->models->media('save', ['item' => $item]);
+                $id = $this->models->media('save', ['item' => $item]);
+                $items[] = $id;
+
+                if (isset($item['thumbnail'])) {
+                    $this->models->uploads('thumbnail_save', $id, 'media', $item['thumbnail']);
+                }
             }
             //T Media has been saved.
             return array(true,'Media has been saved.',$items);
@@ -607,8 +639,14 @@ class Media extends OBFController
 
         // get where used information...
         if ($this->data('where_used')) {
-            $where_used = $this->models->media('where_used', ['id' => $id, 'include_dynamic' => true]);
+            $where_used = $this->models->media('where_used', ['id' => $id, 'include_dynamic' => false]);
             $media['where_used'] = $where_used;
+        }
+
+        // get thumbnail, if one exists
+        $thumbnail = $this->models->uploads('thumbnail_get', $id, 'media');
+        if ($thumbnail[0]) {
+            $media['thumbnail'] = $thumbnail[1];
         }
 
         return array(true,'Media data.',$media);

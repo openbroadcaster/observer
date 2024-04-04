@@ -21,6 +21,12 @@
     <span class="new_media_status" data-t>File is in Upload Queue</span>
   </div>
 
+  <div class="fieldrow" style="display: none;">
+    <label data-t>Thumbnail</label>
+    <ob-field-thumbnail class="thumbnail_field" data-edit></ob-field-thumbnail>
+    <button class="copy_to_all" data-field="thumbnail_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
+  </div>
+
   <div class="fieldrow">
     <label class="required" data-t>Artist</label>
     <input class="artist_field" type="text">
@@ -59,7 +65,7 @@
 
   <div class="fieldrow">
     <label data-t class="required">Language</label>
-    <select class="language_field"><option value="" data-t>Not Applicable</option></select>
+    <ob-field-language class="language_field" data-edit></ob-field-language>
     <button class="copy_to_all" data-field="language_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 
@@ -101,13 +107,13 @@
 
   <div class="fieldrow" data-permissions="media_advanced_permissions">
     <label data-t>User Permissions</label>
-    <ob-user-input class="advanced_permissions_users_field"></ob-user-input>
+    <ob-field-user class="advanced_permissions_users_field" data-edit></ob-field-user>
     <button class="copy_to_all" data-field="advanced_permissions_users_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 
   <div class="fieldrow" data-permissions="media_advanced_permissions">
     <label data-t>Group Permissions</label>
-    <ob-group-input class="advanced_permissions_groups_field"></ob-group-input>
+    <ob-field-group class="advanced_permissions_groups_field" data-edit></ob-field-group>
     <button class="copy_to_all" data-field="advanced_permissions_groups_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 

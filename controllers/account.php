@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -326,9 +326,15 @@ class Account extends OBFController
 
         $id = $this->data('id');
         $permissions = trim($this->data('permissions'));
+        $permissions_v2 = trim($this->data('permissions_v2'));
         $user_id = $this->user->param('id');
 
-        return $this->models->users('user_manage_key_permissions_save', $id, $permissions, $user_id);
+        $data = [
+            'permissions' => $permissions,
+            'permissions_v2' => $permissions_v2
+        ];
+
+        return $this->models->users('user_manage_key_permissions_save', $id, $data, $user_id);
     }
 
     /**
@@ -349,15 +355,19 @@ class Account extends OBFController
         }
 
         $result = $this->models->users('user_manage_key_load', $id);
+
         return array(true, 'Successfully loaded App Keys.', $result);
     }
 
-   /**
-    * Get or save arbitrary string data associated with the logged in account. Used for UI/client settings, etc.
-    *
-    * @param key
-    * @param value
-    */
+    /**
+     * Get or save arbitrary string data associated with the logged in account. Used for UI/client settings, etc.
+     * Only returns value when getting (not saving).
+     *
+     * @param name
+     * @param value
+     *
+     * @return value
+     */
     public function store()
     {
         $data['user_id'] = $this->user->param('id');
@@ -376,5 +386,17 @@ class Account extends OBFController
             return $this->models->userstorage('save', $data);
         }
         return $this->models->userstorage('get', $data);
+    }
+
+    /**
+     * Get all saved account settings.
+     *
+     * @return values
+     */
+    public function store_all()
+    {
+        $data['user_id'] = $this->user->param('id');
+
+        return $this->models->userstorage('get_all', $data);
     }
 }

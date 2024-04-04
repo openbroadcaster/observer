@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -142,6 +142,26 @@ OB.Playlist.advancedGetItems = function()
     new_item.type = 'media';
     new_item.id = item.id;
     new_item.duration = item.duration;
+    
+    if (item.voicetrack) {
+      new_item.voicetrack = item.voicetrack;
+    }
+
+    if (item.voicetrack_volume) {
+      new_item.voicetrack_volume = item.voicetrack_volume;
+    }
+
+    if (item.voicetrack_offset) {
+      new_item.voicetrack_offset = item.voicetrack_offset;
+    }
+
+    if (item.voicetrack_fadeout_before) {
+      new_item.voicetrack_fadeout_before = item.voicetrack_fadeout_before;
+    }
+
+    if (item.voicetrack_fadein_after) {
+      new_item.voicetrack_fadein_after = item.voicetrack_fadein_after;
+    }
 
     items.push(new_item);
   });
@@ -152,6 +172,17 @@ OB.Playlist.advancedGetItems = function()
 // add item. we can skip display refresh if adding a bunch and not wanting to refresh until the end.
 OB.Playlist.advancedAddItem = function(item,skip_display)
 {
+  if (item.properties) {
+    item.voicetrack = item.properties.voicetrack;
+    item.voicetrack_volume = item.properties.voicetrack_volume;
+    item.crossfade = item.properties.crossfade;
+    item.voicetrack_offset = item.properties.voicetrack_offset;
+    item.voicetrack_fadeout_before = item.properties.voicetrack_fadeout_before;
+    item.voicetrack_fadein_after = item.properties.voicetrack_fadein_after;
+
+    delete item.properties;
+  }
+
   OB.Playlist.advanced_items.push(item);
   if(!skip_display) OB.Playlist.advancedItemsDisplay();
 }

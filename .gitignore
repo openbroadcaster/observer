@@ -1,5 +1,10 @@
+.vscode
 config.php
-assets
+/assets/*
+!/assets/uploads
+/assets/uploads/*
+!/assets/.keep
+!/assets/uploads/.keep
 modules/*
 !modules/now_playing
 !modules/logger

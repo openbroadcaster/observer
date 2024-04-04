@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2022 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -23,9 +23,10 @@
 
 namespace ob\tools\cli;
 
-require(__DIR__ . '/helpers.php');
-
 define('OB_CLI', true);
+chdir(__DIR__ . '/../../');
+
+require('tools/cli/includes/helpers.php');
 
 if (php_sapi_name() !== 'cli') {
     die('This tool can only be used from the command line.');
@@ -42,76 +43,95 @@ if (!is_dir('vendor')) {
 require('vendor/autoload.php');
 
 $command = $argv[1] ?? '';
+$subcommand = $argv[2] ?? '';
 
 $obcli = new OBCLI();
 
 if (method_exists($obcli, $command)) {
     $obcli->$command();
 } else {
-    echo 'OpenBroadcaster CLI Tool (alpha). Run ob.php <command>.
-
-Commands:
-check    check configuration for errors
-';
+    $obcli->help();
 }
-
-
 
 class OBCLI
 {
+    public function help()
+    {
+        echo 'OpenBroadcaster CLI Tool (alpha). Run ob <command>.
+
+Commands:
+';
+
+        echo Helpers::table(spacing: 5, rows: [
+            ['check', 'check installation for errors'],
+            ['cron run', 'run scheduled tasks'],
+            ['updates list all', 'list all available updates'],
+            ['updates list core', 'list core ob updates'],
+            ['updates list module <name>', 'list updates for specified module'],
+            ['updates run all', 'run all available updates'],
+            ['updates run core', 'run core ob updates'],
+            ['updates run module <name>', 'run updates for specified module'],
+            ['passwd <username>', 'change password for user']
+        ]);
+    }
+
     public function check()
     {
-        require('updates/checker.php');
+        require(__DIR__ . '/commands/check.php');
+    }
 
-        $checker = new \OBFChecker();
-        $methods = get_class_methods($checker);
-        $results = [];
-        $rows = [];
-        $errors = 0;
-        $warnings = 0;
-        $pass = 0;
-
-        $check_fatal_error = false;
-
-        foreach ($methods as $method) {
-            $result = $checker->$method();
-            $results[] = $result;
-
-            $formatting1 = '';
-            $formatting2 = '';
-
-            switch ($result[2]) {
-                case 0:
-                    $formatting = "\033[32m";
-                    $pass++;
-                    break;
-                case 1:
-                    $formatting = "\033[33m";
-                    $warnings++;
-                    break;
-                case 2:
-                    $formatting = "\033[31m";
-                    $errors++;
-            }
-            $rows[] = [[$formatting,$result[0]], [$formatting, $result[1]]];
-
-            if ($result[2] > 1) {
-                $check_fatal_error = true;
-                break;
-            }
-        }
-
-        Helpers::table(rows: $rows);
-
-        if ($check_fatal_error) {
-            echo "\033[31m";
-            echo PHP_EOL . 'Error detected, testing stopped. Correct the above error then run again.' . PHP_EOL;
-            echo "\033[0m";
+    public function cron()
+    {
+        global $subcommand;
+        if ($subcommand == 'run') {
+            require('cron.php');
         } else {
-                echo PHP_EOL .
-                "\033[32m" . str_pad($pass, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .
-                "\033[33m" . str_pad($warnings, 2, ' ', STR_PAD_LEFT) . " warnings\033[0m    " .
-                "\033[31m" . str_pad($errors, 2, ' ', STR_PAD_LEFT) . " errors\033[0m" . PHP_EOL;
+            $this->help();
         }
+    }
+
+    public function updates()
+    {
+        global $argv;
+        if (count($argv) < 4 || ! (in_array($argv[3], ['all', 'core', 'module']))) {
+            $this->help();
+            return false;
+        }
+
+        if ($argv[3] === 'module') {
+            if (count($argv) < 5) {
+                $this->help();
+                return false;
+            }
+
+            $modules = array_filter(scandir(__DIR__ . '/../../modules/'), fn($f) => $f[0] !== '.');
+            if (! in_array($argv[4], $modules)) {
+                $this->moduleNotFound($argv[4]);
+                return false;
+            }
+        }
+
+        if ($argv[2] == 'run') {
+            require(__DIR__ . '/commands/updates_run.php');
+        } elseif ($argv[2] == 'list') {
+            require(__DIR__ . '/commands/updates_list.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    public function passwd()
+    {
+        global $subcommand;
+        if ($subcommand) {
+            require(__DIR__ . '/commands/passwd.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    private function moduleNotFound($module)
+    {
+        echo "Module {$module} could not be found in the OpenBroadcaster installation.";
     }
 }

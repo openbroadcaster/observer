@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -59,6 +59,16 @@ OB.API.multiPost = function (post, callback_function, mode) {
     'data': { "m": post, "i": readCookie('ob_auth_id'), "k": readCookie('ob_auth_key') },
     'success': function (data) {
       OB.API.postSuccess(controllers, actions, callback_function, sdatas, data);
+    },
+    'error': function (data) {
+      OB.API.postError({
+        controller: controllers,
+        action: actions,
+        callback: callback_function,
+        sdata: sdatas,
+      }, {
+        data: data
+      });
     }
   }));
 
@@ -76,17 +86,36 @@ OB.API.post = function (controller, action, sdata, callback_function, mode) {
   var xhr = $.ajax({
     'async': async,
     'type': 'POST',
-    'url': OB_API_REWRITE ? '/api/v2/' + controller + '/' + action : '/api.php',
+    'url': OB_API_REWRITE ? '/api/v1/' + controller + '/' + action : '/api.php',
     'dataType': 'json',
     'data': requestData,
     'success': function (data) {
       OB.API.postSuccess(controller, action, callback_function, sdata, data);
+    },
+    'error': function (data) {
+      OB.API.postError({
+        controller: controller,
+        action: action,
+        callback: callback_function,
+        sdata: sdata,
+      }, {
+        data: data
+      });
     }
   });
 
   OB.API.ajax_list.push(xhr);
   OB.API.ajaxStatus();
   return OB.API.ajax_list.length - 1;
+}
+
+// when we want a promise instead of using a callback
+OB.API.postPromise = async function (controller, action, sdata) {
+  return new Promise((resolve, reject) => {
+    OB.API.post(controller, action, sdata, (data) => {
+      resolve(data);
+    });
+  });
 }
 
 OB.API.abort = function (id) {
@@ -141,7 +170,39 @@ OB.API.postSuccess = function (controller, action, callback_function, sdata, dat
   });
 
   return true;
+}
 
+OB.API.postError = function (data_request, data_response) {
+  OB.UI.openModalWindow('error.html');
+
+  var message = '';
+  Object.keys(data_request).forEach((key) => {
+    if (typeof (data_request[key]) === 'object' && !(data_request[key] instanceof Array)) {
+      data_request[key] = JSON.stringify(data_request[key]);
+    }
+    message = message + `<p><strong>${key}:</strong>&nbsp;${data_request[key]}</p>`;
+  })
+
+  if (message !== '') {
+    document.getElementById('unexpected_error_message_request').innerHTML = message;
+    document.getElementById('unexpected_error_details').style.display = "block";
+  }
+
+  message = '';
+  Object.keys(data_response).forEach((key) => {
+    if (typeof (data_response[key]) === 'object' && !(data_response[key] instanceof Array)) {
+      data_response[key] = JSON.stringify(data_response[key]);
+    }
+    message = message + `<p><strong>${key}:</strong>&nbsp;${data_response[key]}</p>`;
+  })
+
+  if (message !== '') {
+    document.getElementById('unexpected_error_message_response').innerHTML = message;
+    document.getElementById('unexpected_error_details').style.display = "block";
+  }
+
+
+  return false;
 }
 
 OB.API.callback_prepend_array = [];

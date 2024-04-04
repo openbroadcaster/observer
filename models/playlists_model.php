@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -726,11 +726,24 @@ class PlaylistsModel extends OBFModel
                         $tmp['duration'] = $media['duration'];
                     }
                     $media_offset += $tmp['duration'];
-                    if ($media['type'] == 'audio' && $playlist_item['properties']['crossfade']) {
+                    if ($media['type'] == 'audio' && isset($playlist_item['properties']['crossfade']) && $playlist_item['properties']['crossfade']) {
                         $tmp['crossfade'] = $playlist_item['properties']['crossfade'];
                     }
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Media';
+                    if (isset($playlist_item['properties']['voicetrack'])) {
+                        $voicetrack = $this->models->media('get_by_id', ['id' => $playlist_item['properties']['voicetrack']]);
+                        if ($voicetrack) {
+                            $tmp['voicetrack'] = [
+                                'id'             => $voicetrack['id'],
+                                'duration'       => $voicetrack['duration'],
+                                'volume'         => $playlist_item['properties']['voicetrack_volume'] ?? 0.0,
+                                'offset'         => $playlist_item['properties']['voicetrack_offset'] ?? 0.0,
+                                'fadeout-before' => $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0,
+                                'fadein-after'   => $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0,
+                            ];
+                        }
+                    }
                     $media_items_tmp[] = $tmp;
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {

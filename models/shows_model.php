@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -92,6 +92,8 @@ class ShowsModel extends OBFModel
                 $data[$index]['description'] = $playlist['description'];
                 $data[$index]['owner'] = $playlist['owner_name'];
                 $data[$index]['type'] = $playlist['type'];
+                $thumbnail = $this->models->uploads('thumbnail_get', $playlist['id'], 'playlist');
+                $data[$index]['thumbnail'] = $thumbnail[0];
             } elseif ($item['item_type'] == 'media') {
                 $media = $this->models->media('get_by_id', ['id' => $item['item_id']]);
                 $data[$index]['name'] = $media['title'];

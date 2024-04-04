@@ -20,7 +20,7 @@ $update_required = $models->updates('update_required');
 <html lang="en">
 <head>
   <meta charset="utf-8">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js?v=<?=filemtime('node_modules/jquery/dist/jquery.min.js')?>"></script>
     <script src="../extras/jquery.json.js"></script>
     <script src="welcome.js?v=<?=urlencode($version)?>"></script>
   <link type="text/css" href="../extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
@@ -37,7 +37,7 @@ $update_required = $models->updates('update_required');
             <p>A database update is required using one of the following methods:</p>
             <ul>
                 <li><strong><a href="/updates">Web Browser</a></strong><br>You will need to have <span>OB_UPDATES_USER</span> and <span>OB_UPDATES_PW</span> set in config.php.</li>
-                <li><strong>Command Line</strong><br>By running "php index.php run" in the /updates directory. Please note this functionality is currently experimental.</li>
+                <li><strong>Command Line</strong><br>By running "tools/cli/ob updates run".</li>
         </div>
     
     <?php } else { ?>

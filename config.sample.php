@@ -1,5 +1,9 @@
 <?php
 
+//
+// THE FOLLOWING ARE REQUIRED SETTINGS
+//
+
 define('OB_DB_USER', 'dbuser'); // database user
 define('OB_DB_PASS', 'dbpass'); // database password
 define('OB_DB_HOST', 'localhost'); // database hostname
@@ -11,6 +15,7 @@ define('OB_HASH_SALT', 'CHANGEMEPLEASE'); // change to random characters for pas
 define('OB_MEDIA', '/where/to/put/media');
 define('OB_MEDIA_UPLOADS', '/where/to/put/media/uploads'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
 define('OB_MEDIA_ARCHIVE', '/where/to/put/media/archive'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
+define('OB_THUMBNAILS', '/where/to/put/thumbnails');
 define('OB_CACHE', '/where/to/put/cache/files');
 
 define('OB_SITE', 'http://example.com/'); // where do you access OB?
@@ -18,12 +23,12 @@ define('OB_SITE', 'http://example.com/'); // where do you access OB?
 define('OB_EMAIL_REPLY', 'noreply@example.com'); // emails to users come from this address
 define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this name
 
-define('OB_UPDATES_USER', 'updates'); // username/password for updates area
-define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
-
 //
 // THE FOLLOWING ARE OPTIONAL SETTINGS
 //
+
+// define('OB_UPDATES_USER', 'updates'); // username/password for updates area
+// define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
 
 // custom SMTP server (all must be defined)
 // define('OB_EMAIL_HOST', 'hostname');
@@ -32,7 +37,10 @@ define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "ech
 // define('OB_EMAIL_TYPE', 'ssl');
 // define('OB_EMAIL_PORT', 443);
 
-// verify audio/video media validity, possibly slow (default true)
+// show all languages
+// define('OB_SHOW_ALL_LANGUAGES', true);
+
+// verify audio/video media validity. skip verify (false), default verify command (true), or custom verify command (string)
 // define('OB_MEDIA_VERIFY',true);
 
 // media filesize limit in MB (default 1024)

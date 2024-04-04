@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -126,13 +126,12 @@ OB.Schedule.scheduleInit = function()
   var post = [];
   post.push(['players','search', {}]);
 
-  if(OB.Schedule.schedule_mode=='timeslot') post.push(['account','store', {'name': 'timeslots-player'}]);
-  else post.push(['account','store', {'name': 'shows-player'}]);
+  if (OB.Schedule.schedule_mode === 'timeslot') var last_player = OB.Settings.store('timeslots-player');
+  else var last_player = OB.Settings.store('shows-player');
 
   OB.API.multiPost(post, function(responses)
   {
     var players = responses[0].data;
-    var last_player = responses[1];
 
     $.each(players,function(index,item) {
       if(item.use_parent_schedule=='1') return; // player uses parent schedule, setting schedule would not do anything.
@@ -147,10 +146,10 @@ OB.Schedule.scheduleInit = function()
     });
 
     // if we have a valid last player for this schedule, set that.
-    if(last_player.status && $('#schedule_player_select option[value='+last_player.data.player+']').length)
+    if(typeof last_player !== "undefined" && $('#schedule_player_select option[value='+last_player.player+']').length)
     {
-      $('#schedule_player_select').val(last_player.data.player);
-      OB.Schedule.player_id = last_player.data.player;
+      $('#schedule_player_select').val(last_player.player);
+      OB.Schedule.player_id = last_player.player;
     }
 
     OB.Schedule.loadSchedule();
@@ -527,6 +526,7 @@ OB.Schedule.editShowWindow = function(id,recurring)
         $('#show_duration').val(show.duration);
         $('#show_id').val(show.id);
         $('#show_x_data').val(show.x_data);
+        $('#show_mode').val(show.mode);
 
         // if we have timeslots, and this is scheduled once only, see if the duration/start lines up with one of the timeslots. (then select that timeslot).
         if($('#show_time_slot option').length>0 && !recurring)
@@ -659,6 +659,8 @@ OB.Schedule.dateRangeText = function()
   {
 
     $('#schedule_days_'+count).text(tmp_date.getDate());
+    $('#schedule_days_'+count).attr('data-date', moment(tmp_date.getTime()).format('Y-MM-DD'));
+
     tmp_date.setDate(tmp_date.getDate() + 1);
 
   }
@@ -677,7 +679,7 @@ OB.Schedule.loadSchedule = function()
   {
     var post = [];
     post.push(['timeslots','search', { 'start': String(Math.round(OB.Schedule.schedule_start.getTime()/1000)), 'end': String(Math.round(OB.Schedule.schedule_end.getTime()/1000)), 'player': OB.Schedule.player_id }]);
-    post.push(['account','store', { 'name': 'timeslots-player', 'value': { 'player': OB.Schedule.player_id } }]);
+    OB.Settings.store('timeslots-player', {player: OB.Schedule.player_id});
 
     OB.API.multiPost(post, function(responses) {
       if(responses[0].status==true)
@@ -701,7 +703,7 @@ OB.Schedule.loadSchedule = function()
 
     post.push(['shows','search', { 'start': schedule_request_start, 'end': schedule_request_end, 'player': OB.Schedule.player_id }]);
     /*post.push(['shows', 'search', {'start': moment(OB.Schedule.schedule_start.getTime()).format('Y-MM-DD HH:mm:ss'), 'end': moment(OB.Schedule.schedule_end.getTime()).format('Y-MM-DD HH:mm:ss'), 'player': OB.Schedule.player_id}]);*/
-    post.push(['account','store', { 'name': 'shows-player', 'value': { 'player': OB.Schedule.player_id} } ]);
+    OB.Settings.store('shows-player', {player: OB.Schedule.player_id});
 
     OB.API.multiPost(post, function(responses) {
       if(responses[0].status==true)
@@ -724,7 +726,9 @@ OB.Schedule.refreshData = function()
   var schedule_data = new Array();
 
   $.each(OB.Schedule.schedule_data,function(index,data) {
-    schedule_data.push(new CloneObject(data));
+    let newData = new CloneObject(data);
+    newData.block_date = data.exp_start.substr(0,10);
+    schedule_data.push(newData);
   });
 
   // split up blocks which go over midnight
@@ -771,6 +775,7 @@ OB.Schedule.refreshData = function()
         new_data.block_offset = 0;
         new_data.block_duration = Math.min(86400,seconds_over_midnight);
         new_data.day = (start.getUTCDay()+count)%7;
+        new_data.block_date = moment(new Date(start.getTime() + 86400000).getTime()).format('Y-MM-DD');
 
         schedule_data.push(new_data);
 
@@ -797,8 +802,8 @@ OB.Schedule.refreshData = function()
 
     if(data.day===null) return;
 
-    // skip if day number mismatch (occurs because extra data is obtained from server due to potential client/player timezone discrepancy)
-    if(parseInt(data.exp_start.substr(8,2), 10) != parseInt($('#schedule_days_'+data.day).text(), 10)) return;
+    // skip if date number mismatch (occurs because extra data is obtained from server due to potential client/player timezone discrepancy)
+    if($('#schedule_days_'+data.day).attr('data-date')!=data.block_date) return;
 
     // see if our block passes through an expanded hour
     var block_duration = parseInt(data.block_duration);

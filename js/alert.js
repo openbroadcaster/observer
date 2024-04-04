@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -80,13 +80,12 @@ OB.Alert.alertInit = function()
 
   var post = [];
   post.push(['players','search', {}]);
-  post.push(['account','store', {'name': 'alerts-player'}]);
 
   OB.API.multiPost(post, function(responses)
   {
 
     var players = responses[0].data;
-    var last_player = responses[1];
+    var last_player = OB.Settings.store('alerts-player');
 
     $.each(players,function(index,item) {
 
@@ -101,10 +100,10 @@ OB.Alert.alertInit = function()
 
     });
 
-    if(last_player.status && $('#alert_player_select option[value='+last_player.data.player+']').length)
+    if(typeof last_player !== "undefined" && $('#alert_player_select option[value='+last_player.player+']').length)
     {
-      $('#alert_player_select').val(last_player.data.player);
-      OB.Alert.player_id = last_player.data.player;
+      $('#alert_player_select').val(last_player.player);
+      OB.Alert.player_id = last_player.player;
     }
 
     OB.Alert.loadAlerts();
@@ -126,8 +125,8 @@ OB.Alert.loadAlerts = function()
 
   var post = [];
   post.push(['alerts','search',{ 'player_id': OB.Alert.player_id }]);
-  post.push(['account','store', { 'name': 'alerts-player', 'value': { 'player': OB.Alert.player_id } }]);
-
+  OB.Settings.store('alerts-player', {player: OB.Alert.player_id});
+  
   OB.API.multiPost(post, function(responses)
   {
 

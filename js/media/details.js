@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -52,6 +52,7 @@ OB.Media.detailsPage = function(id)
 
     // handle metadata
     $('#media_details_id').text(id);
+    $('#media_details_thumbnail').val(item.thumbnail);
     $('#media_details_artist').text(item.artist);
     $('#media_details_title').text(item.title);
     $('#media_details_album').text(item.album);

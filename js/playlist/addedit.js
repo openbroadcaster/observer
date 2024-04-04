@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -93,12 +93,17 @@ OB.Playlist.editPage = function(id)
     playlist_data = response[1].data;
 
     $('#playlist_name_input').val(playlist_data['name']);
+    $('#playlist_thumbnail_input').val(playlist_data['thumbnail']);
     $('#playlist_description_input').val(playlist_data['description']);
     $('#playlist_id').val(playlist_data['id']);
     $('#playlist_owner_id').val(playlist_data['owner_id']);
 
     $('#playlist_status_input').val(playlist_data['status']);
     $('#playlist_type_input').val(playlist_data['type']);
+
+    if (playlist_data['properties'] && playlist_data['properties']['last_track_fadeout']) {
+      $('#playlist_last_fadeout').val(playlist_data['properties']['last_track_fadeout']);
+    }
 
     OB.Playlist.addeditTypeChange();
 
@@ -287,15 +292,27 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   // initialize properties window for audio item.
   else if(type=='audio')
-  {
+  {    
     if($('#playlist_type_input').val()=='standard')
     {
+      document.querySelector('#audio_properties_media_id').value = document.querySelector('#playlist_addedit_item_' + id).dataset.id;
       $('#audio_properties_crossfade').val($('#playlist_addedit_item_'+id).attr('data-crossfade'));
+      $('#audio_properties_voicetrack').val([$('#playlist_addedit_item_'+id).attr('data-voicetrack')]);
+      $('#audio_properties_voicetrack_volume').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_volume'));
+      $('#audio_properties_voicetrack_offset').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_offset'));
+      $('#audio_properties_voicetrack_fadeout_before').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before'));
+      $('#audio_properties_voicetrack_fadein_after').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after'));
     }
 
-    else // advanced
+    else if(type=='advanced') // advanced
     {
+      document.querySelector('#audio_properties_media_id').value = OB.Playlist.advanced_items[id].id;
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
+      $('#audio_properties_voicetrack').val([OB.Playlist.advanced_items[id].voicetrack]);
+      $('#audio_properties_voicetrack_volume').val(OB.Playlist.advanced_items[id].voicetrack_volume);
+      $('#audio_properties_voicetrack_offset').val(OB.Playlist.advanced_items[id].voicetrack_offset);
+      $('#audio_properties_voicetrack_fadeout_before').val(OB.Playlist.advanced_items[id].voicetrack_fadeout_before);
+      $('#audio_properties_voicetrack_fadein_after').val(OB.Playlist.advanced_items[id].voicetrack_fadein_after);
     }
   }
 
@@ -317,12 +334,19 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
   if(required)
   {
     $('#item_properties_cancel').click(function() {
+      OB.Playlist.voicetrackPreviewStop();
       OB.UI.closeModalWindow();
       OB.Playlist.addeditRemoveItem(id);
+    });
+  } else {
+    $('#item_properties_cancel').click(function() {
+      OB.Playlist.voicetrackPreviewStop();
+      OB.UI.closeModalWindow();
     });
   }
 
   $('#item_properties_save').click(function() {
+    OB.Playlist.voicetrackPreviewStop();
 
     // dynamic used only for standard playlist right now.
     if(type=='dynamic')
@@ -360,6 +384,11 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       if($('#playlist_type_input').val()=='standard')
       {
         $('#playlist_addedit_item_'+id).attr('data-crossfade', $('#audio_properties_crossfade').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack', $('#audio_properties_voicetrack').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_volume', $('#audio_properties_voicetrack_volume').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_offset', $('#audio_properties_voicetrack_offset').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadeout_before', $('#audio_properties_voicetrack_fadeout_before').val());
+        $('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after', $('#audio_properties_voicetrack_fadein_after').val());
         OB.UI.closeModalWindow();
       }
 
@@ -367,6 +396,11 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       else
       {
         OB.Playlist.advanced_items[id].crossfade = $('#audio_properties_crossfade').val();
+        OB.Playlist.advanced_items[id].voicetrack = $('#audio_properties_voicetrack').val()[0];
+        OB.Playlist.advanced_items[id].voicetrack_volume = $('#audio_properties_voicetrack_volume').val();
+        OB.Playlist.advanced_items[id].voicetrack_offset = $('#audio_properties_voicetrack_offset').val();
+        OB.Playlist.advanced_items[id].voicetrack_fadeout_before = $('#audio_properties_voicetrack_fadeout_before').val();
+        OB.Playlist.advanced_items[id].voicetrack_fadein_after = $('#audio_properties_voicetrack_fadein_after').val();
         OB.UI.closeModalWindow();
       }
     }
@@ -402,6 +436,165 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   });
 
+  // enable/disable voicetrack sliders
+  OB.Playlist.voicetrackChange();
+
+}
+
+OB.Playlist.voicetrackChange = function ()
+{
+  const editable = document.querySelector('#audio_properties_voicetrack').value.length !== 0;
+  document.querySelector('#audio_properties_voicetrack_volume').editable = editable;
+  document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
+  document.querySelector('#audio_properties_voicetrack_fadeout_before').editable = editable;
+  document.querySelector('#audio_properties_voicetrack_fadein_after').editable = editable;
+
+  OB.Playlist.voicetrackValidate();
+}
+
+OB.Playlist.voicetrackValidate = function ()
+{
+  if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
+    document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
+    return true;
+  }
+
+  const post = [
+    ['media', 'get', { 'id': document.querySelector('#audio_properties_media_id').value }],
+    ['media', 'get', { 'id': document.querySelector('#audio_properties_voicetrack').value[0] }]
+  ];
+
+  OB.API.multiPost(post, function (response) {
+    if (response[0].status === false || response[1].status === false) {
+      console.warn('Media and voicetrack were specified but one or both could not be found: ' + response[0].msg + ' ' + response[1].msg);
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
+      return false;
+    }
+
+    const mediaDuration = parseFloat(response[0].data.duration);
+    const voicetrackDuration = parseFloat(response[1].data.duration);
+
+    if (voicetrackDuration > mediaDuration) {
+      $('#audio_properties_voicetrack_message').obWidget('error', 'Voicetrack duration is longer than media duration.');
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
+      return false;
+    }
+
+    const voicetrackOffset = document.querySelector('#audio_properties_voicetrack_offset').value;
+    const voicetrackFadeoutBefore = document.querySelector('#audio_properties_voicetrack_fadeout_before').value;
+    const voicetrackFadeinAfter = document.querySelector('#audio_properties_voicetrack_fadein_after').value;
+    const voicetrackTotal = voicetrackDuration + voicetrackOffset + voicetrackFadeoutBefore + voicetrackFadeinAfter;
+    if (voicetrackTotal > mediaDuration) {
+      $('#audio_properties_voicetrack_message').obWidget('error', 'Total of voicetrack duration and offsets are longer than media duration.');
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
+      return false;
+    } else {
+      $('#audio_properties_voicetrack_message').obWidget('hide');
+      document.querySelector('#audio_properties_voicetrack_preview').disabled = false;
+    }
+  });
+}
+
+OB.Playlist.voicetrackPreview = function ()
+{
+  OB.Playlist.voicetrackPreviewStop();
+
+  const mediaId = document.querySelector('#audio_properties_media_id').value;
+  const voicetrackId = document.querySelector('#audio_properties_voicetrack').value[0];
+  const voicetrackVolume = document.querySelector('#audio_properties_voicetrack_volume').value;
+  const voicetrackOffset = document.querySelector('#audio_properties_voicetrack_offset').value;
+  const voicetrackFadeoutBefore = document.querySelector('#audio_properties_voicetrack_fadeout_before').value;
+  const voicetrackFadeinAfter = document.querySelector('#audio_properties_voicetrack_fadein_after').value;
+  
+  OB.Playlist.voicetrackAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + voicetrackId);
+  OB.Playlist.mediaAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + mediaId);
+
+  // Function for playing both audio tracks in the preview (function is helpful because it can get called in 
+  // two separate ways, see comments below about the 'playthroughboth' event). 
+  function playModifiedPreview() {
+    // Play media.
+    OB.Playlist.mediaAudio.play();
+    document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = false;
+
+    // Play voicetrack after offset.
+    OB.Playlist.voicetrackAudioTimeout = setTimeout(() => { OB.Playlist.voicetrackAudio.play()}, (voicetrackFadeoutBefore + voicetrackOffset) * 1000);
+
+    // Start fading out media to specified volume after offset.
+    setTimeout(() => {
+      const steps = 10;
+      const fadeoutInterval = setInterval(() => {
+        const totalVolDifference = 1 - voicetrackVolume;
+        const newVolume = OB.Playlist.mediaAudio.volume - (totalVolDifference / steps);
+        if (newVolume <= voicetrackVolume) {
+          OB.Playlist.mediaAudio.volume = voicetrackVolume;
+          clearInterval(fadeoutInterval);
+        } else {
+          OB.Playlist.mediaAudio.volume = newVolume;
+        }
+      }, (voicetrackFadeoutBefore * 1000) / steps);
+    }, voicetrackOffset * 1000);
+
+    // Start fading media back in to 100% volume after voicetrack is over.
+    setTimeout(() => {
+      const steps = 10;
+      const fadeinInterval = setInterval(() => {
+        const totalVolDifference = 1 - voicetrackVolume;
+        const newVolume = OB.Playlist.mediaAudio.volume + (totalVolDifference / steps);
+        if (newVolume >= 1) {
+          OB.Playlist.mediaAudio.volume = 1;
+          clearInterval(fadeinInterval);
+        } else {
+          OB.Playlist.mediaAudio.volume = newVolume;
+        }
+      }, (voicetrackFadeinAfter * 1000) / steps);
+    }, (voicetrackOffset + voicetrackFadeoutBefore + OB.Playlist.voicetrackAudio.duration) * 1000);
+  };
+  
+  // Note that we need both audio tracks to be playable to avoid buffering getting the timings of 
+  // all the offsets and fades correct. For this we have two different variables to check if either
+  // track is playable through the end, which we set using the usual oncanplaythrough event. In that
+  // same event, we fire a custom event called 'playthroughboth', which checks that BOTH variables are
+  // set. It's only then that we actually start playing the audio. 
+  bufferedVoicetrack = false;
+  bufferedMedia = false;
+
+  OB.Playlist.voicetrackAudio.oncanplaythrough = (event) => {
+    bufferedVoicetrack = true;
+    OB.Playlist.voicetrackAudio.dispatchEvent(new Event('playthroughboth'));
+  };
+  OB.Playlist.mediaAudio.oncanplaythrough = (event) => {
+    bufferedMedia = true;
+    OB.Playlist.voicetrackAudio.dispatchEvent(new Event('playthroughboth'));
+  };
+
+  OB.Playlist.voicetrackAudio.addEventListener("playthroughboth", (event) => {
+    if (bufferedVoicetrack && bufferedMedia) {
+      playModifiedPreview();
+    }
+  });
+  OB.Playlist.mediaAudio.addEventListener("playthroughboth", (event) => {
+    if (bufferedVoicetrack && bufferedMedia) {
+      playModifiedPreview();
+    }
+  });
+}
+
+OB.Playlist.voicetrackPreviewStop = function ()
+{
+  document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = true;
+  
+  if (OB.Playlist.voicetrackAudio) {
+    OB.Playlist.voicetrackAudio.pause();
+  }
+
+  if (OB.Playlist.mediaAudio) {
+    OB.Playlist.mediaAudio.pause();
+  }
+
+  if (OB.Playlist.voicetrackAudioTimeout) {
+    clearTimeout(OB.Playlist.voicetrackAudioTimeout);
+  }
+  
 }
 
 OB.Playlist.save = function()
@@ -409,9 +602,14 @@ OB.Playlist.save = function()
 
   var id = $('#playlist_id').val();
   var playlist_name = $('#playlist_name_input').val();
+  var thumbnail = $('#playlist_thumbnail_input').val();
   var description = $('#playlist_description_input').val();
   var status = $('#playlist_status_input').val();
   var type = $('#playlist_type_input').val();
+
+  var properties = {};
+  var fadeout = $('#playlist_last_fadeout').val();
+  properties['last_track_fadeout'] = fadeout;
 
   var permissions_users = null;
   var permissions_groups = null;
@@ -437,9 +635,11 @@ OB.Playlist.save = function()
   OB.API.post('playlists','save', {
     'id': id,
     'name': playlist_name,
+    'thumbnail': thumbnail,
     'description': description,
     'status': status,
     'type': type,
+    'properties': properties,
     'items': items,
     'liveassist_button_items': liveassist_button_items,
     'permissions_users': permissions_users,

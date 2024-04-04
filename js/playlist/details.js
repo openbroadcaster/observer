@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -44,6 +44,7 @@ OB.Playlist.detailsPage = function(id)
     $('#playlist_details_id').text(id);
 
     $('#playlist_details_name').text(pldata.name);
+    $('#playlist_details_thumbnail').val(pldata.thumbnail);
     $('#playlist_details_description').text(pldata.description);
 
     //T Private
@@ -118,6 +119,10 @@ OB.Playlist.detailsPage = function(id)
       $.each(used,function(index,used_detail) {
         $('#playlist_details_used ul').append('<li>'+htmlspecialchars(used_detail.where)+': '+htmlspecialchars(used_detail.name)+'</li>');
       });
+    }
+
+    if (pldata['properties'] && pldata['properties']['last_track_fadeout']) {
+      $('#playlist_details_last_fadeout').text(pldata['properties']['last_track_fadeout'] + 's');
     }
 
     $('#playlist_details').show();

@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -34,22 +34,30 @@ class OBUpdate
 
 class OBFUpdates
 {
-    public function __construct()
+    public function __construct($module = null)
     {
-        $checker = new OBFChecker();
+        $this->module = $module;
+
+        $checker = new OBFChecker($module);
         $checker_methods = get_class_methods('OBFChecker');
+        $checker_methods = array_filter($checker_methods, fn($x) => $x !== '__construct');
         $this->checker_results = array();
 
         foreach ($checker_methods as $checker_method) {
+            if ($checker_method == 'directories_valid' && php_sapi_name() == 'cli') {
+                // skip directories valid check for CLI, this needs to be run via web.
+                continue;
+            }
+
             $result = $checker->$checker_method();
             $this->checker_results[] = $result;
-            if ((!defined('OB_FORCE_UPDATE') || OB_FORCE_UPDATE !== true) && $result[2] == 2) {
+            if ($result[2] == 2) {
                 $this->checker_status = false;
                 return;
             } // fatal error encountered.
         }
 
-        $this->dbver = $checker->dbver;
+        $this->dbver = $checker->dbver ?? 0;
         $this->checker_status = true;
 
         $this->db = new OBFDB();
@@ -79,7 +87,17 @@ class OBFUpdates
     // get an array of update classes.
     public function updates()
     {
-        $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
+        if ($this->module === null) {
+            $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
+        } else {
+            $dir = "./modules/{$this->module}/updates/";
+            if (file_exists($dir)) {
+                $scandir = scandir($dir, SCANDIR_SORT_ASCENDING);
+            } else {
+                $scandir = [];
+            }
+        }
+
         $updates = array();
         foreach ($scandir as $file) {
             if (!preg_match('/^[0-9]{8}\.php$/', $file)) {
@@ -88,9 +106,16 @@ class OBFUpdates
             $file_explode = explode('.', $file);
             $version = $file_explode[0];
 
-            require($version . '.php');
+            if ($this->module === null) {
+                require($version . '.php');
+                $class_name = 'OBUpdate' . $version;
+            } else {
+                require("./modules/{$this->module}/updates/{$version}.php");
+                $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));
+                $class_name = "{$moduleClass}Update{$version}";
+            }
 
-            $class_name = 'OBUpdate' . $version;
+
             $update_class = new $class_name();
             $update_class->needed = $version > $this->dbver;
             $update_class->version = $version;
@@ -108,7 +133,11 @@ class OBFUpdates
 
         // if update was successful, update our database version number.
         if ($result) {
-            $this->db->where('name', 'dbver');
+            if ($this->module === null) {
+                $this->db->where('name', 'dbver');
+            } else {
+                $this->db->where('name', 'dbver-' . $this->module);
+            }
             $this->db->update('settings', array('value' => $update->version));
         }
 

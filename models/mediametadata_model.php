@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -277,7 +277,7 @@ class MediaMetadataModel extends OBFModel
             !array_key_exists('year', $data) ||
             !array_key_exists('category_id', $data) ||
             !array_key_exists('country_id', $data) ||
-            !array_key_exists('language_id', $data) ||
+            !array_key_exists('language', $data) ||
             !array_key_exists('comments', $data) ||
             !array_key_exists('dynamic_content_default', $data) ||
             !array_key_exists('dynamic_content_hidden', $data)

@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -57,6 +57,7 @@ class OBFDB
      */
     public function __construct()
     {
+        mysqli_report(MYSQLI_REPORT_OFF);
         $this->connection = mysqli_connect(OB_DB_HOST, OB_DB_USER, OB_DB_PASS);
         mysqli_select_db($this->connection, OB_DB_NAME);
         mysqli_query($this->connection, 'SET NAMES \'utf8\'');
@@ -861,6 +862,21 @@ class OBFDB
         $this->where('id', $id);
         $test = $this->get_one($table);
         if ($test) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+  /**
+   * Check if a table column exists.
+   */
+    public function column_exists($table, $column)
+    {
+        $escaped_table = $this->escape($table);
+        $escaped_column = $this->escape($column);
+        $result = $this->query("SHOW COLUMNS FROM `$escaped_table` LIKE '$escaped_column'");
+        if ($this->num_rows() > 0) {
             return true;
         } else {
             return false;

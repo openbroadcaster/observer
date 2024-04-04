@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -59,6 +59,10 @@ class OBFIO
     {
         $user = OBFUser::get_instance();
 
+        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+            http_response_code(400);
+        }
+
         switch ($error_no) {
             case OB_ERROR_BAD_POSTDATA:
                 $msg = 'Invalid POST data.';
@@ -74,6 +78,9 @@ class OBFIO
 
             case OB_ERROR_DENIED:
                 $msg = 'Access denied.';
+                if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+                    http_response_code(401);
+                }
                 break;
         }
 
