@@ -354,9 +354,9 @@ class OBFDB
         }
 
         // handle null
-        if ($value === null && $operator = '=') {
+        if ($value === null && $operator === '=') {
             $where = $this->format_table_column($column) . ' IS NULL';
-        } elseif ($value === null && $operator = '!=') {
+        } elseif ($value === null && $operator === '!=') {
             $where = $this->format_table_column($column) . ' IS NOT NULL';
         } else {
             // default
