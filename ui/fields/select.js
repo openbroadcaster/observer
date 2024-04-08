@@ -90,6 +90,16 @@ class OBFieldSelect extends OBField {
                 option.setAttribute('hidden', true);
             }
         });
+
+        // hide popular/none if filter used
+        if (this.filterVal.length) {
+            this.root.querySelector('.popular').setAttribute('hidden', true);
+            this.root.querySelector('.none').setAttribute('hidden', true);
+        }
+        else {
+            this.root.querySelector('.popular').removeAttribute('hidden');
+            this.root.querySelector('.none').removeAttribute('hidden');
+        }
     }
 
     filterReset(e) {
@@ -123,10 +133,21 @@ class OBFieldSelect extends OBField {
                 background: var(--field-background);
                 width: 100%;
             }
-            ul li {
+            li {
                 padding: 4px 8px;
                 cursor: pointer;
+                font-size: 0.9em;
             }
+
+            li.none + li:not(.none),
+            li.popular + li:not(.popular) {
+                border-top: 1px solid var(--field-color);
+            }
+
+            li.selected {
+                font-weight: bold;
+            }
+
             #input 
             {
                 cursor: pointer;
@@ -206,10 +227,12 @@ class OBFieldSelect extends OBField {
     renderEdit() {
         // get options from data-options and json decode
         if (!this.options) this.options = JSON.parse(this.getAttribute('data-options'));
+        if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
         if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
         this.multiple = this.hasAttribute('data-multiple');
 
         if (!this.options) this.options = {};
+        if (!this.popular) this.popular = [];
         if (!this.selected && this.multiple) this.selected = [];
         if (!this.selected && !this.multiple) this.selected = '';
 
@@ -219,8 +242,9 @@ class OBFieldSelect extends OBField {
                 ${!this.multiple && html`<div id="input-selected"></div>`}
                 <ul id="options" contenteditable="false">
                     <li id="input-filter"></li>
-                    ${!this.multiple && html`<li onClick=${() => this.addSelected('')}>(None)</li>`}
-                    ${Object.keys(this.options).map(option => html`<li onClick=${() => this.addSelected(option)}>${this.options[option]}</li>`)}
+                    ${!this.multiple && html`<li class="none" onClick=${() => this.addSelected('')}>(None)</li>`}
+                    ${this.popular.map(value => html`<li class="popular" onClick=${() => this.addSelected(value)}>${this.options[value]}</li>`)}
+                    ${Object.keys(this.options).map(value => html`<li onClick=${() => this.addSelected(value)}>${this.options[value]}</li>`)}
                 </ul>
             </div>
 

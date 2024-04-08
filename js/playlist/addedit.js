@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -292,7 +292,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
   // initialize properties window for audio item.
   else if(type=='audio')
-  {
+  {    
     if($('#playlist_type_input').val()=='standard')
     {
       document.querySelector('#audio_properties_media_id').value = document.querySelector('#playlist_addedit_item_' + id).dataset.id;
@@ -304,7 +304,7 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
       $('#audio_properties_voicetrack_fadein_after').val($('#playlist_addedit_item_'+id).attr('data-voicetrack_fadein_after'));
     }
 
-    else // advanced
+    else if(type=='advanced') // advanced
     {
       document.querySelector('#audio_properties_media_id').value = OB.Playlist.advanced_items[id].id;
       $('#audio_properties_crossfade').val(OB.Playlist.advanced_items[id].crossfade);
@@ -441,8 +441,15 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
 }
 
+OB.Playlist.voicetrackEnabled = function()
+{
+  return !!document.querySelector('#audio_properties_voicetrack');
+}
+
 OB.Playlist.voicetrackChange = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   const editable = document.querySelector('#audio_properties_voicetrack').value.length !== 0;
   document.querySelector('#audio_properties_voicetrack_volume').editable = editable;
   document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
@@ -454,6 +461,8 @@ OB.Playlist.voicetrackChange = function ()
 
 OB.Playlist.voicetrackValidate = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
     document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
     return true;
@@ -497,6 +506,8 @@ OB.Playlist.voicetrackValidate = function ()
 
 OB.Playlist.voicetrackPreview = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   OB.Playlist.voicetrackPreviewStop();
 
   const mediaId = document.querySelector('#audio_properties_media_id').value;
@@ -581,6 +592,8 @@ OB.Playlist.voicetrackPreview = function ()
 
 OB.Playlist.voicetrackPreviewStop = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = true;
   
   if (OB.Playlist.voicetrackAudio) {

@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -166,7 +166,6 @@ OB.Account.settings = function()
     var languages = data[1];
     var themes = data[2];
     var permissions = data[3];
-    var results_per_page = OB.Settings.store('results-per-page');
 
     OB.UI.replaceMain('account/settings.html');
 
@@ -176,11 +175,6 @@ OB.Account.settings = function()
     $('#account_name_input').val(userdata['name']);
     $('#account_email_input').val(userdata['email']);
     $('#account_display_name_input').val(userdata['display_name']);
-
-    // user settings
-    if (typeof results_per_page !== "undefined") {
-      $('#account_user_results_per_page').val(results_per_page);
-    }
 
     if(languages && languages.data) $.each(languages.data, function(value,language)
     {
@@ -242,10 +236,6 @@ OB.Account.settingsSubmit = function()
   OB.API.post('account','update_settings',data,function(response) {
     $('#account_settings_message').obWidget(response.status ? 'success' : 'error',response.msg);
   });
-
-  var settings = {};
-  settings.results_per_page = parseInt($('#account_user_results_per_page').val());
-  OB.Settings.store('results-per-page', settings.results_per_page);
 }
 
 OB.Account.keyAdd = function () {

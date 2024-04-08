@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2023 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 

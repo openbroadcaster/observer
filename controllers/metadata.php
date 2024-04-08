@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2023 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -500,12 +500,31 @@ class Metadata extends OBFController
      */
     public function language_list()
     {
-        $types = $this->models->medialanguages('get_all');
-
-        if ($types === false) {
-            return array(false,'An unknown error occured while fetching languages.');
-        } else {
-            return array(true,'Language list.',$types);
+        // limited to individual living languages
+        if(!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+            $languages = $this->models->medialanguages('get_main');
         }
+
+        // all languages
+        else {
+            $languages = $this->models->medialanguages('get_all');
+        }
+
+        if ($languages === false) {
+            return array(false,'An unknown error occured while fetching languages.');
+        }
+
+        // get top languages, add popularity to the languages
+        $top_languages = $this->models->medialanguages('get_top');
+        $language_popularities = [];
+        foreach($top_languages as $index=>$top_language) {
+            $language_popularities[$top_language] = $index;
+        }
+
+        foreach($languages as &$language) {
+            $language['popularity'] = $language_popularities[$language['language_id']] ?? null;
+        }
+
+        return array(true,'Language list.',$languages);
     }
 }

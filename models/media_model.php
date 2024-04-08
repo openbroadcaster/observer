@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2012-2020 OpenBroadcaster, Inc.
+    Copyright 2012-2024 OpenBroadcaster, Inc.
 
     This file is part of OpenBroadcaster Server.
 
@@ -71,7 +71,7 @@ class MediaModel extends OBFModel
             }
         } else {
             // if we have an audio or a video, then we use avprobe to find format and duration.
-            $mediainfo_json = shell_exec('avprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename']));
+            $mediainfo_json = shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename']));
             if ($mediainfo_json === null || !$mediainfo = json_decode($mediainfo_json)) {
                 return $return;
             }
@@ -85,7 +85,7 @@ class MediaModel extends OBFModel
                 shell_exec('mv ' . escapeshellarg($args['filename']) . '-header.webm ' . escapeshellarg($args['filename']));
                 shell_exec('rm ' . escapeshellarg($args['filename']) . 'webm');
 
-                $mediainfo = json_decode(shell_exec('avprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                $mediainfo = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
                 $mediainfo->format->format_name = 'webm';
             }
 
