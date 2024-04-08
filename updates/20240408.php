@@ -34,7 +34,7 @@ class OBUpdate20240408 extends OBUpdate
 
         $json = json_decode(file_get_contents(__DIR__ . '/data/iso-3166.json'), true);
         foreach ($json as $country) {
-            $this->db->query("INSERT INTO `countries` (`name`, `alpha2`, `alpha3`, `code`, `region`, `region_sub`, `region_intermediate`) 
+            $this->db->query("INSERT INTO `countries` (`name`, `alpha2`, `alpha3`, `code`, `region`, `region_sub`, `region_intermediate`)
                 VALUES (
                     '" . $this->db->escape($country['name']) . "',
                     '" . $this->db->escape($country['alpha-2']) . "',
@@ -95,7 +95,35 @@ class OBUpdate20240408 extends OBUpdate
         }
 
         // Map existing country IDs on media to new country table.
-        // TODO
+        $this->db->where('country_id', null, '!=');
+        $media = $this->db->get('media');
+        if ($this->db->error()) {
+            echo 'Failed to query media table.';
+            return false;
+        }
+
+        foreach ($media as $item) {
+            $this->db->where('id', $item['country_id']);
+            $country = $this->db->get_one('media_countries');
+            if ($this->db->error() || ! $country) {
+                echo 'Failed to query media_countries table or country could not be found.';
+                return false;
+            }
+
+            $this->db->where('name', $country['name']);
+            $countryNew = $this->db->get_one('countries');
+            if ($this->db->error() || ! $countryNew) {
+                echo 'Failed to query countries table or new country could not be found.';
+                return false;
+            }
+
+            $this->db->where('id', $item['id']);
+            $this->db->update('media', ['country' => $countryNew['country_id']]);
+            if ($this->db->error()) {
+                echo 'Failed to update media table.';
+                return false;
+            }
+        }
 
         return true;
     }
