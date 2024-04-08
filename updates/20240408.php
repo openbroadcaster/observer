@@ -68,9 +68,9 @@ class OBUpdate20240408 extends OBUpdate
 
             if (empty($countryNew)) {
                 // Country name couldn't be found in ISO-3166, add it to the new table.
-                $this->db->query("INSERT INTO `countries` (`name`, `alpha3`) VALUES ('" 
-                    . $this->db->escape($country['name']) . "', '" 
-                    . $alpha3 
+                $this->db->query("INSERT INTO `countries` (`name`, `alpha3`) VALUES ('"
+                    . $this->db->escape($country['name']) . "', '"
+                    . $alpha3
                     . "');");
                 if ($this->db->error()) {
                     echo 'Failed to insert country ' . $country['name'] . ' into countries table.';
@@ -79,12 +79,20 @@ class OBUpdate20240408 extends OBUpdate
 
                 $alpha3 = $this->incrementAlpha3($alpha3);
             }
-
         }
 
         // Add new country column to media table.
-        // TODO
-        // $this->db->query("ALTER TABLE `media` ADD COLUMN `country_id` INT(10) UNSIGNED DEFAULT NULL AFTER `user_id`;");
+        $this->db->query("ALTER TABLE `media` ADD COLUMN `country` INT(10) UNSIGNED DEFAULT NULL AFTER `country_id`;");
+        if ($this->db->error()) {
+            echo 'Failed to add country column to media table.';
+            return false;
+        }
+
+        $this->db->query("ALTER TABLE `media` ADD FOREIGN KEY (`country`) REFERENCES `countries`(`country_id`) ON DELETE SET NULL ON UPDATE CASCADE;");
+        if ($this->db->error()) {
+            echo 'Failed to add foreign key to media table.';
+            return false;
+        }
 
         // Map existing country IDs on media to new country table.
         // TODO
