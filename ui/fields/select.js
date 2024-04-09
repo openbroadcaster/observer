@@ -93,11 +93,15 @@ class OBFieldSelect extends OBField {
 
         // hide popular/none if filter used
         if (this.filterVal.length) {
-            this.root.querySelector('.popular').setAttribute('hidden', true);
+            if (this.root.querySelector('.popular')) {
+                this.root.querySelector('.popular').setAttribute('hidden', true);
+            }
             this.root.querySelector('.none').setAttribute('hidden', true);
         }
         else {
-            this.root.querySelector('.popular').removeAttribute('hidden');
+            if (this.root.querySelector('.popular')) {
+                this.root.querySelector('.popular').removeAttribute('hidden');
+            }
             this.root.querySelector('.none').removeAttribute('hidden');
         }
     }

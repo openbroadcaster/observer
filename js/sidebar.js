@@ -1385,6 +1385,7 @@ OB.Sidebar.advancedSearchAdd = function(filter_data)
     var val = $val.val();
     if($val.prop('nodeName')=='SELECT') var val_name = $val.find('option:selected').text();
     else if($val.prop('nodeName')=='OB-FIELD-LANGUAGE') var val_name = $val[0].currentLanguageName();
+    else if($val.prop('nodeName')=='OB-FIELD-COUNTRY') var val_name = $val[0].currentCountryName();
 
     // some basic validation
     if ((filter == 'artist' || filter == 'album' || filter == 'title') && val == '') {

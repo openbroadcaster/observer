@@ -45,11 +45,8 @@ class OBFieldCountry extends OBField {
         fieldSelect.refresh()
     }
 
-    scss() {
-        return `
-            :host {
-            }
-        `;
+    currentCountryName() {
+        return OBFieldCountry.countries[this.value];
     }
 
     get value() {
