@@ -203,7 +203,7 @@ class OBFHelpers
             $im->setImageFormat("jpeg");
             $im->adaptiveResizeImage($width, $height);
 
-            $im->writeImage($cache_file);
+            $im->writeImage($dst);
             $im->clear();
             $im->destroy();
         } else {
