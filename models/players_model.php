@@ -614,7 +614,7 @@ class PlayersModel extends OBFModel
         $media_data['year'] = $media['year'];
         $media_data['category_id'] = $media['category_id'];
         $media_data['category_name'] = $media['category_name'];
-        $media_data['country_id'] = $media['country_id'];
+        $media_data['country'] = $media['country'];
         $media_data['country_name'] = $media['country_name'];
         $media_data['language_id'] = $media['language_id'];
         $media_data['language_name'] = $media['language_name'];

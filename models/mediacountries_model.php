@@ -34,7 +34,7 @@ class MediaCountriesModel extends OBFModel
     public function get_all()
     {
         $this->db->orderby('name');
-        $types = $this->db->get('media_countries');
+        $types = $this->db->get('countries');
 
         return $types;
     }

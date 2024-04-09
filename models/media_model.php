@@ -221,8 +221,8 @@ class MediaModel extends OBFModel
         $this->db->what('media.category_id', 'category_id');
         $this->db->what('media_categories.name', 'category_name');
 
-        $this->db->what('media.country_id', 'country_id');
-        $this->db->what('media_countries.name', 'country_name');
+        $this->db->what('media.country', 'country');
+        $this->db->what('countries.name', 'country_name');
 
         $this->db->what('media.language', 'language');
         $this->db->what('languages.ref_name', 'language_name');
@@ -268,7 +268,7 @@ class MediaModel extends OBFModel
     {
         $this->db->leftjoin('media_categories', 'media_categories.id', 'media.category_id');
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
-        $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
+        $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('users', 'media.owner_id', 'users.id');
     }
@@ -701,7 +701,7 @@ class MediaModel extends OBFModel
         $this->db->where_string(implode(' AND ', $where_array));
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
-        $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
+        $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
 
         if ($params['sort_by'] == 'category_name') {
@@ -709,7 +709,7 @@ class MediaModel extends OBFModel
         } elseif ($params['sort_by'] == 'genre_name') {
             $params['sort_by'] = 'media_genres.name';
         } elseif ($params['sort_by'] == 'country_name') {
-            $params['sort_by'] = 'media_countries.name';
+            $params['sort_by'] = 'countries.name';
         } elseif ($params['sort_by'] == 'language_name') {
             $params['sort_by'] = 'languages.ref_name';
         }
@@ -723,7 +723,7 @@ class MediaModel extends OBFModel
             }
 
             // otherwise, if posted sort by data is valid, use that...
-            if (isset($params['sort_dir']) && ($params['sort_dir'] == 'asc' || $params['sort_dir'] == 'desc') && array_search($params['sort_by'], array('artist','album','title','year','media_categories.name','media_genres.name','media_countries.name','languages.ref_name','duration','updated')) !== false) {
+            if (isset($params['sort_dir']) && ($params['sort_dir'] == 'asc' || $params['sort_dir'] == 'desc') && array_search($params['sort_by'], array('artist','album','title','year','media_categories.name','media_genres.name','countries.name','languages.ref_name','duration','updated')) !== false) {
                 $this->db->orderby($params['sort_by'], $params['sort_dir']);
             } else {
                 // otherwise, show the most recently updated first
@@ -860,7 +860,7 @@ class MediaModel extends OBFModel
             $column_array['year'] = 'media.year';
             $column_array['type'] = 'media.type';
             $column_array['category'] = 'media.category_id';
-            $column_array['country'] = 'media.country_id';
+            $column_array['country'] = 'media.country';
             $column_array['language'] = 'media.language';
             $column_array['genre'] = 'media.genre_id';
             $column_array['duration'] = 'media.duration';
@@ -1166,7 +1166,9 @@ class MediaModel extends OBFModel
             return array(false,$item['local_id'],'The category selected is no longer valid.');
         }
         //T The country selected is no longer valid.
-        if (!empty($item['country_id']) && !$this->db->id_exists('media_countries', $item['country_id'])) {
+        $this->db->where('country_id', $item['country']);
+        $exists = $this->db->get_one('countries');
+        if (!empty($item['country']) && !$exists) {
             return array(false,$item['local_id'],'The country selected is no longer valid.');
         }
         //T The genre selected is no longer valid.
@@ -1321,8 +1323,8 @@ class MediaModel extends OBFModel
         if (empty($item['category_id'])) {
             $item['category_id'] = null;
         }
-        if (empty($item['country_id'])) {
-            $item['country_id'] = null;
+        if (empty($item['country'])) {
+            $item['country'] = null;
         }
         if (empty($item['language'])) {
             $item['language'] = null;

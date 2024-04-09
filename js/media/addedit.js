@@ -116,7 +116,7 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
   // fill country list
   for(var i in OB.Settings.countries)
   {
-    $form.find('.country_field').append('<option value="'+OB.Settings.countries[i].id+'">'+htmlspecialchars(OB.t(OB.Settings.countries[i].name))+'</option>');
+    $form.find('.country_field').append('<option value="'+OB.Settings.countries[i].country_id+'">'+htmlspecialchars(OB.t(OB.Settings.countries[i].name))+'</option>');
   }
 
   // tie together genre list with category list on change
@@ -170,7 +170,7 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
     OB.Media.update_required_field(req_fields.year,        'year_field');
     OB.Media.update_required_field(req_fields.category_id, 'category_field');
     OB.Media.update_required_field(req_fields.category_id, 'genre_field');
-    OB.Media.update_required_field(req_fields.country_id,  'country_field');
+    OB.Media.update_required_field(req_fields.country,  'country_field');
     OB.Media.update_required_field(req_fields.language,    'language_field');
     OB.Media.update_required_field(req_fields.comments,    'comments_field');
   }
@@ -405,7 +405,7 @@ OB.Media.save = function()
     item.album = $(element).find('.album_field').val();
     item.year = $(element).find('.year_field').val();
 
-    item.country_id = $(element).find('.country_field').val();
+    item.country = $(element).find('.country_field').val();
     item.category_id = $(element).find('.category_field').val();
     item.language = $(element).find('.language_field').val();
     item.genre_id = $(element).find('.genre_field').val();
@@ -546,7 +546,7 @@ OB.Media.editPage = function(ids)
       $form.find('.category_field').val( media.category_id );
       OB.Media.updateGenreList(id);
 
-      $form.find('.country_field').val( media.country_id );
+      $form.find('.country_field').val( media.country );
       $form.find('.language_field').val( media.language );
       $form.find('.genre_field').val( media.genre_id);
 

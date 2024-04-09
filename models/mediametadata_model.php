@@ -276,7 +276,7 @@ class MediaMetadataModel extends OBFModel
             !array_key_exists('album', $data) ||
             !array_key_exists('year', $data) ||
             !array_key_exists('category_id', $data) ||
-            !array_key_exists('country_id', $data) ||
+            !array_key_exists('country', $data) ||
             !array_key_exists('language', $data) ||
             !array_key_exists('comments', $data) ||
             !array_key_exists('dynamic_content_default', $data) ||

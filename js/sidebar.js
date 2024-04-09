@@ -522,10 +522,10 @@ OB.Sidebar.mediaSearch = function(more)
       // change null object to blank string when required
       if(media[i]['year'] === null) media[i]['year']='';
 
-      if(media[i]['country_id'] === null) media[i]['country_id']='';
+      if(media[i]['country'] === null) media[i]['country']='';
       if(media[i]['country_name'] === null) media[i]['country_name']='';
 
-      if(media[i]['language_id'] === null) media[i]['language_id']='';
+      if(media[i]['language'] === null) media[i]['language']='';
       if(media[i]['language_name'] === null) media[i]['language_name']='';
 
 
@@ -543,10 +543,10 @@ OB.Sidebar.mediaSearch = function(more)
       $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_id', media[i]['category_id']);
       $('#sidebar_search_media_result_'+media[i]['id']).attr('data-category_name', media[i]['category_name']);
 
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_id', media[i]['country_id']);
+      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_id', media[i]['country']);
       $('#sidebar_search_media_result_'+media[i]['id']).attr('data-country_name', media[i]['country_name']);
 
-      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_id', media[i]['language_id']);
+      $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_id', media[i]['language']);
       $('#sidebar_search_media_result_'+media[i]['id']).attr('data-language_name', media[i]['language_name']);
 
       $('#sidebar_search_media_result_'+media[i]['id']).attr('data-genre_id', media[i]['genre_id']);
@@ -1259,7 +1259,7 @@ OB.Sidebar.advancedSearchWindowInit = function()
 
     $.each(OB.Settings.countries,function(index,country)
     {
-      $('#advanced_search_country_options').append('<option value="'+country.id+'">'+htmlspecialchars(country.name)+'</option>');
+      $('#advanced_search_country_options').append('<option value="'+country.country_id+'">'+htmlspecialchars(country.name)+'</option>');
     });
 
     $.each(OB.Settings.genres,function(index,genre)

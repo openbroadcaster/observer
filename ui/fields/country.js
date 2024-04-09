@@ -4,11 +4,17 @@ import { OBField } from '../base/field.js';
 class OBFieldCountry extends OBField {
     #init;
 
-    connectedCallback() {
-        if (! this.#init) {
-            // do stuff
-            
-            this.#init = true;
+    static countries = null;
+
+    async connectedCallback() {
+        if (! OBFieldCountry.countries) {
+            const result = await OB.API.postPromise('metadata', 'country_list', {});
+
+            if (! result.status) return false;
+
+            for (const country of result.data) {
+                console.log(country);
+            }
         }
 
         this.renderComponent().then(() => {

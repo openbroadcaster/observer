@@ -574,8 +574,8 @@ class PlaylistsModel extends OBFModel
                 $column_array['year'] = 'media.year';
                 $column_array['type'] = 'media.type';
                 $column_array['category'] = 'media.category_id';
-                $column_array['country'] = 'media.country_id';
-                $column_array['language'] = 'media.language_id';
+                $column_array['country'] = 'media.country';
+                $column_array['language'] = 'media.language';
                 $column_array['genre'] = 'media.genre_id';
                 $column_array['duration'] = 'media.duration';
                 $column_array['comments'] = 'media.comments';
