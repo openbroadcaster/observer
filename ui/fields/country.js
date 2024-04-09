@@ -12,26 +12,37 @@ class OBFieldCountry extends OBField {
 
             if (! result.status) return false;
 
+            OBFieldCountry.countries = {};
             for (const country of result.data) {
-                console.log(country);
+                OBFieldCountry.countries[country.country_id] = country.name;
             }
         }
 
         this.renderComponent().then(() => {
-            // do stuff that requires component to have been rendered
+            if (this.getAttribute('value')) {
+                this.root.querySelector('ob-field-select').value = this.getAttribute('value');
+            }
         });
     }
 
     renderEdit() {
         render(html`
-            <div>Edit test</div>
+            <ob-field-select data-edit></ob-field-select>
         `, this.root);
+
+        const fieldSelect = this.root.querySelector('ob-field-select');
+        fieldSelect.options = OBFieldCountry.countries;
+        fieldSelect.refresh()
     }
 
     renderView() {
         render(html`
-            <div>View test</div>
+            <ob-field-select></ob-field-select>
         `, this.root);
+
+        const fieldSelect = this.root.querySelector('ob-field-select');
+        fieldSelect.options = OBFieldCountry.countries;
+        fieldSelect.refresh()
     }
 
     scss() {
@@ -42,13 +53,17 @@ class OBFieldCountry extends OBField {
     }
 
     get value() {
-        // TODO
-        return null;
+        const fieldSelect = this.root.querySelector('ob-field-select');
+        if (fieldSelect) {
+            return fieldSelect.value;
+        }
     }
 
     set value(value) {
-        // TODO
-        return null;
+        const fieldSelect = this.root.querySelector('ob-field-select');
+        if (fieldSelect) {
+            fieldSelect.value = value;
+        }
     }
 }
 
