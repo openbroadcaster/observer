@@ -47,8 +47,13 @@ class OBFieldSelect extends OBField {
                 tag.innerHTML = this.options[option];
 
                 // onclick, delete tag
-                tag.onclick = () => {
-                    this.deleteSelected(option);
+                tag.onclick = (event) => {
+                    const clickPosition = event.clientX - tag.getBoundingClientRect().left;
+                    const tagWidth = tag.offsetWidth;
+
+                    if (clickPosition >= tagWidth - 20) {
+                        this.deleteSelected(option);
+                    }
                 };
 
                 this.root.querySelector('#input-selected-multiple').appendChild(tag);
@@ -206,12 +211,24 @@ class OBFieldSelect extends OBField {
             .tag {
                 border: 1px solid var(--field-color);
                 border-radius: var(--field-radius);
-                padding: 2px;
+                padding: 2px 5px;
+                padding-right: 17.5px;
                 margin: 2px;
                 position: relative;
             }
-            .tag:hover {
-                text-decoration: line-through;
+            .tag::after {
+                content: 'x';
+                font-weight: bold;
+                color: #bf2121;
+                font-size: 0.9em;
+                padding-right: 5px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                line-height: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
             }`;
     }
 
