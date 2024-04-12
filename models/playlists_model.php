@@ -560,57 +560,9 @@ class PlaylistsModel extends OBFModel
         } else {
             // advanced mode.  Filters should be already validated!
             $filters = $search_query['filters'];
-
-            foreach ($filters as $filter) {
-                $filter = (array) $filter;
-
-                // TODO fix code duplication with media model
-
-                // our possible column (mappings)
-                $column_array = array();
-                $column_array['artist'] = 'media.artist';
-                $column_array['title'] = 'media.title';
-                $column_array['album'] = 'media.album';
-                $column_array['year'] = 'media.year';
-                $column_array['type'] = 'media.type';
-                $column_array['category'] = 'media.category_id';
-                $column_array['country'] = 'media.country_id';
-                $column_array['language'] = 'media.language_id';
-                $column_array['genre'] = 'media.genre_id';
-                $column_array['duration'] = 'media.duration';
-                $column_array['comments'] = 'media.comments';
-
-                $metadata_fields = $this->models->mediametadata('get_all');
-                foreach ($metadata_fields as $metadata_field) {
-                    $column_array['metadata_' . $metadata_field['name']] = 'media_metadata.' . $metadata_field['name'];
-                }
-
-                // our possibile comparison operators
-                $op_array = array();
-                $op_array['like'] = 'LIKE';
-                $op_array['not_like'] = 'NOT LIKE';
-                $op_array['is'] = '=';
-                $op_array['not'] = '!=';
-                $op_array['gte'] = '>=';
-                $op_array['lte'] = '<=';
-
-                // put together our query segment
-                $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
-
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
-                    $tmp_sql .= '%';
-                }
-
-                $tmp_sql .= $this->db->escape($filter['val']);
-
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
-                    $tmp_sql .= '%';
-                }
-
-                $tmp_sql .= '"';
-
-                $where[] = $tmp_sql;
-            }
+            
+            // sql segment for filters from media model
+            $where = array_merge($this->models->media('search_filters_where_array', ['filters' => $filters]));
         }
 
         // 'all items' selected.
