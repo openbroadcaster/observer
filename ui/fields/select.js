@@ -3,6 +3,7 @@ import { OBField } from '../base/field.js';
 
 class OBFieldSelect extends OBField {
 
+    #options;
     filterVal = '';
 
     addSelected(option) {
@@ -256,14 +257,25 @@ class OBFieldSelect extends OBField {
         this.updateSelected();
     }
 
+    get options() {
+        if (this.#options) {
+            return this.#options;
+        }
+    }
+
+    set options(value) {
+        this.#options = value;
+        this.renderEdit();
+    }
+
     renderEdit() {
         // get options from data-options and json decode
-        if (!this.options) this.options = JSON.parse(this.getAttribute('data-options'));
+        if (!this.#options) this.#options = JSON.parse(this.getAttribute('data-options'));
         if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
         if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
         this.multiple = this.hasAttribute('data-multiple');
 
-        if (!this.options) this.options = {};
+        if (!this.#options) this.#options = {};
         if (!this.popular) this.popular = [];
         if (!this.selected && this.multiple) this.selected = [];
         if (!this.selected && !this.multiple) this.selected = '';
@@ -275,8 +287,8 @@ class OBFieldSelect extends OBField {
                 <ul id="options" contenteditable="false">
                     <li id="input-filter"></li>
                     ${!this.multiple && html`<li class="none" onClick=${() => this.addSelected('')}>(None)</li>`}
-                    ${this.popular.map(value => html`<li class="popular" onClick=${() => this.addSelected(value)}>${this.options[value]}</li>`)}
-                    ${Object.keys(this.options).map(value => html`<li onClick=${() => this.addSelected(value)}>${this.options[value]}</li>`)}
+                    ${this.popular.map(value => html`<li class="popular" onClick=${() => this.addSelected(value)}>${this.#options[value]}</li>`)}
+                    ${Object.keys(this.#options).map(value => html`<li onClick=${() => this.addSelected(value)}>${this.#options[value]}</li>`)}
                 </ul>
             </div>
 

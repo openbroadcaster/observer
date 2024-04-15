@@ -44,8 +44,11 @@
       <ob-field-text data-edit class="hidden metadata_default metadata_default_text"></ob-field-text>
       <ob-field-number data-edit class="hidden metadata_default metadata_default_integer"></ob-field-number>
       <ob-field-textarea data-edit class="hidden metadata_default metadata_default_textarea"></ob-field-textarea>
-      <select class="hidden metadata_default metadata_default_bool"><option value="1" data-t>Yes</option><option value="0" data-t>No</option></select>
-      <select class="hidden metadata_default metadata_default_select"></select>
+      <ob-field-select data-edit class="hidden metadata_default metadata_default_bool" data-options="
+        {&quot;1&quot;: &quot;Yes&quot;, &quot;0&quot;: &quot;No&quot;}
+      "></ob-field-select>
+      <!--<select class="hidden metadata_default metadata_default_select"></select>-->
+      <ob-field-select data-edit class="hidden metadata_default metadata_default_select"></ob-field-select>
       <ob-tag-input data-suggestions="false" class="hidden metadata_default metadata_default_tags"></ob-tag-input>
     </div>
   </fieldset>

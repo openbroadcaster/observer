@@ -423,15 +423,10 @@ OB.Media.metadataAddEditTypeChange = function()
   $('.metadata_default_'+datatype).show().attr('id','metadata_default');
 
   // handle select field
-  var select_value = $('.metadata_default_select').val();
-  $('.metadata_default_select').html('');
-
-  var select_options = $('#metadata_select_options').val().split("\n");
-  $.each(select_options,function(index,option)
-  {
-    if(option.trim!='') $('.metadata_default_select').append( $('<option></option>').text(option) );
-  });
-  $('.metadata_default_select').val(select_value);
+  var select_value = document.querySelector('.metadata_default_select').value;
+  var select_options = document.querySelector('#metadata_select_options').value.split("\n");
+  document.querySelector('.metadata_default_select').options = select_options;
+  document.querySelector('.metadata_default_select').value = select_value;
 
   $('#metadata_select_options').parent().toggle(datatype=='select');
 
