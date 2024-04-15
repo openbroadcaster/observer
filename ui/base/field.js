@@ -25,10 +25,16 @@ export class OBField extends OBElement {
   }
 
   get value() {
-    return this.root.querySelector('input').value;
+    if (this.root.querySelector('input')) {
+      return this.root.querySelector('input').value;
+    }
   }
 
   set value(value) {
+    if (! this.root.querySelector('input')) {
+      return;
+    }
+    
     this.root.querySelector('input').value = value;
     this.renderComponent();
   }
