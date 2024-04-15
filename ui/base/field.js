@@ -16,6 +16,12 @@ export class OBField extends OBElement {
     render(html`<input id="input" type="text" />`, this.root);
   }
 
+  // Bind this to events inside the shadowroot to propagate them to outside
+  // the custom element for other event handlers to catch.
+  propagateEvent(event) {
+    this.dispatchEvent(new Event(event.type));
+  }
+
   scss() {
     return `
         :host {
@@ -34,7 +40,7 @@ export class OBField extends OBElement {
     if (! this.root.querySelector('input')) {
       return;
     }
-    
+
     this.root.querySelector('input').value = value;
     this.renderComponent();
   }

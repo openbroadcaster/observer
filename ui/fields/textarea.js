@@ -14,6 +14,8 @@ class OBFieldTextarea extends OBField {
             if (this.hasAttribute('wrap')) {
                 this.root.querySelector('textarea').setAttribute('wrap', this.getAttribute('wrap'));
             }
+
+            this.root.querySelector('textarea').addEventListener('change', this.propagateEvent.bind(this));
         });
     }
 
@@ -41,13 +43,19 @@ class OBFieldTextarea extends OBField {
         }
         
         this.root.querySelector('textarea').value = value;
-        this.renderComponent();
+        this.renderComponent().then(() => {
+            this.propagateEvent('change');
+        });
     }
 
     scss() {
         return `
             :host {
-                display: inline-block; 
+                display: inline-block;
+                
+                #root {
+                    height: 100%;
+                }
                 
                 textarea {
                     color: #2e3436;
@@ -56,6 +64,7 @@ class OBFieldTextarea extends OBField {
                     border: 0;
                     padding: 5px;
                     width: 250px;
+                    height: 100%;
                 }
             }
         `
