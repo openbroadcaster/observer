@@ -12,7 +12,7 @@
     </div>
 
     <div class="fieldrow">
-      <label data-t>Description</label>
+      <label class="required" data-t>Description</label>
       <ob-field-text data-edit id="metadata_description" maxlength="255"></ob-field-text>
     </div>
 
@@ -27,7 +27,6 @@
         &quot;tags&quot;: &quot;Tags&quot;,
         &quot;hidden&quot;: &quot;Hidden&quot;
       }"></ob-field-select>
-      <!--<select id="metadata_type"><option data-t value="text">Text (single line)</option><option data-t value="textarea">Text (multiple lines)</option><option data-t value="integer">Number (Integer)</option><option data-t value="bool">Yes/No</option><option data-t value="select">Drop-Down Selection</option><option data-t value="tags">Tags</option><option data-t value="hidden">Hidden</option></select>-->
     </div>
 
     <div class="fieldrow">
@@ -42,8 +41,8 @@
 
     <div class="fieldrow">
       <label data-t>Default</label>
-      <input type="text" class="hidden metadata_default metadata_default_text">
-      <input type="number" class="hidden metadata_default metadata_default_integer">
+      <ob-field-text data-edit class="hidden metadata_default metadata_default_text"></ob-field-text>
+      <ob-field-number data-edit class="hidden metadata_default metadata_default_integer"></ob-field-number>
       <textarea class="hidden metadata_default metadata_default_textarea"></textarea>
       <select class="hidden metadata_default metadata_default_bool"><option value="1" data-t>Yes</option><option value="0" data-t>No</option></select>
       <select class="hidden metadata_default metadata_default_select"></select>
