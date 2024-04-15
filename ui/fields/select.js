@@ -150,6 +150,8 @@ class OBFieldSelect extends OBField {
                 padding: 4px 8px;
                 cursor: pointer;
                 font-size: 0.9em;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             li.none + li:not(.none),
@@ -159,6 +161,10 @@ class OBFieldSelect extends OBField {
 
             li.selected {
                 font-weight: bold;
+            }
+
+            li:hover {
+                background-color: #e0e0e0;
             }
 
             #input 

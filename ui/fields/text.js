@@ -19,6 +19,8 @@ class OBFieldText extends OBField {
     scss() {
         return `
             :host {
+                display: inline-block; 
+                
                 input {
                     color: #2e3436;
                     font-size: 13px;
