@@ -23,7 +23,6 @@ class OBElementPreview extends OBElement {
         this.renderComponent().then(() => {
             this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
             this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
-            console.log(this.#imageWidth, this.#imageHeight);
         });
     }
 
@@ -51,6 +50,9 @@ class OBElementPreview extends OBElement {
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
                         </video>
                     ` : html``}
+                    ${this.#itemType === 'image' ? html`
+                        <img src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
+                    ` : html``}
                 </div>
             </div>
         `, this.root);
@@ -74,6 +76,11 @@ class OBElementPreview extends OBElement {
                         max-height: 196px;
                         display: inline-block;
                         vertical-align: baseline;
+                    }
+
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
                     }
                 }
 
