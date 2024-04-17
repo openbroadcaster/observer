@@ -10,6 +10,10 @@ class OBElementPreview extends OBElement {
         }
 
         this.#init = true;
+
+        this.addEventListener("dragstart", this.onDragStart.bind(this));
+        this.addEventListener("dragend", this.onDragEnd.bind(this));
+
         this.renderComponent().then(() => {
             // stuff
         });
@@ -18,7 +22,7 @@ class OBElementPreview extends OBElement {
     async renderComponent() {
         render(html`
             <div id="preview">
-                <div id="drag">
+                <div id="drag" onmouseup=${this.onMouseUp.bind(this)}>
                 </div>
             </div>
         `, this.root);
@@ -43,16 +47,36 @@ class OBElementPreview extends OBElement {
                     font-size: 6em;
                     line-height: 196px;
                     border-radius: 5px;
-                    border-width: 2px;
+                    border: 2px solid rgba(0,0,0,0);
                     height: 196px;
 
                     &::after {
                         font-family: "Font Awesome 5 Free";
                         content: "\\f144"
                     }
+
+                    &.dragging {
+                        border: 2px dashed #e09529;
+                    }
                 }
             }
         `;
+    }
+
+    onDragStart(event) {
+        this.root.querySelector("#drag").classList.add("dragging");
+    }
+
+    onDragEnd(event) {
+        this.root.querySelector("#drag").classList.remove("dragging");
+    }
+
+    onMouseUp(event) {
+        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+            return false;
+        }
+
+        console.log(window.dragHelperData[0]);
     }
 }
 

@@ -646,8 +646,11 @@ OB.Sidebar.mediaSearch = function(more)
           else if(data_status == 'archived')
             $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
 
-          // dispatch dragstart to ob-field-media elements, since jquery overrides draggable
+          // dispatch dragstart to ob-field-media and ob-element-preview elements, since jquery overrides draggable
           document.querySelectorAll('ob-field-media').forEach((element) => {
+            element.dispatchEvent(new Event("dragstart"));
+          });
+          document.querySelectorAll('ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragstart"));
           });
 
@@ -668,8 +671,11 @@ OB.Sidebar.mediaSearch = function(more)
           else if(data_status == 'archived')
             $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
 
-          // dispatch dragend to ob-field-media elements, since jquery overrides draggable
+          // dispatch dragend to ob-field-media and ob-element-preview elements, since jquery overrides draggable
           document.querySelectorAll('ob-field-media').forEach((element) => {
+            element.dispatchEvent(new Event("dragend"));
+          });
+          document.querySelectorAll('ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragend"));
           });
         }
