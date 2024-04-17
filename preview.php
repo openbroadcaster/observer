@@ -291,7 +291,7 @@ class MediaPreview extends OBFController
 }
 
 // default is to preview active media file
-$download_mode = true;
+$download_mode = false;
 $version = false;
 
 // if version set, we are also downloading
