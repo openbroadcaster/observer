@@ -28,19 +28,27 @@ class OBElementPreview extends OBElement {
     }
 
     async renderComponent() {
+        if (this.root.querySelector("#drag audio, #drag video")) {
+            let mediaElem = this.root.querySelector("#drag audio, #drag video");
+
+            mediaElem.pause();
+            mediaElem.setAttribute('src', '');
+            mediaElem.removeAttribute('src');
+        }
+
         render(html`
             <div id="preview">
                 <div id="drag" onmouseup=${this.onMouseUp.bind(this)}>
                     ${this.#itemType === 'audio' ? html`
-                        <audio preload="auto" autoplay="autoplay" controls="controls">
-                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
-                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&format=ogg" type="audio/ogg" />
+                        <audio id="audio-${new Date().getTime()}" preload="auto" autoplay="autoplay" controls="controls">
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=ogg" type="audio/ogg" />
                         </audio>
                     ` : html``}
                     ${this.#itemType === 'video' ? html`
                         <video preload="auto" autoplay="autoplay" controls="controls">
-                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
-                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
                         </video>
                     ` : html``}
                 </div>
@@ -109,7 +117,7 @@ class OBElementPreview extends OBElement {
 
         this.#itemId = window.dragHelperData[0].dataset.id;
         this.#itemType = window.dragHelperData[0].dataset.type;
-        
+
         this.renderComponent();
     }
 }
