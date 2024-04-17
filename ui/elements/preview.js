@@ -4,6 +4,12 @@ import { html, render } from '../vendor.js';
 class OBElementPreview extends OBElement {
     #init;
 
+    #itemId;
+    #itemType;
+
+    #imageWidth;
+    #imageHeight;
+
     connectedCallback() {
         if (this.#init) {
             return;
@@ -15,7 +21,9 @@ class OBElementPreview extends OBElement {
         this.addEventListener("dragend", this.onDragEnd.bind(this));
 
         this.renderComponent().then(() => {
-            // stuff
+            this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
+            this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
+            console.log(this.#imageWidth, this.#imageHeight);
         });
     }
 
@@ -23,6 +31,18 @@ class OBElementPreview extends OBElement {
         render(html`
             <div id="preview">
                 <div id="drag" onmouseup=${this.onMouseUp.bind(this)}>
+                    ${this.#itemType === 'audio' ? html`
+                        <audio preload="auto" autoplay="autoplay" controls="controls">
+                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
+                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&format=ogg" type="audio/ogg" />
+                        </audio>
+                    ` : html``}
+                    ${this.#itemType === 'video' ? html`
+                        <video preload="auto" autoplay="autoplay" controls="controls">
+                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
+                            <source src="/preview.php?x='somedata'&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
+                        </video>
+                    ` : html``}
                 </div>
             </div>
         `, this.root);
@@ -40,6 +60,13 @@ class OBElementPreview extends OBElement {
                     border-radius: 5px;
                     scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
                     width: 370px;
+
+                    video, audio {
+                        width: 360px;
+                        max-height: 196px;
+                        display: inline-block;
+                        vertical-align: baseline;
+                    }
                 }
 
                 #drag {
@@ -57,6 +84,10 @@ class OBElementPreview extends OBElement {
 
                     &.dragging {
                         border: 2px dashed #e09529;
+                    }
+
+                    &:not(:empty)::after {
+                        content: "";
                     }
                 }
             }
@@ -76,7 +107,10 @@ class OBElementPreview extends OBElement {
             return false;
         }
 
-        console.log(window.dragHelperData[0]);
+        this.#itemId = window.dragHelperData[0].dataset.id;
+        this.#itemType = window.dragHelperData[0].dataset.type;
+        
+        this.renderComponent();
     }
 }
 
