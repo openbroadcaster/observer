@@ -10,3 +10,7 @@ ob-field-country {
     display: inline-block;
     vertical-align: middle;
 }
+
+#sidebar_player.closed ob-element-preview {
+    display: none;
+}
