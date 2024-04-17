@@ -23,6 +23,8 @@ class OBElementPreview extends OBElement {
         this.renderComponent().then(() => {
             this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
             this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
+
+            this.root.querySelector("#drag").addEventListener("mouseup", this.onMouseUp.bind(this));
         });
     }
 
@@ -37,7 +39,7 @@ class OBElementPreview extends OBElement {
 
         render(html`
             <div id="preview">
-                <div id="drag" onmouseup=${this.onMouseUp.bind(this)}>
+                <div id="drag">
                     ${this.#itemType === 'audio' ? html`
                         <audio id="audio-${new Date().getTime()}" preload="auto" autoplay="autoplay" controls="controls">
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
