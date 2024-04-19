@@ -61,14 +61,16 @@ OB.API.multiPost = function (post, callback_function, mode) {
       OB.API.postSuccess(controllers, actions, callback_function, sdatas, data);
     },
     'error': function (data) {
-      OB.API.postError({
-        controller: controllers,
-        action: actions,
-        callback: callback_function,
-        sdata: sdatas,
-      }, {
-        data: data
-      });
+      if (data.statusText !== 'abort') {
+        OB.API.postError({
+          controller: controllers,
+          action: actions,
+          callback: callback_function,
+          sdata: sdatas,
+        }, {
+          data: data
+        });
+      }
     }
   }));
 
@@ -93,14 +95,16 @@ OB.API.post = function (controller, action, sdata, callback_function, mode) {
       OB.API.postSuccess(controller, action, callback_function, sdata, data);
     },
     'error': function (data) {
-      OB.API.postError({
-        controller: controller,
-        action: action,
-        callback: callback_function,
-        sdata: sdata,
-      }, {
-        data: data
-      });
+      if (data.statusText !== 'abort') {
+        OB.API.postError({
+          controller: controller,
+          action: action,
+          callback: callback_function,
+          sdata: sdata,
+        }, {
+          data: data
+        });
+      }
     }
   });
 

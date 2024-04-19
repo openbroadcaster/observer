@@ -47,8 +47,13 @@ class OBFieldSelect extends OBField {
                 tag.innerHTML = this.options[option];
 
                 // onclick, delete tag
-                tag.onclick = () => {
-                    this.deleteSelected(option);
+                tag.onclick = (event) => {
+                    const clickPosition = event.clientX - tag.getBoundingClientRect().left;
+                    const tagWidth = tag.offsetWidth;
+
+                    if (clickPosition >= tagWidth - 20) {
+                        this.deleteSelected(option);
+                    }
                 };
 
                 this.root.querySelector('#input-selected-multiple').appendChild(tag);
@@ -116,12 +121,14 @@ class OBFieldSelect extends OBField {
         return `
             :host { position: relative; width: var(--field-width); display: inline-block; }
             ul {
-                display: none;
+                opacity: 0;
+                pointer-events: none;
                 list-style-type: none;
                 padding-left: 0;
                 position: absolute;
                 top: 100%;
                 left: 0;
+                right: 0;
                 border: var(--field-border);
                 z-index: 1;
                 margin-top: 0;
@@ -131,7 +138,9 @@ class OBFieldSelect extends OBField {
                 border-bottom-left-radius: var(--field-radius);
                 border-bottom-right-radius: var(--field-radius);
                 background: var(--field-background);
-                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
             }
             li {
                 padding: 4px 8px;
@@ -164,7 +173,8 @@ class OBFieldSelect extends OBField {
                 outline: 0;
             }
             #input:focus ul {
-                display: block;
+                opacity: 1;
+                pointer-events: auto;
             }
 
             #input-filter {
@@ -206,12 +216,24 @@ class OBFieldSelect extends OBField {
             .tag {
                 border: 1px solid var(--field-color);
                 border-radius: var(--field-radius);
-                padding: 2px;
+                padding: 2px 5px;
+                padding-right: 17.5px;
                 margin: 2px;
                 position: relative;
             }
-            .tag:hover {
-                text-decoration: line-through;
+            .tag::after {
+                content: 'x';
+                font-weight: bold;
+                color: #bf2121;
+                font-size: 0.9em;
+                padding-right: 5px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                line-height: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
             }`;
     }
 
@@ -249,6 +271,21 @@ class OBFieldSelect extends OBField {
             </div>
 
     `, this.root);
+
+        // get all options and check the width
+        const options = this.root.querySelectorAll('#options li');
+        
+        // get the largest width
+        let largestWidth = 0;
+        options.forEach(option => {
+            const width = option.getBoundingClientRect().width + 30;
+            if (width > largestWidth) {
+                largestWidth = width;
+            }
+        });
+
+        // set the host width
+        this.style.minWidth = largestWidth + 'px';
 
         this.updateSelected();
     }

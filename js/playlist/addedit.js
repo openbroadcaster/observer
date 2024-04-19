@@ -441,8 +441,15 @@ OB.Playlist.addeditItemProperties = function(id,type,required)
 
 }
 
+OB.Playlist.voicetrackEnabled = function()
+{
+  return !!document.querySelector('#audio_properties_voicetrack');
+}
+
 OB.Playlist.voicetrackChange = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   const editable = document.querySelector('#audio_properties_voicetrack').value.length !== 0;
   document.querySelector('#audio_properties_voicetrack_volume').editable = editable;
   document.querySelector('#audio_properties_voicetrack_offset').editable = editable;
@@ -454,6 +461,8 @@ OB.Playlist.voicetrackChange = function ()
 
 OB.Playlist.voicetrackValidate = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   if (document.querySelector('#audio_properties_voicetrack').value.length === 0 || (! document.querySelector('#audio_properties_media_id'))) {
     document.querySelector('#audio_properties_voicetrack_preview').disabled = true;
     return true;
@@ -497,6 +506,8 @@ OB.Playlist.voicetrackValidate = function ()
 
 OB.Playlist.voicetrackPreview = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   OB.Playlist.voicetrackPreviewStop();
 
   const mediaId = document.querySelector('#audio_properties_media_id').value;
@@ -581,6 +592,8 @@ OB.Playlist.voicetrackPreview = function ()
 
 OB.Playlist.voicetrackPreviewStop = function ()
 {
+  if(!OB.Playlist.voicetrackEnabled()) return;
+
   document.querySelector('#audio_properties_voicetrack_preview_stop').disabled = true;
   
   if (OB.Playlist.voicetrackAudio) {

@@ -22,13 +22,13 @@ class OBFieldPassword extends OBField {
 
     renderEdit() {
         render(html`
-            <input type="password" autocomplete="off" value=${this.value} />
+            <input type="password" autocomplete="new-password" value=${this.value} />
         `, this.root);
     }
 
     renderView() {
         render(html`
-            <input type="password" autocomplete="off" value=${this.value} disabled />
+            <input type="password" autocomplete="new-password" value=${this.value} disabled />
         `, this.root);
     }
     
