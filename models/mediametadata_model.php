@@ -35,6 +35,8 @@ class MediaMetadataModel extends OBFModel
     {
         $this->db->orderby('order_id');
         $fields = $this->db->get('media_metadata');
+        if(!$fields) return [];
+
         foreach ($fields as &$field) {
             if (!$field['settings']) {
                 $field['settings'] = '{}';
