@@ -7,7 +7,7 @@
 
     <div class="fieldrow">
       <label class="required" data-t>Name</label>
-      <input type="text" id="user_name_input" >
+      <input type="text" id="user_name_input">
     </div>
 
     <div class="fieldrow">
@@ -27,13 +27,13 @@
 
     <div class="fieldrow">
       <label class="required" data-t>Password</label>
-      <input type="password" id="user_password_input">
+      <input type="password" id="user_password_input" autocomplete="new-password">
       <span class="edit_only">* </span>
     </div>
 
     <div class="fieldrow">
       <label class="required" data-t>Password (confirm)</label>
-      <input type="password" id="user_password_confirm_input">
+      <input type="password" id="user_password_confirm_input" autocomplete="new-password">
       <span class="edit_only">* </span>
     </div>
 
@@ -59,12 +59,14 @@
 
     <div class="fieldrow">
       <table class="table" id="user_appkey_table">
-        <thead><tr>
-          <th>Name</th>
-          <th>Created</th>
-          <th>Last Accessed</th>
-          <th></th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Last Accessed</th>
+            <th></th>
+          </tr>
+        </thead>
         <tbody>
         </tbody>
       </table>
@@ -75,16 +77,17 @@
     </div>
   </fieldset>
 
-  <p class="edit_only" >* <span data-t>Enter password only if you wish to change the password.</span></p>
+  <p class="edit_only">* <span data-t>Enter password only if you wish to change the password.</span></p>
 
   <fieldset>
     <div class="fieldrow">
       <button class="add" id="item_properties_save" onclick="OB.User.manageUsersSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.User.manageUsersDelete();" data-t>Delete</button>
+      <button class="edit_only delete" id="item_properties_delete" onclick="OB.User.manageUsersDelete();"
+        data-t>Delete</button>
       <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
     </div>
   </fieldset>
 
 
-<input type="hidden" id="user_addedit_id">
-  </div>
+  <input type="hidden" id="user_addedit_id">
+</div>
