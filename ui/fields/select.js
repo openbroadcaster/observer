@@ -17,7 +17,7 @@ class OBFieldSelect extends OBField {
 
         // update selected and blur to hide dropdown
         this.updateSelected();
-        this.root.querySelector('#input').blur();
+        this.root.querySelectorAll('#input, #input *').forEach(child => child.blur());
     }
 
     deleteSelected(option) {
@@ -140,7 +140,6 @@ class OBFieldSelect extends OBField {
                 background: var(--field-background);
                 display: flex;
                 flex-direction: column;
-                align-items: flex-start;
             }
             li {
                 padding: 4px 8px;
@@ -166,13 +165,13 @@ class OBFieldSelect extends OBField {
                 border-radius: var(--field-radius);
                 color: var(--field-color);
             }
-            #input:focus 
+            #input:focus-within
             {
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
                 outline: 0;
             }
-            #input:focus ul {
+            #input:focus-within ul {
                 opacity: 1;
                 pointer-events: auto;
             }
