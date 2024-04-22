@@ -185,6 +185,7 @@ select, textarea
   padding: 5px;
   width: 250px;
   vertical-align: middle;
+  box-shadow: 0 0 0 40px white inset; // firefox autofill fix
 }
 
 textarea, ob-tag-input, ob-user-input, ob-group-input, ob-media-input, ob-playlist-input
