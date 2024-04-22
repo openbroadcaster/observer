@@ -18,7 +18,7 @@
 
     <div class="fieldrow">
       <label class="required" data-t>Type</label>
-      <ob-field-select data-edit id="metadata_type" data-options="{
+      <ob-field-select data-edit id="metadata_type" data-value="&quot;text&quot;" data-options="{
         &quot;text&quot;: &quot;Text (single line)&quot;,
         &quot;textarea&quot;: &quot;Text (multiple lines)&quot;,
         &quot;integer&quot;: &quot;Number (Integer)&quot;,
@@ -37,6 +37,15 @@
     <div class="fieldrow">
       <label data-t>Suggestions</label>
       <ob-tag-input data-suggestions="false" id="metadata_tag_suggestions"></ob-tag-input>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Mode</label>
+      <ob-field-select data-edit id="metadata_mode" data-value="&quot;required&quot;" data-options="{
+        &quot;required&quot;: &quot;Required&quot;,
+        &quot;optional&quot;: &quot;Optional&quot;,
+        &quot;hidden&quot;: &quot;Hidden&quot;
+      }"></ob-field-select>
     </div>
 
     <div class="fieldrow">

@@ -57,6 +57,7 @@ class Metadata extends OBFController
      * @param description
      * @param type Text (single or multiple lines), boolean, dropdown, tags.
      * @param select_options Options in dropdown when selected as type.
+     * @param mode Whether metadata field is required, optional, or hidden (usable via API).
      * @param default
      * @param tag_suggestions
      *
@@ -80,6 +81,7 @@ class Metadata extends OBFController
         $data['description'] = trim($this->data('description'));
         $data['type'] = trim($this->data('type'));
         $data['select_options'] = trim($this->data('select_options'));
+        $data['mode'] = trim($this->data('mode'));
 
         $data['default'] = $this->data('default');
         if (is_array($data['default'])) {

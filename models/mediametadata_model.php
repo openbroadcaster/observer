@@ -134,7 +134,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T All fields are required.
-        if (!$data['name'] || !$data['description'] || !$data['type'] || ($data['type'] == 'select' && !$data['select_options'])) {
+        if (!$data['name'] || !$data['description'] || !$data['type'] || !$data['mode'] || ($data['type'] == 'select' && !$data['select_options'])) {
             return [false,'All fields are required.'];
         }
         //T Field name must contain only letters, numbers, and underscores.
@@ -200,7 +200,8 @@ class MediaMetadataModel extends OBFModel
             $save['settings']['options'] = $save_options;
         }
 
-        // default
+        // mode and default
+        $save['settings']['mode'] = $data['mode'];
         $save['settings']['default'] = $data['default'];
 
         // tag suggestions
