@@ -79,6 +79,7 @@ form input[type=submit], form input[type=button], form button {
 }
 form input[type=text], form input[type=email], form input[type=password] {
   border: 1px solid transparent;
+  box-shadow: 0 0 0 40px white inset;
 }
 form input[type=text]:focus, form input[type=email]:focus, form input[type=password]:focus {
   outline: 0;
