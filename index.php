@@ -46,7 +46,8 @@ $image_files = $models->ui('image_files');
 
 $js_dependencies = [
   'node_modules/jquery/dist/jquery.min.js',
-  'node_modules/jquery-migrate/dist/jquery-migrate.min.js'
+  'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
+  'node_modules/video.js/dist/video.min.js',
 ];
 
 ?><!DOCTYPE html>
@@ -110,6 +111,7 @@ foreach ($jsModuleIterator as $file) {
   <link type="text/css" href="extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
   <link type="text/css" href="extras/jquery-ui-darkness/jquery-ui.min.css?v=<?=filemtime('extras/jquery-ui-darkness/jquery-ui.min.css')?>" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="extras/jquery-ui-timepicker-addon.css?v=<?=filemtime('extras/jquery-ui-timepicker-addon.css')?>">
+  <link rel="stylesheet" type="text/css" href="node_modules/video.js/dist/video-js.min.css?v=<?=filemtime('node_modules/video.js/dist/video-js.min.css')?>">
 
   <script>
   OB_API_REWRITE = false;

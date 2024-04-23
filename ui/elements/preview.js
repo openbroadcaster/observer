@@ -15,16 +15,41 @@ class OBElementPreview extends OBElement {
             return;
         }
 
-        this.#init = true;
+        this.loadDeps().then(() => {
+            this.#init = true;
 
-        this.addEventListener("dragstart", this.onDragStart.bind(this));
-        this.addEventListener("dragend", this.onDragEnd.bind(this));
+            this.addEventListener("dragstart", this.onDragStart.bind(this));
+            this.addEventListener("dragend", this.onDragEnd.bind(this));
+    
+            this.renderComponent().then(() => {
+                this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
+                this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
+    
+                this.root.querySelector("#drag").addEventListener("mouseup", this.onMouseUp.bind(this));
 
-        this.renderComponent().then(() => {
-            this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
-            this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
+                videojs(this.root.querySelector("video-js"), {
+                    controls: true,
+                    //autoplay: true,
+                    preload: "auto",
+                    sources: [{
+                        src: "https://vjs.zencdn.net/v/oceans.mp4",
+                        type: "video/mp4"
+                    }]
+                });
+            });
+        });
+    }
 
-            this.root.querySelector("#drag").addEventListener("mouseup", this.onMouseUp.bind(this));
+    async loadDeps() {
+        let style = document.createElement("link");
+        style.rel = "stylesheet";
+        style.href = "../../node_modules/video.js/dist/video-js.min.css";
+        style.type = "text/css";
+        this.root.appendChild(style);
+
+        await new Promise((resolve, reject) => {
+            style.onload = resolve();
+            style.onerror = reject(new Error('Error loading video.js stylesheet'));
         });
     }
 
@@ -38,6 +63,7 @@ class OBElementPreview extends OBElement {
         }
 
         render(html`
+            <video-js></video-js>
             <div id="preview">
                 <div id="drag">
                     ${this.#itemType === 'audio' ? html`
@@ -106,6 +132,11 @@ class OBElementPreview extends OBElement {
                     &:not(:empty)::after {
                         content: "";
                     }
+                }
+
+                video-js {
+                    width: 500px;
+                    height: 500px;
                 }
             }
         `;
