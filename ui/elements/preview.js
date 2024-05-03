@@ -85,10 +85,11 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             switch (this.#itemType) {
                 case 'audio':
+                    let thumbnailId = this.#itemId;
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
-                        poster: "/preview.php?x=1714772011171&id=177&w=370&h=200",
+                        poster: "/preview.php?x=" + (new Date().getTime()) + "&id=" + thumbnailId + "&thumbnail=1",
                         audioPosterMode: true,
                     });
                     break;

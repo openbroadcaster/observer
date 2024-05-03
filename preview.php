@@ -152,6 +152,20 @@ class MediaPreview extends OBFController
                 exit();
             }
 
+            // get image used as thumbnail for media item if thumbnail parameter is set
+            if (!empty($_GET['thumbnail'])) {
+                $cache_file = OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.jpeg';
+                if (file_exists($cache_file)) {
+                    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+                    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+                    header("Content-Type: image/jpeg");
+                    header('Content-Length: ' . filesize($cache_file));
+                    $fp = fopen($cache_file, 'rb');
+                    fpassthru($fp);
+                }
+                exit();
+            }
+
             if (!empty($_GET['format']) && $_GET['format'] == 'mp3') {
                 $audio_format = 'mp3';
             } else {
