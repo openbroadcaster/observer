@@ -10,6 +10,8 @@ class OBElementPreview extends OBElement {
     #imageWidth;
     #imageHeight;
 
+    #videojsPlayer;
+
     connectedCallback() {
         if (this.#init) {
             return;
@@ -52,6 +54,11 @@ class OBElementPreview extends OBElement {
             mediaElem.removeAttribute('src');
         }
 
+        if (this.#videojsPlayer) {
+            this.#videojsPlayer.dispose();
+            this.#videojsPlayer = null;
+        }
+
         render(html`
             <div id="preview">
                 <div id="drag">
@@ -74,13 +81,12 @@ class OBElementPreview extends OBElement {
             </div>
         `, this.root);
 
-        // Only initialize video-js if the element is present (so a media item has been dragged onto the 
-        // preview) AND video-js is not already initialized (as indicated by the initialization appending
-        // a class).
-        if (this.root.querySelector("video-js") && ! this.root.querySelector("video-js.video-js")) {
-            videojs(this.root.querySelector("video-js"), {
+        const videoElem = this.root.querySelector("video-js");
+        if (videoElem) {
+            this.#videojsPlayer = videojs(videoElem, {
                 controls: true,
                 preload: "auto",
+                poster: "/preview.php?x=1714772011171&id=177&w=370&h=200",
             });
         }
     }
