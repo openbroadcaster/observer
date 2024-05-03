@@ -162,6 +162,8 @@ class MediaPreview extends OBFController
                     header('Content-Length: ' . filesize($cache_file));
                     $fp = fopen($cache_file, 'rb');
                     fpassthru($fp);
+                } else {
+                    http_response_code(404);
                 }
                 exit();
             }
