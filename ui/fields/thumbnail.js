@@ -63,7 +63,13 @@ class OBFieldThumbnail extends OBField {
     }
 
     renderView() {
-        render(html`<div>thumbnail view todo</div>`, this.root);
+        render(html`
+            <div class="wrapper">
+                <div class="image-wrapper">
+                    <img src="${this.#imageData}" class="thumbnail" width=${this.#imageWidth} height=${this.#imageHeight}></img>
+                </div>
+            </div>
+        `, this.root);
     }
 
     onChange(event) {
