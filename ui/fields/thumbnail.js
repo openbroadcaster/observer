@@ -66,7 +66,9 @@ class OBFieldThumbnail extends OBField {
         render(html`
             <div class="wrapper">
                 <div class="image-wrapper">
-                    <img src="${this.#imageData}" class="thumbnail" width=${this.#imageWidth} height=${this.#imageHeight}></img>
+                    ${this.#imageData ? html`
+                        <img src="${this.#imageData}" class="thumbnail" width=${this.#imageWidth} height=${this.#imageHeight}></img>
+                    ` : html``}
                 </div>
             </div>
         `, this.root);
