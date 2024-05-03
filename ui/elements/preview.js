@@ -83,11 +83,22 @@ class OBElementPreview extends OBElement {
 
         const videoElem = this.root.querySelector("video-js");
         if (videoElem) {
-            this.#videojsPlayer = videojs(videoElem, {
-                controls: true,
-                preload: "auto",
-                poster: "/preview.php?x=1714772011171&id=177&w=370&h=200",
-            });
+            switch (this.#itemType) {
+                case 'audio':
+                    this.#videojsPlayer = videojs(videoElem, {
+                        controls: true,
+                        preload: "auto",
+                        poster: "/preview.php?x=1714772011171&id=177&w=370&h=200",
+                        audioPosterMode: true,
+                    });
+                    break;
+                case 'video':
+                    this.#videojsPlayer = videojs(videoElem, {
+                        controls: true,
+                        preload: "auto",
+                    });
+                    break;
+            }
         }
     }
     
