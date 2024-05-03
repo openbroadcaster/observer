@@ -91,21 +91,12 @@ class OBElementPreview extends OBElement {
                 display: inline-block;
 
                 #preview {
-                    // display: none; /* Hide the preview to test video-js instead */
-
                     text-align: center;
                     height: 200px;
                     background-color: rgba(0, 0, 0, 0.3);
                     border-radius: 5px;
                     scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
                     width: 370px;
-
-                    video, audio {
-                        width: 360px;
-                        max-height: 196px;
-                        display: inline-block;
-                        vertical-align: baseline;
-                    }
 
                     img {
                         max-width: 100%;
@@ -116,10 +107,10 @@ class OBElementPreview extends OBElement {
                 #drag {
                     color: #7f7d8b;
                     font-size: 6em;
-                    line-height: 196px;
+                    line-height: 200px;
                     border-radius: 5px;
                     border: 2px solid rgba(0,0,0,0);
-                    height: 196px;
+                    height: 200px;
 
                     &::after {
                         font-family: "Font Awesome 5 Free";
@@ -136,8 +127,8 @@ class OBElementPreview extends OBElement {
                 }
 
                 video-js {
-                    width: 370px;
-                    height: 200px;
+                    width: 100%;
+                    height: 100%;
                     border-radius: 5px;
                 }
             }
