@@ -26,16 +26,6 @@ class OBElementPreview extends OBElement {
                 this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
     
                 this.root.querySelector("#drag").addEventListener("mouseup", this.onMouseUp.bind(this));
-
-                videojs(this.root.querySelector("video-js"), {
-                    controls: true,
-                    //autoplay: true,
-                    preload: "auto",
-                    sources: [{
-                        src: "https://vjs.zencdn.net/v/oceans.mp4",
-                        type: "video/mp4"
-                    }]
-                });
             });
         });
     }
@@ -63,20 +53,19 @@ class OBElementPreview extends OBElement {
         }
 
         render(html`
-            <video-js></video-js>
             <div id="preview">
                 <div id="drag">
                     ${this.#itemType === 'audio' ? html`
-                        <audio id="audio-${new Date().getTime()}" preload="auto" autoplay="autoplay" controls="controls">
+                        <video-js>
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=ogg" type="audio/ogg" />
-                        </audio>
+                        </video-js>
                     ` : html``}
                     ${this.#itemType === 'video' ? html`
-                        <video preload="auto" autoplay="autoplay" controls="controls">
+                        <video-js>
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
-                        </video>
+                        </video-js>
                     ` : html``}
                     ${this.#itemType === 'image' ? html`
                         <img src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
@@ -84,6 +73,16 @@ class OBElementPreview extends OBElement {
                 </div>
             </div>
         `, this.root);
+
+        // Only initialize video-js if the element is present (so a media item has been dragged onto the 
+        // preview) AND video-js is not already initialized (as indicated by the initialization appending
+        // a class).
+        if (this.root.querySelector("video-js") && ! this.root.querySelector("video-js.video-js")) {
+            videojs(this.root.querySelector("video-js"), {
+                controls: true,
+                preload: "auto",
+            });
+        }
     }
     
     scss() {
@@ -92,6 +91,8 @@ class OBElementPreview extends OBElement {
                 display: inline-block;
 
                 #preview {
+                    // display: none; /* Hide the preview to test video-js instead */
+
                     text-align: center;
                     height: 200px;
                     background-color: rgba(0, 0, 0, 0.3);
@@ -135,8 +136,9 @@ class OBElementPreview extends OBElement {
                 }
 
                 video-js {
-                    width: 500px;
-                    height: 500px;
+                    width: 370px;
+                    height: 200px;
+                    border-radius: 5px;
                 }
             }
         `;
