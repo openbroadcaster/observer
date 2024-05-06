@@ -80,6 +80,9 @@ class OBFieldSelect extends OBField {
         else if (e.key === 'Backspace') {
             this.filterVal = this.filterVal.slice(0, -1);
         }
+        else if (['ArrowUp', 'ArrowDown', 'Escape', 'Enter'].indexOf(e.key) > -1) {
+            e.preventDefault();
+        }
 
         else return;
 
@@ -109,6 +112,51 @@ class OBFieldSelect extends OBField {
                 this.root.querySelector('.popular').removeAttribute('hidden');
             }
             this.root.querySelector('.none').removeAttribute('hidden');
+        }
+
+        // if up or down arrow is pressed, select previous/next option that
+        // isn't hidden by filter
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            let selected = this.root.querySelector('#options li.selected');
+            if (!selected) {
+                selected = this.root.querySelector('#options li:not([hidden])');
+            }
+
+            if (selected) {
+                if (e.key === 'ArrowUp') {
+                    let previous = selected.previousElementSibling;
+                    while (previous && previous.hasAttribute('hidden')) {
+                        previous = previous.previousElementSibling;
+                    }
+                    if (previous) {
+                        selected.classList.remove('selected');
+                        previous.classList.add('selected');
+                        previous.scrollIntoView({ block: 'nearest' });
+                    }
+                }
+                else if (e.key === 'ArrowDown') {
+                    let next = selected.nextElementSibling;
+                    while (next && next.hasAttribute('hidden')) {
+                        next = next.nextElementSibling;
+                    }
+                    if (next) {
+                        selected.classList.remove('selected');
+                        next.classList.add('selected');
+                        next.scrollIntoView({ block: 'nearest' });
+                    }
+                }
+            }
+        }
+
+        // pressing enter confirms the up/down keys selection, and escape closes the dropdown
+        if (e.key === 'Enter') {
+            let selected = this.root.querySelector('#options li.selected');
+            if (selected) {
+                selected.click();
+            }
+        }
+        if (e.key === 'Escape') {
+            this.root.querySelector('#input').blur();
         }
     }
 
