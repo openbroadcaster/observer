@@ -719,7 +719,7 @@ class PlaylistsModel extends OBFModel
             if ($playlist_item['item_type'] == 'media') {
                 $media = $this->models->media('get_by_id', ['id' => $playlist_item['item_id']]);
                 if ($media) {
-                    $tmp = ['type' => 'media','id' => $playlist_item['item_id']];
+                    $tmp = ['type' => 'media','id' => $playlist_item['item_id'], 'title' => $media['title'], 'artist' => $media['artist']];
                     if ($media['type'] == 'image') {
                         $tmp['duration'] = $playlist_item['properties']['duration'];
                     } else {
@@ -769,7 +769,7 @@ class PlaylistsModel extends OBFModel
                             shuffle($media_items);
 
                             foreach ($media_items as $media) {
-                                $tmp = ['type' => 'media','id' => $media['id']];
+                                $tmp = ['type' => 'media','id' => $media['id'], 'title' => $media['title'], 'artist' => $media['artist']];
                                 if ($media['type'] == 'image') {
                                     $tmp['duration'] = $playlist_item['properties']['duration'];
                                 } else {
@@ -791,7 +791,7 @@ class PlaylistsModel extends OBFModel
                         shuffle($media_items);
 
                         foreach ($media_items as $media) {
-                            $tmp = ['type' => 'media','id' => $media['id']];
+                            $tmp = ['type' => 'media','id' => $media['id'], 'title' => $media['title'], 'artist' => $media['artist']];
                             if ($media['type'] == 'image') {
                                 $tmp['duration'] = $playlist_item['properties']['duration'];
                             } else {

@@ -81,12 +81,12 @@ class OBElementPreview extends OBElement {
                 </div>
                 <div id="current">
                     ${this.#queue && this.#queue[this.#itemId] && html`
-                        <span>${this.#queue[this.#itemId].id} - ${this.#queue[this.#itemId].type}</span>
+                        <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
                     `}
                 </div>
                 <div id="queue">
-                    ${this.#queue && this.#queue.map(queueItem => html`
-                        <span>${queueItem.id} - ${queueItem.type}</span>
+                    ${this.#queue && this.#queue.map((queueItem, index) => html`
+                        <span data-id=${index}>${queueItem.artist} - ${queueItem.title}</span>
                     `)}
                 </div>
             </div>
@@ -197,7 +197,9 @@ class OBElementPreview extends OBElement {
                     response.data.forEach((item) => {
                         let queueItem = {
                             "id": item.id,
-                            "type": item.media_type
+                            "type": item.media_type,
+                            "title": item.title,
+                            "artist": item.artist,
                         };
                         elem.#queue.push(queueItem);
                     });
@@ -218,7 +220,9 @@ class OBElementPreview extends OBElement {
 
                 let queueItem = {
                     "id": item.dataset.id,
-                    "type": item.dataset.type
+                    "type": item.dataset.type,
+                    "title": item.dataset.title,
+                    "artist": item.dataset.artist,
                 };
                 this.#queue.push(queueItem);
             });
