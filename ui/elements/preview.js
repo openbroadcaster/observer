@@ -168,14 +168,18 @@ class OBElementPreview extends OBElement {
     }
 
     onMouseUp(event) {
-        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+        if (! window.dragHelperData) {
             return false;
         }
 
-        this.#itemId = window.dragHelperData[0].dataset.id;
-        this.#itemType = window.dragHelperData[0].dataset.type;
+        if (window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
+            console.log(window.dragHelperData);
+        } else if (window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+            this.#itemId = window.dragHelperData[0].dataset.id;
+            this.#itemType = window.dragHelperData[0].dataset.type;
 
-        this.renderComponent();
+            this.renderComponent();
+        }
     }
 }
 
