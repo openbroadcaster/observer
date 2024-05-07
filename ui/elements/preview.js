@@ -79,6 +79,16 @@ class OBElementPreview extends OBElement {
                         <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
                     ` : html``}
                 </div>
+                <div id="current">
+                    ${this.#queue && this.#queue[this.#itemId] && html`
+                        <span>${this.#queue[this.#itemId].id} - ${this.#queue[this.#itemId].type}</span>
+                    `}
+                </div>
+                <div id="queue">
+                    ${this.#queue && this.#queue.map(queueItem => html`
+                        <span>${queueItem.id} - ${queueItem.type}</span>
+                    `)}
+                </div>
             </div>
         `, this.root);
 
@@ -213,7 +223,7 @@ class OBElementPreview extends OBElement {
                 this.#queue.push(queueItem);
             });
 
-            if (elem.#queue.length > 0) {
+            if (this.#queue.length > 0) {
                 this.#itemId = 0
                 this.#itemType = this.#queue[0].type;
             }
