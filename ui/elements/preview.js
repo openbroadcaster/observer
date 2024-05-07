@@ -6,6 +6,7 @@ class OBElementPreview extends OBElement {
 
     #itemId;
     #itemType;
+    #queue;
 
     #imageWidth;
     #imageHeight;
@@ -172,9 +173,36 @@ class OBElementPreview extends OBElement {
             return false;
         }
 
+        this.#queue = [];
+
         if (window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
-            console.log(window.dragHelperData);
+            let data = {
+                "id": window.dragHelperData[0].dataset.id
+            };
+            let elem = this;
+            OB.API.post("playlists", "resolve", data, function (response) {
+                if (response.data) {
+                    response.data.forEach((item) => {
+                        console.log(item);
+                        let queueItem = {
+                            "id": item.id,
+                            "type": item.type
+                        };
+                        elem.#queue.push(queueItem);
+                    });
+
+                    console.log(elem.#queue);
+                }
+            });
         } else if (window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+            window.dragHelperData.forEach((item) => {
+                let queueItem = {
+                    "id": item.dataset.id,
+                    "type": item.dataset.type
+                };
+                this.#queue.push(queueItem);
+            });
+
             this.#itemId = window.dragHelperData[0].dataset.id;
             this.#itemType = window.dragHelperData[0].dataset.type;
 
