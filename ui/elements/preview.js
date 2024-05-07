@@ -65,18 +65,18 @@ class OBElementPreview extends OBElement {
                 <div id="drag">
                     ${this.#itemType === 'audio' ? html`
                         <video-js>
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=mp3" type="audio/mpeg" />
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&format=ogg" type="audio/ogg" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&format=mp3" type="audio/mpeg" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&format=ogg" type="audio/ogg" />
                         </video-js>
                     ` : html``}
                     ${this.#itemType === 'video' ? html`
                         <video-js>
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
+                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
                         </video-js>
                     ` : html``}
                     ${this.#itemType === 'image' ? html`
-                        <img src="/preview.php?x=${new Date().getTime()}&id=${this.#itemId}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
+                        <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
                     ` : html``}
                 </div>
             </div>
@@ -86,13 +86,13 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             switch (this.#itemType) {
                 case 'audio':
-                    let thumbnailLink = "/preview.php?x=" + (new Date().getTime()) + "&id=" + this.#itemId + "&thumbnail=1";
+                    let thumbnailId = this.#queue[this.#itemId].id;
+                    let thumbnailLink = "/preview.php?x=" + (new Date().getTime()) + "&id=" + thumbnailId + "&thumbnail=1";
                     let validThumbnail = (await fetch(thumbnailLink)).ok
                     if (!validThumbnail) {
                         thumbnailLink = "/images/circle.svg";
                     }
 
-                    let thumbnailId = this.#itemId;
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
@@ -174,6 +174,8 @@ class OBElementPreview extends OBElement {
         }
 
         this.#queue = [];
+        this.#itemId = null;
+        this.#itemType = null;
 
         if (window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
             let data = {
@@ -183,7 +185,6 @@ class OBElementPreview extends OBElement {
             OB.API.post("playlists", "resolve", data, function (response) {
                 if (response.data) {
                     response.data.forEach((item) => {
-                        console.log(item);
                         let queueItem = {
                             "id": item.id,
                             "type": item.media_type
@@ -191,11 +192,20 @@ class OBElementPreview extends OBElement {
                         elem.#queue.push(queueItem);
                     });
 
-                    console.log(elem.#queue);
+                    if (elem.#queue.length > 0) {
+                        elem.#itemId = 0;
+                        elem.#itemType = elem.#queue[0].type;
+                    }
+
+                    elem.renderComponent();
                 }
             });
         } else if (window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
-            window.dragHelperData.forEach((item) => {
+            Object.values(window.dragHelperData).forEach((item) => {
+                if (! item.dataset) {
+                    return;
+                }
+
                 let queueItem = {
                     "id": item.dataset.id,
                     "type": item.dataset.type
@@ -203,9 +213,11 @@ class OBElementPreview extends OBElement {
                 this.#queue.push(queueItem);
             });
 
-            this.#itemId = window.dragHelperData[0].dataset.id;
-            this.#itemType = window.dragHelperData[0].dataset.type;
-
+            if (elem.#queue.length > 0) {
+                this.#itemId = 0
+                this.#itemType = this.#queue[0].type;
+            }
+            
             this.renderComponent();
         }
     }
