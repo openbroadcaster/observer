@@ -647,10 +647,7 @@ OB.Sidebar.mediaSearch = function(more)
             $('.droppable_target_media_unapproved').addClass('droppable_target_highlighted');
 
           // dispatch dragstart to ob-field-media and ob-element-preview elements, since jquery overrides draggable
-          document.querySelectorAll('ob-field-media').forEach((element) => {
-            element.dispatchEvent(new Event("dragstart"));
-          });
-          document.querySelectorAll('ob-element-preview').forEach((element) => {
+          document.querySelectorAll('ob-field-media, ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragstart"));
           });
 
@@ -672,10 +669,7 @@ OB.Sidebar.mediaSearch = function(more)
             $('.droppable_target_media_unapproved').removeClass('droppable_target_highlighted');
 
           // dispatch dragend to ob-field-media and ob-element-preview elements, since jquery overrides draggable
-          document.querySelectorAll('ob-field-media').forEach((element) => {
-            element.dispatchEvent(new Event("dragend"));
-          });
-          document.querySelectorAll('ob-element-preview').forEach((element) => {
+          document.querySelectorAll('ob-field-media, ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragend"));
           });
         }
@@ -977,7 +971,7 @@ OB.Sidebar.playlistSearch = function(more)
           $('.droppable_target_playlist').addClass('droppable_target_highlighted');
 
           // dispatch dragstart to ob-field-playlist elements, since jquery overrides draggable
-          document.querySelectorAll('ob-field-playlist').forEach((element) => {
+          document.querySelectorAll('ob-field-playlist, ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragstart"));
           });
 
@@ -988,7 +982,7 @@ OB.Sidebar.playlistSearch = function(more)
           OB.UI.dragHelperOff();
 
           // dispatch dragend to ob-field-playlist elements, since jquery overrides draggable
-          document.querySelectorAll('ob-field-playlist').forEach((element) => {
+          document.querySelectorAll('ob-field-playlist, ob-element-preview').forEach((element) => {
             element.dispatchEvent(new Event("dragend"));
           });
         }
