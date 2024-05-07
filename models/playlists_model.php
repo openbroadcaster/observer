@@ -930,13 +930,6 @@ class PlaylistsModel extends OBFModel
             }
         }
 
-        // unset temporary data
-        foreach ($return as $index => &$item) {
-            if (isset($item['media_type'])) {
-                unset($item['media_type']);
-            }
-        }
-
         return $return;
     }
 }

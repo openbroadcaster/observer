@@ -186,7 +186,7 @@ class OBElementPreview extends OBElement {
                         console.log(item);
                         let queueItem = {
                             "id": item.id,
-                            "type": item.type
+                            "type": item.media_type
                         };
                         elem.#queue.push(queueItem);
                     });
