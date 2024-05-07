@@ -497,4 +497,31 @@ class Playlists extends OBFController
 
         return array(true,'Playlists have been deleted.');
     }
+
+    /**
+     * Resolve a playlist. Turns a playlist into a collection of media items that can
+     * then be further processed if necessary.
+     *
+     * @param id
+     * @param player_id Optional. If provided, will resolve the playlist as if it were being played on this player. If not provided will set to 0.
+     *
+     * @return [items]
+     *
+     * @route GET /v2/playlists/resolve/(:id:)
+     */
+    public function resolve()
+    {
+        $id = $this->data('id');
+        $player_id = $this->data('player_id') ?? 0;
+
+        $playlist = $this->models->playlists('get_by_id', $id);
+
+        if (! $playlist) {
+            return array(false, 'Playlist not found.');
+        }
+
+        $items = $this->models->playlists('resolve', $id, $player_id);
+
+        return array(true, 'Playlist resolved.', $items);
+    }
 }
