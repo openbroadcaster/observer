@@ -79,12 +79,19 @@ class OBElementPreview extends OBElement {
                         <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
                     ` : html``}
                 </div>
-                <div id="current">
-                    ${this.#queue && this.#queue[this.#itemId] && html`
+                ${this.#queue && this.#queue[this.#itemId] && html`
+                    <div id="current">
+                        <span>
+                            <button>☰</button>
+                            <button>«</button>
+                        </span>
                         <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
-                    `}
-                </div>
-                <div id="queue">
+                        <span>
+                            <button>»</button>
+                        </span>
+                    </div>
+                `}
+                <div id="queue" class="hidden">
                     ${this.#queue && this.#queue.map((queueItem, index) => html`
                         <span data-id=${index}>${queueItem.artist} - ${queueItem.title}</span>
                     `)}
@@ -165,6 +172,15 @@ class OBElementPreview extends OBElement {
                     width: 100%;
                     height: 100%;
                     border-radius: 5px;
+                }
+
+                #queue.hidden {
+                    display: none;
+                }
+
+                #current {
+                    display: flex;
+                    justify-content: space-between;
                 }
             }
         `;
