@@ -60,6 +60,15 @@ class OBElementPreview extends OBElement {
             this.#videojsPlayer = null;
         }
 
+        let queueFirst = null;
+        let queueLast = null;
+        if (this.#queue) {
+            queueFirst = this.#itemId === 0;
+            queueLast = this.#itemId === this.#queue.length - 1;
+
+            this.#itemType = this.#queue[this.#itemId].type;
+        }
+
         render(html`
             <div id="preview">
                 <div id="drag">
@@ -79,24 +88,32 @@ class OBElementPreview extends OBElement {
                         <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
                     ` : html``}
                 </div>
-                ${this.#queue && this.#queue[this.#itemId] && html`
-                    <div id="current">
-                        <span>
-                            <button>☰</button>
-                            <button>«</button>
-                        </span>
-                        <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
-                        <span>
-                            <button>»</button>
-                        </span>
-                    </div>
-                `}
                 <div id="queue" class="hidden">
                     ${this.#queue && this.#queue.map((queueItem, index) => html`
-                        <span data-id=${index}>${queueItem.artist} - ${queueItem.title}</span>
+                        <span onclick=${this.queuePlay.bind(this, [index])} data-id=${index} class="${index == this.#itemId && html`current`}">${queueItem.artist} - ${queueItem.title}</span>
                     `)}
                 </div>
             </div>
+            ${this.#queue && this.#queue[this.#itemId] && html`
+                <div id="current">
+                    <span class="buttons">
+                        <button onclick=${this.queueToggleView.bind(this)}>☰</button>
+                        ${queueFirst ? html`
+                            <button disabled>«</button>
+                        ` : html`
+                            <button onclick=${this.queuePrevious.bind(this)}>«</button>
+                        `}
+                    </span>
+                    <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
+                    <span class="buttons">
+                        ${queueLast ? html`
+                            <button disabled>»</button>
+                        ` : html`
+                            <button onclick=${this.queueNext.bind(this)}>»</button>
+                        `}
+                    </span>
+                </div>
+            `}
         `, this.root);
 
         const videoElem = this.root.querySelector("video-js");
@@ -137,7 +154,6 @@ class OBElementPreview extends OBElement {
                     height: 200px;
                     background-color: rgba(0, 0, 0, 0.3);
                     border-radius: 5px;
-                    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
                     width: 370px;
 
                     img {
@@ -152,6 +168,7 @@ class OBElementPreview extends OBElement {
                     line-height: 200px;
                     border-radius: 5px;
                     border: 2px solid rgba(0,0,0,0);
+                    box-sizing: border-box;
                     height: 200px;
 
                     &::after {
@@ -174,27 +191,58 @@ class OBElementPreview extends OBElement {
                     border-radius: 5px;
                 }
 
-                #queue.hidden {
-                    display: none;
+                #queue {
+                    &.hidden {
+                        display: none;
+                    }
+
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    right: calc(100% + 0.5em);
+                    bottom: 100%;
+                    height: 100%;
+
+                    background-color: rgba(0, 0, 0, 0.2);
+                    border-radius: 5px;
+                    border: 2px solid rgba(0, 0, 0, 0);
+                    box-sizing: border-box;
+
+                    font-size: 13px;
+                    text-align: left;
+                    padding: 0.5em;
+                    color: #eeeeec;
+
+                    overflow: scroll;
+                    scrollbar-width: thin;
+
+                    .current {
+                        background-color: rgba(0, 0, 0, 0.4);
+                    }
                 }
 
                 #current {
                     display: flex;
                     justify-content: space-between;
+                    margin-top: 0.5em;
+
+                    span.buttons {
+                        white-space: nowrap;
+                    }
                 }
             }
         `;
     }
 
-    onDragStart(event) {
+    onDragStart() {
         this.root.querySelector("#drag").classList.add("dragging");
     }
 
-    onDragEnd(event) {
+    onDragEnd() {
         this.root.querySelector("#drag").classList.remove("dragging");
     }
 
-    onMouseUp(event) {
+    onMouseUp() {
         if (! window.dragHelperData) {
             return false;
         }
@@ -250,6 +298,35 @@ class OBElementPreview extends OBElement {
             
             this.renderComponent();
         }
+    }
+
+    queueToggleView() {
+        this.root.querySelector("#queue").classList.toggle("hidden");
+    }
+
+    queuePrevious() {
+        if (this.#itemId === 0) {
+            this.#itemId = this.#queue.length - 1;
+        } else {
+            this.#itemId--;
+        }
+
+        this.renderComponent();
+    }
+
+    queueNext() {
+        if (this.#itemId === this.#queue.length - 1) {
+            this.#itemId = 0;
+        } else {
+            this.#itemId++;
+        }
+
+        this.renderComponent();
+    }
+
+    queuePlay(index) {
+        this.#itemId = index;
+        this.renderComponent();
     }
 }
 
