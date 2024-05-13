@@ -118,6 +118,8 @@ class OBElementPreview extends OBElement {
 
         const videoElem = this.root.querySelector("video-js");
         if (videoElem) {
+            let elem = this;
+
             switch (this.#itemType) {
                 case 'audio':
                     let thumbnailId = this.#queue[this.#itemId].id;
@@ -133,12 +135,26 @@ class OBElementPreview extends OBElement {
                         poster: thumbnailLink,
                         audioPosterMode: true,
                     });
+                    
+                    this.#videojsPlayer.ready(function () {
+                        this.on('ended', function () {
+                            elem.queueNext(true);
+                         });
+                    });
+
                     break;
                 case 'video':
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
                     });
+
+                    this.#videojsPlayer.ready(function () {
+                        this.on('ended', function () { 
+                            elem.queueNext(true);
+                        });
+                    });
+
                     break;
             }
         }
@@ -314,14 +330,24 @@ class OBElementPreview extends OBElement {
         this.renderComponent();
     }
 
-    queueNext() {
+    queueNext(autoplay = false) {
         if (this.#itemId === this.#queue.length - 1) {
             this.#itemId = 0;
         } else {
             this.#itemId++;
         }
 
-        this.renderComponent();
+        let elem = this;
+        this.renderComponent().then(() => {
+            // Autoplay if next item in queue (which passes autoplay = true to method), 
+            // itemId isn't 0 (this implies we've finished the queue), and there's a 
+            // video.js player available.
+            if (autoplay && this.#itemId !== 0 && elem.#videojsPlayer) {
+                elem.#videojsPlayer.ready(function () {
+                    this.on('canplay', function () { elem.#videojsPlayer.play() });
+                });
+            }
+        });
     }
 
     queuePlay(index) {
