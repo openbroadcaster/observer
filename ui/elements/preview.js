@@ -274,6 +274,7 @@ class OBElementPreview extends OBElement {
             let elem = this;
             OB.API.post("playlists", "resolve", data, function (response) {
                 if (response.data) {
+                    console.log(response.data);
                     response.data.forEach((item) => {
                         let queueItem = {
                             "id": item.id,
@@ -281,6 +282,11 @@ class OBElementPreview extends OBElement {
                             "title": item.title,
                             "artist": item.artist,
                         };
+
+                        if (item.media_type === 'image') {
+                            queueItem.duration = item.duration;
+                        }
+
                         elem.#queue.push(queueItem);
                     });
 
@@ -304,6 +310,13 @@ class OBElementPreview extends OBElement {
                     "title": item.dataset.title,
                     "artist": item.dataset.artist,
                 };
+
+                if (item.dataset.type === 'image') {
+                    // Set image duration to 3 for the preview queue when dragging individual media
+                    // items, as individual images outside of a playlist do not have a duration set.
+                    queueItem.duration = 3;
+                }
+
                 this.#queue.push(queueItem);
             });
 
@@ -342,10 +355,18 @@ class OBElementPreview extends OBElement {
             // Autoplay if next item in queue (which passes autoplay = true to method), 
             // itemId isn't 0 (this implies we've finished the queue), and there's a 
             // video.js player available.
-            if (autoplay && this.#itemId !== 0 && elem.#videojsPlayer) {
+            if (autoplay && elem.#itemId !== 0 && elem.#videojsPlayer) {
                 elem.#videojsPlayer.ready(function () {
                     this.on('canplay', function () { elem.#videojsPlayer.play() });
                 });
+            // Otherwise, do the same checks as before, but for images (so not using the 
+            // video.js player), use the image duration set in the playlist before moving
+            // to the next item. Note that this is hardcoded to a few seconds for individual
+            // media items (a duration isn't provided outside of playlists).
+            } else if (autoplay && elem.#itemId !== 0 && elem.#itemType === 'image') {
+                setTimeout(function () {
+                    elem.queueNext(true);
+                }, elem.#queue[elem.#itemId].duration * 1000);
             }
         });
     }
