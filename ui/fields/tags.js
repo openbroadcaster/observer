@@ -3,6 +3,8 @@ import { OBField } from '../base/field.js';
 
 class OBFieldTags extends OBField {
     #init;
+    #tags;
+    #currentTag;
 
     connectedCallback() {
         if (this.#init) {
@@ -10,14 +12,24 @@ class OBFieldTags extends OBField {
         }
 
         this.#init = true;
+        this.#tags = [];
+        this.#currentTag = "";
 
         this.renderComponent();
     }
     
     renderEdit() {
         render(html`
-            <div>
-                Tags edit
+            <div id="input" class="field" tabindex="0" 
+            onkeydown=${(e) => this.tagsInput(e)} 
+            onfocus=${(e) => this.tagsFocus(true)} 
+            onblur=${(e) => this.tagsFocus(false)}>
+                <div id="tags">
+                    ${this.#tags.map((tag) => html`
+                        <span>${tag}</span>
+                    `)}
+                </div>
+                <span id="current">${this.#currentTag}</span>
             </div>
         `, this.root);
     }
@@ -33,8 +45,89 @@ class OBFieldTags extends OBField {
     scss() {
         return `
             :host {
+                display: inline-block;
+
+                #input {
+                    width: 250px;
+                    min-height: 1rem; // this isn't quite right will fix later
+                    padding: 5px;
+                    border: 0;
+                    vertical-align: middle;
+                    background-color: #fff;
+                    font-size: 13px;
+                    color: #2e3436;
+                    display: inline-block;
+                    border-radius: 2px;
+                }
+
+                #input:focus-within {
+                    &::after {
+                        content: "|";
+                    }
+                }
+
+                #tags {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3em;
+                    flex-wrap: wrap;
+
+                    span {
+                        background-color: #eee;
+                        padding: 0.2em;
+                        border-radius: 3px;
+                        word-wrap: anywhere;
+
+                        &::after {
+                            content: "x";
+                            color: #e00;
+                            padding-left: 2px;
+                        }
+                    }
+                }
             }
         `;
+    }
+
+    tagsInput(event) {
+        let keyCode = (event.key.length === 1) ? event.key.charCodeAt(0) : false;
+        
+        if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122)) {
+            // A-Z and a-z
+            this.#currentTag += event.key;
+        } else if (keyCode >= 48 && keyCode <= 57) {
+            // 0-9
+            this.#currentTag += event.key;
+        } else if (keyCode === 45 || keyCode === 95) {
+            // -_
+            this.#currentTag += event.key;
+        }
+
+        if (event.key === "Backspace") {
+            if (this.#currentTag.length > 0) {
+                // Backspace letter from current tag if it exists.
+                this.#currentTag = this.#currentTag.slice(0, this.#currentTag.length - 1);
+            } else {
+                // Otherwise, delete the last finished tag.
+                this.#tags.pop();
+            }
+        }
+
+        if (event.key === "Enter" || event.key === " " || event.key === ",") {
+            event.preventDefault();
+
+            if (this.#currentTag.length > 0) {
+                // TODO: Check tag hasn't already been entered.
+                this.#tags.push(this.#currentTag);
+                this.#currentTag = "";
+            }
+        }
+
+        this.renderComponent();
+    }
+
+    tagsFocus(focus) {
+        // do stuff if gaining/losing focus TODO
     }
 
     get value() {

@@ -2,15 +2,21 @@
   <h1>OpenBroadcaster</h1>
   <div id="main_page_content"></div>
   <h2>Test tags and multi-select</h2>
-  <ob-field-select data-edit data-multiple data-options="{
-    &quot;text&quot;: &quot;Text (single line)&quot;,
-    &quot;textarea&quot;: &quot;Text (multiple lines)&quot;,
-    &quot;integer&quot;: &quot;Number (Integer)&quot;,
-    &quot;bool&quot;: &quot;Yes/No&quot;,
-    &quot;select&quot;: &quot;Drop-Down Selection&quot;,
-    &quot;tags&quot;: &quot;Tags&quot;
-  }"></ob-field-select>
-  <ob-field-tags data-edit></ob-field-tags>
+  <div class="fieldrow">
+    <label>Multi-select</label>
+    <ob-field-select data-edit data-multiple data-options="{
+      &quot;text&quot;: &quot;Text (single line)&quot;,
+      &quot;textarea&quot;: &quot;Text (multiple lines)&quot;,
+      &quot;integer&quot;: &quot;Number (Integer)&quot;,
+      &quot;bool&quot;: &quot;Yes/No&quot;,
+      &quot;select&quot;: &quot;Drop-Down Selection&quot;,
+      &quot;tags&quot;: &quot;Tags&quot;
+    }"></ob-field-select>
+  </div>
+  <div class="fieldrow">
+    <label>Tags</label>
+    <ob-field-tags data-edit></ob-field-tags>
+  </div>
   <h2>Test media preview</h2>
   <ob-element-preview></ob-element-preview>
   <h2>Test old media input</h2>
