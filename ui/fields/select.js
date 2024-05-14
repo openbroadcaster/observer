@@ -105,13 +105,17 @@ class OBFieldSelect extends OBField {
             if (this.root.querySelector('.popular')) {
                 this.root.querySelector('.popular').setAttribute('hidden', true);
             }
-            this.root.querySelector('.none').setAttribute('hidden', true);
+            if (this.root.querySelector('.none')) {
+                this.root.querySelector('.none').setAttribute('hidden', true);
+            }
         }
         else {
             if (this.root.querySelector('.popular')) {
                 this.root.querySelector('.popular').removeAttribute('hidden');
             }
-            this.root.querySelector('.none').removeAttribute('hidden');
+            if (this.root.querySelector('.none')) {
+                this.root.querySelector('.none').removeAttribute('hidden');
+            }
         }
 
         // if up or down arrow is pressed, select previous/next option that
