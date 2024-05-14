@@ -700,12 +700,11 @@ class Remote
         $itemxml->addChild('location', $voicetrack['file_location']);
         $itemxml->addChild('archived', $voicetrack['is_archived']);
         $itemxml->addChild('approved', $voicetrack['is_approved']);
-        
         $itemxml->addChild('volume', $track['volume']);
-        $itemxml->addChild('offset', $track['offset']);
-        $itemxml->addChild('fadeout-before', $track['fadeout-before']);
-        $itemxml->addChild('fadein-after', $track['fadein-after']);
-        
+        $itemxml->addChild('delay', $track['offset']);
+        $itemxml->addChild('fadeout', $track['fadeout-before']);
+        $itemxml->addChild('fadein', $track['fadein-after']);
+
         if (isset($voicetrack['thumbnail'])) {
             $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
         }
