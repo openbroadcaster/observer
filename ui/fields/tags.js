@@ -116,8 +116,9 @@ class OBFieldTags extends OBField {
             event.preventDefault();
 
             if (this.#currentTag.length > 0) {
-                // TODO: Check tag hasn't already been entered.
-                this.#tags.push(this.#currentTag);
+                if (this.#tags.find((elem) => elem === this.#currentTag) === undefined) {
+                    this.#tags.push(this.#currentTag);
+                }
                 this.#currentTag = "";
             }
         }
