@@ -135,13 +135,14 @@ class OBFieldTags extends OBField {
     }
 
     get value() {
-        // TODO
-        return undefined;
+        return this.#tags;
     }
 
     set value(value) {
-        // TODO
-        return undefined;
+        if (Array.isArray(value)) {
+            this.#tags = [...new Set(value)];
+            this.renderComponent();
+        }
     }
 }
 
