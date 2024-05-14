@@ -26,10 +26,10 @@ class OBFieldTags extends OBField {
             onblur=${(e) => this.tagsFocus(false)}>
                 <div id="tags">
                     ${this.#tags.map((tag) => html`
-                        <span>${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span></span>
+                        <span class="saved">${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span></span>
                     `)}
+                    <span id="current">${this.#currentTag}</span>
                 </div>
-                <span id="current">${this.#currentTag}</span>
             </div>
         `, this.root);
     }
@@ -61,7 +61,7 @@ class OBFieldTags extends OBField {
                 }
 
                 #input:focus-within {
-                    &::after {
+                    #current::after {
                         content: "|";
                     }
                 }
@@ -72,7 +72,7 @@ class OBFieldTags extends OBField {
                     gap: 0.3em;
                     flex-wrap: wrap;
 
-                    span {
+                    span.saved {
                         background-color: #eee;
                         padding: 0.2em;
                         border-radius: 3px;
