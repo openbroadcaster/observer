@@ -22,8 +22,7 @@ class OBFieldTags extends OBField {
         render(html`
             <div id="input" class="field" tabindex="0" 
             onkeydown=${(e) => this.tagsInput(e)} 
-            onfocus=${(e) => this.tagsFocus(true)} 
-            onblur=${(e) => this.tagsFocus(false)}>
+            >
                 <div id="tags">
                     ${this.#tags.map((tag) => html`
                         <span class="saved">${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span></span>
@@ -124,10 +123,6 @@ class OBFieldTags extends OBField {
         }
 
         this.renderComponent();
-    }
-
-    tagsFocus(focus) {
-        // do stuff if gaining/losing focus TODO
     }
 
     tagsDelete(tag) {
