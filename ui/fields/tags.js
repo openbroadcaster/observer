@@ -26,7 +26,7 @@ class OBFieldTags extends OBField {
             onblur=${(e) => this.tagsFocus(false)}>
                 <div id="tags">
                     ${this.#tags.map((tag) => html`
-                        <span>${tag}</span>
+                        <span>${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span></span>
                     `)}
                 </div>
                 <span id="current">${this.#currentTag}</span>
@@ -78,10 +78,9 @@ class OBFieldTags extends OBField {
                         border-radius: 3px;
                         word-wrap: anywhere;
 
-                        &::after {
+                        .delete::after {
                             content: "x";
                             color: #e00;
-                            padding-left: 2px;
                         }
                     }
                 }
@@ -128,6 +127,11 @@ class OBFieldTags extends OBField {
 
     tagsFocus(focus) {
         // do stuff if gaining/losing focus TODO
+    }
+
+    tagsDelete(tag) {
+        this.#tags = this.#tags.filter((elem) => elem != tag);
+        this.renderComponent();
     }
 
     get value() {
