@@ -274,7 +274,6 @@ class OBElementPreview extends OBElement {
             let elem = this;
             OB.API.post("playlists", "resolve", data, function (response) {
                 if (response.data) {
-                    console.log(response.data);
                     response.data.forEach((item) => {
                         let queueItem = {
                             "id": item.id,
