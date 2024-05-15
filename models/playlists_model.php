@@ -771,7 +771,7 @@ class PlaylistsModel extends OBFModel
                             foreach ($media_items as $media) {
                                 $tmp = ['type' => 'media','id' => $media['id'], 'title' => $media['title'], 'artist' => $media['artist']];
                                 if ($media['type'] == 'image') {
-                                    $tmp['duration'] = $playlist_item['properties']['duration'];
+                                    $tmp['duration'] = $playlist_item['properties']['duration'] ?? $playlist_item['properties']['image_duration'] ?? 0;
                                 } else {
                                     $tmp['duration'] = $media['duration'];
                                 }
