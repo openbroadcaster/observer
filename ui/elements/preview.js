@@ -7,6 +7,7 @@ class OBElementPreview extends OBElement {
     #itemId;
     #itemType;
     #queue;
+    #imageTimeout;
 
     #imageWidth;
     #imageHeight;
@@ -90,18 +91,18 @@ class OBElementPreview extends OBElement {
                 </div>
                 <div id="queue" class="hidden">
                     ${this.#queue && this.#queue.map((queueItem, index) => html`
-                        <span onclick=${this.queuePlay.bind(this, [index])} data-id=${index} class="${index == this.#itemId && html`current`}">${queueItem.artist} - ${queueItem.title}</span>
+                        <span onclick=${() => this.queuePlay([index])} data-id=${index} class="${index == this.#itemId && html`current`}">${queueItem.artist} - ${queueItem.title}</span>
                     `)}
                 </div>
             </div>
             ${this.#queue && this.#queue[this.#itemId] && html`
                 <div id="current">
                     <span class="buttons">
-                        <button onclick=${this.queueToggleView.bind(this)}>☰</button>
+                        <button onclick=${() => this.queueToggleView()}>☰</button>
                         ${queueFirst ? html`
                             <button disabled>«</button>
                         ` : html`
-                            <button onclick=${this.queuePrevious.bind(this)}>«</button>
+                            <button onclick=${() => this.queuePrevious()}>«</button>
                         `}
                     </span>
                     <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
@@ -109,7 +110,7 @@ class OBElementPreview extends OBElement {
                         ${queueLast ? html`
                             <button disabled>»</button>
                         ` : html`
-                            <button onclick=${this.queueNext.bind(this)}>»</button>
+                            <button onclick=${() => this.queueNext()}>»</button>
                         `}
                     </span>
                 </div>
@@ -333,6 +334,8 @@ class OBElementPreview extends OBElement {
     }
 
     queuePrevious() {
+        clearTimeout(this.#imageTimeout);
+
         if (this.#itemId === 0) {
             this.#itemId = this.#queue.length - 1;
         } else {
@@ -343,6 +346,8 @@ class OBElementPreview extends OBElement {
     }
 
     queueNext(autoplay = false) {
+        clearTimeout(this.#imageTimeout);
+
         if (this.#itemId === this.#queue.length - 1) {
             this.#itemId = 0;
         } else {
@@ -363,7 +368,7 @@ class OBElementPreview extends OBElement {
             // to the next item. Note that this is hardcoded to a few seconds for individual
             // media items (a duration isn't provided outside of playlists).
             } else if (autoplay && elem.#itemId !== 0 && elem.#itemType === 'image') {
-                setTimeout(function () {
+                this.#imageTimeout = setTimeout(function () {
                     elem.queueNext(true);
                 }, elem.#queue[elem.#itemId].duration * 1000);
             }
@@ -371,6 +376,8 @@ class OBElementPreview extends OBElement {
     }
 
     queuePlay(index) {
+        clearTimeout(this.#imageTimeout);
+
         this.#itemId = index;
         this.renderComponent();
     }
