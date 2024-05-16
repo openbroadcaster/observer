@@ -7,12 +7,14 @@ class OBElementPreview extends OBElement {
     #itemId;
     #itemType;
     #queue;
-    #imageTimeout;
+    #imageTimeout; 
 
     #imageWidth;
     #imageHeight;
 
     #videojsPlayer;
+
+    #currentPlaylist;
 
     connectedCallback() {
         if (this.#init) {
@@ -267,37 +269,10 @@ class OBElementPreview extends OBElement {
         this.#queue = [];
         this.#itemId = null;
         this.#itemType = null;
+        this.#currentPlaylist = null;
 
         if (window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
-            let data = {
-                "id": window.dragHelperData[0].dataset.id
-            };
-            let elem = this;
-            OB.API.post("playlists", "resolve", data, function (response) {
-                if (response.data) {
-                    response.data.forEach((item) => {
-                        let queueItem = {
-                            "id": item.id,
-                            "type": item.media_type,
-                            "title": item.title,
-                            "artist": item.artist,
-                        };
-
-                        if (item.media_type === 'image') {
-                            queueItem.duration = item.duration;
-                        }
-
-                        elem.#queue.push(queueItem);
-                    });
-
-                    if (elem.#queue.length > 0) {
-                        elem.#itemId = 0;
-                        elem.#itemType = elem.#queue[0].type;
-                    }
-
-                    elem.renderComponent();
-                }
-            });
+            this.#resolvePlaylist(window.dragHelperData[0].dataset.id);
         } else if (window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
             Object.values(window.dragHelperData).forEach((item) => {
                 if (! item.dataset) {
@@ -380,6 +355,45 @@ class OBElementPreview extends OBElement {
 
         this.#itemId = index;
         this.renderComponent();
+    }
+
+    playlistRefresh() {
+        if (! this.#currentPlaylist) {
+            return;
+        }
+
+        this.#resolvePlaylist(this.#currentPlaylist);
+    }
+
+    #resolvePlaylist(id) {
+        let elem = this;
+
+        OB.API.post("playlists", "resolve", {"id": id}, function (response) {
+            if (response.data) {
+                response.data.forEach((item) => {
+                    let queueItem = {
+                        "id": item.id,
+                        "type": item.media_type,
+                        "title": item.title,
+                        "artist": item.artist,
+                    };
+
+                    if (item.media_type === 'image') {
+                        queueItem.duration = item.duration;
+                    }
+
+                    elem.#queue.push(queueItem);
+                });
+
+                if (elem.#queue.length > 0) {
+                    elem.#itemId = 0;
+                    elem.#itemType = elem.#queue[0].type;
+                }
+
+                elem.#currentPlaylist = id;
+                elem.renderComponent();
+            }
+        });
     }
 }
 
