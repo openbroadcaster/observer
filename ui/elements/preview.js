@@ -92,6 +92,7 @@ class OBElementPreview extends OBElement {
                     ` : html``}
                 </div>
                 <div id="queue" class="hidden">
+                    <button onclick=${() => this.playlistRefresh()}>Refresh</button>
                     ${this.#queue && this.#queue.map((queueItem, index) => html`
                         <span onclick=${() => this.queuePlay([index])} data-id=${index} class="${index == this.#itemId && html`current`}">${queueItem.artist} - ${queueItem.title}</span>
                     `)}
@@ -362,7 +363,14 @@ class OBElementPreview extends OBElement {
             return;
         }
 
-        this.#resolvePlaylist(this.#currentPlaylist);
+        let playlistId = this.#currentPlaylist;
+
+        this.#queue = [];
+        this.#itemId = null;
+        this.#itemType = null;
+        this.#currentPlaylist = null;
+
+        this.#resolvePlaylist(playlistId);
     }
 
     #resolvePlaylist(id) {
