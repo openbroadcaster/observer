@@ -1,0 +1,27 @@
+name: PHP CodeSniffer
+
+on: [push, pull_request]
+
+jobs:
+  php-codesniffer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install dependencies
+        run: composer install -q
+
+      - name: Check and install PHP_CodeSniffer if needed
+        run: |
+          if [ ! -f vendor/bin/phpcs ]; then
+            composer require --dev squizlabs/php_codesniffer
+          fi
+
+      - name: Run PHP_CodeSniffer
+        run: vendor/bin/phpcs -q --standard=.phpcs.xml.dist
