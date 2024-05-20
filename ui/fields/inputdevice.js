@@ -85,16 +85,33 @@ class OBFieldInputDevice extends OBField {
         `;
     }
 
-    get value() {
-        // todo
-        return undefined;
+    get audio() {
+        const audioElem = this.root.querySelector("#audio-input select");
+        if (audioElem) {
+            return audioElem.value;
+        }
     }
 
-    set value(value) {
-        // todo
-        return undefined;
+    set audio(value) {
+        const audioElem = this.root.querySelector("#audio-input select");
+        if (audioElem) {
+            audioElem.value = value;
+        }
     }
 
+    get video() {
+        const videoElem = this.root.querySelector("#video-input select");
+        if (videoElem) {
+            return videoElem.value;
+        }
+    }
+
+    set video(value) {
+        const videoElem = this.root.querySelector("#video-input select");
+        if (videoElem) {
+            videoElem.value = value;
+        }
+    }
 }
 
 customElements.define('ob-field-input-device', OBFieldInputDevice);
