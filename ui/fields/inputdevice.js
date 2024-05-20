@@ -16,8 +16,6 @@ class OBFieldInputDevice extends OBField {
         }
 
         this.#init = true;
-        this.#audioDevices = [];
-        this.#videoDevices = [];
 
         this.#showDetailed = "simple";
         if (this.dataset.hasOwnProperty('detailed')) {
@@ -29,6 +27,19 @@ class OBFieldInputDevice extends OBField {
         }
 
         await navigator.mediaDevices.getUserMedia({audio: true});
+        await this.#refreshDevices();
+        navigator.mediaDevices.ondevicechange = (event) => {
+            this.#refreshDevices();
+        }
+
+        this.renderComponent();
+    }
+
+    async #refreshDevices() {
+        this.#audioDevices = [];
+        this.#videoDevices = [];
+        console.log("refreshing!"); 
+
         let devices = await navigator.mediaDevices.enumerateDevices();
         
         devices.forEach((device) => {
