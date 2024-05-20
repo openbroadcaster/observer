@@ -437,6 +437,8 @@ class OBFieldMedia extends OBField {
             });
         }
         this.#mediaRecorder.stop();
+        this.#mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        this.#mediaRecorder = null;
     }
 
     mediaRecordSave(event) {
