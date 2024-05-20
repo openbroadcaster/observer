@@ -9,6 +9,7 @@ class OBFieldMedia extends OBField {
     #mediaRecorder;
     #recordData;
     #recordUrl;
+    #audioDevice;
 
     #blob;
     #playback;
@@ -21,12 +22,13 @@ class OBFieldMedia extends OBField {
     #init;
 
     connectedCallback() {
-        this.#mediaItems    = [];
-        this.#mediaContent  = {};
+        this.#mediaItems     = [];
+        this.#mediaContent   = {};
 
-        this.#recordData    = [];
-        this.#recordUrl     = "";
-        this.#mediaRecorder = null;
+        this.#recordData     = [];
+        this.#recordUrl      = "";
+        this.#mediaRecorder  = null;
+        this.#audioDevice    = null;
 
         this.#blob           = null;
         this.#playback       = null;
@@ -69,9 +71,11 @@ class OBFieldMedia extends OBField {
                     : html``
                 }
             </div>
-            ${
-                (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
-                ? html`<span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
+            ${(this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) && html`
+                <div id="input-container">
+                    <ob-field-input-device data-edit></ob-field-input-device>
+                </div>
+                <span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
                     <div class="trim-container">
                         <span class="trim">Trim Start</span>
                         <input type="number" class="trim" id="trim-start" value="0" step="0.1" min="0" max="100" onchange=${this.drawTrimStart.bind(this)} />
@@ -84,9 +88,8 @@ class OBFieldMedia extends OBField {
                         <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
                         <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
                     </div>
-                </span>`
-                : html``
-            }
+                </span>
+            `}
         `, this.root);
     }
 
@@ -267,6 +270,10 @@ class OBFieldMedia extends OBField {
                         content: "x";
                     }
                 }
+
+                #input-container {
+                    width: 350px;
+                }
             }
         `;
     }
@@ -373,6 +380,11 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRecordStart(event) {
+        const inputDeviceElem = this.root.querySelector('ob-field-input-device');
+        if (inputDeviceElem) {
+            this.#audioDevice = inputDeviceElem.audio;
+        }
+
         if (this.#mediaRecorder === null && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) {
             if (navigator.mediaDevices.getUserMedia) {
                 var self = this;
@@ -394,7 +406,12 @@ class OBFieldMedia extends OBField {
                     console.error(`The following getUserMedia error occurred: ${err}`);
                 }
 
-                this.#mediaRecorder = navigator.mediaDevices.getUserMedia({audio: true}).then(onSuccess, onError);
+                let mediaSettings = {audio: true};
+                if (this.#audioDevice) {
+                    mediaSettings.deviceId = this.#audioDevice;
+                }
+
+                this.#mediaRecorder = navigator.mediaDevices.getUserMedia(mediaSettings).then(onSuccess, onError);
             } else {
                 // TODO: Update element look.
                 console.error('getUserMedia not supported on your browser!');
