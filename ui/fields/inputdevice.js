@@ -37,8 +37,7 @@ class OBFieldInputDevice extends OBField {
 
     async #refreshDevices() {
         this.#audioDevices = [];
-        this.#videoDevices = [];
-        console.log("refreshing!"); 
+        this.#videoDevices = []; 
 
         let devices = await navigator.mediaDevices.enumerateDevices();
         
@@ -90,6 +89,10 @@ class OBFieldInputDevice extends OBField {
                         span {
                             display: none;
                         }
+                    }
+
+                    select {
+                        max-width: 100%;
                     }
                 }
             }
