@@ -1166,10 +1166,12 @@ class MediaModel extends OBFModel
             return array(false,$item['local_id'],'The category selected is no longer valid.');
         }
         //T The country selected is no longer valid.
-        $this->db->where('country_id', $item['country']);
-        $exists = $this->db->get_one('countries');
-        if (!empty($item['country']) && !$exists) {
-            return array(false,$item['local_id'],'The country selected is no longer valid.');
+        if (!empty($item['country'])) {
+            $this->db->where('country_id', $item['country']);
+            $exists = $this->db->get_one('countries');
+            if (!$exists) {
+                return array(false,$item['local_id'],'The country selected is no longer valid.');
+            }
         }
         //T The genre selected is no longer valid.
         if (!empty($item['genre_id']) && !$this->db->id_exists('media_genres', $item['genre_id'])) {
