@@ -22,6 +22,12 @@ class OBFieldMedia extends OBField {
     #init;
 
     connectedCallback() {
+        if (this.#init) {
+            return;
+        }
+
+        this.#init = true;
+
         this.#mediaItems     = [];
         this.#mediaContent   = {};
 
@@ -38,14 +44,16 @@ class OBFieldMedia extends OBField {
         this.#trimStart      = 0.0;
         this.#trimEnd        = 0.0;
 
-        this.renderComponent();
-
-        if (!this.#init) {
-            this.#init = true;
-
+        this.renderComponent().then(() => {
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-        }
+
+            const accountAudioDevice = OB.Account.userdata.input_audio;
+            const inputDeviceElem = this.root.querySelector('ob-field-input-device');
+            if (accountAudioDevice && inputDeviceElem) {
+                inputDeviceElem.audio = accountAudioDevice;
+            } 
+        });
     }
 
     renderEdit() {
