@@ -203,6 +203,8 @@ OB.Account.settings = function()
     else sidebar_display_left = 1;
     $('#account_sidebar_display_left').val(sidebar_display_left);
 
+    document.querySelector('ob-field-input-device').audio = userdata['input_audio'];
+
     if (permissions.data.find(elem => elem == 'manage_appkeys')) {
       $('#account_settings_appkeys').show();
       OB.Account.keyLoad();
@@ -225,6 +227,9 @@ OB.Account.settingsSubmit = function()
   data['theme'] = $('#account_theme').val();
   data['dyslexia_friendly_font'] = $('#account_dyslexia_friendly_font').val();
   data['sidebar_display_left'] = $('#account_sidebar_display_left').val();
+
+  data['input_audio'] = document.querySelector('ob-field-input-device').audio;
+
   data['appkeys'] = new Array();
   $('#account_appkey_table tbody tr').each(function (index, row) {
     data['appkeys'].push([

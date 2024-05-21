@@ -4,6 +4,8 @@ import { OBField } from '../base/field.js';
 class OBFieldInputDevice extends OBField {
 
     #init;
+    #initAudio;
+    #initVideo;
     #audioDevices;
     #videoDevices;
 
@@ -32,7 +34,15 @@ class OBFieldInputDevice extends OBField {
             this.#refreshDevices();
         }
 
-        this.renderComponent();
+        this.renderComponent().then(() => {
+            if (this.#initAudio) {
+                this.audio = this.#initAudio;
+            }
+
+            if (this.#initVideo) {
+                this.video = this.#initVideo;
+            }
+        });
     }
 
     async #refreshDevices() {
@@ -84,6 +94,9 @@ class OBFieldInputDevice extends OBField {
     scss() {
         return `
             :host {
+                display: inline-block; 
+                max-width: 100%;
+
                 #audio-input, #video-input {
                     &.simple {
                         span {
@@ -110,6 +123,8 @@ class OBFieldInputDevice extends OBField {
         const audioElem = this.root.querySelector("#audio-input select");
         if (audioElem) {
             audioElem.value = value;
+        } else {
+            this.#initAudio = value;
         }
     }
 
@@ -124,6 +139,8 @@ class OBFieldInputDevice extends OBField {
         const videoElem = this.root.querySelector("#video-input select");
         if (videoElem) {
             videoElem.value = value;
+        } else {
+            this.#initVideo = value;
         }
     }
 }

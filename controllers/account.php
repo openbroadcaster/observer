@@ -187,6 +187,7 @@ class Account extends OBFController
         $data['theme'] = trim($this->data('theme'));
         $data['dyslexia_friendly_font'] = trim($this->data('dyslexia_friendly_font'));
         $data['sidebar_display_left'] = trim($this->data('sidebar_display_left'));
+        $data['input_audio'] = trim($this->data('input_audio'));
         $data['appkeys'] = $this->data('appkeys');
 
         $validation = $this->models->users('settings_validate', $user_id, $data);

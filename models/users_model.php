@@ -747,6 +747,9 @@ class UsersModel extends OBFModel
         unset($data['dyslexia_friendly_font']);
         unset($data['sidebar_display_left']);
 
+        $settings['input_audio'] = $data['input_audio'];
+        unset($data['input_audio']);
+
         if (!$data['appkeys']) {
             $data['appkeys'] = [];
         }
