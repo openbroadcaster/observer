@@ -414,9 +414,15 @@ class OBFieldMedia extends OBField {
                     console.error(`The following getUserMedia error occurred: ${err}`);
                 }
 
-                let mediaSettings = {audio: true};
+                let mediaSettings = {
+                    audio: true
+                };
                 if (this.#audioDevice) {
-                    mediaSettings.deviceId = this.#audioDevice;
+                    mediaSettings = {
+                        audio: {
+                            deviceId: this.#audioDevice
+                        }
+                    };
                 }
 
                 this.#mediaRecorder = navigator.mediaDevices.getUserMedia(mediaSettings).then(onSuccess, onError);
