@@ -368,7 +368,7 @@ class OBFieldSelect extends OBField {
     #loadInnerOptions() {
         var options = {};
 
-        for (const child of this.children) {
+        Array.from(this.children).forEach((child) => {
             if (child.tagName === 'OB-OPTION') {
                 let key = child.getAttribute('value');
                 if (key) {
@@ -381,7 +381,7 @@ class OBFieldSelect extends OBField {
                     options[Object.keys(options).length] = child.innerHTML;
                 }
             }
-        }
+        });
 
         return options;
     }
@@ -395,7 +395,7 @@ class OBFieldSelect extends OBField {
         }
 
         let index = 0;
-        for (const child of this.children) {
+        Array.from(this.children).forEach((child) => {
             if (child.tagName === 'OB-OPTION' && child.hasAttribute('selected')) {
                 let value = child.getAttribute('value');
                 if (! value) {
@@ -410,7 +410,7 @@ class OBFieldSelect extends OBField {
             }
 
             index = index + 1;
-        }
+        });
 
         return selected;
     }
