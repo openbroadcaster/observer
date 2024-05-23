@@ -18,14 +18,14 @@
 
     <div class="fieldrow">
       <label class="required" data-t>Type</label>
-      <ob-field-select data-edit id="metadata_type" data-value="&quot;text&quot;" data-options="{
-        &quot;text&quot;: &quot;Text (single line)&quot;,
-        &quot;textarea&quot;: &quot;Text (multiple lines)&quot;,
-        &quot;integer&quot;: &quot;Number (Integer)&quot;,
-        &quot;bool&quot;: &quot;Yes/No&quot;,
-        &quot;select&quot;: &quot;Drop-Down Selection&quot;,
-        &quot;tags&quot;: &quot;Tags&quot;
-      }"></ob-field-select>
+      <ob-field-select data-edit id="metadata_type" data-value="&quot;text&quot;">
+        <ob-option value="text">Text (single line)</ob-option>
+        <ob-option value="textarea">Text (multiple lines)</ob-option>
+        <ob-option value="integer">Number (integer)</ob-option>
+        <ob-option value="bool">Yes/No</ob-option>
+        <ob-option value="select">Drop-Down Selection</ob-option>
+        <ob-option value="tags">Tags</ob-option>
+      </ob-field-select>
     </div>
 
     <div class="fieldrow">
@@ -40,11 +40,11 @@
 
     <div class="fieldrow">
       <label data-t>Mode</label>
-      <ob-field-select data-edit id="metadata_mode" data-value="&quot;required&quot;" data-options="{
-        &quot;required&quot;: &quot;Required&quot;,
-        &quot;optional&quot;: &quot;Optional&quot;,
-        &quot;hidden&quot;: &quot;Hidden&quot;
-      }"></ob-field-select>
+      <ob-field-select data-edit id="metadata_mode" data-value="&quot;required&quot;">
+        <ob-option value="required">Required</ob-option>
+        <ob-option value="optional">Optional</ob-option>
+        <ob-option value="hidden">Hidden</ob-option>
+      </ob-field-select>
     </div>
 
     <div class="fieldrow">

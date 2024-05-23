@@ -322,6 +322,8 @@ class OBFieldSelect extends OBField {
     renderEdit() {
         // get options from data-options and json decode
         if (!this.#options) this.#options = JSON.parse(this.getAttribute('data-options'));
+        if (!this.#options) this.#options = this.#loadInnerOptions();
+
         if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
         if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
         this.multiple = this.hasAttribute('data-multiple');
@@ -361,6 +363,27 @@ class OBFieldSelect extends OBField {
         this.style.minWidth = largestWidth + 'px';
 
         this.updateSelected();
+    }
+
+    #loadInnerOptions() {
+        var options = {};
+
+        for (const child of this.children) {
+            if (child.tagName === 'OB-OPTION') {
+                let key = child.getAttribute('value');
+                if (key) {
+                    options[key] = child.innerHTML;
+                } else {
+                    // If you mix items that have a value attribute and items without them, and also 
+                    // some of the values are numbers lower than the length of the iterated options up
+                    // to this point, they'll get overwritten, so this causes problems. But also come 
+                    // on now.
+                    options[Object.keys(options).length] = child.innerHTML;
+                }
+            }
+        }
+
+        return options;
     }
 
 }
