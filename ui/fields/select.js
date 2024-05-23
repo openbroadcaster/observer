@@ -320,18 +320,18 @@ class OBFieldSelect extends OBField {
     }
 
     renderEdit() {
-        // get options from data-options and json decode
+        // get options from data-options and json decode, or use inner elements
         if (!this.#options) this.#options = JSON.parse(this.getAttribute('data-options'));
         if (!this.#options) this.#options = this.#loadInnerOptions();
 
-        if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
-        if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
         this.multiple = this.hasAttribute('data-multiple');
 
-        if (!this.#options) this.#options = {};
+        // json decode data-value or check inner elements
+        if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
+        if (!this.selected) this.selected = this.#loadInnerSelected();
+
+        if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
         if (!this.popular) this.popular = [];
-        if (!this.selected && this.multiple) this.selected = [];
-        if (!this.selected && !this.multiple) this.selected = '';
 
         render(html`
             <div id="input" class="field" tabindex="0" onkeydown=${(e) => this.filter(e)} onblur=${(e) => this.filterReset()}>
@@ -384,6 +384,35 @@ class OBFieldSelect extends OBField {
         }
 
         return options;
+    }
+
+    #loadInnerSelected() {
+        var selected = null;
+        if (this.multiple) {
+            selected = [];
+        } else {
+            selected = '';
+        }
+
+        let index = 0;
+        for (const child of this.children) {
+            if (child.tagName === 'OB-OPTION' && child.hasAttribute('selected')) {
+                let value = child.getAttribute('value');
+                if (! value) {
+                    value = index.toString();
+                }
+
+                if (this.multiple) {
+                    selected.push(value);
+                } else {
+                    selected = value;
+                }
+            }
+
+            index = index + 1;
+        }
+
+        return selected;
     }
 
 }
