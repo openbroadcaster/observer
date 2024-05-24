@@ -613,6 +613,8 @@ OB.Playlist.voicetrackPreviewStop = function ()
 OB.Playlist.save = function()
 {
 
+  $('.playlist_data_save .add').prop('disabled', true);
+
   var id = $('#playlist_id').val();
   var playlist_name = $('#playlist_name_input').val();
   var thumbnail = $('#playlist_thumbnail_input').val();
@@ -660,6 +662,7 @@ OB.Playlist.save = function()
   }, function(data) {
 
     $('#playlist_addedit_message').obWidget(data.status ? 'success' : 'error', data.msg);
+    $('.playlist_data_save .add').prop('disabled', false);
 
     if(data.status == true)
     {
