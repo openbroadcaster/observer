@@ -403,7 +403,7 @@ class Playlists extends OBFController
         }
 
         // Save playlist thumbnail.
-        if($thumbnail) {
+        if ($thumbnail) {
             $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
             if (!$thmb_result[0]) {
                 if ($new_playlist === true) {

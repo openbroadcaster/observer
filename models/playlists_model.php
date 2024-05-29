@@ -503,7 +503,7 @@ class PlaylistsModel extends OBFModel
 
                 //T Invalid search criteria.
                 if (array_search($filter['op'], array('like','not_like','is','not','gte','lte','has','not_has')) === false) {
-                    return array(false,'Invalid search criteria.'.$filter['op']);
+                    return array(false, 'Invalid search criteria.' . $filter['op']);
                 }
             }
         }

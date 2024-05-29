@@ -203,7 +203,7 @@ class OBFDB
      */
     public function assoc_list()
     {
-        if ($this->result===false) {
+        if ($this->result === false) {
             return false;
         }
 

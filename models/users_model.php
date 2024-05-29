@@ -261,10 +261,10 @@ class UsersModel extends OBFModel
             return $validation;
         }
 
-        // redo format for v2 permissions to make it easier to deal with later (TODO: fix v1 
+        // redo format for v2 permissions to make it easier to deal with later (TODO: fix v1
         // too even if it's currently dependent on newlines for api.php)
         $permissions_v2 = json_encode(array_map(
-            fn($i) => explode(' ', $i), 
+            fn($i) => explode(' ', $i),
             preg_split('/\r\n|\r|\n/', $data['permissions_v2'])
         ));
 

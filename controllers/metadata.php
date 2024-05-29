@@ -502,13 +502,11 @@ class Metadata extends OBFController
      */
     public function language_list()
     {
-        // limited to individual living languages
-        if(!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+        if (!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+            // limited to individual living languages
             $languages = $this->models->medialanguages('get_main');
-        }
-
-        // all languages
-        else {
+        } else {
+            // all languages
             $languages = $this->models->medialanguages('get_all');
         }
 
@@ -519,11 +517,11 @@ class Metadata extends OBFController
         // get top languages, add popularity to the languages
         $top_languages = $this->models->medialanguages('get_top');
         $language_popularities = [];
-        foreach($top_languages as $index=>$top_language) {
+        foreach ($top_languages as $index => $top_language) {
             $language_popularities[$top_language] = $index;
         }
 
-        foreach($languages as &$language) {
+        foreach ($languages as &$language) {
             $language['popularity'] = $language_popularities[$language['language_id']] ?? null;
         }
 

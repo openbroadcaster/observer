@@ -95,7 +95,7 @@ class Remote
         $this->db->where('id', $_POST['id']);
         $this->player = $this->db->get_one('players');
 
-        if(!$this->player) {
+        if (! $this->player) {
             $this->send_xml_error('player not found');
         }
 

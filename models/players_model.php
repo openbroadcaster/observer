@@ -107,8 +107,8 @@ class PlayersModel extends OBFModel
             }
 
             if ($default_playlist) {
-                $results[$index]['default_playlist_name']=$default_playlist['name'];
-                $results[$index]['default_playlist_id']=$default_playlist['id'];
+                $results[$index]['default_playlist_name'] = $default_playlist['name'];
+                $results[$index]['default_playlist_id'] = $default_playlist['id'];
             }
 
             // get our station ids

@@ -41,7 +41,7 @@ class MediaLanguagesModel extends OBFModel
 
     /**
      * Get living languages only.
-     * 
+     *
      * @return languages
      */
     public function get_main()
@@ -58,9 +58,9 @@ class MediaLanguagesModel extends OBFModel
     }
 
 
-    /** 
+    /**
      * Get top languages by media count.
-     * 
+     *
      * @return languages
      */
     public function get_top($args = [])
@@ -74,8 +74,8 @@ class MediaLanguagesModel extends OBFModel
 
         $tmp = $this->db->assoc_list();
 
-        foreach($tmp as $language) {
-          $languages[] = $language['language'];
+        foreach ($tmp as $language) {
+            $languages[] = $language['language'];
         }
 
         return $languages;
