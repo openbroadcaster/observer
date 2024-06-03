@@ -49,6 +49,7 @@ OB.Media.settings = function()
     OB.Media.metadataGet();
     OB.Media.fieldsGet();
     OB.Dayparting.load();
+    OB.Media.recordingDefaultsGet();
 
   });
 
@@ -562,4 +563,38 @@ OB.Media.fieldsSave = function () {
   });
 
   return false;
+}
+
+OB.Media.recordingDefaultsSave = function () {
+  var post = {};
+  post.album = document.querySelector('#recording_defaults_album').value;
+  post.year = document.querySelector('#recording_defaults_year').value;
+  post.category = document.querySelector('#recording_defaults_genre').category;
+  post.genre = document.querySelector('#recording_defaults_genre').genre;
+  post.country = document.querySelector('#recording_defaults_country').value;
+  post.language = document.querySelector('#recording_defaults_language').value;
+  post.comments = document.querySelector('#recording_defaults_comments').value;
+
+  OB.API.post('metadata', 'recording_default_values_save', post, function (data) {
+    $('#media_settings_recording_message').obWidget(data.status ? 'success' : 'error', data.msg);
+    OB.Settings.getSettings();
+  });
+
+  return false;
+}
+
+OB.Media.recordingDefaultsGet = function () {
+  OB.API.post('metadata', 'recording_default_values', {}, function (data) {
+    if (data.status) {
+      const defaults = data.data;
+
+      document.querySelector('#recording_defaults_album').value = defaults.album;
+      document.querySelector('#recording_defaults_year').value = defaults.year;
+      document.querySelector('#recording_defaults_genre').category = defaults.category;
+      document.querySelector('#recording_defaults_genre').genre = defaults.genre;
+      document.querySelector('#recording_defaults_country').value = defaults.country;
+      document.querySelector('#recording_defaults_language').value = defaults.language;
+      document.querySelector('#recording_defaults_comments').value = defaults.comments;
+    }
+  });
 }

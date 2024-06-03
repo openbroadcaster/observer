@@ -207,4 +207,45 @@
   </table>
 </ob-tab>
 
+<ob-tab data-name="Recording Defaults">
+  <h1 data-t>Recording Default Values</h1>
+
+  <obwidget type="message" id="media_settings_recording_message"></obwidget>
+
+  <fieldset>
+    <div class="fieldrow">
+      <label data-t>Album</label>
+      <ob-field-text id="recording_defaults_album" data-edit></ob-field-text>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Year</label>
+      <ob-field-number id="recording_defaults_year" data-edit></ob-field-number>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Category/Genre</label>
+      <ob-field-genre id="recording_defaults_genre" data-edit></ob-field-genre>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Country</label>
+      <ob-field-country id="recording_defaults_country" data-edit></ob-field-country>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Language</label>
+      <ob-field-language id="recording_defaults_language" data-edit></ob-field-language>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Comments</label>
+      <ob-field-textarea id="recording_defaults_comments" data-edit></ob-field-textarea>
+    </div>
+
+    <div class="fieldrow">
+      <button class="add" onclick="OB.Media.recordingDefaultsSave();" data-t>Save Defaults</button>
+    </div>
+</ob-tab>
+
 </ob-tabs>

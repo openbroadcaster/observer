@@ -222,6 +222,39 @@ class Metadata extends OBFController
         return $result;
     }
 
+    /**
+     * Set the default values for metadata when saving a recording.
+     *
+     * @param fields An array with the keys responding to metadata fields, and the values to their default values.
+     *
+     * @route POST /v2/metadata/recording
+     */
+    public function recording_default_values_save()
+    {
+        $this->user->require_permission('manage_media_settings');
+
+        $this->models->settings('setting_set', 'recording_defaults', json_encode($this->data));
+
+        return [true, 'Successfully saved default recording metadata values.'];
+    }
+
+    /**
+     * Get the default values for metadata when saving a recording.
+     *
+     * @return metadata_values
+     *
+     * @route GET /v2/metadata/recording
+     */
+    public function recording_default_values()
+    {
+        $defaults = $this->models->settings('setting_get', 'recording_defaults');
+        if (! $defaults[0]) {
+            return [false, 'No recording defaults found'];
+        } else {
+            return [true, 'Recording defaults', json_decode($defaults[2], true)];
+        }
+    }
+
     public function playlist_item_types()
     {
         $types = $this->models->playlists('get_item_types');
