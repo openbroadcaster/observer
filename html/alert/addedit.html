@@ -163,6 +163,34 @@
   <ob-datetime-input id="alert_stop_datetime"></ob-datetime-input>
 </div>
 
+<div class="fieldrow">
+  <label class="required" data-t>Mode</label>
+  <ob-field-select data-edit id="alert_mode" onchange="OB.Alert.changeMode()">
+    <ob-option selected value="interrupt">Interrupt</ob-option>
+    <ob-option value="voicetrack">Voicetrack</ob-option>
+  </ob-field-select>
+</div>
+
+<div class="fieldrow alert_mode_voicetrack" style="display: none;">
+  <label data-t>Background Audio Track Volume</label>
+  <ob-field-range id="alert_voicetrack_volume" data-edit data-step="0.05" data-min="0.00" data-max="1.00" value="0.1"></ob-field-range>  
+</div>
+
+<div class="fieldrow alert_mode_voicetrack" style="display: none;">
+  <label data-t>Offset Time</label>
+  <ob-field-range id="alert_voicetrack_offset" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10"></ob-field-range>
+</div>
+
+<div class="fieldrow alert_mode_voicetrack" style="display: none;">
+  <label data-t>Track Fade-Out Before</label>
+  <ob-field-range id="alert_voicetrack_fadeout_before" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10"></ob-field-range>
+</div>
+
+<div class="fieldrow alert_mode_voicetrack" style="display: none;">
+  <label data-t>Track Fade-In After</label>
+  <ob-field-range id="alert_voicetrack_fadein_after" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10"></ob-field-range>
+</div>
+
 </fieldset>
 
 <fieldset>

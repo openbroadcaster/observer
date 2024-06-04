@@ -306,3 +306,12 @@ OB.Alert.deleteAlert = function(confirm)
   }
 
 }
+
+OB.Alert.changeMode = function ()
+{
+  if (document.querySelector("#alert_mode").value === 'voicetrack') {
+    document.querySelectorAll('.alert_mode_voicetrack').forEach((node) => node.style.display = "inline-block");
+  } else {
+    document.querySelectorAll('.alert_mode_voicetrack').forEach((node) => node.style.display = "none");
+  }
+}
