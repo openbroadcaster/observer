@@ -138,6 +138,8 @@ class Alerts extends OBFController
      * @param duration
      * @param start
      * @param stop
+     * @param mode
+     * @param properties Settings if mode is set to voicetrack.
      *
      * @route POST /v2/alerts
      * @route PUT /v2/alerts/(:id:)
@@ -160,6 +162,9 @@ class Alerts extends OBFController
         $data['duration'] = trim($this->data('duration'));
         $data['start'] = trim($this->data('start'));
         $data['stop'] = trim($this->data('stop'));
+
+        $data['mode'] = trim($this->data('mode'));
+        $data['properties'] = json_encode($this->data('properties'));
 
         $data['user_id'] = $this->user->param('id');
 

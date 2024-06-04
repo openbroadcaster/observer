@@ -46,6 +46,8 @@ class AlertsModel extends OBFModel
         $this->db->what('alerts.start', 'start');
         $this->db->what('alerts.stop', 'stop');
         $this->db->what('alerts.player_id', 'player_id');
+        $this->db->what('alerts.mode', 'mode');
+        $this->db->what('alerts.properties', 'properties');
 
         $this->db->leftjoin('media', 'alerts.item_id', 'media.id');
     }
@@ -79,6 +81,8 @@ class AlertsModel extends OBFModel
             $alert['duration'] = $alert['item_duration'];
         }
         unset($alert['item_duration']);
+
+        $alert['properties'] = json_decode($alert['properties'], true);
 
         return $alert;
     }
@@ -132,7 +136,7 @@ class AlertsModel extends OBFModel
         }
 
         // required fields?
-        if (empty($name) || empty($player_id) || empty($item_id) || empty($frequency) || empty($start) || empty($stop)) {
+        if (empty($name) || empty($player_id) || empty($item_id) || empty($frequency) || empty($start) || empty($stop) || empty($mode)) {
             return array(false,'Required Field Missing');
         }
 
@@ -192,6 +196,11 @@ class AlertsModel extends OBFModel
         //T The stop date/time must occur after the start date/time.
         if ($start >= $stop) {
             return array(false,'The stop date/time must occur after the start date/time.');
+        }
+
+        //T The mode must be either an interrupt or a voicetrack.
+        if ($mode !== 'interrupt' && $mode !== 'voicetrack') {
+            return array(false, 'The mode must be either an interrupt or a voicetrack.');
         }
 
         return array(true,'');

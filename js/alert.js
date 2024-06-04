@@ -190,6 +190,14 @@ OB.Alert.saveAlert = function()
   fields.id = $('#alert_id').val();
   fields.item_id = document.querySelector('#alert_item_id').value[0];
 
+  fields.mode = document.querySelector('#alert_mode').value;
+  fields.properties = {
+    "voicetrack_volume": document.querySelector('#alert_voicetrack_volume').value,
+    "voicetrack_offset": document.querySelector('#alert_voicetrack_offset').value,
+    "voicetrack_fadeout_before": document.querySelector('#alert_voicetrack_fadeout_before').value,
+    "voicetrack_fadein_after": document.querySelector('#alert_voicetrack_fadein_after').value
+  };
+
   OB.API.post('alerts','save',fields,function(data)
   {
 
@@ -246,6 +254,14 @@ OB.Alert.editAlert = function(id)
 
       $('#alert_start_datetime').val(new Date(parseInt(emerg.start)*1000));
       $('#alert_stop_datetime').val(new Date(parseInt(emerg.stop)*1000));
+
+      document.querySelector('#alert_mode').value = emerg.mode;
+      if (emerg.properties) {
+        document.querySelector('#alert_voicetrack_volume').value = emerg.properties.voicetrack_volume;
+        document.querySelector('#alert_voicetrack_offset').value = emerg.properties.voicetrack_offset;
+        document.querySelector('#alert_voicetrack_fadeout_before').value = emerg.properties.voicetrack_fadeout_before;
+        document.querySelector('#alert_voicetrack_fadein_after').value = emerg.properties.voicetrack_fadein_after;
+      }
     }
 
     else OB.UI.alert(data.msg);
