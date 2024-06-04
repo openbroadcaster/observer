@@ -188,7 +188,7 @@ OB.Alert.saveAlert = function()
   else fields.stop = Math.round(stop_date.getTime()/1000)+'';
 
   fields.id = $('#alert_id').val();
-  fields.item_id = $('#alert_item_id').val();
+  fields.item_id = document.querySelector('#alert_item_id').value[0];
 
   OB.API.post('alerts','save',fields,function(data)
   {
@@ -239,10 +239,9 @@ OB.Alert.editAlert = function(id)
       }
       else $('#alert_duration').hide();
 
-      $('#alert_item_info').text(emerg.item_name);
       $('#alert_name').val(emerg.name);
       $('#alert_frequency').val(emerg.frequency);
-      $('#alert_item_id').val(emerg.item_id);
+      document.querySelector('#alert_item_id').value = [emerg.item_id];
       $('#alert_id').val(emerg.id);
 
       $('#alert_start_datetime').val(new Date(parseInt(emerg.start)*1000));
@@ -261,8 +260,7 @@ OB.Alert.addAlert = function(item_id,item_name,item_type)
   OB.Alert.addeditAlertWindow();
   $('.edit_only').hide();
 
-  $('#alert_item_id').val(item_id);
-  $('#alert_item_info').text(item_name);
+  document.querySelector('#alert_item_id').value = [item_id];
 
   if(item_type=='image') $('#alert_duration').show();
   else $('#alert_duration').hide();
