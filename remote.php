@@ -1060,7 +1060,7 @@ class Remote
                 $broadcastxml->addChild('hash', $mediaInfo['file_hash']);
                 $broadcastxml->addChild('filesize', $filesize);
                 $broadcastxml->addChild('location', $mediaInfo['file_location']);
-                $broadcastxml->addChild('archived', $mediaInfo['flag_delete']);
+                $broadcastxml->addChild('archived', $mediaInfo['is_archived']);
                 $broadcastxml->addChild('approved', $mediaInfo['is_approved']);
             }
         }
