@@ -1062,6 +1062,19 @@ class Remote
                 $broadcastxml->addChild('location', $mediaInfo['file_location']);
                 $broadcastxml->addChild('archived', $mediaInfo['is_archived']);
                 $broadcastxml->addChild('approved', $mediaInfo['is_approved']);
+                $broadcastxml->addChild('mode', $broadcast['mode']);
+
+                // get voicetrack properties if that mode is set
+                if ($broadcast['mode'] === 'voicetrack') {
+                    $voicetrackxml = $broadcastxml->addChild('voicetrack_settings');
+
+                    $properties = json_decode($broadcast['properties'], true);
+
+                    $voicetrackxml->addChild('volume', $properties['voicetrack_volume']);
+                    $voicetrackxml->addChild('delay', $properties['voicetrack_offset']);
+                    $voicetrackxml->addChild('fadeout_before', $properties['voicetrack_fadeout_before']);
+                    $voicetrackxml->addChild('fadein_after', $properties['voicetrack_fadein_after']);
+                }
             }
         }
 
