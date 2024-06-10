@@ -575,6 +575,11 @@ OB.Media.recordingDefaultsSave = function () {
   post.language = document.querySelector('#recording_defaults_language').value;
   post.comments = document.querySelector('#recording_defaults_comments').value;
 
+  post.custom_metadata = {};
+  document.querySelectorAll('#recording_custom_metadata [data-name]').forEach((elem) => {
+    post.custom_metadata[elem.dataset.name] = elem.value;
+  });
+
   OB.API.post('metadata', 'recording_default_values_save', post, function (data) {
     $('#media_settings_recording_message').obWidget(data.status ? 'success' : 'error', data.msg);
     OB.Settings.getSettings();
