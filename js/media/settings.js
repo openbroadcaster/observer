@@ -647,6 +647,18 @@ OB.Media.recordingDefaultsGet = function () {
       document.querySelector('#recording_defaults_country').value = defaults.country;
       document.querySelector('#recording_defaults_language').value = defaults.language;
       document.querySelector('#recording_defaults_comments').value = defaults.comments;
+
+      // Set custom metadata according to saved settings, and if none can be found, use the default
+      // settings for that field (if any).
+      OB.Settings.media_metadata.forEach((meta) => {
+        const metaFieldElem = document.querySelector('#recording_custom_metadata [data-name="' + meta.name + '"]');
+        
+        if (defaults.custom_metadata && defaults.custom_metadata[meta.name]) {
+          metaFieldElem.value = defaults.custom_metadata[meta.name];
+        } else {
+          metaFieldElem.value = meta.settings.default;
+        }
+      });
     }
   });
 }
