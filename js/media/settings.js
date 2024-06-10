@@ -610,7 +610,7 @@ OB.Media.recordingDefaultsGet = function () {
         metaElem = document.createElement('ob-field-textarea');
         break;
       case "integer":
-        metaElem = document.createElement('ob-field-integer');
+        metaElem = document.createElement('ob-field-number');
         break;
       case "tags":
         metaElem = document.createElement('ob-field-tags');
