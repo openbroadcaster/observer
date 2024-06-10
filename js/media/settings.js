@@ -584,6 +584,52 @@ OB.Media.recordingDefaultsSave = function () {
 }
 
 OB.Media.recordingDefaultsGet = function () {
+  // Load custom metadata fields from OB.Settings and insert them into the form.
+  const customListElem = document.querySelector('#recording_custom_metadata');
+  customListElem.innerHTML = '';
+
+  OB.Settings.media_metadata.forEach((meta) => {
+    const labelElem = document.createElement('label');
+    labelElem.innerText = meta.description;
+    
+    let metaElem = null;
+    switch (meta.type) {
+      case "text":
+        metaElem = document.createElement('ob-field-text');
+        break;
+      case "select":
+        metaElem = document.createElement('ob-field-select');
+        break;
+      case "textarea":
+        metaElem = document.createElement('ob-field-textarea');
+        break;
+      case "integer":
+        metaElem = document.createElement('ob-field-integer');
+        break;
+      case "tags":
+        metaElem = document.createElement('ob-field-tags');
+        break;
+      case "bool":
+        metaElem = document.createElement('ob-field-bool');
+        break;
+    }
+
+    if (! metaElem) {
+      return;
+    }
+
+    metaElem.dataset.name = meta.name;
+    metaElem.dataset.edit = "";
+
+    const rowElem = document.createElement('div');
+    rowElem.classList.add('fieldrow');
+
+    rowElem.appendChild(labelElem);
+    rowElem.appendChild(metaElem);
+    customListElem.appendChild(rowElem);
+  });
+
+  // Get default values for core metadata fields.
   OB.API.post('metadata', 'recording_default_values', {}, function (data) {
     if (data.status) {
       const defaults = data.data;
