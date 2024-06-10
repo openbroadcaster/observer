@@ -658,7 +658,7 @@ OB.Media.recordingDefaultsGet = function () {
       OB.Settings.media_metadata.forEach((meta) => {
         const metaFieldElem = document.querySelector('#recording_custom_metadata [data-name="' + meta.name + '"]');
         
-        if (defaults.custom_metadata && defaults.custom_metadata[meta.name]) {
+        if (defaults.custom_metadata && meta.name in defaults.custom_metadata) {
           metaFieldElem.value = defaults.custom_metadata[meta.name];
         } else {
           metaFieldElem.value = meta.settings.default;
