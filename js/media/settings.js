@@ -599,6 +599,12 @@ OB.Media.recordingDefaultsGet = function () {
         break;
       case "select":
         metaElem = document.createElement('ob-field-select');
+        
+        meta.settings.options.forEach((option) => {
+          const optionElem = document.createElement('ob-option');
+          optionElem.innerText = option;
+          metaElem.appendChild(optionElem);
+        });
         break;
       case "textarea":
         metaElem = document.createElement('ob-field-textarea');
