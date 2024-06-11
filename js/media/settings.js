@@ -632,6 +632,10 @@ OB.Media.recordingDefaultsGet = function () {
     metaElem.dataset.name = meta.name;
     metaElem.dataset.edit = "";
 
+    if (meta.settings.mode === "required") {
+      labelElem.classList.add("required");
+    }
+
     const rowElem = document.createElement('div');
     rowElem.classList.add('fieldrow');
 
@@ -652,6 +656,18 @@ OB.Media.recordingDefaultsGet = function () {
       document.querySelector('#recording_defaults_country').value = defaults.country;
       document.querySelector('#recording_defaults_language').value = defaults.language;
       document.querySelector('#recording_defaults_comments').value = defaults.comments;
+
+      ['album', 'year', 'country', 'language', 'comments'].forEach((meta) => {
+        if (OB.Settings.media_required_fields[meta] === 'required') {
+          let elem = document.querySelector('#recording_defaults_' + meta).closest('.fieldrow').querySelector('label');
+          elem.classList.add('required');
+        }
+      });
+
+      let genreLabel = document.querySelector('#recording_defaults_genre').closest('.fieldrow').querySelector('label');
+      if (OB.Settings.media_required_fields.category_id === 'required') {
+        genreLabel.classList.add('required');
+      }
 
       // Set custom metadata according to saved settings, and if none can be found, use the default
       // settings for that field (if any).
