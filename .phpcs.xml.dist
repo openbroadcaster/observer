@@ -31,4 +31,8 @@
 		<exclude-pattern>*/updates/updates\.php$</exclude-pattern>
 		<exclude-pattern>*/classes/obfcallbacks\.php$</exclude-pattern>
 	</rule>
+
+    	<rule ref=".phpcs/NoModelCallSniff.php">
+        	<exclude-pattern>*/updates/*.php$</exclude-pattern>
+    	</rule>
 </ruleset>
