@@ -511,6 +511,13 @@ class OBFieldMedia extends OBField {
                 language: OB.Settings.recording_metadata.language,
             };
 
+            Object.entries(OB.Settings.recording_metadata.custom_metadata).forEach((meta) => {
+                let key = "metadata_" + meta[0];
+                let value = meta[1];
+
+                mediaItem[key] = value;
+            });
+
             const media = OB.API.postPromise('media', 'save', {
                 media: {
                     0: mediaItem
