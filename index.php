@@ -48,6 +48,7 @@ $js_dependencies = [
   'node_modules/jquery/dist/jquery.min.js',
   'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
   'node_modules/video.js/dist/video.min.js',
+  'bundles/chrono-bundle.js'
 ];
 
 ?><!DOCTYPE html>
