@@ -488,22 +488,32 @@ class OBFieldMedia extends OBField {
             const date    = new Date();
             const dateStr = date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
 
+            var mediaItem = {
+                file_id: fileId,
+                file_key: fileKey,
+                artist: OB.Account.userdata.display_name,
+                title: "Media Field Recording " + dateStr,
+                local_id: 1,
+                status: "private",
+                language: 25571,
+                is_copyright_owner: 1,
+                is_approved: 1,
+                dynamic_select: 0,
+                trim_start: this.root.querySelector('#trim-start').value,
+                trim_end: this.root.querySelector('#trim-end').value,
+
+                album: OB.Settings.recording_metadata.album,
+                year: OB.Settings.recording_metadata.year,
+                category_id: OB.Settings.recording_metadata.category,
+                genre_id: OB.Settings.recording_metadata.genre,
+                comments: OB.Settings.recording_metadata.comments,
+                country: OB.Settings.recording_metadata.country,
+                language: OB.Settings.recording_metadata.language,
+            };
+
             const media = OB.API.postPromise('media', 'save', {
                 media: {
-                    0: {
-                        file_id: fileId,
-                        file_key: fileKey,
-                        artist: OB.Account.userdata.display_name,
-                        title: "Media Field Recording " + dateStr,
-                        local_id: 1,
-                        status: "private",
-                        language: 25571,
-                        is_copyright_owner: 1,
-                        is_approved: 1,
-                        dynamic_select: 0,
-                        trim_start: this.root.querySelector('#trim-start').value,
-                        trim_end: this.root.querySelector('#trim-end').value
-                    }
+                    0: mediaItem
                 }
             });
             media.then((data) => {
