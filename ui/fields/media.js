@@ -80,6 +80,7 @@ class OBFieldMedia extends OBField {
                 }
             </div>
             ${(this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) && html`
+                <div id="validation-error" class="hidden"></div>
                 <div id="input-container">
                     <ob-field-input-device data-edit></ob-field-input-device>
                 </div>
@@ -285,6 +286,17 @@ class OBFieldMedia extends OBField {
 
                 ob-field-input-device {
                     width: 100%;
+                }
+
+                #validation-error {
+                    color: #f33;
+                    font-size: 14px;
+                    width: 100%;
+                    vertical-align: center;
+
+                    &.hidden {
+                        display: none;
+                    }
                 }
             }
         `;
@@ -529,8 +541,14 @@ class OBFieldMedia extends OBField {
             });
             media.then((data) => {
                 if (! data.status) {
-                    console.error(data.msg);
+                    let error = data.data.reduce((errMsg, elem) => {
+                        return errMsg + elem[2] + ' ';
+                    }, '');
+
+                    this.root.querySelector('#validation-error').classList.remove('hidden');
+                    this.root.querySelector('#validation-error').innerText = error;
                 } else {
+                    this.root.querySelector('#validation-error').classList.add('hidden');
                     this.value = data.data;
                 }
             });
