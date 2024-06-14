@@ -38,4 +38,19 @@ class MediaCountriesModel extends OBFModel
 
         return $types;
     }
+
+    /**
+     * Get country by ID.
+     *
+     * @param id
+     *
+     * @return country
+     */
+    public function get_by_id($id)
+    {
+        $this->db->where('country_id', $id);
+        $country = $this->db->get('countries');
+
+        return $country;
+    }
 }

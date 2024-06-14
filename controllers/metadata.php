@@ -233,8 +233,66 @@ class Metadata extends OBFController
     {
         $this->user->require_permission('manage_media_settings');
 
-        $this->models->settings('setting_set', 'recording_defaults', json_encode($this->data));
+        $coreFields = $this->models->mediametadata('get_fields')[2];
+        $customFields = $this->models->mediametadata('get_all');
 
+        if ($coreFields['album'] === 'required' && empty($this->data['album'])) {
+            //T No default album provided.
+            return [false, 'No default album provided.'];
+        }
+
+        if ($coreFields['year'] === 'required' && ! ctype_digit($this->data['year'])) {
+            //T No default year provided.
+            return [false, 'No default year provided.'];
+        }
+
+        $genre = $this->models->mediagenres('get_by_id', $this->data['genre'] ?? 0);
+        $category = $genre['media_category_id'] === $this->data['category'];
+        if ($coreFields['category_id'] === 'required' && (! $genre || ! $category)) {
+            //T No default category provided.
+            return [false, 'No default category provided.'];
+        }
+
+        $country = $this->models->mediacountries('get_by_id', $this->data['country'] ?? 0);
+        if ($coreFields['country'] === 'required' && ! $country) {
+            //T No default country provided.
+            return [false, 'No default country provided.'];
+        }
+
+        $language = $this->models->medialanguages('get_by_id', $this->data['language'] ?? 0);
+        if ($coreFields['language'] === 'required' && ! $language) {
+            //T No default language provided.
+            return [false, 'No default language provided.'];
+        }
+
+        if ($coreFields['comments'] === 'required' && empty($this->data['comments'])) {
+            //T No default comments provided.
+            return [false, 'No default comments provided.'];
+        }
+
+        foreach ($customFields as $field) {
+            if (isset($field['settings']->mode) && $field['settings']->mode === 'required') {
+                $value = $this->data['custom_metadata'][$field['name']] ?? null;
+
+                if ($value === '' || $value === null) {
+                    return [false, 'No default value provided for required custom field `' . $field['name'] . '`'];
+                }
+
+                if (
+                    $field['type'] === 'select' &&
+                    (! in_array($value, $field['settings']->options) &&
+                    (! ctype_digit($value) || count($field['settings']->options) < intval($value) || intval($value) < 0))
+                ) {
+                    return [false, 'Selected value not in allowed options for custom field `' . $field['name'] . '`'];
+                }
+
+                if ($field['type'] === 'integer' && ! ctype_digit($value)) {
+                    return [false, 'Value for custom field `' . $field['name'] . '` must be an integer'];
+                }
+            }
+        }
+
+        $this->models->settings('setting_set', 'recording_defaults', json_encode($this->data));
         return [true, 'Successfully saved default recording metadata values.'];
     }
 

@@ -80,4 +80,19 @@ class MediaLanguagesModel extends OBFModel
 
         return $languages;
     }
+
+    /**
+     * Get language by ID.
+     *
+     * @param id
+     *
+     * @return language
+     */
+    public function get_by_id($id)
+    {
+        $this->db->where('language_id', $id);
+        $language = $this->db->get('languages');
+
+        return $language;
+    }
 }
