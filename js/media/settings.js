@@ -595,7 +595,7 @@ OB.Media.recordingDefaultsGet = function () {
 
   OB.Settings.media_metadata.forEach((meta) => {
     const labelElem = document.createElement('label');
-    labelElem.innerText = meta.description;
+    labelElem.innerText = meta.name;
     
     let metaElem = null;
     switch (meta.type) {
