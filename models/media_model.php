@@ -1211,9 +1211,11 @@ class MediaModel extends OBFModel
 
             // validate if select
             // note that value can be selected by index as well, so only invalidate if neither value nor valid index is used
-            if ($metadata_field['type'] == 'select' && $metadata_value != '' 
-            && array_search($metadata_value, $metadata_field['settings']->options) === false
-            && (! ctype_digit($metadata_value) || intval($metadata_value) < 0 || intval($metadata_value) > count($metadata_field['settings']->options) )) {
+            if (
+                $metadata_field['type'] == 'select' && $metadata_value != ''
+                && array_search($metadata_value, $metadata_field['settings']->options) === false
+                && (! ctype_digit($metadata_value) || intval($metadata_value) < 0 || intval($metadata_value) > count($metadata_field['settings']->options) )
+            ) {
                 return array(false,$item['local_id'],$metadata_field['description'] . ' value not valid.');
             }
 
