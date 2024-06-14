@@ -282,6 +282,10 @@ class OBFieldMedia extends OBField {
                 #input-container {
                     width: 350px;
                 }
+
+                ob-field-input-device {
+                    width: 100%;
+                }
             }
         `;
     }
