@@ -372,13 +372,13 @@ class OBFieldSelect extends OBField {
             if (child.tagName === 'OB-OPTION') {
                 let key = child.getAttribute('value');
                 if (key) {
-                    options[key] = child.innerHTML;
+                    options[key] = child.innerText;
                 } else {
                     // If you mix items that have a value attribute and items without them, and also 
                     // some of the values are numbers lower than the length of the iterated options up
                     // to this point, they'll get overwritten, so this causes problems. But also come 
                     // on now.
-                    options[Object.keys(options).length] = child.innerHTML;
+                    options[Object.keys(options).length] = child.innerText;
                 }
             }
         });
