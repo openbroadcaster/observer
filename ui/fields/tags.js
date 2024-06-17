@@ -35,11 +35,13 @@ class OBFieldTags extends OBField {
                     <span id="current">${this.#currentTag}</span>
                 </div>
             </div>
+            ${this.#suggestions.filter((tag) => ! this.#tags.includes(tag)).length > 0 && html`
             <div id="suggestions" tabindex="0">
                 ${this.#suggestions.filter((tag) => ! this.#tags.includes(tag)).map((tag) => html`
                     <span class="suggestion" onclick=${(e) => this.tagsAdd(tag)}>${tag}</span>
                 `)}
             </div>
+            `}
         `, this.root);
     }
 
