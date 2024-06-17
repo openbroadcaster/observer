@@ -52,6 +52,8 @@ button, input[type=submit], input[type=reset], input[type=button], a.button
 
 #obmenu li ul {
   background-color: rgba(0,0,0,0.9);
+  border: 2px solid #e09529;
+  border-bottom: none;
 }
 
 #sidebar_player_draghere
