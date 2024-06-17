@@ -4,6 +4,7 @@ import { OBField } from '../base/field.js';
 class OBFieldTags extends OBField {
     #init;
     #tags;
+    #suggestions;
     #currentTag;
 
     connectedCallback() {
@@ -13,7 +14,11 @@ class OBFieldTags extends OBField {
 
         this.#init = true;
         this.#tags = [];
+        this.#suggestions = [];
         this.#currentTag = "";
+
+        this.#tags = this.#loadInnerTags();
+        this.#suggestions = this.#loadInnerSuggestions();
 
         this.renderComponent();
     }
@@ -139,6 +144,32 @@ class OBFieldTags extends OBField {
             this.#tags = [...new Set(value)];
             this.renderComponent();
         }
+    }
+
+    #loadInnerTags() {
+        var tags = [];
+
+        Array.from(this.children).forEach((child) => {
+            if (child.tagName === 'OB-TAG') {
+                let tag = child.innerText.replace(/ /g, '-').replace(/[^a-zA-Z0-9-_]/g, '');
+                tags.push(tag);
+            }
+        });
+
+        return tags;
+    }
+
+    #loadInnerSuggestions() {
+        var suggestions = [];
+
+        Array.from(this.children).forEach((child) => {
+            if (child.tagName === 'OB-OPTION') {
+                let tag = child.innerText.replace(/ /g, '-').replace(/[^a-zA-Z0-9-_]/g, '');
+                suggestions.push(tag);
+            }
+        });
+
+        return suggestions;
     }
 }
 

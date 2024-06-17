@@ -12,18 +12,23 @@
   <h2>Test tags and multi-select</h2>
   <div class="fieldrow">
     <label>Multi-select</label>
-    <ob-field-select data-edit data-multiple data-options="{
-      &quot;text&quot;: &quot;Text (single line)&quot;,
-      &quot;textarea&quot;: &quot;Text (multiple lines)&quot;,
-      &quot;integer&quot;: &quot;Number (Integer)&quot;,
-      &quot;bool&quot;: &quot;Yes/No&quot;,
-      &quot;select&quot;: &quot;Drop-Down Selection&quot;,
-      &quot;tags&quot;: &quot;Tags&quot;
-    }"></ob-field-select>
+    <ob-field-select data-edit data-multiple>
+      <ob-option selected>Option 1</ob-option>
+      <ob-option>Option 2</ob-option>
+      <ob-option selected>Option 3</ob-option>
+    </ob-field-select>
   </div>
   <div class="fieldrow">
     <label>Tags</label>
-    <ob-field-tags data-edit></ob-field-tags>
+    <ob-field-tags data-edit>
+      <ob-option>Suggestion</ob-option>
+      <ob-option>CD</ob-option>
+      <ob-tag>Selected</ob-tag>
+      <ob-tag>Another</ob-tag>
+      <ob-option>Another Suggestion</ob-option>
+      <ob-tag>Tag with spaces</ob-tag>
+      <ob-tag>Invalid#%&#&@$^@$%Characters</ob-tag>
+    </ob-field-tags>
   </div>
   <h2>Test media preview</h2>
   <ob-element-preview></ob-element-preview>
