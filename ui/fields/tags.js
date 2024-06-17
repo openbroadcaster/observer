@@ -35,6 +35,11 @@ class OBFieldTags extends OBField {
                     <span id="current">${this.#currentTag}</span>
                 </div>
             </div>
+            <div id="suggestions" tabindex="0">
+                ${this.#suggestions.map((tag) => html`
+                    <span class="suggestion" onclick=${(e) => this.tagsAdd(tag)}>${tag}</span>
+                `)}
+            </div>
         `, this.root);
     }
 
@@ -50,18 +55,16 @@ class OBFieldTags extends OBField {
         return `
             :host {
                 display: inline-block;
+                font-size: 13px;
 
                 #input {
                     width: 250px;
                     min-height: 1rem; // this isn't quite right will fix later
                     padding: 5px;
-                    border: 0;
                     vertical-align: middle;
-                    background-color: #fff;
-                    font-size: 13px;
-                    color: #2e3436;
                     display: inline-block;
-                    border-radius: 2px;
+                    border: 1px solid white;
+                    border-radius: 3px;
                 }
 
                 #input:focus-within {
@@ -75,6 +78,7 @@ class OBFieldTags extends OBField {
                     align-items: center;
                     gap: 0.3em;
                     flex-wrap: wrap;
+                    color: #2e3436;
 
                     span.saved {
                         background-color: #eee;
@@ -86,6 +90,30 @@ class OBFieldTags extends OBField {
                             content: "x";
                             color: #e00;
                         }
+                    }
+
+                    span#current {
+                        color: #eee;
+                    }
+                }
+
+                #suggestions {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3em;
+                    flex-wrap: wrap;
+                    padding: 5px;
+
+                    border: 1px solid rgba(255, 255, 255, 0.7);
+                    border-radius: 3px;
+                    background: rgba(0, 0, 0, 0.7);
+
+                    span {
+                        color: #2e3436;
+                        background-color: rgba(238, 238, 238, 0.9);
+                        padding: 0.2em;
+                        border-radius: 3px;
+                        word-wrap: anywhere;
                     }
                 }
             }
@@ -132,6 +160,13 @@ class OBFieldTags extends OBField {
 
     tagsDelete(tag) {
         this.#tags = this.#tags.filter((elem) => elem != tag);
+        this.renderComponent();
+    }
+
+    tagsAdd(tag) {
+        if (this.#tags.find((elem) => elem === tag) === undefined) {
+            this.#tags.push(tag);
+        }
         this.renderComponent();
     }
 
