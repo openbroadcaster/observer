@@ -235,7 +235,7 @@ class MediaMetadataModel extends OBFModel
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BOOLEAN NULL DEFAULT NULL');
             } elseif ($save['type'] == 'select' || $save['type'] == 'text') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'textarea' || $save['type'] == 'tags') {
+            } elseif ($save['type'] == 'textarea') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TEXT NULL DEFAULT NULL');
             } elseif ($save['type'] == 'integer') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BIGINT NULL DEFAULT NULL');

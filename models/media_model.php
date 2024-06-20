@@ -255,6 +255,10 @@ class MediaModel extends OBFModel
                 $default = implode(',', $default);
             }
 
+            if ($metadata_field['type'] === 'tags') {
+                continue;
+            }
+
             $this->db->what('COALESCE(media.metadata_' . $metadata_field['name'] . ',"' . $this->db->escape($default) . '")', 'metadata_' . $metadata_field['name'], false);
         }
     }
@@ -1387,7 +1391,6 @@ class MediaModel extends OBFModel
                         }
                     }
                 }
-                $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
             } else {
                 $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
             }
