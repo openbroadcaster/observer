@@ -256,6 +256,8 @@ class MediaModel extends OBFModel
             }
 
             if ($metadata_field['type'] === 'tags') {
+                // $this->db->what('GROUP_CONCAT(media_tags.tag)', 'metadata_' . $metadata_field['name'], false);
+                // var_dump($metadata_field['id']); die();
                 continue;
             }
 
@@ -274,6 +276,7 @@ class MediaModel extends OBFModel
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
         $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
+        $this->db->leftjoin('media_tags', 'media_tags.media_id', 'media.id');
         $this->db->leftjoin('users', 'media.owner_id', 'users.id');
     }
 
