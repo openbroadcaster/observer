@@ -393,7 +393,12 @@ OB.Media.metadataAddEditWindow = function(id)
         {
           $('#metadata_tag_suggestions').val(metadata.settings.suggestions);
         }
-        document.querySelector("#metadata_mode").value = metadata.settings.mode;
+        if (metadata.settings.mode) {
+          document.querySelector("#metadata_mode").value = metadata.settings.mode;
+        }
+        if (metadata.settings.id3_key) {
+          document.querySelector("#metadata_id3_key").value = metadata.settings.id3_key;
+        }
         if(metadata.settings && metadata.settings.default) metadata_set_default = metadata.settings.default;
         return false; // break out of each
       }
@@ -447,6 +452,7 @@ OB.Media.metadataSave = function()
   field.tag_suggestions = $('#metadata_tag_suggestions').val();
   field.default = $('#metadata_default').val();
   field.mode = document.querySelector('#metadata_mode').value;
+  field.id3_key = document.querySelector('#metadata_id3_key').value;
 
   OB.API.post('metadata','metadata_save',field,function(response)
   {

@@ -82,6 +82,7 @@ class Metadata extends OBFController
         $data['type'] = trim($this->data('type'));
         $data['select_options'] = trim($this->data('select_options'));
         $data['mode'] = trim($this->data('mode'));
+        $data['id3_key'] = trim($this->data('id3_key'));
 
         $data['default'] = $this->data('default');
         if (is_array($data['default'])) {
