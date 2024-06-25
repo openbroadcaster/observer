@@ -102,15 +102,6 @@ class Upload extends OBFController
 
         // get ID3 data.
         $id3_data = $models->media('getid3', ['filename' => OB_ASSETS . '/uploads/' . $id]);
-
-        // $result['info'] = array('comments'=>$id3['comments']);
-
-        // get only the data we need (this should be expanded). sometimes other data causes encoding problems? maybe re: thumbnail image.
-        /*$id3_data = array();
-        if(isset($id3['comments']['artist'])) $id3_data['artist'] = $id3['comments']['artist'];
-        if(isset($id3['comments']['album'])) $id3_data['album'] = $id3['comments']['album'];
-        if(isset($id3['comments']['title'])) $id3_data['title'] = $id3['comments']['title'];
-        if(isset($id3['comments']['comments'])) $id3_data['comments'] = $id3['comments']['comments'];*/
         if (count($id3_data) > 0) {
             $result['info'] = array('comments' => $id3_data);
         } else {

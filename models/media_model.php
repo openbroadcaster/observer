@@ -2297,7 +2297,7 @@ class MediaModel extends OBFModel
      *
      * @param filename
      *
-     * [artist, album, title, comments]
+     * @return id3_data
      */
     public function getid3($args = [])
     {
@@ -2312,21 +2312,14 @@ class MediaModel extends OBFModel
 
         $id3 = $this->id3makesafe($info);
 
-        $id3_data = array();
-        if (isset($id3['comments']['artist'])) {
-            $id3_data['artist'] = $id3['comments']['artist'];
-        }
-        if (isset($id3['comments']['album'])) {
-            $id3_data['album'] = $id3['comments']['album'];
-        }
-        if (isset($id3['comments']['title'])) {
-            $id3_data['title'] = $id3['comments']['title'];
-        }
-        if (isset($id3['comments']['comments'])) {
-            $id3_data['comments'] = $id3['comments']['comments'];
+        // Unset picture data provided since this breaks the JS somehow.
+        if (isset($id3['comments']['picture'])) {
+            foreach ($id3['comments']['picture'] as $key => $value) {
+                unset($id3['comments']['picture'][$key]['data']);
+            }
         }
 
-        return $id3_data;
+        return $id3['comments'];
     }
 
     /**
