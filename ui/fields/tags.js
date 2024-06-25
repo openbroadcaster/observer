@@ -17,13 +17,13 @@ class OBFieldTags extends OBField {
         this.#suggestions = [];
         this.#currentTag = "";
 
-        this.#tags = this.#loadInnerTags();
-        this.#suggestions = this.#loadInnerSuggestions();
-
         this.renderComponent();
     }
     
     renderEdit() {
+        this.#tags = this.#loadInnerTags();
+        this.#suggestions = this.#loadInnerSuggestions();
+
         render(html`
             <div id="input" class="field" tabindex="0" 
             onkeydown=${(e) => this.tagsInput(e)} 
