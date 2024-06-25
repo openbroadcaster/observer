@@ -64,12 +64,15 @@ OB.Media.mediaInfoImport = function(button)
         return;
       }
 
-      const value = id3Comments[key];
-      if (typeof value === "string") {
-        id3Element.value = value;
-      } else if (Array.isArray(value)) {
-        id3Element.value = value.join();
+      let value = id3Comments[key];
+      if (Array.isArray(value) && id3Element.tagName !== 'OB-FIELD-TAGS') {
+        value = value.join();
       }
+      if (typeof value === 'string' && id3Element.tagName === 'OB-FIELD-TAGS') {
+        value = value.split(',');
+      }
+
+      id3Element.value = value;
     });
   }
 
@@ -141,40 +144,34 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
   // add our custom metadata fields
   if(OB.Settings.media_metadata) $.each(OB.Settings.media_metadata, function(index, metadata)
   {
-    var $metadata_field = $('#media_metadata_template_'+metadata.type+' .fieldrow').clone();
-
-    if(typeof($metadata_field)!=='undefined')
-    {
+    const metadataField = document.querySelector('#media_metadata_template_' + metadata.type + ' .fieldrow').cloneNode(true);
+    if (metadataField) {
       // add data value for appropriate id3 tag if one exists
       if (metadata.settings.id3_key) {
-        $metadata_field.find('.metadata_name_field').attr('data-id3-field', metadata.settings.id3_key);
+        metadataField.querySelector('.metadata_name_field').setAttribute('data-id3-field', metadata.settings.id3_key);
       }
 
       // set select field options
-      if(metadata.type=='select' && metadata.settings && metadata.settings.options)
-      {
-        $.each(metadata.settings.options, function(index,option)
-        {
-          $metadata_field.find('.metadata_name_field').append( $('<option></option>').text(option) );
+      if (metadata.type=='select' && metadata.settings && metadata.settings.options) {
+        metadata.settings.options.forEach(function(option) {
+          let selectField = metadataField.querySelector('.metadata_name_field');
+          selectField.innerHTML = selectField.innerHTML + '<option>' + option + '</option>';
         });
       }
 
       // set default
-      if(metadata.settings && metadata.settings.default) $metadata_field.find('.metadata_name_field').val( metadata.settings.default );
+      if (metadata.settings && metadata.settings.default) {
+        metadataField.querySelector('.metadata_name_field').value = metadata.settings.default;
+      }
 
       // change field name and description values
-      $metadata_field.find('label').text(metadata.description);
-      $metadata_field.find('.metadata_name_field').attr('class','metadata_'+metadata.name+'_field');
-      $metadata_field.find('.copy_to_all').attr('data-field','metadata_'+metadata.name+'_field');
+      metadataField.querySelector('label').innerText = metadata.description;
+      metadataField.querySelector('.metadata_name_field').setAttribute('class', 'metadata_' + metadata.name + '_field');
+      metadataField.querySelector('.copy_to_all').setAttribute('data-field', 'metadata_' + metadata.name + '_field');
 
-      // add field id to metadata tag input for live search
-      $metadata_field.find('ob-tag-input').attr('data-field-id',metadata.id);
-
-      // remove data-ready from tag input so that it will have proper events attached when added to DOM
-      if(metadata.type=='tags') $metadata_field.find('ob-tag-input').removeAttr('data-ready');
-
-      // append fieldrow to form
-      $form.find('.addedit_form_container .copyright_field').parent().before($metadata_field);
+      let form = document.querySelector('#media_addedit_' + id);
+      let reference = form.querySelector('.addedit_form_container .copyright_field').parentElement;
+      reference.before(metadataField);
     }
   });
 
