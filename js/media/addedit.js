@@ -56,6 +56,21 @@ OB.Media.mediaInfoImport = function(button)
     if(typeof OB.Media.media_info[id].comments.album != 'undefined') $form.find('.album_field').val(OB.Media.media_info[id].comments.album[0]);
     if(typeof OB.Media.media_info[id].comments.title != 'undefined') $form.find('.title_field').val(OB.Media.media_info[id].comments.title[0]);
     if(typeof OB.Media.media_info[id].comments.comments != 'undefined') $form.find('.comments_field').val(OB.Media.media_info[id].comments.comments[0]);
+
+    let id3Comments = OB.Media.media_info[id].comments;
+    Object.keys(id3Comments).forEach(function(key) {
+      const id3Element = document.querySelector('[data-id3-field="' + key + '"]');
+      if (! id3Element) {
+        return;
+      }
+
+      const value = id3Comments[key];
+      if (typeof value === "string") {
+        id3Element.value = value;
+      } else if (Array.isArray(value)) {
+        id3Element.value = value.join();
+      }
+    });
   }
 
 }
@@ -130,6 +145,11 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
 
     if(typeof($metadata_field)!=='undefined')
     {
+      // add data value for appropriate id3 tag if one exists
+      if (metadata.settings.id3_key) {
+        $metadata_field.find('.metadata_name_field').attr('data-id3-field', metadata.settings.id3_key);
+      }
+
       // set select field options
       if(metadata.type=='select' && metadata.settings && metadata.settings.options)
       {
