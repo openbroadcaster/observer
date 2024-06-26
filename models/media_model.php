@@ -2319,7 +2319,7 @@ class MediaModel extends OBFModel
             }
         }
 
-        return $id3['comments'];
+        return $id3['comments'] ?? [];
     }
 
     /**
