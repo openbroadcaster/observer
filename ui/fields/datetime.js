@@ -7,8 +7,9 @@ class OBFieldDatetime extends OBField {
     #valueObject;
     #valueString;
     #value;
-    #valueFormat = "YYYY-MM-DD HH:mm:ss";
-    #valueStringFormat = "MMM D, YYYY h:mm A";
+    
+    valueFormat = "YYYY-MM-DD HH:mm:ss";
+    valueStringFormat = "MMM D, YYYY h:mm A";
 
     connectedCallback() {
         if (this.#init) {
@@ -62,8 +63,8 @@ class OBFieldDatetime extends OBField {
         const datetime = chrono.casual.parseDate(value);
         if (datetime) {
             this.#valueObject = datetime;
-            this.#valueString = dayjs(datetime).format(this.#valueStringFormat);
-            this.#value = dayjs(datetime).format(this.#valueFormat);
+            this.#valueString = dayjs(datetime).format(this.valueStringFormat);
+            this.#value = dayjs(datetime).format(this.valueFormat);
         } else {
             this.#valueObject = null;
             this.#valueString = "";
@@ -75,4 +76,8 @@ class OBFieldDatetime extends OBField {
 
 }
 
-customElements.define('ob-field-datetime', OBFieldDatetime);
+export default OBFieldDatetime;
+
+if (customElements.get('ob-field-datetime') === undefined) {
+    customElements.define('ob-field-datetime', OBFieldDatetime);
+}
