@@ -13,7 +13,7 @@ class OBFieldLanguage extends OBField {
 
       // prevent multiple calls if this element appears twice in one form
       OBFieldLanguage.languages = {};
-      OBFieldLanguage.popularLanguages = {};
+      OBFieldLanguage.popularLanguages = [];
       const popularLanguages = {};
 
       const result = await OB.API.postPromise('metadata', 'language_list', {});
