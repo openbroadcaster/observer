@@ -1,4 +1,3 @@
-import { html, render } from '../vendor.js'
 import OBFieldDatetime from './datetime.js';
 
 class OBFieldDate extends OBFieldDatetime {
