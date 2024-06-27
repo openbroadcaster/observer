@@ -335,7 +335,7 @@ class OBFUser
                         if ($request[0] === $route[1] && $request[1] === $route[2]) {
                             $req_permission = $route[0];
 
-                            $found = array_filter($permissions, function ($p) use ($req_permission) {
+                            $found = array_filter($permissions ?? [], function ($p) use ($req_permission) {
                                 return ($p[0] === $_SERVER['REQUEST_METHOD'] && ('/api/v2' . $p[1]) === $req_permission);
                             });
 
