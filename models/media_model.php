@@ -759,6 +759,7 @@ class MediaModel extends OBFModel
             $items = $this->db->get('media');
             foreach ($items as &$item) {
                 $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
             }
 
             return array($items,$total_media_found);
@@ -796,6 +797,7 @@ class MediaModel extends OBFModel
             $items = $this->db->get('media');
             foreach ($items as &$item) {
                 $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
             }
 
             return array($items,$total_media_found);
