@@ -89,16 +89,16 @@ if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
 date_default_timezone_set('Etc/UTC');
 
 // load core components
-require_once('classes/obfdb.php');
-require_once('classes/obfload.php');
-require_once('classes/obfio.php');
-require_once('classes/obfcontroller.php');
-require_once('classes/obfcallbacks.php');
-require_once('classes/obfhelpers.php');
-require_once('classes/obfmodel.php');
-require_once('classes/obfmodels.php');
-require_once('classes/obfuser.php');
-require_once('classes/obfmodule.php');
+require_once('classes/core/obfdb.php');
+require_once('classes/core/obfload.php');
+require_once('classes/core/obfio.php');
+require_once('classes/core/obfcontroller.php');
+require_once('classes/core/obfcallbacks.php');
+require_once('classes/core/obfhelpers.php');
+require_once('classes/core/obfmodel.php');
+require_once('classes/core/obfmodels.php');
+require_once('classes/core/obfuser.php');
+require_once('classes/core/obfmodule.php');
 
 // load third party components
 require_once('vendor/autoload.php');
