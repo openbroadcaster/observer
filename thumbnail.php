@@ -67,10 +67,9 @@ class MediaThumbnail extends OBFController
             }
         }
 
-        $l0 = $media['file_location'][0];
-        $l1 = $media['file_location'][1];
-        $file = OB_CACHE . '/thumbnails/' . $l0 . '/' . $l1 . '/' . $media['id'] . '.jpg';
-        if (!file_exists($file)) {
+        $file = $this->models->media('thumbnail_file', ['media' => $media['id']]);
+
+        if (!$file) {
             $this->not_found();
         }
         header('Content-Type: image/jpeg');

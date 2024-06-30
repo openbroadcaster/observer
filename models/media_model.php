@@ -313,11 +313,6 @@ class MediaModel extends OBFModel
         $this->db->where('media.id', $args['id']);
         $media = $this->db->get_one('media');
 
-        // DEPRECATED: Old media thumbnail code (interferes with new thumbnail items).
-        /* if ($media) {
-            $media['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $media]);
-        } */
-
         return $media;
     }
 
@@ -326,7 +321,7 @@ class MediaModel extends OBFModel
      *
      * @param media ID or media row array.
      */
-    public function media_thumbnail_exists($args = [])
+    public function thumbnail_file($args = [])
     {
         OBFHelpers::require_args($args, ['media']);
 
@@ -350,7 +345,7 @@ class MediaModel extends OBFModel
             mkdir($thumbnail_directory, 0755, true);
         }
 
-        if ($media['type'] == 'image' && !file_exists($thumbnail_file)) {
+        if (($media['type'] == 'image' || $media['type'] == 'document') && !file_exists($thumbnail_file)) {
             if ($media['is_archived'] == 1) {
                 $media_file = OB_MEDIA_ARCHIVE;
             } elseif ($media['is_approved'] == 0) {
@@ -360,10 +355,21 @@ class MediaModel extends OBFModel
             }
             $media_file .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
             $media_file = $media_file . '/' . $media['filename'];
-            OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
+
+            if ($media['type'] == 'image') {
+                OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
+            }
+
+            if ($media['type'] == 'document') {
+                OBFHelpers::pdf_thumbnail($media_file, $thumbnail_file, 600, 600);
+            }
         }
 
-        return file_exists($thumbnail_file);
+        if (file_exists($thumbnail_file)) {
+            return $thumbnail_file;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -763,7 +769,7 @@ class MediaModel extends OBFModel
 
             $items = $this->db->get('media');
             foreach ($items as &$item) {
-                $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
             }
 
@@ -801,7 +807,7 @@ class MediaModel extends OBFModel
 
             $items = $this->db->get('media');
             foreach ($items as &$item) {
-                $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
             }
 
