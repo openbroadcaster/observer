@@ -53,6 +53,7 @@ class Media extends OBFController
      * @param video_formats
      * @param image_formats
      * @param audio_formats
+     * @param document_formats
      *
      * @route POST /v2/media/formats
      */
@@ -63,6 +64,7 @@ class Media extends OBFController
         $data['video_formats'] = $this->data('video_formats');
         $data['image_formats'] = $this->data('image_formats');
         $data['audio_formats'] = $this->data('audio_formats');
+        $data['document_formats'] = $this->data('document_formats');
 
         $validation = $this->models->media('formats_validate', ['data' => $data]);
         if ($validation[0] == false) {

@@ -2106,8 +2106,9 @@ class MediaModel extends OBFModel
 
         // list of valid formats...
         $valid_video_formats = array('avi','mpg','ogg','wmv','mov');
-        $valid_image_formats = array('jpg','png','svg');
+        $valid_image_formats = array('jpg','png','tif','svg');
         $valid_audio_formats = array('flac','mp3','ogg','webm','mp4','wav');
+        $valid_document_formats = array('pdf');
 
         // verify image formats
         if (!is_array($video_formats) || !is_array($image_formats) || !is_array($audio_formats)) {
@@ -2132,6 +2133,12 @@ class MediaModel extends OBFModel
             }
         }
 
+        foreach ($document_formats as $format) {
+            if (array_search($format, $valid_document_formats) === false) {
+                return array(false,'There was a problem saving the format settings. One of the formats does not appear to be valid.');
+            }
+        }
+
         return array(true,'');
     }
 
@@ -2149,6 +2156,28 @@ class MediaModel extends OBFModel
             $$name = $value;
         }
 
+        // add empty settings if they don't exist
+        $this->db->where('name', 'audio_formats');
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'audio_formats', 'value' => '']);
+        }
+
+        $this->db->where('name', 'image_formats');
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'image_formats', 'value' => '']);
+        }
+
+        $this->db->where('name', 'video_formats');
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'video_formats', 'value' => '']);
+        }
+
+        $this->db->where('name', 'document_formats');
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'document_formats', 'value' => '']);
+        }
+
+        // update settings
         $this->db->where('name', 'audio_formats');
         $this->db->update('settings', array('value' => implode(',', $audio_formats)));
 
@@ -2157,6 +2186,9 @@ class MediaModel extends OBFModel
 
         $this->db->where('name', 'video_formats');
         $this->db->update('settings', array('value' => implode(',', $video_formats)));
+
+        $this->db->where('name', 'document_formats');
+        $this->db->update('settings', array('value' => implode(',', $document_formats)));
     }
 
     /**
@@ -2177,9 +2209,13 @@ class MediaModel extends OBFModel
         $this->db->where('name', 'image_formats');
         $image = $this->db->get_one('settings');
 
-        $return['audio_formats'] = $audio['value'] ? explode(',', $audio['value']) : [];
-        $return['video_formats'] = $video['value'] ? explode(',', $video['value']) : [];
-        $return['image_formats'] = $image['value'] ? explode(',', $image['value']) : [];
+        $this->db->where('name', 'document_formats');
+        $document = $this->db->get_one('settings');
+
+        $return['audio_formats'] = $audio ? explode(',', $audio['value']) : [];
+        $return['video_formats'] = $video ? explode(',', $video['value']) : [];
+        $return['image_formats'] = $image ? explode(',', $image['value']) : [];
+        $return['document_formats'] = $document ? explode(',', $document['value']) : [];
 
         return $return;
     }

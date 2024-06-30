@@ -29,6 +29,7 @@ OB.Media.settings = function()
     var video = formats.video_formats;
     var image = formats.image_formats;
     var audio = formats.audio_formats;
+    var document = formats.document_formats;
 
     for(var i in video)
     {
@@ -44,6 +45,11 @@ OB.Media.settings = function()
     {
       $('.image_formats[value='+image[i]+']').attr('checked',true);
     }
+
+    for(var i in document)
+      {
+        $('.document_formats[value='+document[i]+']').attr('checked',true);
+      }
 
     OB.Media.categoriesGet();
     OB.Media.metadataGet();
@@ -355,8 +361,10 @@ OB.Media.formatsSave = function()
   var audio_formats = Array.from(document.querySelectorAll('.audio_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
   var image_formats = Array.from(document.querySelectorAll('.image_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
   var video_formats = Array.from(document.querySelectorAll('.video_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
+  var document_formats = Array.from(document.querySelectorAll('.document_formats')).filter((elem) => elem.checked).map((elem) => elem.value);
 
-  OB.API.post('media','formats_save', { 'audio_formats': audio_formats, 'video_formats': video_formats, 'image_formats': image_formats },function(data) {
+
+  OB.API.post('media','formats_save', { 'audio_formats': audio_formats, 'video_formats': video_formats, 'image_formats': image_formats, 'document_formats': document_formats },function(data) {
     $('#formats_message').obWidget('success',data.msg);
   });
 
