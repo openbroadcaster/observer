@@ -682,6 +682,25 @@ class PlaylistsModel extends OBFModel
         // get main player
         $player = $this->models->players('get_one', $player_id);
 
+        if ($player_id) {
+            $supports = [];
+            if ($player['support_audio']) {
+                $supports[] = 'audio';
+            }
+            if ($player['support_video']) {
+                $supports[] = 'video';
+            }
+            if ($player['support_images']) {
+                $supports[] = 'image';
+            }
+        } else {
+            $supports = ['audio','video','image','document'];
+        }
+
+
+        // TODO currently no player support for documents, but will be doing this at some point.
+        $support_document = $player_id ? false : true;
+
         // get playlist. max_duration currently supported by standard playlist only. (TODO)
         $playlist = $this('get_by_id', $playlist_id);
         if ($playlist['type'] != 'standard') {
@@ -718,6 +737,12 @@ class PlaylistsModel extends OBFModel
             // single media item
             if ($playlist_item['item_type'] == 'media') {
                 $media = $this->models->media('get_by_id', ['id' => $playlist_item['item_id']]);
+
+                // skip item if type not supported
+                if ($media && !in_array($media['type'], $supports)) {
+                    continue;
+                }
+
                 if ($media) {
                     $tmp = ['type' => 'media','id' => $playlist_item['item_id'], 'title' => $media['title'], 'artist' => $media['artist']];
                     if ($media['type'] == 'image') {
@@ -754,9 +779,12 @@ class PlaylistsModel extends OBFModel
                 $media_search = $this->models->media('search', ['params' => ['query' => $playlist_item['properties']['query']], 'player_id' => $player_id]);
                 $media_items = $media_search[0] ?? [];
 
-                // remove dayparting exclusions
+                // remove unsupported and dayparting exclusions
                 foreach ($media_items as $index => $media_item) {
                     if (array_search($media_item['id'], $dayparting_exclude_ids) !== false) {
+                        unset($media_items[$index]);
+                    }
+                    if (!in_array($media_item['type'], $supports)) {
                         unset($media_items[$index]);
                     }
                 }
@@ -835,9 +863,12 @@ class PlaylistsModel extends OBFModel
                 $this->db->query('SELECT media.* FROM players_station_ids LEFT JOIN media ON players_station_ids.media_id = media.id WHERE player_id="' . $this->db->escape($station_id_player) . '";');
                 $media_items = $this->db->assoc_list();
 
-                // remove dayparting exclusions
+                // remove unsupported and dayparting exclusions
                 foreach ($media_items as $index => $media) {
                     if (array_search($media['id'], $dayparting_exclude_ids) !== false) {
+                        unset($media_items[$index]);
+                    }
+                    if (!in_array($media['type'], $supports)) {
                         unset($media_items[$index]);
                     }
                 }
