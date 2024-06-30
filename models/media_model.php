@@ -68,7 +68,12 @@ class MediaModel extends OBFModel
                 $return['format'] = 'png';
             } elseif ($mime_array[1] == 'svg+xml') {
                 $return['format'] = 'svg';
+            } elseif ($mime_array[1] == 'tiff') {
+                $return['format'] = 'tif';
             }
+        } elseif ($mime == 'application/pdf') {
+            $return['type'] = 'document';
+            $return['format'] = 'pdf';
         } else {
             // if we have an audio or a video, then we use avprobe to find format and duration.
             $mediainfo_json = shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename']));
@@ -2282,6 +2287,9 @@ class MediaModel extends OBFModel
             $allowed_formats = $this->db->get_one('settings');
         } elseif ($type == 'video') {
             $this->db->where('name', 'video_formats');
+            $allowed_formats = $this->db->get_one('settings');
+        } elseif ($type == 'document') {
+            $this->db->where('name', 'document_formats');
             $allowed_formats = $this->db->get_one('settings');
         }
 

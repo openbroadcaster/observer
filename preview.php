@@ -253,7 +253,7 @@ class MediaPreview extends OBFController
             $fp = fopen($cache_file, 'rb');
             fpassthru($fp);
         } elseif ($type == 'image') {
-      // download mode
+            // download mode
             if ($download) {
                 header('Content-Description: File Transfer');
                 header('Content-Disposition: attachment; filename=' . $download_filename);
@@ -266,6 +266,8 @@ class MediaPreview extends OBFController
                     header('Content-Type: image/gif');
                 } elseif ($format == 'svg') {
                     header('Content-Type: image/svg+xml');
+                } elseif ($format == 'tif') {
+                    header('Content-Type: image/tiff');
                 } else {
                     die();
                 }
@@ -289,6 +291,41 @@ class MediaPreview extends OBFController
 
             if (!file_exists($cache_file)) {
                 OBFHelpers::image_resize($media_file, $cache_file, $dest_width, $dest_height);
+            }
+
+            if (!file_exists($cache_file)) {
+                http_response_code(404);
+                exit;
+            }
+
+            header('Content-type: image/jpeg');
+            header('Content-Length: ' . filesize($cache_file));
+            $fp = fopen($cache_file, 'rb');
+            fpassthru($fp);
+        } elseif ($type == 'document') {
+            // pdf is the only document type currently.
+            if ($download) {
+                header('Content-Description: File Transfer');
+                header('Content-Disposition: attachment; filename=' . $download_filename);
+                header('Content-Type: application/pdf');
+                header('Content-Length: ' . filesize($media_file));
+                $fp = fopen($media_file, 'rb');
+                fpassthru($fp);
+                exit();
+            }
+
+            if (!empty($_GET['w']) && !empty($_GET['h']) && preg_match('/^[0-9]+$/', $_GET['w']) && preg_match('/^[0-9]+$/', $_GET['h'])) {
+                $dest_width = $_GET['w'];
+                $dest_height = $_GET['h'];
+            } else {
+                $dest_width = 320;
+                $dest_height = 240;
+            }
+
+            $cache_file = $cache_dir . '/' . $media['id'] . '_' . $dest_width . 'x' . $dest_height . '.jpg';
+
+            if (!file_exists($cache_file)) {
+                OBFHelpers::pdf_thumbnail($media_file, $cache_file, $dest_width, $dest_height);
             }
 
             if (!file_exists($cache_file)) {

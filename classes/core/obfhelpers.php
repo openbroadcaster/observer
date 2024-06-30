@@ -137,6 +137,8 @@ class OBFHelpers
                 return 'png';
             case 'image/webp':
                 return 'webp';
+            case 'image/tiff':
+                return 'tif';
         }
 
         // backup in case mime type failed
@@ -181,61 +183,98 @@ class OBFHelpers
         }
 
         if ($format == 'svg' && !extension_loaded('imagick')) {
-            trigger_error('The ImageMagick (imagick) extension is required to resize SVG images.', E_USER_ERROR);
+            trigger_error('The ImageMagick (imagick) extension is required.', E_USER_ERROR);
         }
 
-        if ($format == 'svg') {
-            $im = new Imagick();
-            $svg = file_get_contents($src);
-            $im->readImageBlob($svg);
+        $im = new Imagick();
+        $imgdata = file_get_contents($src);
+        $im->readImageBlob($imgdata);
 
-            $source_width = $im->getImageWidth();
-            $source_height = $im->getImageHeight();
-            $source_ratio = $source_width / $source_height;
-            $ratio = $width / $height;
+        $source_width = $im->getImageWidth();
+        $source_height = $im->getImageHeight();
+        $source_ratio = $source_width / $source_height;
+        $ratio = $width / $height;
 
-            if ($ratio > $source_ratio) {
-                $width = $height * $source_ratio;
-            } else {
-                $height = $width / $source_ratio;
+        if ($ratio > $source_ratio) {
+            $width = $height * $source_ratio;
+        } else {
+            $height = $width / $source_ratio;
+        }
+
+        $im->setImageFormat("jpeg");
+        $im->adaptiveResizeImage($width, $height);
+
+        $im->writeImage($dst);
+        $im->clear();
+        $im->destroy();
+
+        return true;
+    }
+
+    /**
+     * Generate thumbnail from the first page of a PDF.
+     *
+     * @param src Source filename.
+     * @param dst Destination filename (JPEG).
+     * @param width Target width.
+     * @param height Target height.
+     */
+    public static function pdf_thumbnail($src, $dst, $width, $height)
+    {
+        // Use a high resolution for good quality
+        $resolution = 300;
+
+        // Create a temporary file with .tiff extension
+        $tempFile = tempnam(sys_get_temp_dir(), 'gs_output_');
+        $tempFileTiff = $tempFile . '.tiff';
+        rename($tempFile, $tempFileTiff);
+
+        // Ghostscript command to convert PDF to TIFF
+        $gsCommand = sprintf(
+            'gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=tiff24nc -dFirstPage=1 -dLastPage=1 ' .
+            '-r%d -dTextAlphaBits=4 -dGraphicsAlphaBits=4 ' .
+            '-sOutputFile=%s %s 2>&1',
+            $resolution,
+            escapeshellarg($tempFileTiff),
+            escapeshellarg($src)
+        );
+
+        // Execute Ghostscript command
+        exec($gsCommand, $output, $returnVar);
+
+        if ($returnVar !== 0 || !file_exists($tempFileTiff)) {
+            error_log("Ghostscript conversion failed: " . implode("\n", $output));
+            if (file_exists($tempFileTiff)) {
+                unlink($tempFileTiff);
             }
+            return false;
+        }
 
-            $im->setImageFormat("jpeg");
-            $im->adaptiveResizeImage($width, $height);
-
+        try {
+            // Now use ImageMagick to resize the image and convert to JPG
+            $im = new Imagick();
+            $im->readImage($tempFileTiff);
+            $im->setImageBackgroundColor('white'); // Set white background
+            $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // Remove alpha channel
+            $im->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // Flatten image
+            $im->thumbnailImage($width, $height, true);
+            $im->setImageFormat('jpeg');
+            $im->setImageCompression(Imagick::COMPRESSION_JPEG);
+            $im->setImageCompressionQuality(90);
             $im->writeImage($dst);
             $im->clear();
             $im->destroy();
-        } else {
-            $image_data = getimagesize($src);
 
-            list($source_width, $source_height) = $image_data;
+            // Remove the temporary file
+            unlink($tempFileTiff);
 
-            $source_ratio = $source_width / $source_height;
-            $ratio = $width / $height;
-
-            if ($ratio > $source_ratio) {
-                $width = $height * $source_ratio;
-            } else {
-                $height = $width / $source_ratio;
+            return true;
+        } catch (ImagickException $e) {
+            error_log("ImageMagick error: " . $e->getMessage());
+            if (file_exists($tempFileTiff)) {
+                unlink($tempFileTiff);
             }
-
-            // png or jpg?
-            if ($image_data[2] == IMAGETYPE_PNG) {
-                $image_source = imagecreatefrompng($src);
-            } else {
-                $image_source = imagecreatefromjpeg($src);
-            }
-
-            $image_dest = imagecreatetruecolor($width, $height);
-
-            imagecopyresampled($image_dest, $image_source, 0, 0, 0, 0, $width, $height, $source_width, $source_height);
-
-            imagejpeg($image_dest, $dst);
-            imagedestroy($image_dest);
-            imagedestroy($image_source);
+            return false;
         }
-
-        return true;
     }
 }

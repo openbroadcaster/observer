@@ -58,19 +58,21 @@ class OBFChecker
             $errors[] = 'Fileinfo extension not found.';
         }
 
+        if (!extension_loaded('imagick')) {
+            $errors[] = 'ImageMagick (imagick) extension not found.';
+        }
+
         if (!empty($errors)) {
             return array('PHP Extensions',$errors,2);
         }
         return array('PHP Extensions','Required PHP extensions found.',0);
     }
 
+
+    // there are currently no optional extensions, but this is kept as a placeholder.
     public function php_extensions_warning()
     {
         $errors = array();
-
-        if (!extension_loaded('imagick')) {
-            $errors[] = 'ImageMagick (imagick) extension not found (SVG preview will not function).';
-        }
 
         if (!empty($errors)) {
             return array('PHP Extensions',$errors,1);

@@ -347,7 +347,7 @@ class Media extends OBFController
 
         // validate each media item
         foreach ($media as $index => $item) {
-      // check permissions
+        // check permissions
             if (empty($item['id'])) {
                 $this->user->require_permission('create_own_media or manage_media');
             } else {

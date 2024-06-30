@@ -87,7 +87,7 @@ class OBElementPreview extends OBElement {
                             <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
                         </video-js>
                     ` : html``}
-                    ${this.#itemType === 'image' ? html`
+                    ${this.#itemType === 'image' || this.#itemType === 'document' ? html`
                         <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
                     ` : html``}
                 </div>
