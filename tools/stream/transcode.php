@@ -264,7 +264,7 @@ foreach ($media as $item) {
             mkdir($tmp_dir);
 
             // get 5 keyframes starting at 25% into the video.
-            $command = 'ffmpeg -ss '.escapeshellarg($start).' -i '.escapeshellarg($input_file).' -vf "select=eq(pict_type\,I), scale=w=300:h=300:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 '.escapeshellarg($tmp_dir.'/thumb%04d.jpg').' -hide_banner';
+            $command = 'ffmpeg -ss '.escapeshellarg($start).' -i '.escapeshellarg($input_file).' -vf "select=eq(pict_type\,I), scale=w=600:h=600:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 '.escapeshellarg($tmp_dir.'/thumb%04d.jpg').' -hide_banner';
             passthru($command);
 
             // pick thumbnail with largest filesize
@@ -299,12 +299,12 @@ foreach ($media as $item) {
             rmdir($tmp_dir);
         }
     } elseif ($item['type']=='audio') {
-        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
+        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=600:h=600:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         passthru($command);
         $success = true; // assume success, because will fail if no album art, but that's okay.
     } elseif ($item['type']=='image') {
-        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
+        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=600:h=600:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
         echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
         $return = null;
         passthru($command, $return);
