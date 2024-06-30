@@ -228,10 +228,12 @@ OB.Playlist.addeditTypeChangeConfirm = function()
   return confirm( OB.t('Changing playlist type will clear the existing playlist.  Are you sure you want to do this?') );
 }
 
-
 // modal window for item settings (like start/stop time, image duration, dynamic selection name...)
 OB.Playlist.addeditItemProperties = function(id,type,required)
 {
+
+  // document currently treated like image
+  if(type=='document') type='image';
 
   OB.UI.openModalWindow('playlist/'+type+'_properties.html');
 

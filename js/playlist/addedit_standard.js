@@ -37,7 +37,7 @@ OB.Playlist.addeditInit = function()
               return true;
             }
 
-            if($(element).attr('data-type')=='image') var insert_duration = 15;
+            if($(element).attr('data-type')=='image' || $(element).attr('data-type')=='document') var insert_duration = 15;
             else var insert_duration = $(element).attr('data-duration');
 
             OB.Playlist.addeditInsertItem($(element).attr('data-id'),$(element).attr('data-artist')+' - '+$(element).attr('data-title'),insert_duration,$(element).attr('data-type'));
