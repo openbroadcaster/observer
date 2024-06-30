@@ -38,21 +38,6 @@ OB.Sidebar.sidebarInit = function()
 
   OB.Sidebar.mediaDetails();
 
-  $('#sidebar_player').droppable({
-    drop: function(event, ui) {
-
-      var mode = $(ui.draggable).attr('data-mode');
-      var type = $(ui.draggable).attr('data-type');
-      var id = $(ui.draggable).attr('data-id');
-
-      if(!mode || !type || !id) return;
-
-      OB.Sidebar.playerPlay(mode,type,id);
-
-    }
-
-  });
-
   $('#sidebar_search_media_input').keyup(
 
       function (event) {
@@ -81,50 +66,6 @@ OB.Sidebar.playerToggle = function()
 {
   $('#sidebar_player').toggleClass('closed');
   OB.UI.sidebarSearchResultsHeight();
-}
-
-OB.Sidebar.playerPlay = function(mode,type,id)
-{
-
-  if(mode=='playlist')
-  {
-    //T Playlist preview coming soon.
-    OB.UI.alert('Playlist preview coming soon.');
-  }
-
-  else
-  {
-
-    type = type.toLowerCase();
-
-    image_width = $('#sidebar_player_draghere').innerWidth();
-    image_height = $('#sidebar_player_draghere').innerHeight();
-
-    if(type=='video')
-    {
-      $('#sidebar_player_draghere').html('<video preload="auto" autoplay="autoplay" controls="controls">\
-        <source src="/preview.php?x='+new Date().getTime()+'&id='+id+'&w='+image_width+'&h='+image_height+'&format=mp4" type="video/mp4">\
-        <source src="/preview.php?x='+new Date().getTime()+'&id='+id+'&w='+image_width+'&h='+image_height+'&format=ogv" type="video/ogg">\
-      </video>');
-    }
-
-    else if(type=='audio')
-    {
-      $('#sidebar_player_draghere').html('<audio preload="auto" autoplay="autoplay" controls="controls">\
-        <source src="/preview.php?x='+new Date().getTime()+'&id='+id+'&format=mp3" type="audio/mpeg">\
-        <source src="/preview.php?x='+new Date().getTime()+'&id='+id+'&format=ogg" type="audio/ogg">\
-      </audio>');
-    }
-
-    else if(type=='image')
-    {
-
-      $('#sidebar_player_draghere').html('<img src="/preview.php?x='+new Date().getTime()+'&id='+id+'&w='+image_width+'&h='+image_height+'">');
-
-    }
-
-  }
-
 }
 
 OB.Sidebar.showMediaSearch = function()
@@ -482,13 +423,16 @@ OB.Sidebar.mediaSearch = function(more)
       switch (media[i]['type']) {
         case 'audio':
           media_type_symbol = '<i class="fas fa-music"></i>';
-        break;
+          break;
         case 'video':
           media_type_symbol = '<i class="fas fa-video"></i>';
-        break;
+          break;
         case 'image':
           media_type_symbol = '<i class="fas fa-image"></i>';
-        break;
+          break;
+        case 'document':
+          media_type_symbol = '<i style="padding-left: 1px;" class="fas fa-file-alt"></i>';
+          break;
       }
 
       var thumbnail = media[i]['thumbnail'] ? '<img loading="lazy" src="/thumbnail.php?id='+media[i]['id']+'" />' : '';
