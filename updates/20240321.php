@@ -35,7 +35,7 @@ class OBUpdate20240321 extends OBUpdate
                     $colType = 'VARCHAR(255)';
                     break;
                 case 'tags':
-                    // Tags are stored in media_tags table.
+                    $colType = 'TEXT';
                     break;
                 case 'hidden':
                     $colType = 'LONGTEXT';

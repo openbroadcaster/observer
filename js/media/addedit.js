@@ -582,8 +582,7 @@ OB.Media.editPage = function(ids)
       $.each(OB.Settings.media_metadata, function(index, metadata)
       {
         if(metadata.type=='tags') {
-          // TODO: Tags not currently working.
-          // $form.find('.metadata_'+metadata.name+'_field').val( media['metadata_'+metadata.name].split(',') );
+          $form.find('.metadata_'+metadata.name+'_field').val( media['metadata_'+metadata.name].split(',') );
         }
         else $form.find('.metadata_'+metadata.name+'_field').val( media['metadata_'+metadata.name] );
       });
