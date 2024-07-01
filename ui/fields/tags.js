@@ -22,13 +22,13 @@ class OBFieldTags extends OBField {
 
         this.renderComponent();
     }
-    
+
     renderEdit() {
-        if (! this.#tags) {
+        if (!this.#tags) {
             this.#tags = [];
         }
-        
-        if (! this.#suggestions) {
+
+        if (!this.#suggestions) {
             this.#suggestions = [];
         }
 
@@ -43,9 +43,9 @@ class OBFieldTags extends OBField {
                     <span id="current">${this.#currentTag}</span>
                 </div>
             </div>
-            ${this.#suggestions.filter((tag) => ! this.#tags.includes(tag)).length > 0 && html`
+            ${this.#suggestions.filter((tag) => !this.#tags.includes(tag)).length > 0 && html`
             <div id="suggestions" tabindex="0">
-                ${this.#suggestions.filter((tag) => ! this.#tags.includes(tag)).map((tag) => html`
+                ${this.#suggestions.filter((tag) => !this.#tags.includes(tag)).map((tag) => html`
                     <span class="suggestion" onclick=${(e) => this.tagsAdd(tag)}>${tag}</span>
                 `)}
             </div>
@@ -108,7 +108,7 @@ class OBFieldTags extends OBField {
                 }
 
                 #suggestions {
-                    display: flex;
+                    display: none;
                     align-items: center;
                     gap: 0.3em;
                     flex-wrap: wrap;
@@ -126,13 +126,17 @@ class OBFieldTags extends OBField {
                         word-wrap: anywhere;
                     }
                 }
+
+                #root:focus-within {
+                    #suggestions { display: flex; }
+                }
             }
         `;
     }
 
     tagsInput(event) {
         let keyCode = (event.key.length === 1) ? event.key.charCodeAt(0) : false;
-        
+
         if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122)) {
             // A-Z and a-z
             this.#currentTag += event.key;
@@ -189,6 +193,17 @@ class OBFieldTags extends OBField {
             this.#tags = [...new Set(value)];
             this.renderComponent();
         }
+    }
+
+    set suggestions(value) {
+        if (Array.isArray(value)) {
+            this.#suggestions = [...new Set(value)];
+            this.renderComponent();
+        }
+    }
+
+    get suggestions() {
+        return this.#suggestions;
     }
 
     #loadInnerTags() {

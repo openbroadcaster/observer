@@ -159,11 +159,6 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
         });
       }
 
-      // set default
-      if (metadata.settings && metadata.settings.default) {
-        metadataField.querySelector('.metadata_name_field').value = metadata.settings.default;
-      }
-
       // change field name and description values
       metadataField.querySelector('label').innerText = metadata.description;
       metadataField.querySelector('.metadata_name_field').setAttribute('class', 'metadata_' + metadata.name + '_field');
@@ -172,6 +167,16 @@ OB.Media.mediaAddeditForm = function(id,title,editing)
       let form = document.querySelector('#media_addedit_' + id);
       let reference = form.querySelector('.addedit_form_container .copyright_field').parentElement;
       reference.before(metadataField);
+
+      // set default
+      if (metadata.settings && metadata.settings.default) {
+        document.querySelector('#media_addedit_' + id + ' .metadata_' + metadata.name + '_field').value = metadata.settings.default;
+      }
+
+      // set suggestions
+      if (metadata.type=='tags' && metadata?.settings?.suggestions) {
+        document.querySelector('#media_addedit_' + id + ' .metadata_' + metadata.name + '_field').suggestions = metadata.settings.suggestions;
+      }
     }
   });
 
@@ -582,9 +587,13 @@ OB.Media.editPage = function(ids)
       $.each(OB.Settings.media_metadata, function(index, metadata)
       {
         if(metadata.type=='tags') {
-          $form.find('.metadata_'+metadata.name+'_field').val( media['metadata_'+metadata.name].split(',') );
+          let newValue = [];
+          if (media['metadata_'+metadata.name]) {
+            newValue = media['metadata_'+metadata.name].split(',');
+          }
+          $form[0].querySelector('.metadata_'+metadata.name+'_field').value = newValue;
         }
-        else $form.find('.metadata_'+metadata.name+'_field').val( media['metadata_'+metadata.name] );
+        else $form[0].querySelector('.metadata_'+metadata.name+'_field').value = media['metadata_'+metadata.name];
       });
 
       items_selected = true;
