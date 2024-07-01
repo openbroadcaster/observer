@@ -29,7 +29,7 @@
 
 	<rule ref="PSR1.Classes.ClassDeclaration">
 		<exclude-pattern>*/updates/updates\.php$</exclude-pattern>
-		<exclude-pattern>*/classes/obfcallbacks\.php$</exclude-pattern>
+		<exclude-pattern>*/classes/core/obfcallbacks\.php$</exclude-pattern>
 	</rule>
 
 	<rule ref=".phpcs/NoModelCallSniff.php">
