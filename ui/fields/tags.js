@@ -24,6 +24,13 @@ class OBFieldTags extends OBField {
     }
     
     renderEdit() {
+        if (! this.#tags) {
+            this.#tags = [];
+        }
+        
+        if (! this.#suggestions) {
+            this.#suggestions = [];
+        }
 
         render(html`
             <div id="input" class="field" tabindex="0" 
