@@ -161,7 +161,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T The field type is not valid.
-        if (array_search($data['type'], ['select','bool','text','textarea','integer','tags','hidden']) === false) {
+        if (array_search($data['type'], ['select','bool','text','textarea','integer','date','time','datetime','tags','hidden']) === false) {
             return [false,'The field type is not valid.'];
         }
 
@@ -234,14 +234,20 @@ class MediaMetadataModel extends OBFModel
 
             if ($save['type'] == 'bool') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BOOLEAN NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'select' || $save['type'] == 'text') {
+            } elseif ($save['type'] === 'select' || $save['type'] === 'text') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'textarea' || $save['type'] == 'tags') {
+            } elseif ($save['type'] === 'textarea' || $save['type'] == 'tags') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TEXT NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'integer') {
+            } elseif ($save['type'] === 'integer') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BIGINT NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'hidden') {
+            } elseif ($save['type'] === 'hidden') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' LONGTEXT NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'date') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' DATE NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'time') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TIME NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'datetime') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' DATETIME NULL DEFAULT NULL');
             }
 
             return $id;
