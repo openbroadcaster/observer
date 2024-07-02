@@ -631,6 +631,15 @@ OB.Media.recordingDefaultsGet = function () {
       case "integer":
         metaElem = document.createElement('ob-field-number');
         break;
+      case "date":
+        metaElem = document.createElement('ob-field-date');
+        break;
+      case "time":
+        metaElem = document.createElement('ob-field-time');
+        break;
+      case "datetime":
+        metaElem = document.createElement('ob-field-datetime');
+        break;
       case "tags":
         metaElem = document.createElement('ob-field-tags');
         break;
@@ -686,6 +695,7 @@ OB.Media.recordingDefaultsGet = function () {
       // Set custom metadata according to saved settings, and if none can be found, use the default
       // settings for that field (if any).
       OB.Settings.media_metadata.forEach((meta) => {
+        console.log(meta);
         const metaFieldElem = document.querySelector('#recording_custom_metadata [data-name="' + meta.name + '"]');
         
         if (defaults.custom_metadata && meta.name in defaults.custom_metadata) {
