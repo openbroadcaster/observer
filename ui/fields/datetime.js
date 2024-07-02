@@ -59,7 +59,7 @@ class OBFieldDatetime extends OBField {
     }
 
     get value() {
-        return this.#valueString;
+        return this.#value;
     }
 
     set value(value) {
