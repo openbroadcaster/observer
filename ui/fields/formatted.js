@@ -10,10 +10,9 @@ class OBFieldFormatted extends OBField {
         }
         this.#init = true;
 
-        let elem = this;
         this.renderComponent().then(() => {
             tinymce.init({
-                target: this.root.querySelector('#edit'),
+                target: this,
                 theme: 'silver',
                 plugins: 'link',
                 menubar: false,
