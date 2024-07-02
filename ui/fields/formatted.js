@@ -10,13 +10,22 @@ class OBFieldFormatted extends OBField {
         }
         this.#init = true;
 
+        let elem = this;
         this.renderComponent().then(() => {
+            tinymce.init({
+                target: this.root.querySelector('#edit'),
+                theme: 'silver',
+                plugins: 'link',
+                menubar: false,
+                toolbar: 'undo redo | bold italic | link',
+                branding: false
+            });
         });
     }
 
     renderEdit() {
         render(html`
-            <div>TODO</div>
+            <textarea id="edit">TODO edit</textarea>
         `, this.root);
     }
 
