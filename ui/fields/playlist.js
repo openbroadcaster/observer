@@ -188,7 +188,7 @@ class OBFieldPlaylist extends OBField {
 
     set value(value) {
         if (!Array.isArray(value)) {
-            return false;
+            value = [value];
         }
 
         value = value.map((x) => parseInt(x));
