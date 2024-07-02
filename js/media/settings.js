@@ -646,6 +646,14 @@ OB.Media.recordingDefaultsGet = function () {
       case "bool":
         metaElem = document.createElement('ob-field-bool');
         break;
+      case "media":
+        metaElem = document.createElement('ob-field-media');
+        metaElem.dataset.single = "";
+        break;
+      case "playlist":
+        metaElem = document.createElement('ob-field-playlist');
+        metaElem.dataset.single = "";
+        break;
     }
 
     if (! metaElem) {
@@ -695,7 +703,6 @@ OB.Media.recordingDefaultsGet = function () {
       // Set custom metadata according to saved settings, and if none can be found, use the default
       // settings for that field (if any).
       OB.Settings.media_metadata.forEach((meta) => {
-        console.log(meta);
         const metaFieldElem = document.querySelector('#recording_custom_metadata [data-name="' + meta.name + '"]');
         
         if (defaults.custom_metadata && meta.name in defaults.custom_metadata) {

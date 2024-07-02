@@ -444,7 +444,14 @@ OB.Media.save = function()
 
     $.each(OB.Settings.media_metadata, function(index,metadata)
     {
-      item['metadata_'+metadata.name] = $(element).find('.metadata_'+metadata.name+'_field').val();
+      let metaItem = $(element).find('.metadata_'+metadata.name+'_field').val();
+
+      // media and playlist metadata fields return arrays, but will be a single item, so convert:
+      if (Array.isArray(metaItem) && (metadata.type == 'media' || metadata.type == 'playlist')) {
+        metaItem = metaItem[0];
+      }
+
+      item['metadata_'+metadata.name] = metaItem;
     });
 
     // add permissions if fields visible

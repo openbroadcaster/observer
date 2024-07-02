@@ -161,7 +161,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T The field type is not valid.
-        if (array_search($data['type'], ['select','bool','text','textarea','integer','date','time','datetime','tags','hidden']) === false) {
+        if (array_search($data['type'], ['select','bool','text','textarea','integer','date','time','datetime','tags','hidden','media','playlist']) === false) {
             return [false,'The field type is not valid.'];
         }
 
@@ -248,6 +248,12 @@ class MediaMetadataModel extends OBFModel
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TIME NULL DEFAULT NULL');
             } elseif ($save['type'] === 'datetime') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' DATETIME NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'media') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' INT UNSIGNED NULL DEFAULT NULL');
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD CONSTRAINT ' . $this->db->format_backticks('fk_media_metadata_' . $data['name']) . ' FOREIGN KEY (' . $this->db->format_backticks('metadata_' . $data['name']) . ') REFERENCES ' . $this->db->format_backticks('media') . ' (' . $this->db->format_backticks('id') . ') ON UPDATE CASCADE ON DELETE SET NULL');
+            } elseif ($save['type'] === 'playlist') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' INT UNSIGNED NULL DEFAULT NULL');
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD CONSTRAINT ' . $this->db->format_backticks('fk_media_metadata_' . $data['name']) . ' FOREIGN KEY (' . $this->db->format_backticks('metadata_' . $data['name']) . ') REFERENCES ' . $this->db->format_backticks('playlists') . ' (' . $this->db->format_backticks('id') . ') ON UPDATE CASCADE ON DELETE SET NULL');
             }
 
             return $id;
@@ -270,7 +276,12 @@ class MediaMetadataModel extends OBFModel
 
         $this->db->where('id', $id);
         $this->db->delete('media_metadata');
-        $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP COLUMN metadata_' . $this->db->format_backticks($field['name']));
+
+        if ($field['type'] === 'media' || $field['type'] === 'playlist') {
+            $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP FOREIGN KEY ' . $this->db->format_backticks('fk_media_metadata_' . $field['name']));
+        }
+
+        $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP COLUMN ' . $this->db->format_backticks('metadata_' . $field['name']));
 
         return true;
     }
