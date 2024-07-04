@@ -554,57 +554,59 @@ OB.Media.editPage = function(ids)
     $('#media_upload_container').hide();
     $('#media_data').show();
 
-    $(ids).each(function(index,id) {
+    ids.forEach((id, index) => {
+      let media = response[index].data;
 
-      var media = response[index].data;
+      OB.Media.mediaAddeditForm(id, media.artist + ' - ' + media.title, true);
+      let containerElem = document.querySelector('#upload_' + id + '_data_container');
+      if (containerElem) {
+        containerElem.setAttribute('data-id', id); // id is ID in database, it being set means we are editing existing data.
+      }
 
-      OB.Media.mediaAddeditForm(id,media.artist+' - '+media.title,true);
-      $('#upload_'+id+'_data_container').attr('data-id',id); // id is ID in database, it being set means we are editing existing data.
+      let formElem = document.querySelector('.media_addedit:last-child');
+      formElem.dataset.edit = 1;
+      formElem.querySelector('.thumbnail_field').value = media.thumbnail;
+      formElem.querySelector('.artist_field').value = media.artist;
+      formElem.querySelector('.title_field').value = media.title;
+      formElem.querySelector('.album_field').value = media.album;
+      formElem.querySelector('.year_field').value = media.year;
 
-      $form = $('.media_addedit').last();
-
-      $form.attr('data-edit',1);
-
-      $form.find('.thumbnail_field').val( media.thumbnail );
-
-      $form.find('.artist_field').val( media.artist );
-      $form.find('.title_field').val( media.title );
-      $form.find('.album_field').val( media.album );
-      $form.find('.year_field').val( media.year );
-
-      $form.find('.category_field').val( media.category_id );
+      formElem.querySelector('.category_field').value = media.category_id;
       OB.Media.updateGenreList(id);
 
-      $form.find('.country_field').val( media.country );
-      $form.find('.language_field').val( media.language );
-      $form.find('.genre_field').val( media.genre_id);
+      formElem.querySelector('.country_field').value = media.country;
+      formElem.querySelector('.language_field').value = media.language;
+      formElem.querySelector('.genre_field').value = media.genre_id;
 
-      $form.find('.comments_field').val( media.comments );
+      formElem.querySelector('.comments_field').value = media.comments;
 
-      $form.find('.copyright_field').val( media.is_copyright_owner );
-      $form.find('.status_field').val( media.status );
-      $form.find('.dynamic_select_field').val( media.dynamic_select );
-      $form.find('.approved_field').val( media.is_approved );
+      formElem.querySelector('.copyright_field').value = media.is_copyright_owner;
+      formElem.querySelector('.status_field').value = media.status;
+      formElem.querySelector('.dynamic_select_field').value = media.dynamic_select;
+      formElem.querySelector('.approved_field').value = media.is_approved;
 
       // advanced permissions values if we have them
-      if(media.permissions_groups && $form.find('.advanced_permissions_groups_field').length) $form.find('.advanced_permissions_groups_field').val(media.permissions_groups);
-      if(media.permissions_users && $form.find('.advanced_permissions_users_field').length) $form.find('.advanced_permissions_users_field').val(media.permissions_users);
+      if (media.permissions_groups && formElem.querySelector('.advanced_permissions_groups_field')) {
+        formElem.querySelector('.advanced_permissions_groups_field').value = media.permissions_groups;
+      }
+      if (media.permissions_users && formElem.querySelector('.advanced_permissions_users_field')) {
+        formElem.querySelector('.advanced_permissions_users_field').value = media.permissions_users;
+      }
 
       // set values for custom metadata fields
-      $.each(OB.Settings.media_metadata, function(index, metadata)
-      {
-        if(metadata.type=='tags') {
+      OB.Settings.media_metadata.forEach((metadata) => {
+        if (metadata.type === 'tags') {
           let newValue = [];
-          if (media['metadata_'+metadata.name]) {
-            newValue = media['metadata_'+metadata.name].split(',');
+          if (media['metadata_' + metadata.name]) {
+            newValue = media['metadata_' + metadata.name].split(',');
           }
-          $form[0].querySelector('.metadata_'+metadata.name+'_field').value = newValue;
+          formElem.querySelector('.metadata_' + metadata.name + '_field').value = newValue;
+        } else {
+          formElem.querySelector('.metadata_' + metadata.name + '_field').value = media['metadata_' + metadata.name];
         }
-        else $form[0].querySelector('.metadata_'+metadata.name+'_field').value = media['metadata_'+metadata.name];
       });
 
       items_selected = true;
-
     });
 
     $('.new_media_only').hide();
