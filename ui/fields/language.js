@@ -55,7 +55,7 @@ class OBFieldLanguage extends OBField {
 
     // set our field options if we don't have them already
     this.fieldSelect = this.root.querySelector('ob-field-select');
-    if (!this.fieldSelect.options.length) {
+    if (! this.fieldSelect.options || ! this.fieldSelect.options.length) {
       this.fieldSelect.options = OBFieldLanguage.languages;
       this.fieldSelect.popular = OBFieldLanguage.popularLanguages;
       this.fieldSelect.refresh();
