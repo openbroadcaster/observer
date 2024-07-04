@@ -2,6 +2,14 @@ import { html, render } from '../vendor.js';
 import { OBElement } from '../base/element.js';
 
 export class OBField extends OBElement {
+  async connectedCallback() {
+    if (this.connected) {
+      await this.connected();
+    }
+
+    this.resolveInitialized();
+  }
+
   renderView() {
     render(html`
             ${this.value}

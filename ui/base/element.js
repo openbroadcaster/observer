@@ -10,6 +10,10 @@ export class OBElement extends HTMLElement {
     constructor() {
         super();
 
+        this.initialized = new Promise((resolve) => {
+            this.resolveInitialized = resolve;
+        });
+
         const shadowRoot = this.attachShadow({ mode: 'open' });
 
         const scss = `

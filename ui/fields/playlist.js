@@ -5,20 +5,15 @@ class OBFieldPlaylist extends OBField {
 
     #playlistItems;
     #playlistContent;
-    #init;
 
-    async connectedCallback() {
+    async connected() {
         this.#playlistItems = [];
         this.#playlistContent = {};
 
-        this.renderComponent();
-
-        if (!this.#init) {
-            this.#init = true;
-
+        this.renderComponent().then(() => {
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-        }
+        });
     }
 
     renderEdit() {
@@ -140,7 +135,6 @@ class OBFieldPlaylist extends OBField {
         if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
             return false;
         }
-        
         var selectedPlaylist = this.#playlistItems;
 
         Object.keys(window.dragHelperData).forEach((key) => {
@@ -159,20 +153,26 @@ class OBFieldPlaylist extends OBField {
     }
 
     async playlistContent() {
-        return Promise.all(this.#playlistItems.map(async (playlistItem) => {
-            if (this.#playlistContent[playlistItem]) {
-                return;
-            }
+        let playlistItemPromises = this.#playlistItems.map((playlistItem) => {
+            return new Promise((resolve) => {
+                if (this.#playlistContent[playlistItem]) {
+                    resolve();
+                    return;
+                }
 
-            const result = await OB.API.postPromise('playlists', 'get', { id: playlistItem });
-            if (!result.status) {
-                return;
-            }
+                OB.API.postPromise('playlists', 'get', { id: playlistItem }).then((result) => {
+                    if (!result.status) {
+                        resolve();
+                        return;
+                    }
 
-            const data = result.data;
-            this.#playlistContent[playlistItem] = data.name;
-            this.refresh();
-        }));
+                    const data = result.data;
+                    this.#playlistContent[playlistItem] = data.name;
+                    resolve();
+                });
+            });
+        });
+        return Promise.all(playlistItemPromises);
     }
 
     playlistRemove(event) {
@@ -187,28 +187,35 @@ class OBFieldPlaylist extends OBField {
     }
 
     set value(value) {
-        if (!Array.isArray(value)) {
-            value = [value];
-        }
+        this.initialized.then(() => {
+            if (!Array.isArray(value)) {
+                value = [value];
+            }
 
-        value = value.map((x) => parseInt(x));
+            value = value.map((x) => parseInt(x));
 
-        if (!value.every(Number.isInteger)) {
-            return false;
-        }
+            if (!value.every(Number.isInteger)) {
+                return false;
+            }
 
-        if (this.dataset.hasOwnProperty('single')) {
-            value = value.slice(-1);
-        }
+            if (this.dataset.hasOwnProperty('single')) {
+                value = value.slice(-1);
+            }
 
-        this.#playlistItems = value;
-        this.playlistContent().then(() => {
-            this.#playlistItems = this.#playlistItems.filter((item) => {
-                return Object.keys(this.#playlistContent).includes(item.toString());
+            this.#playlistItems = value;
+            this.playlistContent().then(() => {
+                
+                console.log(this, this.#playlistItems);
+                console.log(this, this.#playlistContent);
+                
+                this.#playlistItems = this.#playlistItems.filter((item) => {
+                    return Object.keys(this.#playlistContent).includes(item.toString());
+                });
+                this.renderComponent();
+
+                this.dispatchEvent(new Event('change'));
             });
-            this.refresh();
 
-            this.dispatchEvent(new Event('change'));
         });
     }
 }
