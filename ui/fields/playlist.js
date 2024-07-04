@@ -7,7 +7,7 @@ class OBFieldPlaylist extends OBField {
     #playlistContent;
     #init;
 
-    connectedCallback() {
+    async connectedCallback() {
         this.#playlistItems = [];
         this.#playlistContent = {};
 

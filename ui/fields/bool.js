@@ -4,7 +4,7 @@ import { OBField } from '../base/field.js';
 class OBFieldBool extends OBField {
     #init;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }

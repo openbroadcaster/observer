@@ -7,7 +7,7 @@ class OBFieldTags extends OBField {
     #suggestions;
     #currentTag;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }

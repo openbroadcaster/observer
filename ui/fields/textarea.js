@@ -4,7 +4,7 @@ import { html, render } from '../vendor.js';
 class OBFieldTextarea extends OBField {
     #init;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }

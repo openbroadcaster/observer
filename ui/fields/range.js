@@ -12,7 +12,7 @@ class OBFieldRange extends OBField {
     #min;
     #max;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (! this.#init) {
             this.#init = true;
 

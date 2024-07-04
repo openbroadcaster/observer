@@ -3,7 +3,7 @@ import { OBField } from '../base/field.js';
 class OBFieldText extends OBField {
     #init;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }

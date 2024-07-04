@@ -11,7 +11,7 @@ class OBFieldDatetime extends OBField {
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }

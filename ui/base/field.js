@@ -2,8 +2,8 @@ import { html, render } from '../vendor.js';
 import { OBElement } from '../base/element.js';
 
 export class OBField extends OBElement {
-  async connectedCallback(renderComponent) {
-    if (renderComponent !== false) await this.renderComponent();
+  async connectedCallback() {
+    await this.renderComponent();
   }
 
   renderView() {

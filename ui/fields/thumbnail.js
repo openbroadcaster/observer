@@ -8,7 +8,7 @@ class OBFieldThumbnail extends OBField {
     #imageHeight;
     #readOnly;
 
-    connectedCallback() {
+    async connectedCallback() {
         this.#imageData = null;
         this.#imageWidth = this.getAttribute('width') ? this.getAttribute('width') : 128;
         this.#imageHeight = this.getAttribute('height') ? this.getAttribute('height') : 128;

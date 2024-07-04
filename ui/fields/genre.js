@@ -9,7 +9,7 @@ class OBFieldGenre extends OBField {
     #currentGenre;
     #genres;
 
-    connectedCallback() {
+    async connectedCallback() {
         if (this.#init) {
             return;
         }
