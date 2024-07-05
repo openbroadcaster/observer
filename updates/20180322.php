@@ -4,7 +4,7 @@ class OBUpdate20180322 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Custom media metadata management.';
         return $updates;
     }

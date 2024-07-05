@@ -4,7 +4,7 @@ class OBUpdate20221028 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Add uniqueness constraint to combined user ID and name for users storage.';
         return $updates;
     }

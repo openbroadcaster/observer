@@ -106,7 +106,7 @@ class OBFDB
     public function enable_profiling()
     {
         $this->profiling = true;
-        $this->profiles = array();
+        $this->profiles = [];
     }
 
     /**
@@ -140,7 +140,7 @@ class OBFDB
             return false;
         }
 
-        $this->profiles[] = array('query' => $query, 'duration' => (float) $duration);
+        $this->profiles[] = ['query' => $query, 'duration' => (float) $duration];
         return true;
     }
 
@@ -207,7 +207,7 @@ class OBFDB
             return false;
         }
 
-        $return = array();
+        $return = [];
 
         for ($i = 0; $i < $this->num_rows(); $i++) {
             $return[$i] = mysqli_fetch_assoc($this->result);
@@ -241,7 +241,7 @@ class OBFDB
             return false;
         }
 
-        $return = array();
+        $return = [];
 
         for ($i = 0; $i < $this->num_rows(); $i++) {
             $return[$i] = mysqli_fetch_array($this->result);
@@ -318,7 +318,7 @@ class OBFDB
     public function what($column, $as = null, $escape = true)
     {
         if (!is_array($this->hl_what)) {
-            $this->hl_what = array();
+            $this->hl_what = [];
         }
 
         if ($escape) {
@@ -346,10 +346,10 @@ class OBFDB
     public function where($column, $value, $operator = '=')
     {
         if (!is_array($this->hl_where)) {
-            $this->hl_where = array();
+            $this->hl_where = [];
         }
 
-        if (array_search($operator, array('=','>','<','>=','<=','!=')) === false) {
+        if (array_search($operator, ['=','>','<','>=','<=','!=']) === false) {
             $operator = '=';
         }
 
@@ -377,7 +377,7 @@ class OBFDB
     public function where_like($column, $value)
     {
         if (!is_array($this->hl_where)) {
-            $this->hl_where = array();
+            $this->hl_where = [];
         }
 
         $where = $this->format_table_column($column) . ' LIKE ' . $this->format_value('%' . $value . '%');
@@ -395,7 +395,7 @@ class OBFDB
     public function where_not_like($column, $value)
     {
         if (!is_array($this->hl_where)) {
-            $this->hl_where = array();
+            $this->hl_where = [];
         }
 
         $where = $this->format_table_column($column) . ' NOT LIKE ' . $this->format_value('%' . $value . '%');
@@ -434,10 +434,10 @@ class OBFDB
     public function where_col($column, $value, $operator = '=')
     {
         if (!is_array($this->hl_where)) {
-            $this->hl_where = array();
+            $this->hl_where = [];
         }
 
-        if (array_search($operator, array('=','>','<','>=','<=','!=')) === false) {
+        if (array_search($operator, ['=','>','<','>=','<=','!=']) === false) {
             $operator = '=';
         }
 
@@ -540,10 +540,10 @@ class OBFDB
         $column2 = $this->format_table_column($column2);
 
         if (!is_array($this->hl_leftjoin)) {
-            $this->hl_leftjoin = array();
+            $this->hl_leftjoin = [];
         }
 
-        $this->hl_leftjoin[] = array($table,$column1,$column2);
+        $this->hl_leftjoin[] = [$table,$column1,$column2];
     }
 
     /**

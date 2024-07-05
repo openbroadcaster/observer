@@ -131,14 +131,14 @@ class OBFUser
         $result = $this->db->get_one('users');
 
         if ($result && $result['password'] == '') {
-            return array(false,'Due to security updates, a password reset is required. Use "Forgot Password" to reset your password.');
+            return [false,'Due to security updates, a password reset is required. Use "Forgot Password" to reset your password.'];
         } elseif ($result && $this->password_verify($pass, $result['password'])) {
             // valid user and password verified?
             // if rehash required, do that and store in db.
             if (password_needs_rehash($result['password'], PASSWORD_DEFAULT)) {
                 $new_hash = $this->password_hash($pass);
                 $this->db->where('id', $result['id']);
-                $this->db->update('users', array('password' => $new_hash));
+                $this->db->update('users', ['password' => $new_hash]);
             }
 
             // cache our userdata.
@@ -165,9 +165,9 @@ class OBFUser
             setcookie('ob_auth_key', $key, 0, '/', null, false, false);
 
             // return key data.
-            return array(true,'Login successful.',array('id' => $key_id,'key' => $key, 'key_expiry' => $key_expiry));
+            return [true,'Login successful.',['id' => $key_id,'key' => $key, 'key_expiry' => $key_expiry]];
         } else {
-            return array(false,'The login or password you have provided is incorrect.');
+            return [false,'The login or password you have provided is incorrect.'];
         }
     }
 

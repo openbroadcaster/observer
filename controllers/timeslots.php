@@ -50,10 +50,10 @@ class Timeslots extends OBFController
 
         //T Timeslot not found.
         if (!$timeslot) {
-            return array(false, 'Timeslot not found.');
+            return [false, 'Timeslot not found.'];
         }
         //T Timeslot.
-        return array(true, 'Timeslot.', $timeslot);
+        return [true, 'Timeslot.', $timeslot];
     }
 
     /**
@@ -83,7 +83,7 @@ class Timeslots extends OBFController
 
         //T Player ID is invalid.
         if (!preg_match('/^[0-9]+$/', $player)) {
-            return array(false, 'Player ID is invalid.');
+            return [false, 'Player ID is invalid.'];
         }
 
         // require "manage timeslots" permission unless we are getting the timeslots for our own user.
@@ -93,18 +93,18 @@ class Timeslots extends OBFController
 
         //T Player ID is invalid.
         if (!preg_match('/^[0-9]+$/', $player)) {
-            return array(false, 'Player ID is invalid.');
+            return [false, 'Player ID is invalid.'];
         }
         //T Start or end date is invalid.
         if (!preg_match('/^[0-9]+$/', $start) || !preg_match('/^[0-9]+$/', $end)) {
-            return array(false, 'Start or end date is invalid.');
+            return [false, 'Start or end date is invalid.'];
         }
         if ($start >= $end) {
-            return array(false, 'Start or end date is invalid.');
+            return [false, 'Start or end date is invalid.'];
         }
         //T User ID is invalid.
         if (!empty($user_id) && !preg_match('/^[0-9]+$/', $user_id)) {
-            return array(false, 'User ID is invalid.');
+            return [false, 'User ID is invalid.'];
         }
 
         // check if player is valid.
@@ -113,13 +113,13 @@ class Timeslots extends OBFController
 
         //T Player ID is invalid.
         if (!$player_data) {
-            return array(false, 'Player ID is invalid.');
+            return [false, 'Player ID is invalid.'];
         }
 
         $data = $this->models->timeslots('get_timeslots', $start, $end, $player, false, $user_id);
 
         //T Schedule timeslots.
-        return array(true, 'Schedule timeslots.', $data);
+        return [true, 'Schedule timeslots.', $data];
     }
 
     /**
@@ -140,10 +140,10 @@ class Timeslots extends OBFController
         if ($player_data) {
             $this->user->set_setting('last_timeslots_player', $player_id);
             //T Set last timeslots player.
-            return array(true, 'Set last timeslots player.');
+            return [true, 'Set last timeslots player.'];
         }
         //T Player not found.
-        return array(false, 'Player not found.');
+        return [false, 'Player not found.'];
     }
 
     /**
@@ -156,10 +156,10 @@ class Timeslots extends OBFController
         $player_id = $this->user->get_setting('last_timeslots_player');
         //T Last timeslots player.
         if ($player_id) {
-            return array(true, 'Last timeslots player.', $player_id);
+            return [true, 'Last timeslots player.', $player_id];
         }
         //T Last timeslots player not found.
-        return array(false,'Last timeslots player not found.');
+        return [false,'Last timeslots player not found.'];
     }
 
     /**
@@ -179,14 +179,14 @@ class Timeslots extends OBFController
 
         //T Timeslot not found.
         if (!$timeslot) {
-            return array(false, 'Timeslot not found.');
+            return [false, 'Timeslot not found.'];
         }
         $this->user->require_permission('manage_timeslots:' . $timeslot['player_id']);
 
         $this->models->timeslots('delete_timeslot', $id);
 
         //T Timeslot deleted.
-        return array(true, 'Timeslot deleted.');
+        return [true, 'Timeslot deleted.'];
     }
 
     /**
@@ -231,13 +231,13 @@ class Timeslots extends OBFController
             $original_timeslot = $this->models->timeslots('get_timeslot_by_id', $id);
             //T Timeslot not found.
             if (!$original_timeslot) {
-                return array(false, 'Timeslot not found.');
+                return [false, 'Timeslot not found.'];
             }
         }
 
         $validate = $this->models->timeslots('validate_timeslot', $data, $id);
         if ($validate[0] == false) {
-            return array(false, $validate[1]);
+            return [false, $validate[1]];
         }
 
         // make sure we have permission to save for this player.
@@ -248,20 +248,20 @@ class Timeslots extends OBFController
 
         //T The duration is not valid.
         if (empty($duration)) {
-            return array(false, 'The duration is not valid.');
+            return [false, 'The duration is not valid.'];
         }
         $data['duration'] = $duration;
 
         // collision check!
         $collision_check = $this->models->timeslots('collision_check', $data, $id);
         if ($collision_check[0] == false) {
-            return array(false, $collision_check[1]);
+            return [false, $collision_check[1]];
         }
 
         // FINALLY CREATE/EDIT TIMESLOT
         $this->models->timeslots('save_timeslot', $data, $id);
 
         //T Timeslot added.
-        return array(true, 'Timeslot added.');
+        return [true, 'Timeslot added.'];
     }
 }

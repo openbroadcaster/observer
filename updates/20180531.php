@@ -4,7 +4,7 @@ class OBUpdate20180531 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Store genre default for new media.';
         return $updates;
     }

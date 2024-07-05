@@ -4,7 +4,7 @@ class OBUpdate20200706 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "CASCADE user updates to client_storage table. Clean out any non-existing users first.";
         return $updates;
     }

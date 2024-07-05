@@ -4,7 +4,7 @@ class OBUpdate20141121 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Updates to users table.';
         $updates[] = 'User settings table.';
         // $updates[] = 'Translation Framework';

@@ -43,7 +43,7 @@ class Media extends OBFController
     {
         $this->user->require_authenticated();
         $formats = $this->models->media('formats_get_all');
-        return array(true,'Accepted formats.',$formats);
+        return [true,'Accepted formats.',$formats];
     }
 
     /**
@@ -75,7 +75,7 @@ class Media extends OBFController
 
         //T Media Settings
         //T File format settings saved.
-        return array(true,['Media Settings','File format settings saved.']);
+        return [true,['Media Settings','File format settings saved.']];
     }
 
     /**
@@ -88,7 +88,7 @@ class Media extends OBFController
     public function media_my_searches()
     {
         $this->user->require_authenticated();
-        return array(true,'Searches',array('saved' => $this->models->media('search_get_saved', ['type' => 'saved']), 'history' => $this->models->media('search_get_saved', ['type' => 'history'])));
+        return [true,'Searches',['saved' => $this->models->media('search_get_saved', ['type' => 'saved']), 'history' => $this->models->media('search_get_saved', ['type' => 'history'])]];
     }
 
     /**
@@ -104,9 +104,9 @@ class Media extends OBFController
         $this->user->require_authenticated();
 
         if ($this->models->media('search_save_history', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')])) {
-            return array(true,'Search item saved.');
+            return [true,'Search item saved.'];
         } else {
-            return array(false,'Error saving search item.');
+            return [false,'Error saving search item.'];
         }
     }
 
@@ -128,9 +128,9 @@ class Media extends OBFController
         $description = trim($this->data('description'));
 
         if ($this->models->media('search_edit', ['id' => $id, 'filters' => $filters, 'description' => $description, 'user_id' => $this->user->param('id')])) {
-            return array(true,'Search item edited.');
+            return [true,'Search item edited.'];
         } else {
-            return array(false,'Error editing search item.');
+            return [false,'Error editing search item.'];
         }
     }
 
@@ -146,9 +146,9 @@ class Media extends OBFController
         $this->user->require_authenticated();
 
         if ($this->models->media('search_delete_saved', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')])) {
-            return array(true,'Search item deleted.');
+            return [true,'Search item deleted.'];
         } else {
-            return array(false,'Error deleting search item.');
+            return [false,'Error deleting search item.'];
         }
     }
 
@@ -166,9 +166,9 @@ class Media extends OBFController
         $this->user->require_authenticated();
 
         if ($this->models->media('search_default', ['id' => $this->data('id'), 'user_id' => $this->user->param('id')])) {
-            return array(true,'Search item is now default.');
+            return [true,'Search item is now default.'];
         } else {
-            return array(false,'Error setting search item as default.');
+            return [false,'Error setting search item as default.'];
         }
     }
 
@@ -184,9 +184,9 @@ class Media extends OBFController
         $this->user->require_authenticated();
 
         if ($this->models->media('search_unset_default', ['user_id' => $this->user->param('id')])) {
-            return array(true,'Search default has been unset.');
+            return [true,'Search default has been unset.'];
         } else {
-            return array(false,'Error removing default from search item.');
+            return [false,'Error removing default from search item.'];
         }
     }
 
@@ -260,7 +260,7 @@ class Media extends OBFController
         $media_result = $this->models->media('search', ['params' => $params, 'player_id' => null]);
 
         if ($media_result == false) {
-            return array(false,'Search error.');
+            return [false,'Search error.'];
         }
 
         if ($this->data('save_history') && $params['query']['mode'] == 'advanced') {
@@ -271,7 +271,7 @@ class Media extends OBFController
             $media['can_edit'] = $this->user_can_edit($media);
         }
 
-        return array(true,'Media',array('num_results' => $media_result[1],'media' => $media_result[0]));
+        return [true,'Media',['num_results' => $media_result[1],'media' => $media_result[0]]];
     }
 
     /**
@@ -297,7 +297,7 @@ class Media extends OBFController
         $media = $this->data('media');
 
         $all_valid = true;
-        $validation = array();
+        $validation = [];
 
         // Split POST and PUT when using v2 api: one for creating new media,
         // one for updating existing ones. This means id should be unset on POST,
@@ -369,7 +369,7 @@ class Media extends OBFController
 
         // if all valid, proceed with media update (or create new)
         if ($all_valid) {
-            $items = array();
+            $items = [];
             foreach ($media as $item) {
                 $id = $this->models->media('save', ['item' => $item]);
                 $items[] = $id;
@@ -379,9 +379,9 @@ class Media extends OBFController
                 }
             }
             //T Media has been saved.
-            return array(true,'Media has been saved.',$items);
+            return [true,'Media has been saved.',$items];
         } else {
-            return array(false,'Media update validation error(s).',$validation);
+            return [false,'Media update validation error(s).',$validation];
         }
     }
 
@@ -548,10 +548,10 @@ class Media extends OBFController
         }
 
         if (!$this->models->media('archive', ['ids' => $ids])) {
-            return array(false,'An error occurred while attempting to archive this media.');
+            return [false,'An error occurred while attempting to archive this media.'];
         }
 
-        return array(true,'Media has been archived.');
+        return [true,'Media has been archived.'];
     }
 
     /**
@@ -569,14 +569,14 @@ class Media extends OBFController
 
         // if we just have a single ID, make it into an array so we can proceed on that assumption.
         if (!is_array($ids)) {
-            $ids = array($ids);
+            $ids = [$ids];
         }
 
         if (!$this->models->media('unarchive', ['ids' => $ids])) {
-            return array(false,'An error occurred while attempting to un-archive this media.');
+            return [false,'An error occurred while attempting to un-archive this media.'];
         }
 
-        return array(true,'Media has been un-archived.');
+        return [true,'Media has been un-archived.'];
     }
 
     /**
@@ -595,14 +595,14 @@ class Media extends OBFController
 
         // if we just have a single ID, make it into an array so we can proceed on that assumption.
         if (!is_array($ids)) {
-            $ids = array($ids);
+            $ids = [$ids];
         }
 
         if (!$this->models->media('delete', ['ids' => $ids])) {
-            return array(false,'An error occurred while attempting to delete this media.');
+            return [false,'An error occurred while attempting to delete this media.'];
         }
 
-        return array(true,'Media has been permanently deleted.');
+        return [true,'Media has been permanently deleted.'];
     }
 
     /**
@@ -624,7 +624,7 @@ class Media extends OBFController
 
         //T Media not found.
         if (!$media) {
-            return array(false,'Media not found.');
+            return [false,'Media not found.'];
         }
 
         if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
@@ -651,6 +651,6 @@ class Media extends OBFController
             $media['thumbnail'] = $thumbnail[1];
         }
 
-        return array(true,'Media data.',$media);
+        return [true,'Media data.',$media];
     }
 }

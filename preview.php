@@ -177,7 +177,7 @@ class MediaPreview extends OBFController
             $cache_file = $cache_dir . '/' . $media['id'] . '_audio.' . $audio_format;
 
             if (!file_exists($cache_file)) {
-                $strtr_array = array('{infile}' => $media_file, '{outfile}' => $cache_file);
+                $strtr_array = ['{infile}' => $media_file, '{outfile}' => $cache_file];
 
                 if ($audio_format == 'mp3') {
                     exec(strtr(OB_TRANSCODE_AUDIO_MP3, $strtr_array));
@@ -232,7 +232,7 @@ class MediaPreview extends OBFController
             $cache_file = $cache_dir . '/' . $media['id'] . '_' . $dest_width . 'x' . $dest_height . '.' . $video_format;
 
             if (!file_exists($cache_file)) {
-                $strtr_array = array('{infile}' => $media_file, '{outfile}' => $cache_file, '{width}' => $dest_width, '{height}' => $dest_height);
+                $strtr_array = ['{infile}' => $media_file, '{outfile}' => $cache_file, '{width}' => $dest_width, '{height}' => $dest_height];
 
                 if ($video_format == 'mp4') {
                     // resolution apparently needs to be divisible by 2.

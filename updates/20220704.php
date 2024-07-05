@@ -4,7 +4,7 @@ class OBUpdate20220704 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Rename old schedules tables, add underscore for deprecated/old tables.';
         return $updates;
     }

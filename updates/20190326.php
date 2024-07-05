@@ -4,7 +4,7 @@ class OBUpdate20190326 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Support longer setting values (text column).';
         return $updates;
     }

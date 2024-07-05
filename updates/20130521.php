@@ -4,7 +4,7 @@ class OBUpdate20130521 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Update devices table to support station ID image duration setting.';
         return $updates;
     }

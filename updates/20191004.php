@@ -4,7 +4,7 @@ class OBUpdate20191004 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Fix media comments field character encoding.';
 
         return $updates;

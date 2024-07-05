@@ -25,11 +25,11 @@ if (!isset($_GET['t'])) {
     die();
 }
 
-$festival = array(
-  array('pipe','r'),
-  array('pipe','w'),
-  array('file','/dev/null','a')
-);
+$festival = [
+  ['pipe','r'],
+  ['pipe','w'],
+  ['file','/dev/null','a']
+];
 
 $process = proc_open('text2wave | oggenc - -o -', $festival, $pipes);
 

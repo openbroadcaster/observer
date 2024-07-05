@@ -4,7 +4,7 @@ class OBUpdate20200208 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Merge is_public and status media fields.';
         $updates[] = 'Note that any media allowing public access will now be visible to all users.';
         $updates[] = 'Add public option to playlists.';

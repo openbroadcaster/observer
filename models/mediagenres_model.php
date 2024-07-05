@@ -120,13 +120,13 @@ class MediaGenresModel extends OBFModel
     {
         //T A genre name is required.
         if (!$data['name']) {
-            return array(false,['Genre Edit','A genre name is required.']);
+            return [false,['Genre Edit','A genre name is required.']];
         }
         if (!$this->db->id_exists('media_categories', $data['media_category_id'])) {
-            return array(false,'The category ID is invalid.');
+            return [false,'The category ID is invalid.'];
         }
 
-        return array(true,'Valid.');
+        return [true,'Valid.'];
     }
 
     /**

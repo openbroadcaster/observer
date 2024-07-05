@@ -47,7 +47,7 @@ class OBFHelpers
     public static function sanitize_html($html)
     {
         $allow_tags = "<p><br><strong><b><u><ul><ol><li><a>";
-        $allow_attr = array('href', 'title', 'alt');
+        $allow_attr = ['href', 'title', 'alt'];
 
         $html = strip_tags($html, $allow_tags);
         $result = new DOMDocument();

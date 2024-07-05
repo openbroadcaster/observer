@@ -62,7 +62,7 @@ class Players extends OBFController
         $players = $this->models->players('get', $params);
 
         if ($players === false) {
-            return array(false,'An unknown error occurred while fetching players.');
+            return [false,'An unknown error occurred while fetching players.'];
         }
 
         foreach ($players as $index => $player) {
@@ -74,7 +74,7 @@ class Players extends OBFController
             }
         }
 
-        return array(true,'Player list.',$players);
+        return [true,'Player list.',$players];
     }
 
     /**
@@ -144,7 +144,7 @@ class Players extends OBFController
             $data['use_parent_alert'] = (int) $this->data('use_parent_alert');
 
             if ($data['use_parent_ids']) {
-                $data['station_ids'] = array();
+                $data['station_ids'] = [];
                 $data['station_id_image_duration'] = 15; // this field will be hidden, set to default. it doesn't matter but needs to be valid.
             }
 
@@ -168,7 +168,7 @@ class Players extends OBFController
         $id = $this->models->players('save', $data, $id);
 
         //T Player saved.
-        return array(true, 'Player saved.', $id);
+        return [true, 'Player saved.', $id];
     }
 
     /**
@@ -187,7 +187,7 @@ class Players extends OBFController
         $id = $this->data('id');
 
         if (empty($id)) {
-            return array(false,'A player ID is required.');
+            return [false,'A player ID is required.'];
         }
 
         $validation = $this->models->players('delete_check_permission', $id);
@@ -196,13 +196,13 @@ class Players extends OBFController
         }
 
         if ($this->models->players('player_is_parent', $id)) {
-            return array(false,'This player is a parent player, and cannot be deleted.');
+            return [false,'This player is a parent player, and cannot be deleted.'];
         }
 
         $this->models->players('delete', $id);
 
         //T player deleted.
-        return array(true,'player deleted.');
+        return [true,'player deleted.'];
     }
 
     /**
@@ -230,10 +230,10 @@ class Players extends OBFController
                 unset($player['ip_address']);
             }
 
-            return array(true,'player data',$player);
+            return [true,'player data',$player];
         } else {
             //T This player no longer exists.
-            return array(false,'This player no longer exists.');
+            return [false,'This player no longer exists.'];
         }
     }
 
@@ -248,7 +248,7 @@ class Players extends OBFController
     {
         $this->user->require_authenticated();
         $average = $this->models->players('station_id_average_duration');
-        return array(true,'Average duration for station IDs.',$average);
+        return [true,'Average duration for station IDs.',$average];
     }
 
     /**
@@ -292,14 +292,14 @@ class Players extends OBFController
 
         // validate player_id, check permission.
         if (!preg_match('/^[0-9]+$/', $data['player_id'])) {
-            return array(false,'Invalid player ID.');
+            return [false,'Invalid player ID.'];
         }
         $this->user->require_permission('view_player_monitor:' . $data['player_id']);
 
         $result = $this->models->players('monitor_search', $data);
 
         if ($result[0] === false) {
-            return array(false,'An unknown error occurred while searching the playlog.');
+            return [false,'An unknown error occurred while searching the playlog.'];
         }
 
         if ($data['type'] === 'csv') {
@@ -322,6 +322,6 @@ class Players extends OBFController
     {
         $player_id = $this->data('id');
         $return = $this->models->players('now_playing', $player_id);
-        return array(true,'Now playing.',$return);
+        return [true,'Now playing.',$return];
     }
 }

@@ -4,7 +4,7 @@ class OBUpdate20191019 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Media metadata tag updates.';
 
         return $updates;

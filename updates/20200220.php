@@ -4,7 +4,7 @@ class OBUpdate20200220 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Support custom playlist item types.';
 
         return $updates;

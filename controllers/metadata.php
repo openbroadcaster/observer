@@ -26,7 +26,7 @@
  */
 class Metadata extends OBFController
 {
-    public $media_types = array('audio','image','video');
+    public $media_types = ['audio','image','video'];
 
     public function __construct()
     {
@@ -165,7 +165,7 @@ class Metadata extends OBFController
     public function media_metadata_fields()
     {
         $fields = $this->models->mediametadata('get_all');
-        return array(true,'Media metadata fields.',$fields);
+        return [true,'Media metadata fields.',$fields];
     }
 
     /**
@@ -206,7 +206,7 @@ class Metadata extends OBFController
             return $result;
         }
 
-        $data = array(
+        $data = [
         'artist'                  => $this->data['artist'],
         'album'                   => $this->data['album'],
         'year'                    => $this->data['year'],
@@ -216,7 +216,7 @@ class Metadata extends OBFController
         'comments'                => $this->data['comments'],
         'dynamic_content_default' => $this->data['dynamic_content_default'],
         'dynamic_content_hidden'  => $this->data['dynamic_content_hidden']
-        );
+        ];
 
         $result = $this->models->mediametadata('required_fields', $data);
 
@@ -348,9 +348,9 @@ class Metadata extends OBFController
         $categories = $this->models->mediacategories('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
         if ($categories === false) {
-            return array(false,'An unknown error occurred while fetching categories.');
+            return [false,'An unknown error occurred while fetching categories.'];
         } else {
-            return array(true,'Category list.',$categories);
+            return [true,'Category list.',$categories];
         }
     }
 
@@ -376,7 +376,7 @@ class Metadata extends OBFController
             }
         }
 
-        $data = array();
+        $data = [];
         $data['name'] = trim($this->data('name'));
         $data['is_default'] = $this->data('default');
 
@@ -388,9 +388,9 @@ class Metadata extends OBFController
         $save = $this->models->mediacategories('save', $data, $id);
 
         if (!$save) {
-            return array(false,'An unknown error occurred while trying to save this category.');
+            return [false,'An unknown error occurred while trying to save this category.'];
         } else {
-            return array(true,'Category saved.');
+            return [true,'Category saved.'];
         }
     }
 
@@ -415,9 +415,9 @@ class Metadata extends OBFController
         $delete = $this->models->mediacategories('delete', $id);
 
         if ($delete) {
-            return array(true,'Category deleted.');
+            return [true,'Category deleted.'];
         } else {
-            return array(false,'An unknown error occured while trying to delete the category.');
+            return [false,'An unknown error occured while trying to delete the category.'];
         }
     }
 
@@ -437,9 +437,9 @@ class Metadata extends OBFController
         $category = $this->models->mediacategories('get_by_id', $id);
 
         if ($category) {
-            return array(true,'Category information.',$category);
+            return [true,'Category information.',$category];
         } else {
-            return array(false,'Category not found.');
+            return [false,'Category not found.'];
         }
     }
 
@@ -471,9 +471,9 @@ class Metadata extends OBFController
         $genres = $this->models->mediagenres('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
         if ($genres === false) {
-            return array(false,'An unknown error occurred while fetching genres.');
+            return [false,'An unknown error occurred while fetching genres.'];
         } else {
-            return array(true,'Genre list.',$genres);
+            return [true,'Genre list.',$genres];
         }
     }
 
@@ -493,7 +493,7 @@ class Metadata extends OBFController
     {
         $this->user->require_permission('manage_media_settings');
 
-        $data = array();
+        $data = [];
         $id = trim($this->data['id']);
 
         if ($this->api_version() === 2) {
@@ -513,9 +513,9 @@ class Metadata extends OBFController
         }
 
         if ($this->models->mediagenres('save', $data, $id)) {
-            return array(true,'Genre saved.');
+            return [true,'Genre saved.'];
         } else {
-            return array(false,'An unknown error occurred while trying to save this genre.');
+            return [false,'An unknown error occurred while trying to save this genre.'];
         }
     }
 
@@ -535,9 +535,9 @@ class Metadata extends OBFController
         $delete = $this->models->mediagenres('delete', $id);
 
         if ($delete) {
-            return array(true,'Genre deleted.');
+            return [true,'Genre deleted.'];
         } else {
-            return array(false,'An unknown error occured while trying to delete the genre.');
+            return [false,'An unknown error occured while trying to delete the genre.'];
         }
     }
 
@@ -557,9 +557,9 @@ class Metadata extends OBFController
         $genre = $this->models->mediagenres('get_by_id', $id);
 
         if ($genre) {
-            return array(true,'Genre information.',$genre);
+            return [true,'Genre information.',$genre];
         } else {
-            return array(false,'Genre not found.');
+            return [false,'Genre not found.'];
         }
     }
 
@@ -579,9 +579,9 @@ class Metadata extends OBFController
         $types = $this->models->mediacountries('get_all');
 
         if ($types === false) {
-            return array(false,'An unknown error occured while fetching countries.');
+            return [false,'An unknown error occured while fetching countries.'];
         } else {
-            return array(true,'Country list.',$types);
+            return [true,'Country list.',$types];
         }
     }
 
@@ -603,7 +603,7 @@ class Metadata extends OBFController
         }
 
         if ($languages === false) {
-            return array(false,'An unknown error occured while fetching languages.');
+            return [false,'An unknown error occured while fetching languages.'];
         }
 
         // get top languages, add popularity to the languages
@@ -617,6 +617,6 @@ class Metadata extends OBFController
             $language['popularity'] = $language_popularities[$language['language_id']] ?? null;
         }
 
-        return array(true,'Language list.',$languages);
+        return [true,'Language list.',$languages];
     }
 }

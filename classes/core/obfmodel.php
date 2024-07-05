@@ -78,8 +78,8 @@ class OBFModel
     // copied/modified from: http://drupal.org/node/353494 ... this is ugly.
         // hopefully the future will bring a more elegant solution.
         $stack = debug_backtrace();
-        $args = array();
-        $eval_args = array();
+        $args = [];
+        $eval_args = [];
 
         // make sure our method name is specified.  determine our method name.
         if (!isset($stack[0]['args']) || count($stack[0]['args']) < 1) {

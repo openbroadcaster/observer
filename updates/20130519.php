@@ -4,7 +4,7 @@ class OBUpdate20130519 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Update devices table to support storing of remote version.';
         return $updates;
     }

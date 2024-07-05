@@ -40,10 +40,10 @@ class SettingsModel extends OBFModel
     {
         $this->db->where('name', $name);
         $this->db->delete('settings');
-        $result = $this->db->insert('settings', array(
+        $result = $this->db->insert('settings', [
         'name'  => $name,
         'value' => $value
-        ));
+        ]);
 
         return ($result)
         ? [true, 'Successfully set setting.', $result]

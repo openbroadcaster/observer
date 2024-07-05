@@ -147,7 +147,7 @@ class PlaylistsModel extends OBFModel
      */
     public function get_items($id)
     {
-        $return = array();
+        $return = [];
 
         // get playlist items.
         $this->db->orderby('playlists_items.ord');
@@ -230,9 +230,9 @@ class PlaylistsModel extends OBFModel
      */
     public function where_used($id)
     {
-        $info = array();
+        $info = [];
 
-        $info['used'] = array();
+        $info['used'] = [];
         $info['id'] = $id;
         $info['can_delete'] = true;
 
@@ -308,7 +308,7 @@ class PlaylistsModel extends OBFModel
      */
     public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false)
     {
-        $where_strings = array();
+        $where_strings = [];
 
         if ($query !== '' && $query !== false && $query !== null) {
             $where_strings[] = '(name LIKE "%' . $this->db->escape($query) . '%" OR description LIKE "%' . $this->db->escape($query) . '%")';
@@ -334,7 +334,7 @@ class PlaylistsModel extends OBFModel
         }
 
         // otherwise, if posted sort by data is valid, use that...
-        if (($sort_dir == 'asc' || $sort_dir == 'desc') && array_search($sort_by, array('name','description','updated')) !== false) {
+        if (($sort_dir == 'asc' || $sort_dir == 'desc') && array_search($sort_by, ['name','description','updated']) !== false) {
             $this->db->orderby($sort_by, $sort_dir);
         } else {
             // otherwise, show the most recently updated first
@@ -345,7 +345,7 @@ class PlaylistsModel extends OBFModel
 
         $playlists = $this->db->get('playlists');
 
-        return array('num_results' => $this->db->found_rows(),'playlists' => $playlists);
+        return ['num_results' => $this->db->found_rows(),'playlists' => $playlists];
     }
 
     /**
@@ -360,18 +360,18 @@ class PlaylistsModel extends OBFModel
 
     //T A playlist name is required.
         if (empty($data['name'])) {
-            return array(false,'A playlist name is required.');
+            return [false,'A playlist name is required.'];
         }
         //T A valid status is required.
         if ($data['status'] != 'private' && $data['status'] != 'visible' && $data['status'] != 'public') {
-            return array(false,'A valid status is required.');
+            return [false,'A valid status is required.'];
         }
         //T A valid type is required.
         if ($data['type'] != 'standard' && $data['type'] != 'advanced' && $data['type'] != 'live_assist') {
-            return array(false,'A valid type is required.');
+            return [false,'A valid type is required.'];
         }
 
-        return array(true,'Playlist is valid.');
+        return [true,'Playlist is valid.'];
     }
 
     /**
@@ -390,13 +390,13 @@ class PlaylistsModel extends OBFModel
 
         //T One or more playlist items are not valid.
         if ($item['type'] != 'media' && $item['type'] != 'dynamic' && $item['type'] != 'station_id' && $item['type'] != 'breakpoint' && $item['type'] != 'custom') {
-            return array(false,'One or more playlist items are not valid.');
+            return [false,'One or more playlist items are not valid.'];
         }
 
         if ($item['type'] == 'media') {
       //T One or more media durations are invalid or zero.
             if (empty($item['duration']) || !preg_match('/^[0-9]+(\.[0-9]+)?$/', $item['duration']) || $item['duration'] <= 0) {
-                return array(false,'One or more media durations are invalid or zero.');
+                return [false,'One or more media durations are invalid or zero.'];
             }
 
             $this->db->where('id', $item['id']);
@@ -404,12 +404,12 @@ class PlaylistsModel extends OBFModel
 
             //T One or more playlist items are not valid.
             if (!$media) {
-                return array(false,'One or more playlist items are not valid.');
+                return [false,'One or more playlist items are not valid.'];
             }
 
             //T Only approved, unarchived media can be used in playlists.
             if ($media['is_approved'] == 0 || $media['is_archived'] == 1) {
-                return array(false,'Only approved, unarchived media can be used in playlists.');
+                return [false,'Only approved, unarchived media can be used in playlists.'];
             }
 
             // can't use private media that isn't ours unless we have 'manage_media' permission.
@@ -420,28 +420,28 @@ class PlaylistsModel extends OBFModel
             // can't add private media to a playlist with a different owner.
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if (!$playlist_id && $media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
-                return array(false,'A media item is marked as private. It can only be used in playlists created by the same owner.');
+                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if ($playlist_id && $media['status'] == 'private' && $media['owner_id'] != $original_playlist['owner_id']) {
-                return array(false,'A media item is marked as private. It can only be used in playlists created by the same owner.');
+                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
         } elseif ($item['type'] == 'dynamic') {
             $dynamic_validation = $this('validate_dynamic_properties', json_decode($item['query']), $item['num_items'], $item['num_items_all'], $item['image_duration']);
             //T One or more dynamic playlist items are not valid.
             if ($dynamic_validation[0] == false) {
-                return array(false,'One or more dynamic playlist items are not valid.');
+                return [false,'One or more dynamic playlist items are not valid.'];
             }
         } elseif ($item['type'] == 'custom') {
             $custom_name = $item['query']['name'] ?? '';
             $this->db->where('name', $custom_name);
             //T One or more custom playlist items are not valid.
             if (!$this->db->get_one('playlists_items_types')) {
-                return array(false,'One or more custom playlist items are not valid.');
+                return [false,'One or more custom playlist items are not valid.'];
             }
         }
 
-        return array(true,'Playlist item is valid.');
+        return [true,'Playlist item is valid.'];
     }
 
     /**
@@ -454,10 +454,10 @@ class PlaylistsModel extends OBFModel
     public function validate_liveassist_button_item($playlist_id)
     {
         if ($this->db->id_exists('playlists', $playlist_id)) {
-            return array(true,'Live Assist button item is valid.');
+            return [true,'Live Assist button item is valid.'];
         } else {
             //T One or more Live Assist button playlists are invalid.
-            return array(false,'One or more Live Assist button playlists are invalid.');
+            return [false,'One or more Live Assist button playlists are invalid.'];
         }
     }
 
@@ -477,11 +477,11 @@ class PlaylistsModel extends OBFModel
 
         //T The number of items is invalid.
         if (!$num_items_all && (!preg_match('/^[0-9]+$/', $num_items) || $num_items == '0')) {
-            return array(false,'The number of items is invalid.');
+            return [false,'The number of items is invalid.'];
         }
         //T The image duration is invalid.
         if (!preg_match('/^[0-9]+$/', $image_duration) || $image_duration == '0') {
-            return array(false,'The image duration is invalid.');
+            return [false,'The image duration is invalid.'];
         }
 
         if ($search_query['mode'] == 'advanced') {
@@ -498,17 +498,17 @@ class PlaylistsModel extends OBFModel
 
                 //T Invalid search criteria.
                 if (array_search($filter['filter'], $allowed_filters) === false) {
-                    return array(false,'Invalid search criteria.');
+                    return [false,'Invalid search criteria.'];
                 }
 
                 //T Invalid search criteria.
-                if (array_search($filter['op'], array('like','not_like','is','not','gte','lte','has','not_has')) === false) {
-                    return array(false, 'Invalid search criteria.' . $filter['op']);
+                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','not_has']) === false) {
+                    return [false, 'Invalid search criteria.' . $filter['op']];
                 }
             }
         }
 
-        return array(true,'Dynamic selection is valid.');
+        return [true,'Dynamic selection is valid.'];
     }
 
     /**
@@ -525,7 +525,7 @@ class PlaylistsModel extends OBFModel
         $ord = 0;
 
         foreach ($items as $item) {
-            $data = array();
+            $data = [];
             $data['playlist_id'] = $playlist_id;
             $data['order_id'] = $ord;
             $data['button_playlist_id'] = $item;
@@ -552,7 +552,7 @@ class PlaylistsModel extends OBFModel
     {
         $search_query = (array) $search_query; // convert to array (might come in as object with json_decode)
 
-        $where = array();
+        $where = [];
 
         // simple mode
         if ($search_query['mode'] == 'simple') {
@@ -567,7 +567,7 @@ class PlaylistsModel extends OBFModel
                 // TODO fix code duplication with media model
 
                 // our possible column (mappings)
-                $column_array = array();
+                $column_array = [];
                 $column_array['artist'] = 'media.artist';
                 $column_array['title'] = 'media.title';
                 $column_array['album'] = 'media.album';
@@ -586,7 +586,7 @@ class PlaylistsModel extends OBFModel
                 }
 
                 // our possibile comparison operators
-                $op_array = array();
+                $op_array = [];
                 $op_array['like'] = 'LIKE';
                 $op_array['not_like'] = 'NOT LIKE';
                 $op_array['is'] = '=';

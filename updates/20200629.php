@@ -4,7 +4,7 @@ class OBUpdate20200629 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Add API key rows for creation date and last accessed.";
         return $updates;
     }

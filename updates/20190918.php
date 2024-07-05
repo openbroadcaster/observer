@@ -4,7 +4,7 @@ class OBUpdate20190918 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Media stream and thumbnail version support.';
 
         return $updates;

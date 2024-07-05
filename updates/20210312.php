@@ -4,7 +4,7 @@ class OBUpdate20210312 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Clear and update show cache table.';
         return $updates;
     }

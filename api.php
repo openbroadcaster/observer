@@ -144,7 +144,7 @@ class OBFAPI
         if (isset($_POST['m']) && is_array($_POST['m'])) {
             $requests = $_POST['m'];
         } elseif (isset($_POST['c']) && isset($_POST['a']) && isset($_POST['d'])) {
-            $requests = array( array($_POST['c'],$_POST['a'],$_POST['d']) );
+            $requests = [ [$_POST['c'],$_POST['a'],$_POST['d']] ];
         } else {
             $this->io->error(OB_ERROR_BAD_POSTDATA);
             return;
@@ -189,7 +189,7 @@ class OBFAPI
             }
         }
 
-        $responses = array();
+        $responses = [];
 
         foreach ($requests as $request) {
             $null = null; // for passing by reference.
@@ -231,7 +231,7 @@ class OBFAPI
                 $output[2] = null;
             }
             // $this->io->output(array('status'=>$output[0],'msg'=>$output[1],'data'=>$output[2]));
-            $responses[] = array('status' => $output[0],'msg' => $output[1],'data' => $output[2]);
+            $responses[] = ['status' => $output[0],'msg' => $output[1],'data' => $output[2]];
         }
 
         // return first responce if we just had a single request. if multi-request, we return array of responses.

@@ -112,7 +112,7 @@ class PlayersModel extends OBFModel
             }
 
             // get our station ids
-            $result[$index]['media_ids'] = array();
+            $result[$index]['media_ids'] = [];
 
             $station_ids = $this('get_station_ids', $row['id']);
             foreach ($station_ids as $station_id) {
@@ -141,7 +141,7 @@ class PlayersModel extends OBFModel
         $this->db->where('player_id', $id);
         $station_ids = $this->db->get('players_station_ids');
 
-        $media_ids = array();
+        $media_ids = [];
 
         foreach ($station_ids as $station_id) {
             $media_ids[] = $station_id['media_id'];
@@ -270,10 +270,10 @@ class PlayersModel extends OBFModel
         }
 
         if ($error) {
-            return array(false,$error);
+            return [false,$error];
         }
 
-        return array(true,'');
+        return [true,''];
     }
 
     /**
@@ -363,7 +363,7 @@ class PlayersModel extends OBFModel
     public function update_version($id, $version)
     {
         $this->db->where('id', $id);
-        $this->db->update('players', array('version' => $version));
+        $this->db->update('players', ['version' => $version]);
     }
 
     /**
@@ -376,7 +376,7 @@ class PlayersModel extends OBFModel
     public function update_location($id, $longitude, $latitude)
     {
         $this->db->where('id', $id);
-        $this->db->update('players', array('longitude' => $longitude,'latitude' => $latitude));
+        $this->db->update('players', ['longitude' => $longitude,'latitude' => $latitude]);
     }
 
 
@@ -396,7 +396,7 @@ class PlayersModel extends OBFModel
         $this->db->where('player_id', $id);
         if ($this->db->get_one('alerts') && !$this->user->check_permission('manage_alerts')) {
             //T Unable to remove this player.  It has alerts that you do not have permission to delete.
-            return array(false,'Unable to remove this player.  It has alerts that you do not have permission to delete.');
+            return [false,'Unable to remove this player.  It has alerts that you do not have permission to delete.'];
         }
 
         // this doesn't check 'able to delete own show' ability... not sure it's practically necessary..
@@ -413,10 +413,10 @@ class PlayersModel extends OBFModel
 
         if ($schedule_fail) {
             //T Unable to remove this player.  It has schedule data that you do not have permission to delete.
-            return array(false,'Unable to remove this player.  It has schedule data that you do not have permission to delete.');
+            return [false,'Unable to remove this player.  It has schedule data that you do not have permission to delete.'];
         }
 
-        return array(true,'');
+        return [true,''];
     }
 
     /**
@@ -500,11 +500,11 @@ class PlayersModel extends OBFModel
                 $value = $filter['value'];
                 $operator = $filter['operator'];
 
-                if (array_search($column, array('media_id','artist','title')) === false) {
-                    return array(false,null);
+                if (array_search($column, ['media_id','artist','title']) === false) {
+                    return [false,null];
                 }
-                if (array_search($operator, array('is','not','like','not_like')) === false) {
-                    return array(false,null);
+                if (array_search($operator, ['is','not','like','not_like']) === false) {
+                    return [false,null];
                 }
 
                 if ($operator == 'like') {
@@ -529,7 +529,7 @@ class PlayersModel extends OBFModel
 
         $numrows = $this->db->found_rows();
 
-        return array($results,$numrows);
+        return [$results,$numrows];
     }
 
     /**
@@ -597,7 +597,7 @@ class PlayersModel extends OBFModel
             return false;
         }
 
-        $return = array();
+        $return = [];
         $return['show_name'] = $player['current_show_name'];
         $return['show_time_left'] = $player['current_playlist_end'] - time();
 
@@ -606,7 +606,7 @@ class PlayersModel extends OBFModel
         $this->db->where('media.id', $player['current_media_id']);
         $media = $this->db->get_one('media');
 
-        $media_data = array();
+        $media_data = [];
         $media_data['id'] = $media['id'];
         $media_data['title'] = $media['title'];
         $media_data['album'] = $media['album'];

@@ -27,10 +27,10 @@ $db = OBFDB::get_instance();
 $db->where('name', 'cron_last_run');
 $cron_last_run = $db->get('settings');
 if (!$cron_last_run) {
-    $db->insert('settings', array('name' => 'cron_last_run', 'value' => time()));
+    $db->insert('settings', ['name' => 'cron_last_run', 'value' => time()]);
 } else {
     $db->where('name', 'cron_last_run');
-    $db->update('settings', array('value' => time()));
+    $db->update('settings', ['value' => time()]);
 }
 
 // delete expired uploads
@@ -49,7 +49,7 @@ $db->query('DELETE FROM shows_cache where DATE_ADD(start, INTERVAL duration SECO
 // send out player-last-connect warnings if appropriate. will not send out warnings if player has never connected.
 // TODO maybe put this into a notice model for similar re-use elsewhere.
 $cutoff = strtotime('-1 hour'); // connection must be made at least once/hour. this should be a setting at some point, maybe in player settings?
-$connect_types = array('schedule','playlog','emergency');
+$connect_types = ['schedule','playlog','emergency'];
 foreach ($connect_types as $type) {
     $db->where('last_connect_' . $type, $cutoff, '<=');
     $players = $db->get('players');
@@ -74,7 +74,7 @@ Please take steps to ensure this player is functioning properly.';
             $mailer->Send();
 
             $db->where('id', $notice['id']);
-            $db->update('notices', array('toggled' => 1));
+            $db->update('notices', ['toggled' => 1]);
         }
     }
 }

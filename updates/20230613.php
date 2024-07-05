@@ -82,7 +82,7 @@ class OBUpdate20230613 extends OBUpdate
         $charA = $charSelect[$randValA];
         $charB = $charSelect[$randValB];
 
-        $requiredDirs = array();
+        $requiredDirs = [];
         $requiredDirs[] = OB_THUMBNAILS . '/playlist';
         $requiredDirs[] = OB_THUMBNAILS . '/playlist/' . $charA;
         $requiredDirs[] = OB_THUMBNAILS . '/playlist/' . $charA . '/' . $charB;

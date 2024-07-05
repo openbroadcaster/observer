@@ -52,11 +52,11 @@ class Alerts extends OBFController
             $alert = $this->models->alerts('get_one', ['id' => $id]);
             //T Alert not found.
             if (!$alert) {
-                return array(false, 'Alert not found.');
+                return [false, 'Alert not found.'];
             }
             $this->user->require_permission('manage_alerts:' . $alert['player_id']);
             //T Alert
-            return array(true, 'Alert', $alert);
+            return [true, 'Alert', $alert];
         }
     }
 
@@ -77,7 +77,7 @@ class Alerts extends OBFController
         if (!empty($player_id)) {
             $this->user->require_permission('manage_alerts:' . $player_id);
             //T Alerts
-            return array(true, 'Alerts', $this->models->alerts('get_for_player', ['player_id' => $player_id]));
+            return [true, 'Alerts', $this->models->alerts('get_for_player', ['player_id' => $player_id])];
         }
     }
 
@@ -100,10 +100,10 @@ class Alerts extends OBFController
 
         if ($player_data) {
             $this->user->set_setting('last_alerts_player', $player_id);
-            return array(true,'Set last alerts player.');
+            return [true,'Set last alerts player.'];
         } else {
             //T This player no longer exists.
-            return array(false,'This player no longer exists.');
+            return [false,'This player no longer exists.'];
         }
     }
 
@@ -119,9 +119,9 @@ class Alerts extends OBFController
     {
         $player_id = $this->user->get_setting('last_alerts_player');
         if ($player_id) {
-            return array(true,'Last alerts player.',$player_id);
+            return [true,'Last alerts player.',$player_id];
         } else {
-            return array(false,'Last alerts player not found.');
+            return [false,'Last alerts player not found.'];
         }
     }
 
@@ -170,7 +170,7 @@ class Alerts extends OBFController
 
         $validation = $this->models->alerts('validate', ['data' => $data, 'id' => $id]);
         if ($validation[0] == false) {
-            return array(false,$validation[1]);
+            return [false,$validation[1]];
         }
 
         // check permission on this player.
@@ -179,7 +179,7 @@ class Alerts extends OBFController
         $this->models->alerts('save', ['data' => $data, 'id' => $id]);
 
         //T Alert saved.
-        return array(true,'Alert saved.');
+        return [true,'Alert saved.'];
     }
 
     /**
@@ -196,7 +196,7 @@ class Alerts extends OBFController
 
         $alert = $this->models->alerts('get_one', ['id' => $id]);
         if (!$alert) {
-            return array(false,'Alert not found.');
+            return [false,'Alert not found.'];
         }
 
         // check permission on appropriate player.
@@ -204,6 +204,6 @@ class Alerts extends OBFController
 
         $this->models->alerts('delete', ['id' => $id]);
 
-        return array(true,'Alert deleted.');
+        return [true,'Alert deleted.'];
     }
 }

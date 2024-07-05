@@ -4,7 +4,7 @@ class OBUpdate20200818 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "CASCADE updates to media tables (including genres, metadata*, permissions*, searches, versions). Clean up tables first.";
         return $updates;
     }

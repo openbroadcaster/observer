@@ -4,7 +4,7 @@ class OBUpdate20190328 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Media and playlists advanced permissions.';
         return $updates;
     }

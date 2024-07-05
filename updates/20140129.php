@@ -4,7 +4,7 @@ class OBUpdate20140129 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Live assist playlist type.';
         return $updates;
     }

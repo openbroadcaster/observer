@@ -76,7 +76,7 @@ class Upload extends OBFController
         $models = OBFModels::get_instance();
 
         $key = $this->randKey();
-        $id = $this->db->insert('uploads', array('key' => $key, 'expiry' => strtotime('+24 hours')));
+        $id = $this->db->insert('uploads', ['key' => $key, 'expiry' => strtotime('+24 hours')]);
 
         $input = fopen("php://input", "r");
         $target = fopen(OB_ASSETS . '/uploads/' . $id, "w");
@@ -85,14 +85,14 @@ class Upload extends OBFController
         fclose($target);
 
         if ($realSize != (int) $_SERVER["CONTENT_LENGTH"]) {
-            echo json_encode(array('error' => 'File upload was not successful.  Please try again.'));
+            echo json_encode(['error' => 'File upload was not successful.  Please try again.']);
             unlink(OB_ASSETS . '/uploads/' . $id);
             return;
         }
 
         // make sure not too big. filesize limit in MB, default 1024.
         if (($realSize / 1024 / 1024) > OB_MEDIA_FILESIZE_LIMIT) {
-            echo json_encode(array('error' => 'File too large (max size 1GB).'));
+            echo json_encode(['error' => 'File too large (max size 1GB).']);
             unlink(OB_ASSETS . '/uploads/' . $id);
             return;
         }
@@ -103,15 +103,15 @@ class Upload extends OBFController
         // get ID3 data.
         $id3_data = $models->media('getid3', ['filename' => OB_ASSETS . '/uploads/' . $id]);
         if (count($id3_data) > 0) {
-            $result['info'] = array('comments' => $id3_data);
+            $result['info'] = ['comments' => $id3_data];
         } else {
-            $result['info'] = array();
+            $result['info'] = [];
         }
 
         // get some useful media information, insert it into the db with our file id/key.
         $media_info = $this->media_info(OB_ASSETS . '/uploads/' . $id);
         $this->db->where('id', $id);
-        $this->db->update('uploads', array('format' => $media_info['format'], 'type' => $media_info['type'], 'duration' => $media_info['duration']));
+        $this->db->update('uploads', ['format' => $media_info['format'], 'type' => $media_info['type'], 'duration' => $media_info['duration']]);
 
         $result['media_info'] = $media_info;
 

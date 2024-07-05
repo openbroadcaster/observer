@@ -4,7 +4,7 @@ class OBUpdate20180403 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Store metadata of deleted media in case needed for reporting.';
         return $updates;
     }

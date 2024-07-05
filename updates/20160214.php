@@ -4,7 +4,7 @@ class OBUpdate20160214 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Database tweaks for performance.';
         return $updates;
     }
@@ -52,12 +52,12 @@ class OBUpdate20160214 extends OBUpdate
 
         // CONVERT OB TABLES TO INNODB
 
-        $tables = array('client_storage','devices','devices_station_ids','emergencies','media','media_categories','media_countries',
+        $tables = ['client_storage','devices','devices_station_ids','emergencies','media','media_categories','media_countries',
                     'media_genres','media_languages','media_searches','modules','notices','playlists','playlists_items',
                     'playlists_liveassist_buttons','playlog','schedules','schedules_media_cache','schedules_permissions',
                     'schedules_permissions_recurring','schedules_permissions_recurring_expanded','schedules_recurring',
                     'schedules_recurring_expanded','settings','uploads','users','users_groups','users_permissions',
-                    'users_permissions_to_groups','users_settings','users_to_groups');
+                    'users_permissions_to_groups','users_settings','users_to_groups'];
 
         foreach ($tables as $table) {
             $this->db->query('SHOW TABLE STATUS WHERE Name = \'' . $table . '\'');

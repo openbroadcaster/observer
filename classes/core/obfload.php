@@ -42,8 +42,8 @@ class OBFLoad
         $this->db = OBFDB::get_instance();
 
         // generate a list of models and controllers... starting with core then modules
-        $this->model_files = array();
-        $this->controller_files = array();
+        $this->model_files = [];
+        $this->controller_files = [];
 
         // find core models.
         $files = scandir('models');

@@ -62,10 +62,10 @@ class ModulesModel extends OBFModel
     {
         $modules = scandir('modules');
 
-        $modules_list = array();
+        $modules_list = [];
 
         $installed_rows = $this->db->get('modules');
-        $installed_modules = array();
+        $installed_modules = [];
 
         foreach ($installed_rows as $row) {
             $installed_modules[] = $row['directory'];
@@ -88,7 +88,7 @@ class ModulesModel extends OBFModel
                 $module_instance = new $module_class_name();
 
                 if (($installed && array_search($module, $installed_modules) !== false) || (!$installed && array_search($module, $installed_modules) === false)) {
-                    $modules_list[$module] = ($object ? $module_instance : array('name' => $module_instance->name, 'description' => $module_instance->description, 'dir' => $module));
+                    $modules_list[$module] = ($object ? $module_instance : ['name' => $module_instance->name, 'description' => $module_instance->description, 'dir' => $module]);
                 }
             }
         }
@@ -121,7 +121,7 @@ class ModulesModel extends OBFModel
         }
 
         // add the module to our installed module list.
-        $this->db->insert('modules', array('directory' => $module_name));
+        $this->db->insert('modules', ['directory' => $module_name]);
 
         return true;
     }

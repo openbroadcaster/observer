@@ -4,7 +4,7 @@ class OBUpdate20200817 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "CASCADE updates to schedules, schedules_media_cache, schedules_permissions, schedules_recurring, and their sub-tables. Clean up tables first.";
         $updates[] = "CASCADE updates to translations tables. Clean up tables first.";
         $updates[] = "CASCADE updates to users tables. Clean up tables first.";

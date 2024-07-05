@@ -53,7 +53,7 @@ class TimeslotsModel extends OBFModel
         date_default_timezone_set($player_data['timezone']);
 
         // init
-        $data = array();
+        $data = [];
 
         $query =  ("SELECT timeslots.*,users.display_name AS user,timeslots_expanded.start AS exp_start,timeslots_expanded.end AS exp_end,timeslots_expanded.id AS exp_id FROM timeslots LEFT JOIN users ON users.id = timeslots.user_id LEFT JOIN timeslots_expanded ON timeslots_expanded.timeslot_id = timeslots.id ");
         $query .= ("WHERE timeslots.player_id = '" . $this->db->escape($player) . "' ");
@@ -137,13 +137,13 @@ class TimeslotsModel extends OBFModel
             (empty($data['x_data']) && ($data['mode'] == 'xdays' || $data['mode'] == 'xweeks' || $data['mode'] == 'xmonths')) || ($data['mode'] != 'once' && empty($data['stop']))
         ) {
             //T One or more required fields were not filled.
-            return array(false, 'One or more required fields were not filled.');
+            return [false, 'One or more required fields were not filled.'];
         }
 
         // check if user is valid.
         //T The user you have selected does not exist.
         if (!$this->db->id_exists('users', $data['user_id'])) {
-            return array(false,'The user you have selected does not exist.');
+            return [false,'The user you have selected does not exist.'];
         }
 
         // check if player is valid.
@@ -152,16 +152,16 @@ class TimeslotsModel extends OBFModel
 
         //T The player you have selected does not exist.
         if (!$player_data) {
-            return array(false,'The player you have selected does not exist.');
+            return [false,'The player you have selected does not exist.'];
         }
 
         // set our timezone based on player settings.  this makes sure 'strtotime' advancing by days, weeks, months will account for DST propertly.
         date_default_timezone_set($player_data['timezone']);
 
         // check valid scheduling mode
-        if (array_search($data['mode'], array('once','daily','weekly','monthly','xdays','xweeks','xmonths')) === false) {
+        if (array_search($data['mode'], ['once','daily','weekly','monthly','xdays','xweeks','xmonths']) === false) {
             //T The selected scheduling mode is not valid.
-            return array(false,'The selected scheduling mode is not valid.');
+            return [false,'The selected scheduling mode is not valid.'];
         }
 
         // check if start date is valid.
@@ -189,10 +189,10 @@ class TimeslotsModel extends OBFModel
         // check if x data is valid.
         if (!empty($data['x_data']) && (!preg_match('/^[0-9]+$/', $data['x_data']) || $data['x_data'] > 65535)) {
             //T The recurring frequency is not valid.
-            return array(false,'The recurring frequency is not valid.');
+            return [false,'The recurring frequency is not valid.'];
         }
 
-        return array(true,'Valid');
+        return [true,'Valid'];
     }
 
     /**
@@ -209,37 +209,37 @@ class TimeslotsModel extends OBFModel
 
         // does this collide with another timeslot?
         if (!empty($id)) {
-            $not_entry = array('id' => $id);
+            $not_entry = ['id' => $id];
         } else {
             $not_entry = false;
         }
 
-        $collision_check = array();
+        $collision_check = [];
 
         if ($data['mode'] == 'once') {
             $collision_check[] = $data['start'];
         } else {
       //T Recurring timeslots cannot be longer than 28 days.
             if ($duration > 2419200) {
-                return array(false,'Recurring timeslots cannot be longer than 28 days.');
+                return [false,'Recurring timeslots cannot be longer than 28 days.'];
             }
 
             // this is a recurring item.  make sure we don't collide with ourselves.
             //T A timeslot scheduled daily cannot be longer than a day.
             if ($data['mode'] == 'daily' && $duration > 86400) {
-                return array(false,'A timeslot scheduled daily cannot be longer than a day.');
+                return [false,'A timeslot scheduled daily cannot be longer than a day.'];
             }
             //T A timeslot scheduled weekly cannot be longer than a week.
             if ($data['mode'] == 'weekly' && $duration > 604800) {
-                return array(false,'A timeslot scheduled weekly cannot be longer than a week.');
+                return [false,'A timeslot scheduled weekly cannot be longer than a week.'];
             }
             //T A scheduled timeslot cannot be longer than its frequency.
             if ($data['mode'] == 'xdays' && $duration > 86400 * $data['x_data']) {
-                return array(false,'A scheduled timeslot cannot be longer than its frequency.');
+                return [false,'A scheduled timeslot cannot be longer than its frequency.'];
             }
             //T A scheduled timeslot cannot be longer than its frequency.
             if ($data['mode'] == 'xweeks' && $duration > 604800 * $data['x_data']) {
-                return array(false,'A scheduled timeslot cannot be longer than its frequency.');
+                return [false,'A scheduled timeslot cannot be longer than its frequency.'];
             }
 
             // this is a recurring item.  determine the times to use for collision checks.
@@ -320,7 +320,7 @@ class TimeslotsModel extends OBFModel
             }
         }
 
-        return array(true,'No collision found.');
+        return [true,'No collision found.'];
     }
 
     /**
@@ -339,7 +339,7 @@ class TimeslotsModel extends OBFModel
             $this->db->delete('timeslots');
         }
 
-        $dbdata = array();
+        $dbdata = [];
 
         $dbdata['player_id'] = $data['player_id'];
         $dbdata['user_id'] = $data['user_id'];
@@ -365,7 +365,7 @@ class TimeslotsModel extends OBFModel
             $stop_time->add(new DateInterval('P1D'));
             // $stop_time->sub(new DateInterval('PT' . $data['duration'] . 'S'));
 
-            $expanded_data = array();
+            $expanded_data = [];
             //$expanded_data['recurring_id']=$recurring_id;
             $expanded_data['timeslot_id'] = $recurring_id;
             while ($tmp_time < $stop_time) {

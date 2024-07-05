@@ -84,7 +84,7 @@ class OBFIO
                 break;
         }
 
-        $this->output(array('error' => array('no' => $error_no,'msg' => $msg,'uid' => $user->param('id'))));
+        $this->output(['error' => ['no' => $error_no,'msg' => $msg,'uid' => $user->param('id')]]);
     }
 
     /**

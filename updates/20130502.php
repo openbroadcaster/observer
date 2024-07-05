@@ -4,7 +4,7 @@ class OBUpdate20130502 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
 
         $updates[] = '"My Searches" system';
         $updates[] = 'Misc updates to prepare for advanced playlists.';

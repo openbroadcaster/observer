@@ -50,6 +50,6 @@ class Settings extends OBFController
             $version = '';
         }
 
-        return array(true,'OpenBroadcaster Version',$version);
+        return [true,'OpenBroadcaster Version',$version];
     }
 }

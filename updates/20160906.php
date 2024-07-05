@@ -4,7 +4,7 @@ class OBUpdate20160906 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Additional language options for media.';
         return $updates;
     }
@@ -17,9 +17,9 @@ class OBUpdate20160906 extends OBUpdate
 
         if ($inuit) {
             $this->db->where('id', $inuit['id']);
-            $this->db->update('media_languages', array('name' => 'Inuktitut'));
+            $this->db->update('media_languages', ['name' => 'Inuktitut']);
         } else {
-            $this->db->insert('media_languages', array('name' => 'Inuktitut'));
+            $this->db->insert('media_languages', ['name' => 'Inuktitut']);
         }
 
         // Add additional languages.
@@ -100,7 +100,7 @@ class OBUpdate20160906 extends OBUpdate
 
         foreach ($languages as $language) {
             $language = trim($language);
-            $this->db->insert('media_languages', array('name' => $language));
+            $this->db->insert('media_languages', ['name' => $language]);
         }
 
         return true;

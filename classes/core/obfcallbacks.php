@@ -33,8 +33,8 @@ class OBFCallbacks
 
     public function __construct()
     {
-        $this->callbacks = array();
-        $this->retvals = array();
+        $this->callbacks = [];
+        $this->retvals = [];
     }
 
     /**
@@ -62,7 +62,7 @@ class OBFCallbacks
         if (!isset($this->retvals[$hook])) {
             return false;
         }
-        $this->retvals[$hook] = array();
+        $this->retvals[$hook] = [];
     }
 
     /**
@@ -76,7 +76,7 @@ class OBFCallbacks
     public function store_retval($hook, $callback, $value)
     {
         if (!isset($this->retvals[$hook])) {
-            $this->retvals[$hook] = array();
+            $this->retvals[$hook] = [];
         }
         $this->retvals[$hook][$callback] = $value;
     }
@@ -133,10 +133,10 @@ class OBFCallbacks
     */
 
         if (!isset($this->callbacks[$hook])) {
-            $this->callbacks[$hook] = array();
+            $this->callbacks[$hook] = [];
         }
         if (!isset($this->callbacks[$hook][$position])) {
-            $this->callbacks[$hook][$position] = array();
+            $this->callbacks[$hook][$position] = [];
         }
 
         $cb = new stdClass();
@@ -147,7 +147,7 @@ class OBFCallbacks
 
         $this->callbacks[$hook][$position][] = $cb;
 
-        usort($this->callbacks[$hook][$position], array($this,'callbacks_sort'));
+        usort($this->callbacks[$hook][$position], [$this,'callbacks_sort']);
 
         return true;
     }

@@ -37,7 +37,7 @@ class PermissionsModel extends OBFModel
      */
     public function get_group_permissions($id)
     {
-        $r = array();
+        $r = [];
 
         // special handling for admin group.  admins get all permissions.
         if ($id == 1) {
@@ -81,9 +81,9 @@ class PermissionsModel extends OBFModel
             $groups = $this->db->get('users_to_groups');
 
             // everyone should be considered part of base (new user, no assigned groups)...
-            $groups[] = array('group_id' => 0);
+            $groups[] = ['group_id' => 0];
 
-            $result = array();
+            $result = [];
 
             foreach ($groups as $group) {
                 $p = $this('get_group_permissions', $group['group_id']);
@@ -112,7 +112,7 @@ class PermissionsModel extends OBFModel
         $this->db->leftjoin('users_groups', 'users_to_groups.group_id', 'users_groups.id');
         $groups = $this->db->get('users_to_groups');
 
-        $return = array();
+        $return = [];
 
         if ($groups) {
             foreach ($groups as $group) {

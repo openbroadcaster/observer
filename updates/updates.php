@@ -41,7 +41,7 @@ class OBFUpdates
         $checker = new OBFChecker($module);
         $checker_methods = get_class_methods('OBFChecker');
         $checker_methods = array_filter($checker_methods, fn($x) => $x !== '__construct');
-        $this->checker_results = array();
+        $this->checker_results = [];
 
         foreach ($checker_methods as $checker_method) {
             if ($checker_method == 'directories_valid' && php_sapi_name() == 'cli') {
@@ -98,7 +98,7 @@ class OBFUpdates
             }
         }
 
-        $updates = array();
+        $updates = [];
         foreach ($scandir as $file) {
             if (!preg_match('/^[0-9]{8}\.php$/', $file)) {
                 continue;
@@ -138,7 +138,7 @@ class OBFUpdates
             } else {
                 $this->db->where('name', 'dbver-' . $this->module);
             }
-            $this->db->update('settings', array('value' => $update->version));
+            $this->db->update('settings', ['value' => $update->version]);
         }
 
         return $result;

@@ -110,7 +110,7 @@ class ApiModel extends OBFModel
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 512); // lower speed limit of 0.5KB/s
         curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, 10); // cancels if going this slow for 10s or more.
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Expect:  "));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Expect:  "]);
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -145,7 +145,7 @@ class ApiModel extends OBFModel
             }
         }
 
-        $post = array();
+        $post = [];
 
         $post['c'] = $args['controller'];
         $post['a'] = $args['action'];

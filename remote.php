@@ -140,7 +140,7 @@ class Remote
         if ($password_match && password_needs_rehash($this->player['password'], PASSWORD_DEFAULT)) {
             $new_password_hash = password_hash($_POST['pw'] . OB_HASH_SALT, PASSWORD_DEFAULT);
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('password' => $new_password_hash));
+            $this->db->update('players', ['password' => $new_password_hash]);
         }
 
         if (!$this->devmode && (!$this->player || !$password_match || ($_SERVER['REMOTE_ADDR'] != $this->player['ip_address'] && $this->player['ip_address'] != ''))) {
@@ -163,7 +163,7 @@ class Remote
 
         // update our 'last connect' date
         $this->db->where('id', $this->player['id']);
-        $this->db->update('players', array('last_connect' => $this->localtime,'last_ip_address' => $_SERVER['REMOTE_ADDR']));
+        $this->db->update('players', ['last_connect' => $this->localtime,'last_ip_address' => $_SERVER['REMOTE_ADDR']]);
 
         // initialize xml stuff.
         $this->xml = new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
@@ -184,47 +184,47 @@ class Remote
             }
         } elseif ($action == 'schedule') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_schedule' => $this->localtime));
+            $this->db->update('players', ['last_connect_schedule' => $this->localtime]);
             $this->schedule();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_schedule_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled' => 0));
+            $this->db->update('notices', ['toggled' => 0]);
         } elseif ($action == 'emerg') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_emergency' => $this->localtime));
+            $this->db->update('players', ['last_connect_emergency' => $this->localtime]);
             $this->emergency();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_emergency_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled' => 0));
+            $this->db->update('notices', ['toggled' => 0]);
         } elseif ($action == 'playlog_status') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_playlog' => $this->localtime));
+            $this->db->update('players', ['last_connect_playlog' => $this->localtime]);
             $this->playlog_status();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_playlog_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled' => 0));
+            $this->db->update('notices', ['toggled' => 0]);
         } elseif ($action == 'playlog_post') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_playlog' => $this->localtime));
+            $this->db->update('players', ['last_connect_playlog' => $this->localtime]);
             $this->playlog_post();
 
             // reset/untoggle any last connect warning
             $this->db->where('event', 'player_last_connect_playlog_warning');
             $this->db->where('player_id', $this->player['id']);
-            $this->db->update('notices', array('toggled' => 0));
+            $this->db->update('notices', ['toggled' => 0]);
         } elseif ($action == 'media') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_media' => $this->localtime));
+            $this->db->update('players', ['last_connect_media' => $this->localtime]);
             $this->media();
         } elseif ($action == 'thumbnail') {
             $this->db->where('id', $this->player['id']);
-            $this->db->update('players', array('last_connect_media' => $this->localtime));
+            $this->db->update('players', ['last_connect_media' => $this->localtime]);
             $this->thumbnail();
         } elseif ($action == 'now_playing') {
             $this->update_now_playing();
@@ -256,7 +256,7 @@ class Remote
 
         $shows = $this->ShowsModel('get_shows', $localtime, $end_timestamp, $this->schedule_player_id);
 
-        $show_times = array();
+        $show_times = [];
 
         foreach ($shows as $show) {
             // create start datetime object (used for playlist resolve)
@@ -288,7 +288,7 @@ class Remote
             $mediaxml = $showxml->addChild('media');
 
             if ($show['item_type'] == 'linein') {
-                $media_items = array(array('type' => 'linein','duration' => $show['duration']));
+                $media_items = [['type' => 'linein','duration' => $show['duration']]];
             } elseif ($show['item_type'] == 'media') {
                 $this->db->where('id', $show['item_id']);
                 $media = $this->db->get_one('media');
@@ -305,7 +305,7 @@ class Remote
                     $showxml->addChild('description', $media['artist'] . ' - ' . $media['title']);
                     $showxml->addChild('last_updated', $media['updated']);
 
-                    $media_items = array($media);
+                    $media_items = [$media];
                 }
             } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
@@ -466,7 +466,7 @@ class Remote
             // otherwise, use the actual duration (shorter) so that we can fill in the rest with 'default playlist' material.
             $showxml->addChild('duration', $show['duration'] < $show_actual_duration ? $show['duration'] : $show_actual_duration);
 
-            $show_times[] = array('start' => $show['start'],'end' => $show['start'] + min($show['duration'], $show_actual_duration));
+            $show_times[] = ['start' => $show['start'],'end' => $show['start'] + min($show['duration'], $show_actual_duration)];
 
 
             if ($show['item_type'] == 'playlist' && $show['type'] == 'live_assist') {
@@ -643,7 +643,7 @@ class Remote
         }
 
         // swap out station IDs from parent, with station IDs for child.
-        $new_items = array();
+        $new_items = [];
         foreach ($media_items as $index => $item) {
       // this item is a station ID. get a station id from our child player instead.
             if (!empty($item['is_station_id'])) {
@@ -807,7 +807,7 @@ class Remote
             $playlist['type'] = 'standard';
         } // live_assist converted to standard for default playlist.
 
-        $show_media_items = array();
+        $show_media_items = [];
 
         // see if we have selected media in our cache.
         $this->db->where('player_id', $this->player['id']);
@@ -1229,7 +1229,7 @@ class Remote
 
     private function addedit_playlog($datatmp)
     {
-        $useVals = array('player_id','media_id','artist','title','timestamp','context','emerg_id','notes');
+        $useVals = ['player_id','media_id','artist','title','timestamp','context','emerg_id','notes'];
         foreach ($useVals as $val) {
             $data[$val] = $datatmp[$val];
         }

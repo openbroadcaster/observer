@@ -121,10 +121,10 @@ class Playlists extends OBFController
                 $playlist['properties'] = json_decode($playlist['properties'], true);
             }
 
-            return array(true,'Playlist found.',$playlist);
+            return [true,'Playlist found.',$playlist];
         }
 
-        return array(false,'Playlist not found.');
+        return [false,'Playlist not found.'];
     }
 
     /**
@@ -159,7 +159,7 @@ class Playlists extends OBFController
         }
 
         //T Playlists
-        return array(true,'Playlists',$search_result);
+        return [true,'Playlists',$search_result];
     }
 
     /**
@@ -201,7 +201,7 @@ class Playlists extends OBFController
             }
 
             if ($this->api_request_method() === 'PUT' && empty($id)) {
-                return array(false, 'Playlist id required when updating a playlist.');
+                return [false, 'Playlist id required when updating a playlist.'];
             }
         }
 
@@ -212,7 +212,7 @@ class Playlists extends OBFController
             $original_playlist = $this->models->playlists('get_by_id', $id);
             //T Unable to edit this playlist.
             if (!$original_playlist) {
-                return array(false,'Unable to edit this playlist.');
+                return [false,'Unable to edit this playlist.'];
             }
 
             // if user can't edit, this will trigger a permission failure in via require_permission.
@@ -225,9 +225,9 @@ class Playlists extends OBFController
         }
 
         // validate data.
-        $validate_playlist = $this->models->playlists('validate_playlist', array('name' => $name, 'status' => $status, 'type' => $type));
+        $validate_playlist = $this->models->playlists('validate_playlist', ['name' => $name, 'status' => $status, 'type' => $type]);
         if ($validate_playlist[0] == false) {
-            return array(false,$validate_playlist[1]);
+            return [false,$validate_playlist[1]];
         }
 
         // check each playlist item.
@@ -237,7 +237,7 @@ class Playlists extends OBFController
         foreach ($items as $item) {
             $validate_item = $this->models->playlists('validate_playlist_item', $item, $id);
             if ($validate_item[0] == false) {
-                return array(false,$validate_item[1]);
+                return [false,$validate_item[1]];
             }
         }
 
@@ -246,7 +246,7 @@ class Playlists extends OBFController
             foreach ($liveassist_button_items as $liveassist_button_item) {
                 $validate_item = $this->models->playlists('validate_liveassist_button_item', $liveassist_button_item);
                 if ($validate_item[0] == false) {
-                    return array(false,$validate_item[1]);
+                    return [false,$validate_item[1]];
                 }
             }
         }
@@ -312,7 +312,7 @@ class Playlists extends OBFController
         // at this point, we should have an ID.
         //T An error occurred while saving this playlist.
         if (!$id) {
-            return array(false,'An error occurred while saving this playlist.');
+            return [false,'An error occurred while saving this playlist.'];
         }
 
         // update our playlist items. first delete all items, then re-add them.
@@ -320,7 +320,7 @@ class Playlists extends OBFController
 
         foreach ($items as $index => $item) {
             unset($data);
-            $data = array();
+            $data = [];
 
             $data['playlist_id'] = $id;
             $data['item_type'] = $item['type'];
@@ -414,7 +414,7 @@ class Playlists extends OBFController
             }
         }
 
-        return array(true,'Playlist saved.',$id);
+        return [true,'Playlist saved.',$id];
     }
 
     /**
@@ -442,7 +442,7 @@ class Playlists extends OBFController
         $validation = $this->models->playlists('validate_dynamic_properties', $search_query, $num_items, $num_items_all, $image_duration);
 
         if ($validation[0] == false) {
-            return array(false,array('Playlist Dynamic Item Properties',$validation[1]));
+            return [false,['Playlist Dynamic Item Properties',$validation[1]]];
         }
 
         if ($num_items_all) {
@@ -450,7 +450,7 @@ class Playlists extends OBFController
         } // duration function uses empty num_items indicate 'all items' mode.
 
         // valid, also return some additional information.
-        $validation[2] = array('duration' => $this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration));
+        $validation[2] = ['duration' => $this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration)];
         return $validation;
     }
 
@@ -467,7 +467,7 @@ class Playlists extends OBFController
 
         // if we just have a single ID, make it into an array so we can proceed on that assumption.
         if (!is_array($ids)) {
-            $ids = array($ids);
+            $ids = [$ids];
         }
 
         // make sure we have all our playlists. check permission.
@@ -475,7 +475,7 @@ class Playlists extends OBFController
             $playlist = $this->models->playlists('get_by_id', $id);
 
             if (!$playlist) {
-                return array(false,'One or more playlists were not found.');
+                return [false,'One or more playlists were not found.'];
             }
 
             // if user can't edit, this will trigger a permission failure in via require_permission.
@@ -486,7 +486,7 @@ class Playlists extends OBFController
             // check where used, see if we have permission to remove from those.
             $where_used = $this->models->playlists('where_used', $id);
             if ($where_used['can_delete'] == false) {
-                return array(false,'Cannot delete one or more playlists as you do not have adequate permissions.');
+                return [false,'Cannot delete one or more playlists as you do not have adequate permissions.'];
             }
         }
 
@@ -495,7 +495,7 @@ class Playlists extends OBFController
             $this->models->playlists('delete', $id);
         }
 
-        return array(true,'Playlists have been deleted.');
+        return [true,'Playlists have been deleted.'];
     }
 
     /**
@@ -517,11 +517,11 @@ class Playlists extends OBFController
         $playlist = $this->models->playlists('get_by_id', $id);
 
         if (! $playlist) {
-            return array(false, 'Playlist not found.');
+            return [false, 'Playlist not found.'];
         }
 
         $items = $this->models->playlists('resolve', $id, $player_id);
 
-        return array(true, 'Playlist resolved.', $items);
+        return [true, 'Playlist resolved.', $items];
     }
 }

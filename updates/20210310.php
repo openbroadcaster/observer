@@ -4,7 +4,7 @@ class OBUpdate20210310 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Migrate timeslots to new database structure.';
         return $updates;
     }
