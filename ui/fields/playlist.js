@@ -5,6 +5,7 @@ class OBFieldPlaylist extends OBField {
 
     #playlistItems;
     #playlistContent;
+    #setValue;
 
     async connected() {
         this.#playlistItems = [];
@@ -187,7 +188,11 @@ class OBFieldPlaylist extends OBField {
     }
 
     set value(value) {
+        this.#setValue = value;
+
         this.initialized.then(() => {
+            value = this.#setValue;
+
             if (!Array.isArray(value)) {
                 value = [value];
             }
