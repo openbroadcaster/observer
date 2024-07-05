@@ -22,46 +22,41 @@
 OB = new Object();
 OBModules = new Object();
 
-$(document).ready(function() 
-{
+$(document).ready(function () {
+    $.each(OB, function (name, item) {
+        if (typeof OB[name].init == "function") OB[name].init();
+    });
 
-	$.each(OB,function(name,item)
-	{
-		if(typeof(OB[name].init)=='function') OB[name].init();
-	});
+    $.each(OBModules, function (name, item) {
+        if (typeof OBModules[name].init == "function") OBModules[name].init();
+    });
 
-	$.each(OBModules,function(name,item)
-	{
-		if(typeof(OBModules[name].init)=='function') OBModules[name].init();
-	});
-
-	OB.Callbacks.callall('ready');
-
+    OB.Callbacks.callall("ready");
 });
 
-$(function(){
+$(function () {
     /*
      * this swallows backspace keys on any non-input element.
      * stops backspace -> back
      */
     var rx = /INPUT|SELECT|TEXTAREA|OB-TAG-INPUT/i;
 
-    $(document).bind("keydown keypress", function(e){
-        if( e.which == 8 ){ // 8 == backspace
-            if (customElements.get(e.target.tagName.toLowerCase()) && (e.target.getAttribute('data-edit') !== null)) {
+    $(document).bind("keydown keypress", function (e) {
+        if (e.which == 8) {
+            // 8 == backspace
+            if (customElements.get(e.target.tagName.toLowerCase()) && e.target.getAttribute("data-edit") !== null) {
                 return;
             }
-            if(!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly ){
+            if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
                 e.preventDefault();
             }
         }
     });
 });
 
-jQuery.fn.showFlex = function() {
-  $(this).each(function(index, element)
-  {
-    $(element).css('display','flex');
-    if($(element).css('display')!='flex') $(element).css('display','-webkit-flex');
-  });
+jQuery.fn.showFlex = function () {
+    $(this).each(function (index, element) {
+        $(element).css("display", "flex");
+        if ($(element).css("display") != "flex") $(element).css("display", "-webkit-flex");
+    });
 };

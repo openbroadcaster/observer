@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldFormatted extends OBField {
     #init;
@@ -13,25 +13,21 @@ class OBFieldFormatted extends OBField {
         this.renderComponent().then(() => {
             tinymce.init({
                 target: this,
-                theme: 'silver',
-                plugins: 'link',
+                theme: "silver",
+                plugins: "link",
                 menubar: false,
-                toolbar: 'undo redo | bold italic | link',
-                branding: false
+                toolbar: "undo redo | bold italic | link",
+                branding: false,
             });
         });
     }
 
     renderEdit() {
-        render(html`
-            <textarea id="edit">TODO edit</textarea>
-        `, this.root);
+        render(html` <textarea id="edit">TODO edit</textarea> `, this.root);
     }
 
     renderView() {
-        render(html`
-            <div>TODO</div>
-        `, this.root);
+        render(html` <div>TODO</div> `, this.root);
     }
 
     scss() {
@@ -52,4 +48,4 @@ class OBFieldFormatted extends OBField {
     }
 }
 
-customElements.define('ob-field-formatted', OBFieldFormatted);
+customElements.define("ob-field-formatted", OBFieldFormatted);

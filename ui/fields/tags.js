@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js';
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldTags extends OBField {
     #init;
@@ -32,33 +32,39 @@ class OBFieldTags extends OBField {
             this.#suggestions = [];
         }
 
-        render(html`
-            <div id="input" class="field" tabindex="0" 
-            onkeydown=${(e) => this.tagsInput(e)} 
-            >
-                <div id="tags">
-                    ${this.#tags.map((tag) => html`
-                        <span class="saved">${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span></span>
-                    `)}
-                    <span id="current">${this.#currentTag}</span>
+        render(
+            html`
+                <div id="input" class="field" tabindex="0" onkeydown=${(e) => this.tagsInput(e)}>
+                    <div id="tags">
+                        ${this.#tags.map(
+                            (tag) => html`
+                                <span class="saved"
+                                    >${tag}<span class="delete" onclick=${(e) => this.tagsDelete(tag)}></span
+                                ></span>
+                            `,
+                        )}
+                        <span id="current">${this.#currentTag}</span>
+                    </div>
                 </div>
-            </div>
-            ${this.#suggestions.filter((tag) => !this.#tags.includes(tag)).length > 0 && html`
-            <div id="suggestions" tabindex="0">
-                ${this.#suggestions.filter((tag) => !this.#tags.includes(tag)).map((tag) => html`
-                    <span class="suggestion" onclick=${(e) => this.tagsAdd(tag)}>${tag}</span>
-                `)}
-            </div>
-            `}
-        `, this.root);
+                ${this.#suggestions.filter((tag) => !this.#tags.includes(tag)).length > 0 &&
+                html`
+                    <div id="suggestions" tabindex="0">
+                        ${this.#suggestions
+                            .filter((tag) => !this.#tags.includes(tag))
+                            .map(
+                                (tag) => html`
+                                    <span class="suggestion" onclick=${(e) => this.tagsAdd(tag)}>${tag}</span>
+                                `,
+                            )}
+                    </div>
+                `}
+            `,
+            this.root,
+        );
     }
 
     renderView() {
-        render(html`
-            <div>
-                Tags view (TODO)
-            </div>
-        `, this.root);
+        render(html` <div>Tags view (TODO)</div> `, this.root);
     }
 
     scss() {
@@ -135,7 +141,7 @@ class OBFieldTags extends OBField {
     }
 
     tagsInput(event) {
-        let keyCode = (event.key.length === 1) ? event.key.charCodeAt(0) : false;
+        let keyCode = event.key.length === 1 ? event.key.charCodeAt(0) : false;
 
         if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122)) {
             // A-Z and a-z
@@ -210,8 +216,8 @@ class OBFieldTags extends OBField {
         var tags = [];
 
         Array.from(this.children).forEach((child) => {
-            if (child.tagName === 'OB-TAG') {
-                let tag = child.innerText.replace(/ /g, '-').replace(/[^a-zA-Z0-9-_]/g, '');
+            if (child.tagName === "OB-TAG") {
+                let tag = child.innerText.replace(/ /g, "-").replace(/[^a-zA-Z0-9-_]/g, "");
                 tags.push(tag);
             }
         });
@@ -223,8 +229,8 @@ class OBFieldTags extends OBField {
         var suggestions = [];
 
         Array.from(this.children).forEach((child) => {
-            if (child.tagName === 'OB-OPTION') {
-                let tag = child.innerText.replace(/ /g, '-').replace(/[^a-zA-Z0-9-_]/g, '');
+            if (child.tagName === "OB-OPTION") {
+                let tag = child.innerText.replace(/ /g, "-").replace(/[^a-zA-Z0-9-_]/g, "");
                 suggestions.push(tag);
             }
         });
@@ -233,4 +239,4 @@ class OBFieldTags extends OBField {
     }
 }
 
-customElements.define('ob-field-tags', OBFieldTags);
+customElements.define("ob-field-tags", OBFieldTags);

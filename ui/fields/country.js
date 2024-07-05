@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldCountry extends OBField {
     #init;
@@ -7,10 +7,10 @@ class OBFieldCountry extends OBField {
     static countries = null;
 
     async connectedCallback() {
-        if (! OBFieldCountry.countries) {
-            const result = await OB.API.postPromise('metadata', 'country_list', {});
+        if (!OBFieldCountry.countries) {
+            const result = await OB.API.postPromise("metadata", "country_list", {});
 
-            if (! result.status) return false;
+            if (!result.status) return false;
 
             OBFieldCountry.countries = {};
             for (const country of result.data) {
@@ -19,30 +19,26 @@ class OBFieldCountry extends OBField {
         }
 
         this.renderComponent().then(() => {
-            if (this.getAttribute('value')) {
-                this.root.querySelector('ob-field-select').value = this.getAttribute('value');
+            if (this.getAttribute("value")) {
+                this.root.querySelector("ob-field-select").value = this.getAttribute("value");
             }
         });
     }
 
     renderEdit() {
-        render(html`
-            <ob-field-select data-edit></ob-field-select>
-        `, this.root);
+        render(html` <ob-field-select data-edit></ob-field-select> `, this.root);
 
-        const fieldSelect = this.root.querySelector('ob-field-select');
+        const fieldSelect = this.root.querySelector("ob-field-select");
         fieldSelect.options = OBFieldCountry.countries;
-        fieldSelect.refresh()
+        fieldSelect.refresh();
     }
 
     renderView() {
-        render(html`
-            <ob-field-select></ob-field-select>
-        `, this.root);
+        render(html` <ob-field-select></ob-field-select> `, this.root);
 
-        const fieldSelect = this.root.querySelector('ob-field-select');
+        const fieldSelect = this.root.querySelector("ob-field-select");
         fieldSelect.options = OBFieldCountry.countries;
-        fieldSelect.refresh()
+        fieldSelect.refresh();
     }
 
     currentCountryName() {
@@ -50,18 +46,18 @@ class OBFieldCountry extends OBField {
     }
 
     get value() {
-        const fieldSelect = this.root.querySelector('ob-field-select');
+        const fieldSelect = this.root.querySelector("ob-field-select");
         if (fieldSelect) {
             return fieldSelect.value;
         }
     }
 
     set value(value) {
-        const fieldSelect = this.root.querySelector('ob-field-select');
+        const fieldSelect = this.root.querySelector("ob-field-select");
         if (fieldSelect) {
             fieldSelect.value = value;
         }
     }
 }
 
-customElements.define('ob-field-country', OBFieldCountry);
+customElements.define("ob-field-country", OBFieldCountry);

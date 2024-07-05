@@ -21,27 +21,23 @@ OB.Callbacks = new Object();
 
 OB.Callbacks.callbacks = new Object();
 
-OB.Callbacks.callall = function(name)
-{
+OB.Callbacks.callall = function (name) {
+    // do we have any callbacks?
+    if (typeof OB.Callbacks.callbacks[name] != "object") return;
 
-  // do we have any callbacks?  
-  if(typeof(OB.Callbacks.callbacks[name])!='object') return;
+    // order our callbacks appropriately
+    OB.Callbacks.callbacks[name].sort(function (a, b) {
+        return a.order - b.order;
+    });
 
-  // order our callbacks appropriately
-  OB.Callbacks.callbacks[name].sort(function(a,b) { return a.order - b.order });
+    // run our callbacks
+    $.each(OB.Callbacks.callbacks[name], function (index, callback) {
+        callback.func();
+    });
+};
 
-  // run our callbacks
-  $.each(OB.Callbacks.callbacks[name], function(index,callback)
-  {
-    callback.func();
-  });
+OB.Callbacks.add = function (name, order, func) {
+    if (typeof OB.Callbacks.callbacks[name] == "undefined") OB.Callbacks.callbacks[name] = new Array();
 
-}
-
-OB.Callbacks.add = function(name, order, func)
-{
-  if(typeof(OB.Callbacks.callbacks[name])=='undefined')
-    OB.Callbacks.callbacks[name] = new Array();
-
-  OB.Callbacks.callbacks[name].push({'order': order, 'func': func});
-}
+    OB.Callbacks.callbacks[name].push({ order: order, func: func });
+};

@@ -1,5 +1,5 @@
-import { OBElement } from '../base/element.js';
-import { html, render } from '../vendor.js';
+import { OBElement } from "../base/element.js";
+import { html, render } from "../vendor.js";
 
 class OBElementPreview extends OBElement {
     #init;
@@ -7,7 +7,7 @@ class OBElementPreview extends OBElement {
     #itemId;
     #itemType;
     #queue;
-    #imageTimeout; 
+    #imageTimeout;
 
     #imageWidth;
     #imageHeight;
@@ -26,11 +26,11 @@ class OBElementPreview extends OBElement {
 
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-    
+
             this.renderComponent().then(() => {
                 this.#imageWidth = this.root.querySelector("#preview").offsetWidth;
                 this.#imageHeight = this.root.querySelector("#preview").offsetHeight;
-    
+
                 this.root.querySelector("#drag").addEventListener("mouseup", this.onMouseUp.bind(this));
             });
         });
@@ -45,7 +45,7 @@ class OBElementPreview extends OBElement {
 
         await new Promise((resolve, reject) => {
             style.onload = resolve();
-            style.onerror = reject(new Error('Error loading video.js stylesheet'));
+            style.onerror = reject(new Error("Error loading video.js stylesheet"));
         });
     }
 
@@ -54,8 +54,8 @@ class OBElementPreview extends OBElement {
             let mediaElem = this.root.querySelector("#drag audio, #drag video");
 
             mediaElem.pause();
-            mediaElem.setAttribute('src', '');
-            mediaElem.removeAttribute('src');
+            mediaElem.setAttribute("src", "");
+            mediaElem.removeAttribute("src");
         }
 
         if (this.#videojsPlayer) {
@@ -72,63 +72,98 @@ class OBElementPreview extends OBElement {
             this.#itemType = this.#queue[this.#itemId].type;
         }
 
-        render(html`
-            <div id="preview">
-                <div id="drag">
-                    ${this.#itemType === 'audio' ? html`
-                        <video-js>
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&format=mp3" type="audio/mpeg" />
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&format=ogg" type="audio/ogg" />
-                        </video-js>
-                    ` : html``}
-                    ${this.#itemType === 'video' ? html`
-                        <video-js>
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4" type="video/mp4" />
-                            <source src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg" type="video/ogg" />
-                        </video-js>
-                    ` : html``}
-                    ${this.#itemType === 'image' || this.#itemType === 'document' ? html`
-                        <img src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId].id}&w=${this.#imageWidth}&h=${this.#imageHeight}" />
-                    ` : html``}
+        render(
+            html`
+                <div id="preview">
+                    <div id="drag">
+                        ${this.#itemType === "audio"
+                            ? html`
+                                  <video-js>
+                                      <source
+                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
+                                              .id}&format=mp3"
+                                          type="audio/mpeg"
+                                      />
+                                      <source
+                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
+                                              .id}&format=ogg"
+                                          type="audio/ogg"
+                                      />
+                                  </video-js>
+                              `
+                            : html``}
+                        ${this.#itemType === "video"
+                            ? html`
+                                  <video-js>
+                                      <source
+                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
+                                              .id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4"
+                                          type="video/mp4"
+                                      />
+                                      <source
+                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
+                                              .id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg"
+                                          type="video/ogg"
+                                      />
+                                  </video-js>
+                              `
+                            : html``}
+                        ${this.#itemType === "image" || this.#itemType === "document"
+                            ? html`
+                                  <img
+                                      src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
+                                          .id}&w=${this.#imageWidth}&h=${this.#imageHeight}"
+                                  />
+                              `
+                            : html``}
+                    </div>
+                    <div id="queue" class="hidden">
+                        <button onclick=${() => this.playlistRefresh()}>Refresh</button>
+                        ${this.#queue &&
+                        this.#queue.map(
+                            (queueItem, index) => html`
+                                <span
+                                    onclick=${() => this.queuePlay([index])}
+                                    data-id=${index}
+                                    class="${index == this.#itemId && html`current`}"
+                                    >${queueItem.artist} - ${queueItem.title}</span
+                                >
+                            `,
+                        )}
+                    </div>
                 </div>
-                <div id="queue" class="hidden">
-                    <button onclick=${() => this.playlistRefresh()}>Refresh</button>
-                    ${this.#queue && this.#queue.map((queueItem, index) => html`
-                        <span onclick=${() => this.queuePlay([index])} data-id=${index} class="${index == this.#itemId && html`current`}">${queueItem.artist} - ${queueItem.title}</span>
-                    `)}
-                </div>
-            </div>
-            ${this.#queue && this.#queue[this.#itemId] && html`
-                <div id="current">
-                    <span class="buttons">
-                        <button onclick=${() => this.queueToggleView()}>☰</button>
-                        ${queueFirst ? html`
-                            <button disabled>«</button>
-                        ` : html`
-                            <button onclick=${() => this.queuePrevious()}>«</button>
-                        `}
-                    </span>
-                    <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
-                    <span class="buttons">
-                        ${queueLast ? html`
-                            <button disabled>»</button>
-                        ` : html`
-                            <button onclick=${() => this.queueNext()}>»</button>
-                        `}
-                    </span>
-                </div>
-            `}
-        `, this.root);
+                ${this.#queue &&
+                this.#queue[this.#itemId] &&
+                html`
+                    <div id="current">
+                        <span class="buttons">
+                            <button onclick=${() => this.queueToggleView()}>☰</button>
+                            ${queueFirst
+                                ? html` <button disabled>«</button> `
+                                : html` <button onclick=${() => this.queuePrevious()}>«</button> `}
+                        </span>
+                        <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
+                        <span class="buttons">
+                            ${queueLast
+                                ? html` <button disabled>»</button> `
+                                : html` <button onclick=${() => this.queueNext()}>»</button> `}
+                        </span>
+                    </div>
+                `}
+            `,
+            this.root,
+        );
 
         const videoElem = this.root.querySelector("video-js");
         if (videoElem) {
             let elem = this;
 
             switch (this.#itemType) {
-                case 'audio':
+                case "audio":
                     let thumbnailId = this.#queue[this.#itemId].id;
-                    let thumbnailLink = "/preview.php?x=" + (new Date().getTime()) + "&id=" + thumbnailId + "&thumbnail=1";
-                    let validThumbnail = (await fetch(thumbnailLink)).ok
+                    let thumbnailLink =
+                        "/preview.php?x=" + new Date().getTime() + "&id=" + thumbnailId + "&thumbnail=1";
+                    let validThumbnail = (await fetch(thumbnailLink)).ok;
                     if (!validThumbnail) {
                         thumbnailLink = "/images/circle.svg";
                     }
@@ -139,22 +174,22 @@ class OBElementPreview extends OBElement {
                         poster: thumbnailLink,
                         audioPosterMode: true,
                     });
-                    
+
                     this.#videojsPlayer.ready(function () {
-                        this.on('ended', function () {
+                        this.on("ended", function () {
                             elem.queueNext(true);
-                         });
+                        });
                     });
 
                     break;
-                case 'video':
+                case "video":
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
                     });
 
                     this.#videojsPlayer.ready(function () {
-                        this.on('ended', function () { 
+                        this.on("ended", function () {
                             elem.queueNext(true);
                         });
                     });
@@ -163,7 +198,7 @@ class OBElementPreview extends OBElement {
             }
         }
     }
-    
+
     scss() {
         return `
             :host {
@@ -263,7 +298,7 @@ class OBElementPreview extends OBElement {
     }
 
     onMouseUp() {
-        if (! window.dragHelperData) {
+        if (!window.dragHelperData) {
             return false;
         }
 
@@ -276,18 +311,18 @@ class OBElementPreview extends OBElement {
             this.#resolvePlaylist(window.dragHelperData[0].dataset.id);
         } else if (window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
             Object.values(window.dragHelperData).forEach((item) => {
-                if (! item.dataset) {
+                if (!item.dataset) {
                     return;
                 }
 
                 let queueItem = {
-                    "id": item.dataset.id,
-                    "type": item.dataset.type,
-                    "title": item.dataset.title,
-                    "artist": item.dataset.artist,
+                    id: item.dataset.id,
+                    type: item.dataset.type,
+                    title: item.dataset.title,
+                    artist: item.dataset.artist,
                 };
 
-                if (item.dataset.type === 'image') {
+                if (item.dataset.type === "image") {
                     // Set image duration to 3 for the preview queue when dragging individual media
                     // items, as individual images outside of a playlist do not have a duration set.
                     queueItem.duration = 3;
@@ -297,10 +332,10 @@ class OBElementPreview extends OBElement {
             });
 
             if (this.#queue.length > 0) {
-                this.#itemId = 0
+                this.#itemId = 0;
                 this.#itemType = this.#queue[0].type;
             }
-            
+
             this.renderComponent();
         }
     }
@@ -332,18 +367,20 @@ class OBElementPreview extends OBElement {
 
         let elem = this;
         this.renderComponent().then(() => {
-            // Autoplay if next item in queue (which passes autoplay = true to method), 
-            // itemId isn't 0 (this implies we've finished the queue), and there's a 
+            // Autoplay if next item in queue (which passes autoplay = true to method),
+            // itemId isn't 0 (this implies we've finished the queue), and there's a
             // video.js player available.
             if (autoplay && elem.#itemId !== 0 && elem.#videojsPlayer) {
                 elem.#videojsPlayer.ready(function () {
-                    this.on('canplay', function () { elem.#videojsPlayer.play() });
+                    this.on("canplay", function () {
+                        elem.#videojsPlayer.play();
+                    });
                 });
-            // Otherwise, do the same checks as before, but for images (so not using the 
-            // video.js player), use the image duration set in the playlist before moving
-            // to the next item. Note that this is hardcoded to a few seconds for individual
-            // media items (a duration isn't provided outside of playlists).
-            } else if (autoplay && elem.#itemId !== 0 && elem.#itemType === 'image') {
+                // Otherwise, do the same checks as before, but for images (so not using the
+                // video.js player), use the image duration set in the playlist before moving
+                // to the next item. Note that this is hardcoded to a few seconds for individual
+                // media items (a duration isn't provided outside of playlists).
+            } else if (autoplay && elem.#itemId !== 0 && elem.#itemType === "image") {
                 this.#imageTimeout = setTimeout(function () {
                     elem.queueNext(true);
                 }, elem.#queue[elem.#itemId].duration * 1000);
@@ -359,7 +396,7 @@ class OBElementPreview extends OBElement {
     }
 
     playlistRefresh() {
-        if (! this.#currentPlaylist) {
+        if (!this.#currentPlaylist) {
             return;
         }
 
@@ -376,17 +413,17 @@ class OBElementPreview extends OBElement {
     #resolvePlaylist(id) {
         let elem = this;
 
-        OB.API.post("playlists", "resolve", {"id": id}, function (response) {
+        OB.API.post("playlists", "resolve", { id: id }, function (response) {
             if (response.data) {
                 response.data.forEach((item) => {
                     let queueItem = {
-                        "id": item.id,
-                        "type": item.media_type,
-                        "title": item.title,
-                        "artist": item.artist,
+                        id: item.id,
+                        type: item.media_type,
+                        title: item.title,
+                        artist: item.artist,
                     };
 
-                    if (item.media_type === 'image') {
+                    if (item.media_type === "image") {
                         queueItem.duration = item.duration;
                     }
 
@@ -405,4 +442,4 @@ class OBElementPreview extends OBElement {
     }
 }
 
-customElements.define('ob-element-preview', OBElementPreview);
+customElements.define("ob-element-preview", OBElementPreview);

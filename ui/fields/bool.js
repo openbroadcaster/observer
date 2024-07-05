@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldBool extends OBField {
     #init;
@@ -11,25 +11,21 @@ class OBFieldBool extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.hasAttribute('value')) {
-                const value = this.getAttribute('value');
+            if (this.hasAttribute("value")) {
+                const value = this.getAttribute("value");
                 if (value.toLowerCase() === "true" || value === "1") {
-                    this.root.querySelector('input').checked = true;
+                    this.root.querySelector("input").checked = true;
                 }
             }
-        });;
+        });
     }
 
     renderEdit() {
-        render(html`
-            <input type="checkbox" />
-        `, this.root);
+        render(html` <input type="checkbox" /> `, this.root);
     }
 
     renderView() {
-        render(html`
-            <input type="checkbox" disabled />
-        `, this.root);
+        render(html` <input type="checkbox" disabled /> `, this.root);
     }
 
     scss() {
@@ -45,17 +41,17 @@ class OBFieldBool extends OBField {
     }
 
     get value() {
-        if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').checked;
+        if (this.root.querySelector("input")) {
+            return this.root.querySelector("input").checked;
         } else {
             return false;
         }
     }
 
     set value(value) {
-        this.root.querySelector('input').checked = value;
+        this.root.querySelector("input").checked = value;
         this.renderComponent();
     }
 }
 
-customElements.define('ob-field-bool', OBFieldBool);
+customElements.define("ob-field-bool", OBFieldBool);

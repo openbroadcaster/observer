@@ -1,24 +1,21 @@
-import { html, render } from '../vendor.js';
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldSelect extends OBField {
-
     #options;
-    filterVal = '';
+    filterVal = "";
 
     addSelected(option) {
         if (this.multiple && !this.selected.includes(option)) {
             // add option to selected
             this.selected.push(option);
-        }
-
-        else if (!this.multiple) {
+        } else if (!this.multiple) {
             this.selected = option;
         }
 
         // update selected and blur to hide dropdown
         this.updateSelected();
-        this.root.querySelectorAll('#input, #input *').forEach(child => child.blur());
+        this.root.querySelectorAll("#input, #input *").forEach((child) => child.blur());
     }
 
     deleteSelected(option) {
@@ -38,13 +35,13 @@ class OBFieldSelect extends OBField {
 
         if (this.multiple) {
             // clear input-selected
-            this.root.querySelector('#input-selected-multiple').innerHTML = '';
+            this.root.querySelector("#input-selected-multiple").innerHTML = "";
 
             // create tags for each value
             for (const option of this.selected) {
                 // create tag and add it to input-selected
-                const tag = document.createElement('span');
-                tag.classList.add('tag');
+                const tag = document.createElement("span");
+                tag.classList.add("tag");
                 tag.innerHTML = this.options[option];
 
                 // onclick, delete tag
@@ -57,120 +54,114 @@ class OBFieldSelect extends OBField {
                     }
                 };
 
-                this.root.querySelector('#input-selected-multiple').appendChild(tag);
+                this.root.querySelector("#input-selected-multiple").appendChild(tag);
             }
-        }
-        else {
-            this.root.querySelector('#input-selected').innerHTML = this.options[this.selected] ?? '';
+        } else {
+            this.root.querySelector("#input-selected").innerHTML = this.options[this.selected] ?? "";
         }
 
         // emit change
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: {
-                value: this.selected
-            }
-        }));
+        this.dispatchEvent(
+            new CustomEvent("change", {
+                detail: {
+                    value: this.selected,
+                },
+            }),
+        );
     }
 
     filter(e) {
         // check if key is a regular character
         if (e.key.length === 1) {
             this.filterVal += e.key;
-        }
-        else if (e.key === 'Backspace') {
+        } else if (e.key === "Backspace") {
             this.filterVal = this.filterVal.slice(0, -1);
-        }
-        else if (['ArrowUp', 'ArrowDown', 'Escape', 'Enter'].indexOf(e.key) > -1) {
+        } else if (["ArrowUp", "ArrowDown", "Escape", "Enter"].indexOf(e.key) > -1) {
             e.preventDefault();
-        }
-
-        else return;
+        } else return;
 
         // display input filter
-        this.root.querySelector('#input-filter').innerHTML = this.filterVal;
+        this.root.querySelector("#input-filter").innerHTML = this.filterVal;
 
         // hide any options that don't contain the filter
-        const options = this.root.querySelectorAll('#options li');
-        options.forEach(option => {
+        const options = this.root.querySelectorAll("#options li");
+        options.forEach((option) => {
             if (option.innerHTML.toLowerCase().includes(this.filterVal.toLowerCase())) {
-                option.removeAttribute('hidden');
-            }
-            else {
-                option.setAttribute('hidden', true);
+                option.removeAttribute("hidden");
+            } else {
+                option.setAttribute("hidden", true);
             }
         });
 
         // hide popular/none if filter used
         if (this.filterVal.length) {
-            if (this.root.querySelector('.popular')) {
-                this.root.querySelector('.popular').setAttribute('hidden', true);
+            if (this.root.querySelector(".popular")) {
+                this.root.querySelector(".popular").setAttribute("hidden", true);
             }
-            if (this.root.querySelector('.none')) {
-                this.root.querySelector('.none').setAttribute('hidden', true);
+            if (this.root.querySelector(".none")) {
+                this.root.querySelector(".none").setAttribute("hidden", true);
             }
-        }
-        else {
-            if (this.root.querySelector('.popular')) {
-                this.root.querySelector('.popular').removeAttribute('hidden');
+        } else {
+            if (this.root.querySelector(".popular")) {
+                this.root.querySelector(".popular").removeAttribute("hidden");
             }
-            if (this.root.querySelector('.none')) {
-                this.root.querySelector('.none').removeAttribute('hidden');
+            if (this.root.querySelector(".none")) {
+                this.root.querySelector(".none").removeAttribute("hidden");
             }
         }
 
         // if up or down arrow is pressed, select previous/next option that
         // isn't hidden by filter
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            let selected = this.root.querySelector('#options li.selected');
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+            let selected = this.root.querySelector("#options li.selected");
             if (!selected) {
-                selected = this.root.querySelector('#options li:not([hidden])');
+                selected = this.root.querySelector("#options li:not([hidden])");
             }
 
             if (selected) {
-                if (e.key === 'ArrowUp') {
+                if (e.key === "ArrowUp") {
                     let previous = selected.previousElementSibling;
-                    while (previous && previous.hasAttribute('hidden')) {
+                    while (previous && previous.hasAttribute("hidden")) {
                         previous = previous.previousElementSibling;
                     }
                     if (previous) {
-                        selected.classList.remove('selected');
-                        previous.classList.add('selected');
-                        previous.scrollIntoView({ block: 'nearest' });
+                        selected.classList.remove("selected");
+                        previous.classList.add("selected");
+                        previous.scrollIntoView({ block: "nearest" });
                     }
-                }
-                else if (e.key === 'ArrowDown') {
+                } else if (e.key === "ArrowDown") {
                     let next = selected.nextElementSibling;
-                    while (next && next.hasAttribute('hidden')) {
+                    while (next && next.hasAttribute("hidden")) {
                         next = next.nextElementSibling;
                     }
                     if (next) {
-                        selected.classList.remove('selected');
-                        next.classList.add('selected');
-                        next.scrollIntoView({ block: 'nearest' });
+                        selected.classList.remove("selected");
+                        next.classList.add("selected");
+                        next.scrollIntoView({ block: "nearest" });
                     }
                 }
             }
         }
 
         // pressing enter confirms the up/down keys selection, and escape closes the dropdown
-        if (e.key === 'Enter') {
-            let selected = this.root.querySelector('#options li.selected');
+        if (e.key === "Enter") {
+            let selected = this.root.querySelector("#options li.selected");
             if (selected) {
                 selected.click();
             }
         }
-        if (e.key === 'Escape') {
-            this.root.querySelector('#input').blur();
+        if (e.key === "Escape") {
+            this.root.querySelector("#input").blur();
         }
     }
 
     filterReset(e) {
-        this.filterVal = '';
-        this.root.querySelector('#input-filter').innerHTML = '';
+        this.filterVal = "";
+        this.root.querySelector("#input-filter").innerHTML = "";
         // remove any hidden attributes
-        const options = this.root.querySelectorAll('#options li');
-        options.forEach(option => {
-            option.removeAttribute('hidden');
+        const options = this.root.querySelectorAll("#options li");
+        options.forEach((option) => {
+            option.removeAttribute("hidden");
         });
     }
 
@@ -321,38 +312,53 @@ class OBFieldSelect extends OBField {
 
     renderEdit() {
         // get options from data-options and json decode, or use inner elements
-        if (!this.#options) this.#options = JSON.parse(this.getAttribute('data-options'));
+        if (!this.#options) this.#options = JSON.parse(this.getAttribute("data-options"));
         if (!this.#options) this.#options = this.#loadInnerOptions();
 
-        this.multiple = this.hasAttribute('data-multiple');
+        this.multiple = this.hasAttribute("data-multiple");
 
         // json decode data-value or check inner elements
-        if (!this.selected) this.selected = JSON.parse(this.getAttribute('data-value'));
+        if (!this.selected) this.selected = JSON.parse(this.getAttribute("data-value"));
         if (!this.selected) this.selected = this.#loadInnerSelected();
 
-        if (!this.popular) this.popular = JSON.parse(this.getAttribute('data-popular'));
+        if (!this.popular) this.popular = JSON.parse(this.getAttribute("data-popular"));
         if (!this.popular) this.popular = [];
 
-        render(html`
-            <div id="input" class="field" tabindex="0" onkeydown=${(e) => this.filter(e)} onblur=${(e) => this.filterReset()}>
-                ${this.multiple && html`<div id="input-selected-multiple"></div>`}
-                ${!this.multiple && html`<div id="input-selected"></div>`}
-                <ul id="options" contenteditable="false">
-                    <li id="input-filter"></li>
-                    ${!this.multiple && html`<li class="none" onClick=${() => this.addSelected('')}>(None)</li>`}
-                    ${this.popular.map(value => html`<li class="popular" onClick=${() => this.addSelected(value)}>${this.#options[value]}</li>`)}
-                    ${Object.keys(this.#options).map(value => html`<li onClick=${() => this.addSelected(value)}>${this.#options[value]}</li>`)}
-                </ul>
-            </div>
-
-    `, this.root);
+        render(
+            html`
+                <div
+                    id="input"
+                    class="field"
+                    tabindex="0"
+                    onkeydown=${(e) => this.filter(e)}
+                    onblur=${(e) => this.filterReset()}
+                >
+                    ${this.multiple && html`<div id="input-selected-multiple"></div>`}
+                    ${!this.multiple && html`<div id="input-selected"></div>`}
+                    <ul id="options" contenteditable="false">
+                        <li id="input-filter"></li>
+                        ${!this.multiple && html`<li class="none" onClick=${() => this.addSelected("")}>(None)</li>`}
+                        ${this.popular.map(
+                            (value) =>
+                                html`<li class="popular" onClick=${() => this.addSelected(value)}>
+                                    ${this.#options[value]}
+                                </li>`,
+                        )}
+                        ${Object.keys(this.#options).map(
+                            (value) => html`<li onClick=${() => this.addSelected(value)}>${this.#options[value]}</li>`,
+                        )}
+                    </ul>
+                </div>
+            `,
+            this.root,
+        );
 
         // get all options and check the width
-        const options = this.root.querySelectorAll('#options li');
-        
+        const options = this.root.querySelectorAll("#options li");
+
         // get the largest width
         let largestWidth = 0;
-        options.forEach(option => {
+        options.forEach((option) => {
             const width = option.getBoundingClientRect().width + 30;
             if (width > largestWidth) {
                 largestWidth = width;
@@ -360,7 +366,7 @@ class OBFieldSelect extends OBField {
         });
 
         // set the host width
-        this.style.minWidth = largestWidth + 'px';
+        this.style.minWidth = largestWidth + "px";
 
         this.updateSelected();
     }
@@ -369,14 +375,14 @@ class OBFieldSelect extends OBField {
         var options = {};
 
         Array.from(this.children).forEach((child) => {
-            if (child.tagName === 'OB-OPTION') {
-                let key = child.getAttribute('value');
+            if (child.tagName === "OB-OPTION") {
+                let key = child.getAttribute("value");
                 if (key) {
                     options[key] = child.innerText;
                 } else {
-                    // If you mix items that have a value attribute and items without them, and also 
+                    // If you mix items that have a value attribute and items without them, and also
                     // some of the values are numbers lower than the length of the iterated options up
-                    // to this point, they'll get overwritten, so this causes problems. But also come 
+                    // to this point, they'll get overwritten, so this causes problems. But also come
                     // on now.
                     options[Object.keys(options).length] = child.innerText;
                 }
@@ -391,14 +397,14 @@ class OBFieldSelect extends OBField {
         if (this.multiple) {
             selected = [];
         } else {
-            selected = '';
+            selected = "";
         }
 
         let index = 0;
         Array.from(this.children).forEach((child) => {
-            if (child.tagName === 'OB-OPTION' && child.hasAttribute('selected')) {
-                let value = child.getAttribute('value');
-                if (! value) {
+            if (child.tagName === "OB-OPTION" && child.hasAttribute("selected")) {
+                let value = child.getAttribute("value");
+                if (!value) {
                     value = index.toString();
                 }
 
@@ -414,7 +420,6 @@ class OBFieldSelect extends OBField {
 
         return selected;
     }
-
 }
 
-customElements.define('ob-field-select', OBFieldSelect);
+customElements.define("ob-field-select", OBFieldSelect);

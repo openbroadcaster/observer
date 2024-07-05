@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldPassword extends OBField {
     #init;
@@ -11,28 +11,24 @@ class OBFieldPassword extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute('value')) {
-                this.value = this.getAttribute('value');
+            if (this.getAttribute("value")) {
+                this.value = this.getAttribute("value");
             }
 
-            if (this.getAttribute('placeholder')) {
-                this.root.querySelector('input').placeholder = this.getAttribute('placeholder');
+            if (this.getAttribute("placeholder")) {
+                this.root.querySelector("input").placeholder = this.getAttribute("placeholder");
             }
-        });;
+        });
     }
 
     renderEdit() {
-        render(html`
-            <input type="password" autocomplete="new-password" value=${this.value} />
-        `, this.root);
+        render(html` <input type="password" autocomplete="new-password" value=${this.value} /> `, this.root);
     }
 
     renderView() {
-        render(html`
-            <input type="password" autocomplete="new-password" value=${this.value} disabled />
-        `, this.root);
+        render(html` <input type="password" autocomplete="new-password" value=${this.value} disabled /> `, this.root);
     }
-    
+
     scss() {
         return `
             :host {
@@ -52,17 +48,17 @@ class OBFieldPassword extends OBField {
     }
 
     get value() {
-        if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').value;
+        if (this.root.querySelector("input")) {
+            return this.root.querySelector("input").value;
         } else {
-            return '';
+            return "";
         }
     }
 
     set value(value) {
-        this.root.querySelector('input').value = value;
+        this.root.querySelector("input").value = value;
         this.renderComponent();
     }
 }
 
-customElements.define('ob-field-password', OBFieldPassword);
+customElements.define("ob-field-password", OBFieldPassword);

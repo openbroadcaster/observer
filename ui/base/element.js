@@ -1,10 +1,9 @@
-import { html, render, sass } from '../vendor.js';
+import { html, render, sass } from "../vendor.js";
 
 let globalStyle = null;
 let localStyles = {};
 
 export class OBElement extends HTMLElement {
-
     root;
 
     constructor() {
@@ -14,7 +13,7 @@ export class OBElement extends HTMLElement {
             this.resolveInitialized = resolve;
         });
 
-        const shadowRoot = this.attachShadow({ mode: 'open' });
+        const shadowRoot = this.attachShadow({ mode: "open" });
 
         const scss = `
             // common scss here
@@ -27,44 +26,45 @@ export class OBElement extends HTMLElement {
             localStyles[this.constructor.name] = sass.compileString(this.scss()).css;
         }
 
-        render(html`
-            <style>
-                ${globalStyle}
-                ${localStyles[this.constructor.name]}
-            </style>
-            <div id="root"></div>
-        `, shadowRoot);
+        render(
+            html`
+                <style>
+                    ${globalStyle}
+                    ${localStyles[this.constructor.name]}
+                </style>
+                <div id="root"></div>
+            `,
+            shadowRoot,
+        );
 
-        this.root = shadowRoot.querySelector('#root');
+        this.root = shadowRoot.querySelector("#root");
     }
 
     scss() {
-        return '';
+        return "";
     }
 
     async refresh() {
         await this.renderComponent();
 
         // look for any child elements starting with app- and refresh them also
-        this.querySelectorAll('*').forEach(element => {
-            if (element.tagName.startsWith('APP-')) {
-                if (element.refresh && typeof (element.refresh) == 'function') {
+        this.querySelectorAll("*").forEach((element) => {
+            if (element.tagName.startsWith("APP-")) {
+                if (element.refresh && typeof element.refresh == "function") {
                     element.refresh();
-                }
-                else {
-                    console.warn('Component ' + element.tagName + ' does not have a refresh method');
+                } else {
+                    console.warn("Component " + element.tagName + " does not have a refresh method");
                 }
             }
         });
 
         if (this.shadowRoot) {
-            this.shadowRoot.querySelectorAll('*').forEach(element => {
-                if (element.tagName.startsWith('APP-')) {
-                    if (element.refresh && typeof (element.refresh) == 'function') {
+            this.shadowRoot.querySelectorAll("*").forEach((element) => {
+                if (element.tagName.startsWith("APP-")) {
+                    if (element.refresh && typeof element.refresh == "function") {
                         element.refresh();
-                    }
-                    else {
-                        console.warn('Component ' + element.tagName + ' does not have a refresh method');
+                    } else {
+                        console.warn("Component " + element.tagName + " does not have a refresh method");
                     }
                 }
             });
@@ -73,7 +73,6 @@ export class OBElement extends HTMLElement {
 
     // chatgpt4 new version
     getClosestAncestorByTag(targetTag) {
-
         let currentElement = this;
 
         // Normalize the target tag name to uppercase as HTML tag names are case-insensitive but commonly represented in uppercase in DOM
@@ -105,6 +104,6 @@ export class OBElement extends HTMLElement {
             }
         }
 
-        return null;  // Return null if no ancestor with the specified tag name is found
+        return null; // Return null if no ancestor with the specified tag name is found
     }
 }

@@ -1,4 +1,4 @@
-import { OBField } from '../base/field.js';
+import { OBField } from "../base/field.js";
 
 class OBFieldText extends OBField {
     #init;
@@ -10,8 +10,8 @@ class OBFieldText extends OBField {
 
         this.#init = true;
         this.renderComponent().then(() => {
-            if (this.hasAttribute('maxlength')) {
-                this.root.querySelector('input').setAttribute('maxlength', this.getAttribute('maxlength'));
+            if (this.hasAttribute("maxlength")) {
+                this.root.querySelector("input").setAttribute("maxlength", this.getAttribute("maxlength"));
             }
         });
     }
@@ -31,8 +31,8 @@ class OBFieldText extends OBField {
                     vertical-align: middle;
                 }
             }
-        `
+        `;
     }
 }
 
-customElements.define('ob-field-text', OBFieldText);
+customElements.define("ob-field-text", OBFieldText);

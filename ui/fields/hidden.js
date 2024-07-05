@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldHidden extends OBField {
     #init;
@@ -11,22 +11,18 @@ class OBFieldHidden extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute('value')) {
-                this.root.querySelector('input').value = this.getAttribute('value');
+            if (this.getAttribute("value")) {
+                this.root.querySelector("input").value = this.getAttribute("value");
             }
-        });;
+        });
     }
 
     renderEdit() {
-        render(html`
-            <input type="hidden" />
-        `, this.root);
+        render(html` <input type="hidden" /> `, this.root);
     }
 
     renderView() {
-        render(html`
-            <input type="hidden" disabled />
-        `, this.root);
+        render(html` <input type="hidden" disabled /> `, this.root);
     }
 
     scss() {
@@ -37,15 +33,15 @@ class OBFieldHidden extends OBField {
     }
 
     get value() {
-        if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').value;
-        } 
+        if (this.root.querySelector("input")) {
+            return this.root.querySelector("input").value;
+        }
     }
 
     set value(value) {
-        this.root.querySelector('input').value = value;
+        this.root.querySelector("input").value = value;
         this.renderComponent();
     }
 }
 
-customElements.define('ob-field-hidden', OBFieldHidden);
+customElements.define("ob-field-hidden", OBFieldHidden);

@@ -1,5 +1,5 @@
-import { OBField } from '../base/field.js';
-import { html, render } from '../vendor.js';
+import { OBField } from "../base/field.js";
+import { html, render } from "../vendor.js";
 
 class OBFieldNumber extends OBField {
     #init;
@@ -16,15 +16,11 @@ class OBFieldNumber extends OBField {
     }
 
     renderView() {
-        render(html`
-            ${this.value}
-        `, this.root);
+        render(html` ${this.value} `, this.root);
     }
 
     renderEdit() {
-        render(html`
-            <input id="input" type="number" />
-        `, this.root);
+        render(html` <input id="input" type="number" /> `, this.root);
     }
 
     scss() {
@@ -42,8 +38,8 @@ class OBFieldNumber extends OBField {
                     vertical-align: middle;
                 }
             }
-        `
+        `;
     }
 }
 
-customElements.define('ob-field-number', OBFieldNumber);
+customElements.define("ob-field-number", OBFieldNumber);

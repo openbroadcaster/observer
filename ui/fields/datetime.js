@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldDatetime extends OBField {
     #init;
@@ -7,7 +7,7 @@ class OBFieldDatetime extends OBField {
     #valueObject;
     #valueString;
     #value;
-    
+
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
@@ -22,24 +22,23 @@ class OBFieldDatetime extends OBField {
         this.#value = null;
 
         this.renderComponent().then(() => {
-            if (this.hasAttribute('value')) {
-                this.value = this.getAttribute('value');
+            if (this.hasAttribute("value")) {
+                this.value = this.getAttribute("value");
             }
         });
     }
 
     renderEdit() {
-        render(html`
-            <input onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" />
-        `, this.root);
+        render(
+            html` <input onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" /> `,
+            this.root,
+        );
     }
 
     renderView() {
-        render(html`
-            <div>${this.#valueString}</div>
-        `, this.root);
+        render(html` <div>${this.#valueString}</div> `, this.root);
     }
-    
+
     scss() {
         return `
             :host {
@@ -63,10 +62,9 @@ class OBFieldDatetime extends OBField {
     }
 
     set value(value) {
-        const inputElem = this.root.querySelector('input');
+        const inputElem = this.root.querySelector("input");
         inputElem.value = value;
-        inputElem.dispatchEvent(new Event('change'));
-        
+        inputElem.dispatchEvent(new Event("change"));
     }
 
     #updateValue(event) {
@@ -84,11 +82,10 @@ class OBFieldDatetime extends OBField {
 
         this.renderComponent();
     }
-
 }
 
 export default OBFieldDatetime;
 
-if (customElements.get('ob-field-datetime') === undefined) {
-    customElements.define('ob-field-datetime', OBFieldDatetime);
+if (customElements.get("ob-field-datetime") === undefined) {
+    customElements.define("ob-field-datetime", OBFieldDatetime);
 }

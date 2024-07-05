@@ -1,5 +1,5 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldCheckbox extends OBField {
     #init;
@@ -11,26 +11,22 @@ class OBFieldCheckbox extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute('value')) {
-                this.root.querySelector('input').value = this.getAttribute('value');
+            if (this.getAttribute("value")) {
+                this.root.querySelector("input").value = this.getAttribute("value");
             }
 
-            if (this.hasAttribute('checked')) {
-                this.root.querySelector('input').checked = true;
+            if (this.hasAttribute("checked")) {
+                this.root.querySelector("input").checked = true;
             }
-        });;
+        });
     }
 
     renderEdit() {
-        render(html`
-            <input type="checkbox" />
-        `, this.root);
+        render(html` <input type="checkbox" /> `, this.root);
     }
 
     renderView() {
-        render(html`
-            <input type="checkbox" disabled />
-        `, this.root);
+        render(html` <input type="checkbox" disabled /> `, this.root);
     }
 
     scss() {
@@ -46,23 +42,23 @@ class OBFieldCheckbox extends OBField {
     }
 
     get value() {
-        if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').value;
-        } 
+        if (this.root.querySelector("input")) {
+            return this.root.querySelector("input").value;
+        }
     }
 
     get checked() {
-        if (this.root.querySelector('input')) {
-            return this.root.querySelector('input').checked;
+        if (this.root.querySelector("input")) {
+            return this.root.querySelector("input").checked;
         } else {
             return false;
         }
     }
 
     set checked(check) {
-        this.root.querySelector('input').checked = check;
+        this.root.querySelector("input").checked = check;
         this.renderComponent();
     }
 }
 
-customElements.define('ob-field-checkbox', OBFieldCheckbox);
+customElements.define("ob-field-checkbox", OBFieldCheckbox);

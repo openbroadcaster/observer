@@ -1,5 +1,5 @@
-import { OBField } from '../base/field.js';
-import { html, render } from '../vendor.js';
+import { OBField } from "../base/field.js";
+import { html, render } from "../vendor.js";
 
 class OBFieldTextarea extends OBField {
     #init;
@@ -11,40 +11,36 @@ class OBFieldTextarea extends OBField {
 
         this.#init = true;
         this.renderComponent().then(() => {
-            if (this.hasAttribute('wrap')) {
-                this.root.querySelector('textarea').setAttribute('wrap', this.getAttribute('wrap'));
+            if (this.hasAttribute("wrap")) {
+                this.root.querySelector("textarea").setAttribute("wrap", this.getAttribute("wrap"));
             }
 
-            this.root.querySelector('textarea').addEventListener('change', this.propagateEvent.bind(this));
+            this.root.querySelector("textarea").addEventListener("change", this.propagateEvent.bind(this));
         });
     }
 
     renderView() {
-        render(html`
-            ${this.value}
-        `, this.root);
+        render(html` ${this.value} `, this.root);
     }
 
     renderEdit() {
-        render(html`
-            <textarea></textarea>
-        `, this.root);
+        render(html` <textarea></textarea> `, this.root);
     }
 
     get value() {
-        if (this.root.querySelector('textarea')) {
-            return this.root.querySelector('textarea').value;
+        if (this.root.querySelector("textarea")) {
+            return this.root.querySelector("textarea").value;
         }
     }
 
     set value(value) {
-        if (! this.root.querySelector('textarea')) {
+        if (!this.root.querySelector("textarea")) {
             return;
         }
-        
-        this.root.querySelector('textarea').value = value;
+
+        this.root.querySelector("textarea").value = value;
         this.renderComponent().then(() => {
-            this.propagateEvent('change');
+            this.propagateEvent("change");
         });
     }
 
@@ -67,8 +63,8 @@ class OBFieldTextarea extends OBField {
                     height: 100%;
                 }
             }
-        `
+        `;
     }
 }
 
-customElements.define('ob-field-textarea', OBFieldTextarea);
+customElements.define("ob-field-textarea", OBFieldTextarea);

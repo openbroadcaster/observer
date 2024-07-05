@@ -1,8 +1,7 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldInputDevice extends OBField {
-
     #init;
     #initAudio;
     #initVideo;
@@ -20,19 +19,19 @@ class OBFieldInputDevice extends OBField {
         this.#init = true;
 
         this.#showDetailed = "simple";
-        if (this.dataset.hasOwnProperty('detailed')) {
+        if (this.dataset.hasOwnProperty("detailed")) {
             this.#showDetailed = "details";
         }
 
-        if (this.dataset.hasOwnProperty('video')) {
+        if (this.dataset.hasOwnProperty("video")) {
             this.#showVideo = true;
         }
 
-        await navigator.mediaDevices.getUserMedia({audio: true});
+        await navigator.mediaDevices.getUserMedia({ audio: true });
         await this.#refreshDevices();
         navigator.mediaDevices.ondevicechange = (event) => {
             this.#refreshDevices();
-        }
+        };
 
         this.renderComponent().then(() => {
             if (this.#initAudio) {
@@ -47,10 +46,10 @@ class OBFieldInputDevice extends OBField {
 
     async #refreshDevices() {
         this.#audioDevices = [];
-        this.#videoDevices = []; 
+        this.#videoDevices = [];
 
         let devices = await navigator.mediaDevices.enumerateDevices();
-        
+
         devices.forEach((device) => {
             if (device.kind === "audioinput") {
                 this.#audioDevices.push(device);
@@ -63,32 +62,34 @@ class OBFieldInputDevice extends OBField {
     }
 
     renderEdit() {
-        render(html`
-            <div id="audio-input" class="${this.#showDetailed}">
-                <span>Audio Input</span>
-                <select>
-                    ${this.#audioDevices.map(device => html`
-                        <option value=${device.deviceId}>${device.label}</option>
-                    `)}
-                </select>
-            </div>
-            ${this.#showVideo && html`
-                <div id="video-input" class="${this.#showDetailed}">
-                    <span>Video Input</span>
+        render(
+            html`
+                <div id="audio-input" class="${this.#showDetailed}">
+                    <span>Audio Input</span>
                     <select>
-                        ${this.#videoDevices.map(device => html`
-                            <option value=${device.deviceId}>${device.label}</option>
-                        `)}
+                        ${this.#audioDevices.map(
+                            (device) => html` <option value=${device.deviceId}>${device.label}</option> `,
+                        )}
                     </select>
                 </div>
-            `}
-        `, this.root);
+                ${this.#showVideo &&
+                html`
+                    <div id="video-input" class="${this.#showDetailed}">
+                        <span>Video Input</span>
+                        <select>
+                            ${this.#videoDevices.map(
+                                (device) => html` <option value=${device.deviceId}>${device.label}</option> `,
+                            )}
+                        </select>
+                    </div>
+                `}
+            `,
+            this.root,
+        );
     }
 
     renderView() {
-        render(html`
-            <div>todo</div>
-        `, this.root);
+        render(html` <div>todo</div> `, this.root);
     }
 
     scss() {
@@ -145,4 +146,4 @@ class OBFieldInputDevice extends OBField {
     }
 }
 
-customElements.define('ob-field-input-device', OBFieldInputDevice);
+customElements.define("ob-field-input-device", OBFieldInputDevice);
