@@ -6,7 +6,8 @@ let localStyles = {};
 export class OBElement extends HTMLElement {
     root;
 
-    constructor() {
+    constructor() 
+    {
         super();
 
         this.initialized = new Promise((resolve) => {
