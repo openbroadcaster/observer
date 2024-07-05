@@ -8,6 +8,7 @@
     "sass": "^1.69.5"
   },
   "devDependencies": {
+    "pre-commit": "^1.2.2",
     "prettier": "^3.3.2",
     "video.js": "^8.10.0",
     "webpack": "^5.92.0",
@@ -17,6 +18,11 @@
     "build": "webpack --config webpack.config.js",
     "postinstall": "npm run build",
     "format": "prettier --write \"{js,ui}/**/*.js\"",
-    "format:check": "prettier --check \"{js,ui}/**/*.js\""
-  }
+    "format:check": "prettier --check \"{js,ui}/**/*.js\" || (echo 'JavaScript format check failed.' && exit 1)",
+    "phpcs": "vendor/bin/phpcs --standard=.phpcs.xml.dist || (echo 'PHP CodeSniffer failed.' && exit 1)",
+    "pre-commit": "npm run format:check && npm run phpcs"
+  },
+  "pre-commit": [
+    "pre-commit"
+  ]
 }
