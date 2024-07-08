@@ -7,6 +7,7 @@ class OBFieldDatetime extends OBField {
     #valueObject;
     #valueString;
     #value;
+    #setValue;
 
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
@@ -27,13 +28,13 @@ class OBFieldDatetime extends OBField {
 
     renderEdit() {
         render(
-            html` <input onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" /> `,
+            html` <input id="field" onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" /> `,
             this.root,
         );
     }
 
     renderView() {
-        render(html` <div>${this.#valueString}</div> `, this.root);
+        render(html` <div id="field" onchange=${this.#updateValue.bind(this)}>${this.#valueString}</div> `, this.root);
     }
 
     scss() {
@@ -59,9 +60,11 @@ class OBFieldDatetime extends OBField {
     }
 
     set value(value) {
-        const inputElem = this.root.querySelector("input");
+        const inputElem = this.root.querySelector("#field");
+        console.log(value);
         inputElem.value = value;
         inputElem.dispatchEvent(new Event("change"));
+
     }
 
     #updateValue(event) {
