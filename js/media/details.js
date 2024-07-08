@@ -87,16 +87,41 @@ OB.Media.detailsPage = function (id) {
         $("#media_details_comments").text(item.comments);
 
         // add custom metadata
-        $.each(OB.Settings.media_metadata, function (index, metadata) {
+        OB.Settings.media_metadata.forEach((metadata) => {
             if (metadata.type == "hidden") return;
 
             var value = item["metadata_" + metadata.name] ?? "";
             if (metadata.type == "tags") value = value.split(",").join(", ");
 
-            var $metadata = $('<div class="fieldrow"><label data-t></label><span></span></div>');
-            $metadata.find("label").text(metadata.description);
-            $metadata.find("span").text(value);
-            $("#media_details_metadata").append($metadata);
+            const metaElem = document.createElement("div");
+            metaElem.className = "fieldrow";
+            const labelElem = document.createElement("label");
+            labelElem.textContent = metadata.description;
+            metaElem.appendChild(labelElem);
+
+            switch (metadata.type) {
+                case "media":
+                case "playlist":
+                    const mediaPlaylistElem = document.createElement("ob-field-" + metadata.type);
+                    mediaPlaylistElem.setAttribute("value", value);
+                    mediaPlaylistElem.dataset.single = true;
+                    metaElem.appendChild(mediaPlaylistElem);
+                    break;
+                case "time":
+                case "date":
+                case "datetime":
+                    const dateTimeElem = document.createElement("ob-field-" + metadata.type);
+                    dateTimeElem.setAttribute("value", value);
+                    metaElem.appendChild(dateTimeElem);
+                    break;
+                default:
+                    const spanElem = document.createElement("span");
+                    spanElem.textContent = value;
+                    metaElem.appendChild(spanElem);
+                    break;
+            }
+
+            document.querySelector("#media_details_metadata").appendChild(metaElem);
         });
 
         // add thumbnail if available
