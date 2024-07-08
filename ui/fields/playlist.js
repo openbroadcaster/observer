@@ -42,14 +42,12 @@ class OBFieldPlaylist extends OBField {
     renderView() {
         render(
             html`
-                <div
-                    id="playlist"
-                    class="playlist-viewable"
-                    data-single="${this.dataset.hasOwnProperty("single")}"
-                >
+                <div id="playlist" class="playlist-viewable" data-single="${this.dataset.hasOwnProperty("single")}">
                     ${this.#playlistItems.map(
                         (playlistItem) => html`
-                            <div class="playlist-item" data-id=${playlistItem}>${this.#playlistContent[playlistItem]}</div>
+                            <div class="playlist-item" data-id=${playlistItem}>
+                                ${this.#playlistContent[playlistItem]}
+                            </div>
                         `,
                     )}
                 </div>

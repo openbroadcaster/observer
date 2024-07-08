@@ -10,8 +10,7 @@ class OBFieldHidden extends OBField {
         }
         this.#init = true;
 
-        this.renderComponent().then(() => {
-        });
+        this.renderComponent().then(() => {});
     }
 
     renderEdit() {

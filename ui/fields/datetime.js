@@ -22,13 +22,14 @@ class OBFieldDatetime extends OBField {
         this.#valueString = "";
         this.#value = null;
 
-        this.renderComponent().then(() => {
-        });
+        this.renderComponent().then(() => {});
     }
 
     renderEdit() {
         render(
-            html` <input id="field" onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" /> `,
+            html`
+                <input id="field" onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" />
+            `,
             this.root,
         );
     }
@@ -61,10 +62,8 @@ class OBFieldDatetime extends OBField {
 
     set value(value) {
         const inputElem = this.root.querySelector("#field");
-        console.log(value);
         inputElem.value = value;
         inputElem.dispatchEvent(new Event("change"));
-
     }
 
     #updateValue(event) {

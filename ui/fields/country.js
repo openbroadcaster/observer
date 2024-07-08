@@ -18,8 +18,7 @@ class OBFieldCountry extends OBField {
             }
         }
 
-        this.renderComponent().then(() => {
-        });
+        this.renderComponent().then(() => {});
     }
 
     renderEdit() {

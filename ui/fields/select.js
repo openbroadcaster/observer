@@ -6,8 +6,7 @@ class OBFieldSelect extends OBField {
     filterVal = "";
 
     async connected() {
-        this.renderComponent().then(() => {
-        });
+        this.renderComponent().then(() => {});
     }
 
     addSelected(option) {
