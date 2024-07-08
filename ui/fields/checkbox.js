@@ -4,17 +4,13 @@ import { OBField } from "../base/field.js";
 class OBFieldCheckbox extends OBField {
     #init;
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute("value")) {
-                this.root.querySelector("input").value = this.getAttribute("value");
-            }
-
             if (this.hasAttribute("checked")) {
                 this.root.querySelector("input").checked = true;
             }
@@ -44,6 +40,13 @@ class OBFieldCheckbox extends OBField {
     get value() {
         if (this.root.querySelector("input")) {
             return this.root.querySelector("input").value;
+        }
+    }
+
+    set value(value) {
+        if (this.root.querySelector("input")) {
+            this.root.querySelector("input").value = value;
+            this.renderComponent();
         }
     }
 

@@ -20,7 +20,7 @@ class OBFieldMedia extends OBField {
 
     #init;
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }

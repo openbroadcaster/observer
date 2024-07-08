@@ -4,16 +4,13 @@ import { OBField } from "../base/field.js";
 class OBFieldHidden extends OBField {
     #init;
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute("value")) {
-                this.root.querySelector("input").value = this.getAttribute("value");
-            }
         });
     }
 

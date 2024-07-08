@@ -7,6 +7,10 @@ export class OBField extends OBElement {
             await this.connected();
         }
 
+        if (this.getAttribute("value")) {
+            this.value = this.getAttribute("value");
+        }
+
         this.resolveInitialized();
     }
 

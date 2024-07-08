@@ -11,7 +11,7 @@ class OBFieldDatetime extends OBField {
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }
@@ -22,9 +22,6 @@ class OBFieldDatetime extends OBField {
         this.#value = null;
 
         this.renderComponent().then(() => {
-            if (this.hasAttribute("value")) {
-                this.value = this.getAttribute("value");
-            }
         });
     }
 

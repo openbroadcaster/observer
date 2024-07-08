@@ -6,7 +6,7 @@ class OBFieldCountry extends OBField {
 
     static countries = null;
 
-    async connectedCallback() {
+    async connected() {
         if (!OBFieldCountry.countries) {
             const result = await OB.API.postPromise("metadata", "country_list", {});
 
@@ -19,9 +19,6 @@ class OBFieldCountry extends OBField {
         }
 
         this.renderComponent().then(() => {
-            if (this.getAttribute("value")) {
-                this.root.querySelector("ob-field-select").value = this.getAttribute("value");
-            }
         });
     }
 

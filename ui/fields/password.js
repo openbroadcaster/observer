@@ -4,17 +4,13 @@ import { OBField } from "../base/field.js";
 class OBFieldPassword extends OBField {
     #init;
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }
         this.#init = true;
 
         this.renderComponent().then(() => {
-            if (this.getAttribute("value")) {
-                this.value = this.getAttribute("value");
-            }
-
             if (this.getAttribute("placeholder")) {
                 this.root.querySelector("input").placeholder = this.getAttribute("placeholder");
             }
