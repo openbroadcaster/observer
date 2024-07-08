@@ -42,10 +42,14 @@ class OBFieldPlaylist extends OBField {
     renderView() {
         render(
             html`
-                <div id="playlist" class="playlist-viewable">
+                <div
+                    id="playlist"
+                    class="playlist-viewable"
+                    data-single="${this.dataset.hasOwnProperty("single")}"
+                >
                     ${this.#playlistItems.map(
                         (playlistItem) => html`
-                            <div class="media-item" data-id=${playlistItem}>${this.#playlistContent[playlistItem]}</div>
+                            <div class="playlist-item" data-id=${playlistItem}>${this.#playlistContent[playlistItem]}</div>
                         `,
                     )}
                 </div>
@@ -92,7 +96,7 @@ class OBFieldPlaylist extends OBField {
                 }
 
                 #playlist[data-single="true"] {
-                    min-height: 38px;
+                    min-height: auto;
                 }
 
                 .playlist-item {
