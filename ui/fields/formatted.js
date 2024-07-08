@@ -11,13 +11,16 @@ class OBFieldFormatted extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            tinymce.init({
+            /*tinymce.init({
                 target: this,
                 theme: "silver",
                 plugins: "link",
                 menubar: false,
                 toolbar: "undo redo | bold italic | link",
                 branding: false,
+            });*/
+            const easyMDE = new EasyMDE({
+                element: this.root.querySelector("#edit"),
             });
         });
     }

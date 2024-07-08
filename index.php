@@ -49,6 +49,7 @@ $js_dependencies = [
   'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
   'node_modules/video.js/dist/video.min.js',
   'node_modules/dayjs/dayjs.min.js',
+  'node_modules/easymde/dist/easymde.min.js',
   'bundles/chrono-bundle.js'
 ];
 
