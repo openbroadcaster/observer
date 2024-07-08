@@ -1,4 +1,5 @@
 {
+  "name": "observer",
   "dependencies": {
     "chrono-node": "^2.7.6",
     "dayjs": "^1.11.11",
