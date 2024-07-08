@@ -223,9 +223,6 @@ class OBFieldPlaylist extends OBField {
 
             this.#playlistItems = value;
             this.playlistContent().then(() => {
-                console.log(this, this.#playlistItems);
-                console.log(this, this.#playlistContent);
-
                 this.#playlistItems = this.#playlistItems.filter((item) => {
                     return Object.keys(this.#playlistContent).includes(item.toString());
                 });
