@@ -5,6 +5,11 @@ class OBFieldSelect extends OBField {
     #options;
     filterVal = "";
 
+    async connected() {
+        this.renderComponent().then(() => {
+        });
+    }
+
     addSelected(option) {
         if (this.multiple && !this.selected.includes(option)) {
             // add option to selected
