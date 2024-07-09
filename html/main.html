@@ -6,8 +6,15 @@
   <ob-field-time value="1pm" data-edit></ob-field-time>
   <ob-field-date value="sep 2" data-edit></ob-field-date>
   <hr>
+  <ob-field-coordinates data-edit></ob-field-coordinates>
+  <hr>
   <ob-html-input></ob-html-input>
   <ob-field-formatted data-edit></ob-field-formatted>
+  <textarea id="mdetest"></textarea>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+  <script>
+    var easymde = new EasyMDE({ element: document.getElementById("mdetest") });
+  </script>
   <h2>Select bugfix test</h2>
   <ob-field-select id="select_bugfix" data-edit>
     <ob-option selected>Required</ob-option>
