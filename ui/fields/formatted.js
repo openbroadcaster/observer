@@ -26,11 +26,15 @@ class OBFieldFormatted extends OBField {
     }
 
     renderEdit() {
-        render(html` <textarea id="edit">TODO edit</textarea> `, this.root);
+        render(
+            html` <link rel="stylesheet" href="/node_modules/easymde/dist/easymde.min.css" />
+                <textarea id="edit">TODO edit</textarea>`,
+            this.root,
+        );
     }
 
     renderView() {
-        render(html` <div>TODO</div> `, this.root);
+        render(html`<div>TODO</div>`, this.root);
     }
 
     scss() {
