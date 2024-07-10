@@ -21,6 +21,7 @@
       <ob-field-select data-edit id="metadata_type">
         <ob-option selected value="text">Text (single line)</ob-option>
         <ob-option value="textarea">Text (multiple lines)</ob-option>
+        <ob-option value="formatted">Text (formatted)</ob-option>
         <ob-option value="integer">Number (integer)</ob-option>
         <ob-option value="date">Date</ob-option>
         <ob-option value="time">Time</ob-option>
@@ -55,6 +56,7 @@
     <div class="fieldrow">
       <label data-t>Default</label>
       <ob-field-text data-edit class="hidden metadata_default metadata_default_text"></ob-field-text>
+      <ob-field-formatted data-edit class="hidden metadata_default metadata_default_formatted"></ob-field-formatted>
       <ob-field-number data-edit class="hidden metadata_default metadata_default_integer"></ob-field-number>
       <ob-field-date data-edit class="hidden metadata_default metadata_default_date"></ob-field-date>
       <ob-field-time data-edit class="hidden metadata_default metadata_default_time"></ob-field-time>

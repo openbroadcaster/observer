@@ -161,7 +161,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T The field type is not valid.
-        if (array_search($data['type'], ['select','bool','text','textarea','integer','date','time','datetime','tags','hidden','media','playlist']) === false) {
+        if (array_search($data['type'], ['select','bool','text','textarea','formatted','integer','date','time','datetime','tags','hidden','media','playlist']) === false) {
             return [false,'The field type is not valid.'];
         }
 
@@ -236,7 +236,7 @@ class MediaMetadataModel extends OBFModel
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BOOLEAN NULL DEFAULT NULL');
             } elseif ($save['type'] === 'select' || $save['type'] === 'text') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
-            } elseif ($save['type'] === 'textarea' || $save['type'] == 'tags') {
+            } elseif ($save['type'] === 'textarea' || $save['type'] == 'tags' || $save['type'] == 'formatted') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TEXT NULL DEFAULT NULL');
             } elseif ($save['type'] === 'integer') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BIGINT NULL DEFAULT NULL');

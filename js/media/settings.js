@@ -595,6 +595,9 @@ OB.Media.recordingDefaultsGet = function () {
             case "textarea":
                 metaElem = document.createElement("ob-field-textarea");
                 break;
+            case "formatted":
+                metaElem = document.createElement("ob-field-formatted");
+                break;
             case "integer":
                 metaElem = document.createElement("ob-field-number");
                 break;

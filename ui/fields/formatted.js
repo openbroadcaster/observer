@@ -19,16 +19,39 @@ class OBFieldFormatted extends OBField {
                 toolbar: "undo redo | bold italic | link",
                 branding: false,
             });*/
-            const easyMDE = new EasyMDE({
+
+            var easyMDE = new EasyMDE({
                 element: this.root.querySelector("#edit"),
+                minHeight: "200px",
+                autoDownloadFontAwesome: false,
+                status: false,
+                toolbarTips: true,
+                forceSync: true,
+                toolbar: [
+                    "bold",
+                    "italic",
+                    "strikethrough",
+                    "|",
+                    "link",
+                    "|",
+                    "unordered-list",
+                    "ordered-list",
+                    "|",
+                    "fullscreen",
+                ],
             });
         });
     }
 
     renderEdit() {
         render(
-            html` <link rel="stylesheet" href="/node_modules/easymde/dist/easymde.min.css" />
-                <textarea id="edit">TODO edit</textarea>`,
+            html` <link
+                    rel="stylesheet"
+                    type="text/css"
+                    href="extras/fontawesome-free-5.15.3-web/css/all.css?v=1712184964"
+                />
+                <link rel="stylesheet" href="/node_modules/easymde/dist/easymde.min.css" />
+                <textarea id="edit"></textarea>`,
             this.root,
         );
     }
@@ -40,18 +63,25 @@ class OBFieldFormatted extends OBField {
     scss() {
         return `
             :host {
+                display: inline-block;
+                position: relative;
+                z-index: 10000000;
+                color: #000;
+                max-width: 300px;
+            }
+
+            .editor-toolbar {
+                background-color: #fff;
             }
         `;
     }
 
     get value() {
-        // TODO
-        return undefined;
+        return this.root.querySelector("#edit").value;
     }
 
     set value(value) {
-        // TODO
-        return undefined;
+        this.root.querySelector("#edit").value = value;
     }
 }
 
