@@ -149,6 +149,9 @@ legend
 
 .fieldrow > label
 {
+  position: relative;
+  top: 3px;
+  vertical-align: top;
   display: inline-block;
   width: 200px;
   text-align: right;
