@@ -57,8 +57,13 @@ class OBFieldCoordinates extends OBField {
     }
 
     set value(value) {
-        this.#value = value;
-        this.renderComponent();
+        OB.API.postPromise("metadata", "address_coordinates", { address: value }).then((response) => {
+            if (response.status) {
+                let result = response.data;
+                this.#value = result.lat + ", " + result.lng;
+                this.renderComponent();
+            }
+        });
     }
 }
 

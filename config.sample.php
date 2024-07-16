@@ -84,3 +84,6 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 // see updates/checker.php method names for available checks
 // default false
 // define('OB_INIT_VERIFY', ['database_version', 'config_file_valid']);
+
+// Google API key for geocoding fields
+// define('OB_GOOGLE_API_KEY', 'YOUR_API_KEY');

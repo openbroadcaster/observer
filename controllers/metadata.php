@@ -619,4 +619,37 @@ class Metadata extends OBFController
 
         return [true,'Language list.',$languages];
     }
+
+    /**
+     * Get coordinates for address using Google Maps API.
+     * 
+     * @param address
+     * 
+     * @return [lat, lon]
+     */
+    public function address_coordinates()
+    {
+        $address = $this->data('address');
+
+        $ch = curl_init();
+
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?';
+        $params = [
+            'address' => urlencode($address),
+            'key' => OB_GOOGLE_API_KEY
+        ];
+        curl_setopt($ch, CURLOPT_URL, $url . http_build_query($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $coordinates = json_decode($response, true);
+
+        $result = $coordinates['results'][0]['geometry']['location'] ?? null;
+
+        if (! $result) {
+            return [false, 'No coordinates found for address.'];
+        }
+
+        return [true, 'Coordinates', $result];
+    }
 }
