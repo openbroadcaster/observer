@@ -48,8 +48,7 @@ class OBFieldCoordinates extends OBField {
 
     #updateValue(event) {
         const value = event.target.value;
-        this.#value = value;
-        this.renderComponent();
+        this.value = value;
     }
 
     get value() {
