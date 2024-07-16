@@ -11,15 +11,6 @@ class OBFieldFormatted extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            /*tinymce.init({
-                target: this,
-                theme: "silver",
-                plugins: "link",
-                menubar: false,
-                toolbar: "undo redo | bold italic | link",
-                branding: false,
-            });*/
-
             var easyMDE = new EasyMDE({
                 element: this.root.querySelector("#edit"),
                 minHeight: "200px",
