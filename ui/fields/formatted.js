@@ -3,6 +3,7 @@ import { OBField } from "../base/field.js";
 
 class OBFieldFormatted extends OBField {
     #init;
+    #editorInstance;
 
     async connectedCallback() {
         if (this.#init) {
@@ -11,7 +12,7 @@ class OBFieldFormatted extends OBField {
         this.#init = true;
 
         this.renderComponent().then(() => {
-            var easyMDE = new EasyMDE({
+            this.#editorInstance = new EasyMDE({
                 element: this.root.querySelector("#edit"),
                 minHeight: "200px",
                 autoDownloadFontAwesome: false,
@@ -72,7 +73,12 @@ class OBFieldFormatted extends OBField {
     }
 
     set value(value) {
-        this.root.querySelector("#edit").value = value;
+        if (this.#editorInstance) {
+            this.#editorInstance.value(value);
+        } else {
+            this.root.querySelector("#edit").value = value;
+        }
+        this.renderComponent();
     }
 }
 
