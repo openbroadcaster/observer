@@ -622,9 +622,9 @@ class Metadata extends OBFController
 
     /**
      * Get coordinates for address using Google Maps API.
-     * 
+     *
      * @param address
-     * 
+     *
      * @return [lat, lon]
      */
     public function address_coordinates()
