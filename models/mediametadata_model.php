@@ -310,9 +310,9 @@ DELIMITER ;
             $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP FOREIGN KEY ' . $this->db->format_backticks('fk_media_metadata_' . $field['name']));
         }
 
-        if ($field['type'] === 'coordinates') {
+        /*if ($field['type'] === 'coordinates') {
             $this->db->query('DROP TRIGGER before_insert_metadata_' . $field['name']);
-        }
+        }*/
 
         $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP COLUMN ' . $this->db->format_backticks('metadata_' . $field['name']));
 
