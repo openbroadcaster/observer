@@ -88,17 +88,20 @@ if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.
 date_default_timezone_set('Etc/UTC');
 
-// load core components
-require_once('classes/core/obfdb.php');
-require_once('classes/core/obfload.php');
-require_once('classes/core/obfio.php');
-require_once('classes/core/obfcontroller.php');
-require_once('classes/core/obfcallbacks.php');
-require_once('classes/core/obfhelpers.php');
-require_once('classes/core/obfmodel.php');
-require_once('classes/core/obfmodels.php');
-require_once('classes/core/obfuser.php');
-require_once('classes/core/obfmodule.php');
+// require class files
+$require_from = [
+    'classes/core',
+    'classes/base',
+    'classes/metadata'
+];
+foreach ($require_from as $dir) {
+    $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+    foreach ($classes_iterator as $file) {
+        if ($file->isFile() && $file->getExtension() == 'php') {
+            require_once($file->getPathname());
+        }
+    }
+}
 
 // load third party components
 require_once('vendor/autoload.php');
