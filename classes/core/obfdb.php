@@ -587,7 +587,11 @@ class OBFDB
      */
     public function format_value($value)
     {
-        if (!is_int($value)) {
+        if (is_bool($value)) {
+            $value = $value ? 1 : 0;
+        } elseif (is_int($value)) {
+            // leaving value as-is
+        } else {
             $value = '"' . $this->escape($value) . '"';
         }
         return $value;
