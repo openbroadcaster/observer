@@ -57,7 +57,7 @@ class OBFieldFormatted extends OBField {
             :host {
                 display: inline-block;
                 position: relative;
-                z-index: 10000000;
+                z-index: 1000;
                 color: #000;
                 max-width: 300px;
             }
