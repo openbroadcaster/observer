@@ -219,30 +219,21 @@ class MediaModel extends OBFModel
         $this->db->what('media.artist', 'artist');
         $this->db->what('media.album', 'album');
         $this->db->what('media.year', 'year');
-
         $this->db->what('media.type', 'type');
         $this->db->what('media.format', 'format');
-
         $this->db->what('media.category_id', 'category_id');
         $this->db->what('media_categories.name', 'category_name');
-
         $this->db->what('media.country', 'country');
         $this->db->what('countries.name', 'country_name');
-
         $this->db->what('media.language', 'language');
         $this->db->what('languages.ref_name', 'language_name');
-
         $this->db->what('media.is_approved', 'is_approved');
-
         $this->db->what('media.genre_id', 'genre_id');
         $this->db->what('media_genres.name', 'genre_name');
-
         $this->db->what('media.comments', 'comments');
-
         $this->db->what('media.filename', 'filename');
         $this->db->what('media.file_hash', 'file_hash');
         $this->db->what('media.file_location', 'file_location');
-
         $this->db->what('media.is_copyright_owner', 'is_copyright_owner');
         $this->db->what('media.duration', 'duration');
         $this->db->what('media.owner_id', 'owner_id');
@@ -251,16 +242,16 @@ class MediaModel extends OBFModel
         $this->db->what('media.is_archived', 'is_archived');
         $this->db->what('media.status', 'status');
         $this->db->what('media.dynamic_select', 'dynamic_select');
-
         $this->db->what('users.display_name', 'owner_name');
 
         foreach ($args['metadata_fields'] as $metadata_field) {
-            $default = $metadata_field['settings']->default ?? null;
-            if (is_array($default)) {
-                $default = implode(',', $default);
+            $query_select = $metadata_field->querySelect();
+            if (!is_array($query_select)) {
+                $query_select = [$query_select];
             }
-
-            $this->db->what('COALESCE(media.metadata_' . $metadata_field['name'] . ',"' . $this->db->escape($default) . '")', 'metadata_' . $metadata_field['name'], false);
+            foreach ($query_select as $select) {
+                $this->db->what($select, null, false);
+            }
         }
     }
 
@@ -286,7 +277,7 @@ class MediaModel extends OBFModel
     {
         $metadata_fields = $this->models->mediametadata('get_all');
 
-        $this('get_init_what', ['metadata_fields' => $metadata_fields]);
+        $this('get_init_what', ['metadata_fields' => $this->models->mediametadata('get_all_objects')]);
         $this('get_init_join');
     }
 

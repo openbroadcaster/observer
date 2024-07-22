@@ -27,6 +27,28 @@
 class MediaMetadataModel extends OBFModel
 {
     /**
+     * Get all metadata columns as metadata objects.
+     */
+    public function get_all_objects()
+    {
+        $columns = $this->get_all();
+
+        $objects = [];
+        foreach ($columns as $column) {
+            $class = 'OB\Classes\Metadata\\' . ucfirst($column['type']);
+
+            // no class? use base class.
+            if (!class_exists($class)) {
+                $class = 'OB\Classes\Base\Metadata';
+            }
+
+            $objects[] = new $class($column['name'], $column['description'], $column['type'], $column['settings']);
+        }
+
+        return $objects;
+    }
+
+    /**
      * Get all metadata columns.
      *
      * @return metadata_columns
@@ -35,7 +57,7 @@ class MediaMetadataModel extends OBFModel
     {
         $this->db->orderby('order_id');
         $fields = $this->db->get('media_metadata');
-        if (! $fields) {
+        if (!$fields) {
             return [];
         }
 
@@ -50,6 +72,7 @@ class MediaMetadataModel extends OBFModel
                 $field['settings']->all = $this('tag_search', ['id' => $field['id'],'search' => '']);
             }
         }
+
         return $fields;
     }
 
