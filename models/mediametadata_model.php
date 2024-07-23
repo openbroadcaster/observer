@@ -35,7 +35,13 @@ class MediaMetadataModel extends OBFModel
 
         $objects = [];
         foreach ($columns as $column) {
-            $class = 'OB\Classes\Metadata\\' . ucfirst($column['type']);
+            // adjust to "boolean" ("bool" reserved; can't use for class name).
+            $column_type = $column['type'];
+            if ($column_type == 'bool') {
+                $column_type = 'boolean';
+            }
+
+            $class = 'OB\Classes\Metadata\\' . ucfirst($column_type);
 
             // no class? use base class.
             if (!class_exists($class)) {
