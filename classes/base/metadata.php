@@ -45,4 +45,11 @@ class Metadata
     {
         return 'metadata_' . $this->name . ' = "' . $this->db->escape($value) . '"';
     }
+
+    /**
+     * Process row after it has been fetched from the database.
+     */
+    public function processRow(&$row)
+    {
+    }
 }

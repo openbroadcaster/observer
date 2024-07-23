@@ -297,6 +297,12 @@ class MediaModel extends OBFModel
         $this->db->where('media.id', $args['id']);
         $media = $this->db->get_one('media');
 
+        // get metadata objects to run the media through processRow
+        $metadata_fields = $this->models->mediametadata('get_all_objects');
+        foreach ($metadata_fields as $metadata_field) {
+            $metadata_field->processRow($media);
+        }
+
         return $media;
     }
 
@@ -663,10 +669,6 @@ class MediaModel extends OBFModel
             $where_array[] = '(status = "public" OR status = "visible" OR owner_id = "' . $this->db->escape($this->user->param('id')) . '")';
         }
 
-        //if($random_order) $this('get_init_join');
-        //else $this('get_init');
-        //if(!$random_order) $this('get_init');
-
         // limit by id?
         if (!empty($params['id'])) {
             $where_array[] = 'media.id = "' . $this->db->escape($params['id']) . '"';
@@ -716,6 +718,9 @@ class MediaModel extends OBFModel
             $params['sort_by'] = 'languages.ref_name';
         }
 
+        // get metadata objects needed for postprocessing
+        $metadata_fields = $this->models->mediametadata('get_all_objects');
+
         if (!$args['random_order']) {
             if (!empty($params['offset'])) {
                 $this->db->offset($params['offset']);
@@ -755,6 +760,11 @@ class MediaModel extends OBFModel
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
+
+                // get metadata objects to run the media through processRow
+                foreach ($metadata_fields as $metadata_field) {
+                    $metadata_field->processRow($item);
+                }
             }
 
             return [$items,$total_media_found];
@@ -793,6 +803,11 @@ class MediaModel extends OBFModel
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
+
+                // get metadata objects to run the media through processRow
+                foreach ($metadata_fields as $metadata_field) {
+                    $metadata_field->processRow($item);
+                }
             }
 
             return [$items,$total_media_found];
@@ -989,7 +1004,7 @@ class MediaModel extends OBFModel
 
         // is this potentially found in a dynamic selection?
         if ($include_dynamic) {
-      // see if media can actually be used in dynamic selections.
+            // see if media can actually be used in dynamic selections.
             $this->db->where('id', $id);
             $media = $this->db->get_one('media');
 
@@ -1437,7 +1452,7 @@ class MediaModel extends OBFModel
 
         // handle file if we have it.
         if (!empty($file_id)) {
-      // determine our (random) file location
+        // determine our (random) file location
 
             if ($original_media) {
                 $file_location = $original_media['file_location'];
