@@ -31,6 +31,14 @@ class OBFieldFormatted extends OBField {
                     "|",
                     "fullscreen",
                 ],
+                onToggleFullScreen: (isFullScreen) => {
+                    // add data-fullscreen
+                    if (isFullScreen) {
+                        this.setAttribute("data-fullscreen", "");
+                    } else {
+                        this.removeAttribute("data-fullscreen");
+                    }
+                },
             });
         });
     }
@@ -60,6 +68,10 @@ class OBFieldFormatted extends OBField {
                 z-index: 1000;
                 color: #000;
                 max-width: 300px;
+            }
+
+            :host([data-fullscreen]) {
+                z-index: 20000;
             }
 
             .editor-toolbar {
