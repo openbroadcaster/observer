@@ -189,6 +189,12 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
                         "#media_addedit_" + id + " .metadata_" + metadata.name + "_field",
                     ).suggestions = metadata.settings.suggestions;
                 }
+
+                // set options
+                if (metadata.type == "select" && metadata?.settings?.options) {
+                    document.querySelector("#media_addedit_" + id + " .metadata_" + metadata.name + "_field").options =
+                        metadata.settings.options;
+                }
             }
         });
 

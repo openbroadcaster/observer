@@ -2,7 +2,7 @@
 <div id="media_metadata_template_bool" class="hidden">
   <div class="fieldrow">
     <label></label>
-    <select class="metadata_name_field"><option value="1" data-t>Yes</option><option value="0" data-t>No</option></select>
+    <ob-field-bool data-edit class="metadata_name_field"></ob-field-bool>
     <button class="copy_to_all" data-field="metadata_name_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 </div>
@@ -10,7 +10,7 @@
 <div id="media_metadata_template_textarea" class="hidden">
   <div class="fieldrow">
     <label></label>
-    <textarea class="metadata_name_field"></textarea>
+    <ob-field-textarea data-edit class="metadata_name_field"></ob-field-textarea>
     <button class="copy_to_all" data-field="metadata_name_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 </div>
@@ -26,7 +26,7 @@
 <div id="media_metadata_template_text" class="hidden">
   <div class="fieldrow">
     <label></label>
-    <input type="text" class="metadata_name_field">
+    <ob-field-text data-edit class="metadata_name_field"></ob-field-text>
     <button class="copy_to_all" data-field="metadata_name_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 </div>
@@ -34,7 +34,7 @@
 <div id="media_metadata_template_integer" class="hidden">
   <div class="fieldrow">
     <label></label>
-    <input type="number" class="metadata_name_field">
+    <ob-field-number data-edit class="metadata_name_field"></ob-field-number>
     <button class="copy_to_all" data-field="metadata_name_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 </div>
@@ -66,7 +66,7 @@
 <div id="media_metadata_template_select" class="hidden">
   <div class="fieldrow">
     <label></label>
-    <select class="metadata_name_field"></select>
+    <ob-field-select data-edit class="metadata_name_field"></ob-field-select>
     <button class="copy_to_all" data-field="metadata_name_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 </div>
