@@ -619,6 +619,10 @@ class MediaModel extends OBFModel
         OBFHelpers::default_args($args['params'], ['sort_by' => null]);
         OBFHelpers::default_args($args, ['player_id' => false, 'random_order' => false, 'include_private' => false]);
 
+        // get metadata objects needed for postprocessing (done before other db stuff to prevent conflict)
+        // TODO FIX models should be able to act without affecting other models (have own db class instance with shared connection)
+        $metadata_fields = $this->models->mediametadata('get_all_objects');
+
         // if we are accessing from a remote, determine the valid media types.
         if ($args['player_id']) {
             $this->db->where('id', $args['player_id']);
@@ -717,9 +721,6 @@ class MediaModel extends OBFModel
         } elseif ($params['sort_by'] == 'language_name') {
             $params['sort_by'] = 'languages.ref_name';
         }
-
-        // get metadata objects needed for postprocessing
-        $metadata_fields = $this->models->mediametadata('get_all_objects');
 
         if (!$args['random_order']) {
             if (!empty($params['offset'])) {
