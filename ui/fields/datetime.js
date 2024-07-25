@@ -5,6 +5,15 @@ class OBFieldDatetime extends OBField {
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+        gt: "greater than",
+        gte: "greater than or equal to",
+        lt: "less than",
+        lte: "less than or equal to",
+    };
+
     renderView() {
         render(html`<div id="field">${this._valueString}</div> `, this.root);
     }

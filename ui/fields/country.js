@@ -4,6 +4,11 @@ import { OBField } from "../base/field.js";
 class OBFieldCountry extends OBField {
     static countries = null;
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     async connected() {
         if (!OBFieldCountry.countries) {
             const result = await OB.API.postPromise("metadata", "country_list", {});

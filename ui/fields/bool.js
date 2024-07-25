@@ -2,6 +2,11 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldBool extends OBField {
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     renderView() {
         const output = this._value ? "Yes" : "No";
         render(html`${output}`, this.root);

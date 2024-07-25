@@ -1279,10 +1279,15 @@ OB.Sidebar.advancedSearchWindowInit = function () {
             // skip hidden metadata
             if (metadata.type == "hidden") return;
 
-            $metadata = $("<option></option>")
-                .text(metadata.description)
-                .attr("value", "metadata_" + metadata.name);
+            // access static operators property for this element
+            const metadataType = metadata.type == "integer" ? "number" : metadata.type;
 
+            var $metadata = $("<option></option>")
+                .text(metadata.description)
+                .attr("value", "metadata_" + metadata.name)
+                .attr("data-type", metadataType);
+
+            /*
             if (metadata.type == "text" || metadata.type == "textarea")
                 $metadata.attr("data-compare", "text").attr("data-value", "text");
             else if (metadata.type == "integer") $metadata.attr("data-compare", "number").attr("data-value", "text");
@@ -1308,6 +1313,7 @@ OB.Sidebar.advancedSearchWindowInit = function () {
                 });
                 $("#advanced_search_bool_options").after($select);
             }
+            */
 
             $("#advanced_search_filter").append($metadata);
         });
@@ -1342,12 +1348,37 @@ OB.Sidebar.advancedSearchFilterChange = function () {
     $(".advanced_search [data-type=compare]").hide();
     $(".advanced_search [data-type=value]").hide();
 
+    const metadataContainer = document.getElementById("advanced_search_metadata");
+    metadataContainer.style.display = "none";
+
     var $filter = $("#advanced_search_filter").find(":selected");
     var compare = $filter.attr("data-compare"); // which compare field to use
     var value = $filter.attr("data-value"); // which value field to use
+    var type = $filter.attr("data-type");
 
-    $(".advanced_search [data-type=compare][data-name=" + compare + "]").show();
-    $(".advanced_search [data-type=value][data-name=" + value + "]").show();
+    if (type) {
+        metadataContainer.innerHTML = "";
+        const metadataElement = document.createElement("ob-field-" + type);
+        const metadataOperators = metadataElement?.constructor?.operators;
+
+        const operatorElement = document.createElement("select");
+        Object.entries(metadataOperators).forEach((operator) => {
+            const option = document.createElement("option");
+            option.value = operator[0];
+            option.text = operator[1];
+            operatorElement.appendChild(option);
+        });
+
+        metadataContainer.appendChild(operatorElement);
+
+        metadataElement.editable = true;
+        metadataContainer.appendChild(metadataElement);
+
+        metadataContainer.style.display = "inline-flex";
+    } else {
+        $(".advanced_search [data-type=compare][data-name=" + compare + "]").show();
+        $(".advanced_search [data-type=value][data-name=" + value + "]").show();
+    }
 };
 
 OB.Sidebar.advanced_search_filter_id = 0;

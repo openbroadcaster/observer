@@ -2,6 +2,13 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldTextarea extends OBField {
+    static operators = {
+        eq: "is",
+        neq: "is not",
+        contains: "contains",
+        ncontains: "does not contain",
+    };
+
     renderView() {
         render(html`<div id="view">${this.value}</div>`, this.root);
     }

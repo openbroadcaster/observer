@@ -6,6 +6,11 @@ class OBFieldPlaylist extends OBField {
     #playlistContent;
     #setValue;
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     async connected() {
         this.#playlistItems = [];
         this.#playlistContent = {};

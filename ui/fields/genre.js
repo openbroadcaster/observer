@@ -9,6 +9,11 @@ class OBFieldGenre extends OBField {
     #currentGenre;
     #genres;
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     async connectedCallback() {
         if (this.#init) {
             return;

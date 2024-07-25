@@ -6,6 +6,24 @@ export class OBField extends OBElement {
     _editable;
     _settings;
 
+    static operators;
+
+    /* available operators */
+    /*
+    static operators = {
+        eq: 'is',
+        neq: 'is not',
+        contains: 'contains',
+        ncontains: 'does not contain',
+        gt: 'greater than',
+        gte: 'greater than or equal to',
+        lt: 'less than',
+        lte: 'less than or equal to',
+        has: 'has',
+        nhas: 'does not have'
+    };
+    */
+
     async connectedCallback() {
         if (this.connected) {
             await this.connected();

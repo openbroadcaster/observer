@@ -5,6 +5,11 @@ class OBFieldSelect extends OBField {
     #options;
     filterVal = "";
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     addSelected(option) {
         if (this.multiple && !this.selected.includes(option)) {
             // add option to selected

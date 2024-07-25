@@ -6,6 +6,11 @@ class OBFieldLanguage extends OBField {
     static languages = null;
     static popularLanguages = null;
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     async connected() {
         if (OBFieldLanguage.languages === null) {
             // prevent multiple calls if this element appears twice in one form

@@ -7,6 +7,11 @@ class OBFieldTags extends OBField {
     #suggestions;
     #currentTag;
 
+    static operators = {
+        has: "has",
+        nhas: "does not have",
+    };
+
     // TODO loading tags and suggestions via OB-OPTION and OB-TAGS temporarily disabled.
     // fix needed as these are currently overwriting set value.
     /*

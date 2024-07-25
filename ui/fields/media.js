@@ -20,6 +20,11 @@ class OBFieldMedia extends OBField {
 
     #init;
 
+    static operators = {
+        eq: "is",
+        neq: "is not",
+    };
+
     async connected() {
         if (this.#init) {
             return;

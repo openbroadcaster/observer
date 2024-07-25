@@ -2,6 +2,15 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldNumber extends OBField {
+    static operators = {
+        eq: "is",
+        neq: "is not",
+        gt: "greater than",
+        gte: "greater than or equal to",
+        lt: "less than",
+        lte: "less than or equal to",
+    };
+
     renderEdit() {
         render(
             html` <input id="input" type="number" value=${this._value} onchange=${this.inputChange.bind(this)} /> `,
