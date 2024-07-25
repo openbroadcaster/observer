@@ -2,25 +2,28 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldNumber extends OBField {
-    #init;
-
-    async connectedCallback() {
-        if (this.#init) {
-            return;
-        }
-
-        this.#init = true;
-        this.renderComponent().then(() => {
-            // do stuff
-        });
+    renderEdit() {
+        render(
+            html` <input id="input" type="number" value=${this._value} onchange=${this.inputChange.bind(this)} /> `,
+            this.root,
+        );
     }
 
     renderView() {
-        render(html` ${this.value} `, this.root);
+        render(html` <div id="view">${this._value}</div> `, this.root);
     }
 
-    renderEdit() {
-        render(html` <input id="input" type="number" /> `, this.root);
+    inputChange(event) {
+        this.value = event.target.value;
+    }
+
+    set value(value) {
+        this._value = parseInt(value);
+        this.refresh();
+    }
+
+    get value() {
+        return this._value;
     }
 
     scss() {

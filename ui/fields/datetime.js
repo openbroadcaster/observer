@@ -2,40 +2,24 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldDatetime extends OBField {
-    #init;
-
-    #valueObject;
-    #valueString;
-    #value;
-    #setValue;
-
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
-    async connected() {
-        if (this.#init) {
-            return;
-        }
-        this.#init = true;
-
-        this.#valueObject = null;
-        this.#valueString = "";
-        this.#value = null;
-
-        this.renderComponent().then(() => {});
+    renderView() {
+        render(html`<div id="field">${this._valueString}</div> `, this.root);
     }
 
     renderEdit() {
         render(
             html`
-                <input id="field" onchange=${this.#updateValue.bind(this)} type="text" value="${this.#valueString}" />
+                <input id="field" type="text" value="${this._valueString}" onchange=${this.inputChange.bind(this)} />
             `,
             this.root,
         );
     }
 
-    renderView() {
-        render(html` <div id="field" onchange=${this.#updateValue.bind(this)}>${this.#valueString}</div> `, this.root);
+    inputChange(event) {
+        this.value = event.target.value;
     }
 
     scss() {
@@ -56,30 +40,15 @@ class OBFieldDatetime extends OBField {
         `;
     }
 
-    get value() {
-        return this.#value;
-    }
-
     set value(value) {
-        const inputElem = this.root.querySelector("#field");
-        inputElem.value = value;
-        inputElem.dispatchEvent(new Event("change"));
+        const datetime = chrono.casual.parseDate(value);
+        this._value = datetime ? dayjs(datetime).format(this.valueFormat) : "";
+        this._valueString = datetime ? dayjs(datetime).format(this.valueStringFormat) : "";
+        this.refresh();
     }
 
-    #updateValue(event) {
-        const value = event.target.value;
-        const datetime = chrono.casual.parseDate(value);
-        if (datetime) {
-            this.#valueObject = datetime;
-            this.#valueString = dayjs(datetime).format(this.valueStringFormat);
-            this.#value = dayjs(datetime).format(this.valueFormat);
-        } else {
-            this.#valueObject = null;
-            this.#valueString = "";
-            this.#value = null;
-        }
-
-        this.renderComponent();
+    get value() {
+        return this._value;
     }
 }
 

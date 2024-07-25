@@ -1,19 +1,21 @@
 import { OBField } from "../base/field.js";
+import { html, render } from "../vendor.js";
 
 class OBFieldText extends OBField {
-    #init;
+    renderEdit() {
+        render(
+            html`<input
+                type="text"
+                maxlength=${this.getAttribute("maxlength")}
+                onchange=${this.inputChange.bind(this)}
+                value="${this._value}"
+            />`,
+            this.root,
+        );
+    }
 
-    async connectedCallback() {
-        if (this.#init) {
-            return;
-        }
-
-        this.#init = true;
-        this.renderComponent().then(() => {
-            if (this.hasAttribute("maxlength")) {
-                this.root.querySelector("input").setAttribute("maxlength", this.getAttribute("maxlength"));
-            }
-        });
+    inputChange(event) {
+        this._value = event.target.value;
     }
 
     scss() {

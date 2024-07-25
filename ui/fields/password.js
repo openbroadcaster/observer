@@ -2,27 +2,27 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldPassword extends OBField {
-    #init;
-
-    async connected() {
-        if (this.#init) {
-            return;
-        }
-        this.#init = true;
-
-        this.renderComponent().then(() => {
-            if (this.getAttribute("placeholder")) {
-                this.root.querySelector("input").placeholder = this.getAttribute("placeholder");
-            }
-        });
+    renderView() {
+        render(html` ********* `, this.root);
     }
 
     renderEdit() {
-        render(html` <input type="password" autocomplete="new-password" value=${this.value} /> `, this.root);
+        render(
+            html`
+                <input
+                    type="password"
+                    onchange=${this.inputChange.bind(this)}
+                    placeholder=${this.getAttribute("placeholder")}
+                    autocomplete="new-password"
+                    value=${this._value}
+                />
+            `,
+            this.root,
+        );
     }
 
-    renderView() {
-        render(html` <input type="password" autocomplete="new-password" value=${this.value} disabled /> `, this.root);
+    inputChange(event) {
+        this._value = event.target.value;
     }
 
     scss() {
@@ -41,19 +41,6 @@ class OBFieldPassword extends OBField {
                 }
             }
         `;
-    }
-
-    get value() {
-        if (this.root.querySelector("input")) {
-            return this.root.querySelector("input").value;
-        } else {
-            return "";
-        }
-    }
-
-    set value(value) {
-        this.root.querySelector("input").value = value;
-        this.renderComponent();
     }
 }
 

@@ -2,46 +2,20 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldTextarea extends OBField {
-    #init;
-
-    async connectedCallback() {
-        if (this.#init) {
-            return;
-        }
-
-        this.#init = true;
-        this.renderComponent().then(() => {
-            if (this.hasAttribute("wrap")) {
-                this.root.querySelector("textarea").setAttribute("wrap", this.getAttribute("wrap"));
-            }
-
-            this.root.querySelector("textarea").addEventListener("change", this.propagateEvent.bind(this));
-        });
-    }
-
     renderView() {
-        render(html` ${this.value} `, this.root);
+        render(html`<div id="view">${this.value}</div>`, this.root);
     }
 
     renderEdit() {
-        render(html` <textarea></textarea> `, this.root);
+        const wrap = this.getAttribute("wrap");
+        render(
+            html`<textarea wrap=${wrap} onchange=${this.textareaChange.bind(this)}>${this._value}</textarea>`,
+            this.root,
+        );
     }
 
-    get value() {
-        if (this.root.querySelector("textarea")) {
-            return this.root.querySelector("textarea").value;
-        }
-    }
-
-    set value(value) {
-        if (!this.root.querySelector("textarea")) {
-            return;
-        }
-
-        this.root.querySelector("textarea").value = value;
-        this.renderComponent().then(() => {
-            this.propagateEvent("change");
-        });
+    textareaChange(event) {
+        this.value = event.target.value;
     }
 
     scss() {
@@ -62,6 +36,10 @@ class OBFieldTextarea extends OBField {
                     width: 250px;
                     height: 100%;
                 }
+            }
+
+            #view {
+                white-space: pre-line;
             }
         `;
     }

@@ -106,4 +106,10 @@ export class OBElement extends HTMLElement {
 
         return null; // Return null if no ancestor with the specified tag name is found
     }
+
+    // add a listener if not already added
+    ensureListener(element, event, callback) {
+        element.removeEventListener(event, callback);
+        element.addEventListener(event, callback);
+    }
 }

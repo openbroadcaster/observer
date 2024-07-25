@@ -404,7 +404,7 @@ OB.Media.metadataAddEditTypeChange = function () {
 
     // handle select field
     var select_value = document.querySelector(".metadata_default_select").value;
-    var select_options = document.querySelector("#metadata_select_options").value.split("\n");
+    var select_options = document.querySelector("#metadata_select_options").value?.split("\n");
     document.querySelector(".metadata_default_select").options = select_options;
     document.querySelector(".metadata_default_select").value = select_value;
 

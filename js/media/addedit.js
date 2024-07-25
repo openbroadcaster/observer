@@ -124,6 +124,7 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
     }
 
     // fill country list
+    /*
     for (var i in OB.Settings.countries) {
         $form
             .find(".country_field")
@@ -135,6 +136,7 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
                     "</option>",
             );
     }
+    */
 
     // tie together genre list with category list on change
     $form.find(".category_field").change(function () {
@@ -156,12 +158,10 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
                         .setAttribute("data-id3-field", metadata.settings.id3_key);
                 }
 
-                // set select field options
-                if (metadata.type == "select" && metadata.settings && metadata.settings.options) {
-                    metadata.settings.options.forEach(function (option) {
-                        let selectField = metadataField.querySelector(".metadata_name_field");
-                        selectField.innerHTML = selectField.innerHTML + "<option>" + option + "</option>";
-                    });
+                // settings
+                let selectField = metadataField.querySelector(".metadata_name_field");
+                if (metadata.settings) {
+                    selectField.settings = metadata.settings;
                 }
 
                 // change field name and description values
@@ -188,12 +188,6 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
                     document.querySelector(
                         "#media_addedit_" + id + " .metadata_" + metadata.name + "_field",
                     ).suggestions = metadata.settings.suggestions;
-                }
-
-                // set options
-                if (metadata.type == "select" && metadata?.settings?.options) {
-                    document.querySelector("#media_addedit_" + id + " .metadata_" + metadata.name + "_field").options =
-                        metadata.settings.options;
                 }
             }
         });
@@ -452,8 +446,9 @@ OB.Media.save = function () {
                 .val();
 
             // media and playlist metadata fields return arrays, but will be a single item, so convert:
-            if (Array.isArray(metaItem) && (metadata.type == "media" || metadata.type == "playlist")) {
-                metaItem = metaItem[0];
+            if (metadata.type == "media" || metadata.type == "playlist") {
+                if (!metaItem || !metaItem.length) metaItem = null;
+                else metaItem = metaItem[0];
             }
 
             item["metadata_" + metadata.name] = metaItem;

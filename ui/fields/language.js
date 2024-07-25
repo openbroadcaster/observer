@@ -5,9 +5,8 @@ class OBFieldLanguage extends OBField {
     // languages are common to all instances of this element
     static languages = null;
     static popularLanguages = null;
-    valuePending = false;
 
-    async connectedCallback() {
+    async connected() {
         if (OBFieldLanguage.languages === null) {
             // prevent multiple calls if this element appears twice in one form
             OBFieldLanguage.languages = {};
@@ -29,8 +28,6 @@ class OBFieldLanguage extends OBField {
             // convert to array
             OBFieldLanguage.popularLanguages = Object.values(popularLanguages);
         }
-
-        this.renderComponent();
     }
 
     get value() {

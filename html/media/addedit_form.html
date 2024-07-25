@@ -47,7 +47,7 @@
 
   <div class="fieldrow">
     <label data-t>Year</label>
-    <input class="year_field" type="text">
+    <ob-field-number data-edit class="year_field"></ob-field-number>
     <button class="copy_to_all" data-field="year_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 
@@ -55,6 +55,12 @@
     <label data-t class="required">Category</label>
     <select class="category_field"></select>
     <button class="copy_to_all" data-field="category_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
+  </div>
+
+  <div class="fieldrow">
+    <label data-t class="required">Genre</label>
+    <select class="genre_field"></select>
+    <button class="copy_to_all" data-field="genre_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 
   <div class="fieldrow">
@@ -67,12 +73,6 @@
     <label data-t class="required">Language</label>
     <ob-field-language class="language_field" data-edit></ob-field-language>
     <button class="copy_to_all" data-field="language_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t class="required">Genre</label>
-    <select class="genre_field"></select>
-    <button class="copy_to_all" data-field="genre_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
   </div>
 
   <div class="fieldrow">

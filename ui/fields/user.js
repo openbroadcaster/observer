@@ -5,7 +5,7 @@ class OBFieldUser extends OBField {
     // languages are common to all instances of this element
     static users = null;
 
-    async connectedCallback() {
+    async connected() {
         if (OBFieldUser.users === null) {
             // prevent multiple calls if this element appears twice in one form
             OBFieldUser.users = {};
@@ -19,8 +19,6 @@ class OBFieldUser extends OBField {
                 OBFieldUser.users[user.id] = user.display_name + " (" + user.email + ")";
             }
         }
-
-        this.renderComponent();
     }
 
     get value() {

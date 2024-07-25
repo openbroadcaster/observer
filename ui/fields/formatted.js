@@ -1,17 +1,26 @@
-import { html, render } from "../vendor.js";
+import { html, render, marked, dompurify } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldFormatted extends OBField {
     #init;
     #editorInstance;
 
-    async connectedCallback() {
-        if (this.#init) {
-            return;
-        }
-        this.#init = true;
+    renderEdit() {
+        if (this.#editorInstance) {
+            // update value only
+            this.#editorInstance.value(this._value);
+        } else {
+            render(
+                html` <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="extras/fontawesome-free-5.15.3-web/css/all.css?v=1712184964"
+                    />
+                    <link rel="stylesheet" href="/node_modules/easymde/dist/easymde.min.css" />
+                    <textarea id="edit"></textarea>`,
+                this.root,
+            );
 
-        this.renderComponent().then(() => {
             this.#editorInstance = new EasyMDE({
                 element: this.root.querySelector("#edit"),
                 minHeight: "200px",
@@ -40,24 +49,15 @@ class OBFieldFormatted extends OBField {
                     }
                 },
             });
-        });
-    }
 
-    renderEdit() {
-        render(
-            html` <link
-                    rel="stylesheet"
-                    type="text/css"
-                    href="extras/fontawesome-free-5.15.3-web/css/all.css?v=1712184964"
-                />
-                <link rel="stylesheet" href="/node_modules/easymde/dist/easymde.min.css" />
-                <textarea id="edit"></textarea>`,
-            this.root,
-        );
+            this.#editorInstance.codemirror.on("change", () => {
+                this._value = this.#editorInstance.value();
+            });
+        }
     }
 
     renderView() {
-        render(html`<div>TODO</div>`, this.root);
+        this.root.innerHTML = `<div id="view">${dompurify.sanitize(marked(this._value ?? ""))}</div>`;
     }
 
     scss() {
@@ -66,7 +66,6 @@ class OBFieldFormatted extends OBField {
                 display: inline-block;
                 position: relative;
                 z-index: 1000;
-                color: #000;
                 max-width: 300px;
             }
 
@@ -77,20 +76,15 @@ class OBFieldFormatted extends OBField {
             .editor-toolbar {
                 background-color: #fff;
             }
+
+            #view > *:first-child {
+                margin-top: 0;
+            }
+
+            #view > *:last-child {
+                margin-bottom: 0;
+            }
         `;
-    }
-
-    get value() {
-        return this.root.querySelector("#edit").value;
-    }
-
-    set value(value) {
-        if (this.#editorInstance) {
-            this.#editorInstance.value(value);
-        } else {
-            this.root.querySelector("#edit").value = value;
-        }
-        this.renderComponent();
     }
 }
 

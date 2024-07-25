@@ -55,7 +55,9 @@ class OBFieldMedia extends OBField {
         });
     }
 
-    renderEdit() {
+    async renderEdit() {
+        await this.mediaContent();
+
         render(
             html`
                 <div
@@ -66,7 +68,8 @@ class OBFieldMedia extends OBField {
                     data-status="${this.dataset.hasOwnProperty("status") ? this.dataset.status : "none"}"
                     onmouseup=${this.onMouseUp.bind(this)}
                 >
-                    ${this.#mediaItems.map(
+                    ${this._value &&
+                    this._value.map(
                         (mediaItem) => html`
                             <div class="media-item" data-id=${mediaItem}>
                                 ${this.#mediaContent[mediaItem]}
@@ -82,7 +85,8 @@ class OBFieldMedia extends OBField {
                           `
                         : html``}
                 </div>
-                ${this.#mediaItems.length === 0 &&
+                ${this._value &&
+                this._value.length === 0 &&
                 this.dataset.hasOwnProperty("single") &&
                 this.dataset.hasOwnProperty("record") &&
                 html`
@@ -131,11 +135,13 @@ class OBFieldMedia extends OBField {
         );
     }
 
-    renderView() {
+    async renderView() {
+        await this.mediaContent();
+
         render(
             html`
                 <div id="media" class="media-viewable">
-                    ${this.#mediaItems.map(
+                    ${this._value?.map(
                         (mediaItem) => html`
                             <div class="media-item" data-id=${mediaItem}>${this.#mediaContent[mediaItem]}</div>
                         `,
@@ -149,7 +155,7 @@ class OBFieldMedia extends OBField {
     scss() {
         return `
             :host {
-                #media:empty {
+                .media-editable:empty {
                     border: 2px dashed #eeeeec;
                 }
 
@@ -257,6 +263,7 @@ class OBFieldMedia extends OBField {
                     }
                 }
 
+                /*
                 .media-viewable:empty::after {
                     content: "No Media";
                     display: block;
@@ -267,6 +274,7 @@ class OBFieldMedia extends OBField {
                 .media-viewable[data-single="true"]:empty::after {
                     content: "No Media (Single)";
                 }
+                */
 
                 #media {
                     box-sizing: border-box;
@@ -288,7 +296,7 @@ class OBFieldMedia extends OBField {
                     /*min-height: 180px;*/
                 }
 
-                .media-item {
+                .media-editable .media-item {
                     background-color: #eeeeec;
                     color: #000;
                     padding: 5px;
@@ -361,7 +369,7 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        var selectedMedia = this.#mediaItems;
+        var selectedMedia = this._value;
 
         Object.keys(window.dragHelperData).forEach((key) => {
             if (!window.dragHelperData[key].dataset) {
@@ -379,8 +387,10 @@ class OBFieldMedia extends OBField {
     }
 
     async mediaContent() {
+        if (!this._value || !this.#mediaContent) return;
+
         return Promise.all(
-            this.#mediaItems.map(async (mediaItem) => {
+            this._value.map(async (mediaItem) => {
                 if (this.#mediaContent[mediaItem]) {
                     return;
                 }
@@ -393,7 +403,12 @@ class OBFieldMedia extends OBField {
                 }
 
                 const data = result.data;
-                this.#mediaContent[mediaItem] = data.artist + " - " + data.title;
+
+                const name = [];
+                if (data.artist) name.push(data.artist);
+                if (data.title) name.push(data.title);
+
+                this.#mediaContent[mediaItem] = name.join(" - ");
                 this.refresh();
             }),
         );
@@ -435,7 +450,7 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRemove(event) {
-        const newItems = this.#mediaItems.filter((item) => {
+        const newItems = this._value.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
         this.value = newItems;
@@ -703,7 +718,7 @@ class OBFieldMedia extends OBField {
     }
 
     get value() {
-        return this.#mediaItems;
+        return this._value;
     }
 
     set value(value) {
@@ -725,15 +740,9 @@ class OBFieldMedia extends OBField {
         this.#recordUrl = "";
         this.#recordData = [];
 
-        this.#mediaItems = value;
-        this.mediaContent().then(() => {
-            this.#mediaItems = this.#mediaItems.filter((item) => {
-                return Object.keys(this.#mediaContent).includes(item.toString());
-            });
-            this.refresh();
+        this._value = value;
 
-            this.dispatchEvent(new Event("change"));
-        });
+        this.refresh();
     }
 }
 

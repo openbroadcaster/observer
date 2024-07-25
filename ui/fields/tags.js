@@ -7,7 +7,10 @@ class OBFieldTags extends OBField {
     #suggestions;
     #currentTag;
 
-    async connectedCallback() {
+    // TODO loading tags and suggestions via OB-OPTION and OB-TAGS temporarily disabled.
+    // fix needed as these are currently overwriting set value.
+    /*
+    async connected() {
         if (this.#init) {
             return;
         }
@@ -20,8 +23,9 @@ class OBFieldTags extends OBField {
         this.#tags = this.#loadInnerTags();
         this.#suggestions = this.#loadInnerSuggestions();
 
-        this.renderComponent();
+        this.refresh();
     }
+    */
 
     renderEdit() {
         if (!this.#tags) {
@@ -64,7 +68,8 @@ class OBFieldTags extends OBField {
     }
 
     renderView() {
-        render(html` <div>Tags view (TODO)</div> `, this.root);
+        const output = this.#tags?.join(", ");
+        render(html` <div>${output}</div> `, this.root);
     }
 
     scss() {
@@ -175,19 +180,19 @@ class OBFieldTags extends OBField {
             }
         }
 
-        this.renderComponent();
+        this.refresh();
     }
 
     tagsDelete(tag) {
         this.#tags = this.#tags.filter((elem) => elem != tag);
-        this.renderComponent();
+        this.refresh();
     }
 
     tagsAdd(tag) {
         if (this.#tags.find((elem) => elem === tag) === undefined) {
             this.#tags.push(tag);
         }
-        this.renderComponent();
+        this.refresh();
     }
 
     get value() {
@@ -195,16 +200,19 @@ class OBFieldTags extends OBField {
     }
 
     set value(value) {
-        if (Array.isArray(value)) {
-            this.#tags = [...new Set(value)];
-            this.renderComponent();
+        let tags = value;
+        if (!Array.isArray(tags)) {
+            tags = tags.split(",").map((tag) => tag.trim());
         }
+
+        this.#tags = [...new Set(tags)];
+        this.refresh();
     }
 
     set suggestions(value) {
         if (Array.isArray(value)) {
             this.#suggestions = [...new Set(value)];
-            this.renderComponent();
+            this.refresh();
         }
     }
 

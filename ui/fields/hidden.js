@@ -1,6 +1,7 @@
 import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
+// TODO is this need at all? will be removing "hidden" field type and replacing with hidden setting for other field types.
 class OBFieldHidden extends OBField {
     #init;
 

@@ -2,30 +2,17 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldBool extends OBField {
-    #init;
-
-    async connectedCallback() {
-        if (this.#init) {
-            return;
-        }
-        this.#init = true;
-
-        this.renderComponent().then(() => {
-            if (this.hasAttribute("value")) {
-                const value = this.getAttribute("value");
-                if (value.toLowerCase() === "true" || value === "1") {
-                    this.root.querySelector("input").checked = true;
-                }
-            }
-        });
+    renderView() {
+        const output = this._value ? "Yes" : "No";
+        render(html`${output}`, this.root);
     }
 
     renderEdit() {
-        render(html` <input type="checkbox" /> `, this.root);
+        render(html`<input type="checkbox" onchange=${this.inputChange} checked=${this._value} />`, this.root);
     }
 
-    renderView() {
-        render(html` <input type="checkbox" disabled /> `, this.root);
+    inputChange(event) {
+        this._value = event.target.checked;
     }
 
     scss() {
@@ -38,19 +25,6 @@ class OBFieldBool extends OBField {
                 }
             }
         `;
-    }
-
-    get value() {
-        if (this.root.querySelector("input")) {
-            return this.root.querySelector("input").checked;
-        } else {
-            return false;
-        }
-    }
-
-    set value(value) {
-        this.root.querySelector("input").checked = value;
-        this.renderComponent();
     }
 }
 

@@ -2,8 +2,6 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldCountry extends OBField {
-    #init;
-
     static countries = null;
 
     async connected() {
@@ -17,42 +15,42 @@ class OBFieldCountry extends OBField {
                 OBFieldCountry.countries[country.country_id] = country.name;
             }
         }
-
-        this.renderComponent().then(() => {});
     }
 
     renderEdit() {
-        render(html` <ob-field-select data-edit></ob-field-select> `, this.root);
+        render(html`<ob-field-select data-edit></ob-field-select>`, this.root);
+        this.fieldSelect = this.root.querySelector("ob-field-select");
+        this.fieldSelect.options = OBFieldCountry.countries;
+        this.fieldSelect.value = this.value;
 
-        const fieldSelect = this.root.querySelector("ob-field-select");
-        fieldSelect.options = OBFieldCountry.countries;
-        fieldSelect.refresh();
+        if (this.initValue) {
+            const temp = this.initValue;
+            this.initValue = false;
+            this.value = temp;
+        }
     }
 
     renderView() {
-        render(html` <ob-field-select></ob-field-select> `, this.root);
-
-        const fieldSelect = this.root.querySelector("ob-field-select");
-        fieldSelect.options = OBFieldCountry.countries;
-        fieldSelect.refresh();
+        render(html`${this.currentCountryName()}`, this.root);
     }
 
-    currentCountryName() {
+    async currentCountryName() {
+        await this.initialized;
         return OBFieldCountry.countries[this.value];
     }
 
     get value() {
-        const fieldSelect = this.root.querySelector("ob-field-select");
-        if (fieldSelect) {
-            return fieldSelect.value;
-        }
+        return this.fieldSelect?.value;
     }
 
     set value(value) {
-        const fieldSelect = this.root.querySelector("ob-field-select");
-        if (fieldSelect) {
-            fieldSelect.value = value;
+        if (this.fieldSelect) {
+            this.fieldSelect.value = value;
+        } else {
+            this.initValue = value;
         }
+
+        this.refresh();
     }
 }
 

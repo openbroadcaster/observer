@@ -5,7 +5,7 @@ class OBFieldGroup extends OBField {
     // languages are common to all instances of this element
     static groups = null;
 
-    async connectedCallback() {
+    async connected() {
         if (OBFieldGroup.groups === null) {
             // prevent multiple calls if this element appears twice in one form
             OBFieldGroup.groups = {};

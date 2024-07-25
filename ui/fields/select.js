@@ -5,10 +5,6 @@ class OBFieldSelect extends OBField {
     #options;
     filterVal = "";
 
-    async connected() {
-        this.renderComponent().then(() => {});
-    }
-
     addSelected(option) {
         if (this.multiple && !this.selected.includes(option)) {
             // add option to selected
@@ -182,7 +178,7 @@ class OBFieldSelect extends OBField {
                 left: 0;
                 right: 0;
                 border: var(--field-border);
-                z-index: 1;
+                z-index: 100000;
                 margin-top: 0;
                 box-sizing: border-box;
                 max-height: 300px;
@@ -300,7 +296,7 @@ class OBFieldSelect extends OBField {
 
     set value(value) {
         this.selected = value;
-        this.updateSelected();
+        if (this._editable) this.updateSelected();
     }
 
     get options() {
@@ -312,6 +308,15 @@ class OBFieldSelect extends OBField {
     set options(value) {
         this.#options = value;
         this.renderEdit();
+    }
+
+    set settings(value) {
+        this._settings = value;
+        if (this._settings.options) this.options = this._settings.options;
+    }
+
+    get settings() {
+        return this._settings;
     }
 
     renderEdit() {
@@ -373,6 +378,11 @@ class OBFieldSelect extends OBField {
         this.style.minWidth = largestWidth + "px";
 
         this.updateSelected();
+    }
+
+    renderView() {
+        const output = this.#options ? this.#options[this.selected] : "";
+        render(html`${output}`, this.root);
     }
 
     #loadInnerOptions() {

@@ -2,24 +2,26 @@ import { html, render } from "../vendor.js";
 import { OBElement } from "../base/element.js";
 
 export class OBField extends OBElement {
+    _value;
+    _editable;
+    _settings;
+
     async connectedCallback() {
         if (this.connected) {
             await this.connected();
         }
 
-        if (this.getAttribute("value")) {
-            this.value = this.getAttribute("value");
+        if (this.getAttribute("value") && this._value === undefined) {
+            this._value = this.getAttribute("value");
+        }
+
+        if (this.hasAttribute("data-edit") && this._editable === undefined) {
+            this._editable = true;
         }
 
         this.resolveInitialized();
-    }
 
-    renderView() {
-        render(html` ${this.value} `, this.root);
-    }
-
-    renderEdit() {
-        render(html`<input id="input" type="text" />`, this.root);
+        this.renderComponent();
     }
 
     // Bind this to events inside the shadowroot to propagate them to outside
@@ -37,37 +39,42 @@ export class OBField extends OBElement {
     }
 
     get value() {
-        if (this.root.querySelector("input")) {
-            return this.root.querySelector("input").value;
-        }
+        return this._value;
     }
 
     set value(value) {
-        if (!this.root.querySelector("input")) {
-            return;
-        }
-
-        this.root.querySelector("input").value = value;
-        this.renderComponent();
+        this._value = value;
+        this.refresh();
     }
 
     get editable() {
-        return this.hasAttribute("data-edit");
+        return this._editable;
     }
 
-    set editable(value) {
-        if (value) {
-            this.setAttribute("data-edit", "");
-        } else {
-            this.removeAttribute("data-edit");
-        }
+    set editable(editable) {
+        this._editable = !!editable;
+        this.refresh();
+    }
 
-        this.renderComponent();
+    get settings() {
+        return this._settings;
+    }
+
+    set settings(settings) {
+        this._settings = settings;
+        this.refresh();
     }
 
     async renderComponent() {
-        const edit = this.hasAttribute("data-edit");
-        if (edit) this.renderEdit();
-        else this.renderView();
+        if (this._editable) await this.renderEdit();
+        else await this.renderView();
+    }
+
+    async renderView() {
+        render(html`<div>${this._value}</div>`, this.root);
+    }
+
+    async renderEdit() {
+        render(html`<input id="input" type="text" value="${this._value}" />`, this.root);
     }
 }

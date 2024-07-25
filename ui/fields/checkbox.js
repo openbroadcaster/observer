@@ -1,6 +1,7 @@
 import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
+// TODO remove, use ob-field-boolean instead.
 class OBFieldCheckbox extends OBField {
     #init;
 

@@ -99,26 +99,19 @@ OB.Media.detailsPage = function (id) {
             labelElem.textContent = metadata.description;
             metaElem.appendChild(labelElem);
 
-            switch (metadata.type) {
-                case "media":
-                case "playlist":
-                    const mediaPlaylistElem = document.createElement("ob-field-" + metadata.type);
-                    mediaPlaylistElem.setAttribute("value", value);
-                    mediaPlaylistElem.dataset.single = true;
-                    metaElem.appendChild(mediaPlaylistElem);
-                    break;
-                case "time":
-                case "date":
-                case "datetime":
-                    const dateTimeElem = document.createElement("ob-field-" + metadata.type);
-                    dateTimeElem.setAttribute("value", value);
-                    metaElem.appendChild(dateTimeElem);
-                    break;
-                default:
-                    const spanElem = document.createElement("span");
-                    spanElem.textContent = value;
-                    metaElem.appendChild(spanElem);
-                    break;
+            // use custom html element if available
+            if (customElements.get("ob-field-" + metadata.type)) {
+                const fieldElem = document.createElement("ob-field-" + metadata.type);
+                fieldElem.value = value;
+                fieldElem.settings = metadata.settings;
+                metaElem.appendChild(fieldElem);
+            }
+
+            // fallback to span
+            else {
+                const spanElem = document.createElement("span");
+                spanElem.textContent = value;
+                metaElem.appendChild(spanElem);
             }
 
             document.querySelector("#media_details_metadata").appendChild(metaElem);
