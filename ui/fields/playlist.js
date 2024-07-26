@@ -6,7 +6,7 @@ class OBFieldPlaylist extends OBField {
     #playlistContent;
     #setValue;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

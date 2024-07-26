@@ -5,7 +5,7 @@ class OBFieldSelect extends OBField {
     #options;
     filterVal = "";
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

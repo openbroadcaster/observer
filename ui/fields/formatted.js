@@ -5,12 +5,14 @@ class OBFieldFormatted extends OBField {
     #init;
     #editorInstance;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
         contains: "contains",
         ncontains: "does not contain",
     };
+
+    static comparisonField = "text";
 
     renderEdit() {
         if (this.#editorInstance) {

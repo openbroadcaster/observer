@@ -5,7 +5,7 @@ class OBFieldDatetime extends OBField {
     valueFormat = "YYYY-MM-DD HH:mm:ss";
     valueStringFormat = "MMM D, YYYY h:mm A";
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
         gt: "greater than",

@@ -2,7 +2,7 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldText extends OBField {
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
         contains: "contains",

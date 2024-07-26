@@ -6,7 +6,7 @@ class OBFieldLanguage extends OBField {
     static languages = null;
     static popularLanguages = null;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

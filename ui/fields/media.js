@@ -20,7 +20,7 @@ class OBFieldMedia extends OBField {
 
     #init;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

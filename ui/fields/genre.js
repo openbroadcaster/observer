@@ -9,7 +9,7 @@ class OBFieldGenre extends OBField {
     #currentGenre;
     #genres;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

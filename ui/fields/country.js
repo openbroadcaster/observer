@@ -4,7 +4,7 @@ import { OBField } from "../base/field.js";
 class OBFieldCountry extends OBField {
     static countries = null;
 
-    static operators = {
+    static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };

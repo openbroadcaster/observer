@@ -1359,7 +1359,7 @@ OB.Sidebar.advancedSearchFilterChange = function () {
     if (type) {
         metadataContainer.innerHTML = "";
         const metadataElement = document.createElement("ob-field-" + type);
-        const metadataOperators = metadataElement?.constructor?.operators;
+        const metadataOperators = metadataElement?.constructor?.comparisonOperators;
 
         const operatorElement = document.createElement("select");
         Object.entries(metadataOperators).forEach((operator) => {
@@ -1371,8 +1371,18 @@ OB.Sidebar.advancedSearchFilterChange = function () {
 
         metadataContainer.appendChild(operatorElement);
 
-        metadataElement.editable = true;
-        metadataContainer.appendChild(metadataElement);
+        // field specifies a different comparison field
+        if (metadataElement?.constructor?.comparisonField) {
+            const comparisonField = document.createElement("ob-field-" + metadataElement.constructor.comparisonField);
+            comparisonField.editable = true;
+            metadataContainer.appendChild(comparisonField);
+        }
+
+        // field uses itself as the comparison field
+        else {
+            metadataElement.editable = true;
+            metadataContainer.appendChild(metadataElement);
+        }
 
         metadataContainer.style.display = "inline-flex";
     } else {
