@@ -1362,6 +1362,7 @@ OB.Sidebar.advancedSearchFilterChange = function () {
         const metadataOperators = metadataElement?.constructor?.comparisonOperators;
 
         const operatorElement = document.createElement("select");
+        operatorElement.setAttribute("id", "advanced_search_metadata_operator");
         Object.entries(metadataOperators).forEach((operator) => {
             const option = document.createElement("option");
             option.value = operator[0];
@@ -1375,12 +1376,14 @@ OB.Sidebar.advancedSearchFilterChange = function () {
         if (metadataElement?.constructor?.comparisonField) {
             const comparisonField = document.createElement("ob-field-" + metadataElement.constructor.comparisonField);
             comparisonField.editable = true;
+            comparisonField.setAttribute("id", "advanced_search_metadata_value");
             metadataContainer.appendChild(comparisonField);
         }
 
         // field uses itself as the comparison field
         else {
             metadataElement.editable = true;
+            metadataElement.setAttribute("id", "advanced_search_metadata_value");
             metadataContainer.appendChild(metadataElement);
         }
 
@@ -1401,6 +1404,20 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         var op = filter_data.op;
         var val = filter_data.val;
         var filter = filter_data.filter;
+    } else if (document.getElementById("advanced_search_metadata").style.display != "none") {
+        var filter = document.getElementById("advanced_search_filter").value;
+        filter = filter.replace(/^metadata_/, "");
+        var op = document.getElementById("advanced_search_metadata_operator").value;
+        var val = document.getElementById("advanced_search_metadata_value").value;
+
+        // get metadata/settings for this field
+        const metadata = OB.Settings.media_metadata.find((metadata) => metadata.name === filter);
+        const type = metadata.type;
+
+        // get the operator name from the index
+        const operators = document.createElement(`ob-field-${type}`).constructor.comparisonOperators;
+
+        var filter_description = `${metadata.description} "${operators[op]} "${val}"`;
     } else {
         var $filter = $("#advanced_search_filter option:selected");
         var filter = $("#advanced_search_filter").val();
