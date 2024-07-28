@@ -6,11 +6,9 @@ export class OBField extends OBElement {
     _editable;
     _settings;
 
-    static operators;
-
-    /* available operators */
     /*
-    static operators = {
+    what operators are available for this field? available as follows:
+    {
         eq: 'is',
         neq: 'is not',
         contains: 'contains',
@@ -23,6 +21,10 @@ export class OBField extends OBElement {
         nhas: 'does not have'
     };
     */
+    static comparisonOperators;
+
+    // which field element should we use to provide the comparison value?
+    static comparisonField;
 
     async connectedCallback() {
         if (this.connected) {
