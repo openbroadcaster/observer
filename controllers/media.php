@@ -416,6 +416,7 @@ class Media extends OBFController
      * @return [versions, media]
      *
      * @route GET /v2/media/versions/(:media_id:)
+     * @route GET /v2/media/(:media_id:)/versions
      */
     public function versions()
     {
@@ -652,5 +653,29 @@ class Media extends OBFController
         }
 
         return [true,'Media data.',$media];
+    }
+
+    /**
+     * Get a media item's thumbnail.
+     *
+     * @param id
+     *
+     * @return thumbnail
+     *
+     * @route GET /v2/media/(:id:)/thumbnail
+     * @route GET /v2/media/thumbnail/(:id:)
+     */
+    public function thumbnail()
+    {
+        $this->user->require_authenticated();
+
+        $id = $this->data('id');
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+
+        if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
+            $this->user->require_permission('manage_media');
+        }
+
+        return $this->models->uploads('thumbnail_get', $id, 'media');
     }
 }

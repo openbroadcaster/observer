@@ -188,12 +188,12 @@
             "search"
         ],
         [
-            "/api/v2/media/thumbnail/(:id:)",
+            "/api/v2/media/versions/(:media_id:)",
             "media",
-            "thumbnail"
+            "versions"
         ],
         [
-            "/api/v2/media/versions/(:media_id:)",
+            "/api/v2/media/(:media_id:)/versions",
             "media",
             "versions"
         ],
@@ -201,6 +201,16 @@
             "/api/v2/media/(:id:)",
             "media",
             "get"
+        ],
+        [
+            "/api/v2/media/(:id:)/thumbnail",
+            "media",
+            "thumbnail"
+        ],
+        [
+            "/api/v2/media/thumbnail/(:id:)",
+            "media",
+            "thumbnail"
         ],
         [
             "/api/v2/playlists/editable",
