@@ -400,9 +400,17 @@ OB.Sidebar.mediaSearch = function (more) {
                             break;
                     }
 
+                    /*
                     var thumbnail = media[i]["thumbnail"]
                         ? '<img loading="lazy" src="/thumbnail.php?id=' + media[i]["id"] + '" />'
                         : "";
+                    */
+
+                    var thumbnail = "";
+
+                    if (media[i]["thumbnail"]) {
+                        thumbnail = '<ob-element-thumbnail data-id="' + media[i]["id"] + '"></ob-element-thumbnail>';
+                    }
 
                     $("#sidebar_search_media_results tbody").append(
                         '\
@@ -1417,7 +1425,10 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         // get the operator name from the index
         const operators = document.createElement(`ob-field-${type}`).constructor.comparisonOperators;
 
-        var filter_description = `${metadata.description} "${operators[op]} "${val}"`;
+        // create metadata element
+        const metadataElement = document.createElement(`ob-field-${type}`);
+        debugger;
+        var filter_description = `${metadata.description} ${operators[op]} "${val}"`;
     } else {
         var $filter = $("#advanced_search_filter option:selected");
         var filter = $("#advanced_search_filter").val();
@@ -1439,7 +1450,6 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         // some basic validation
         if ((filter == "artist" || filter == "album" || filter == "title") && val == "") {
             $("#advanced_search_message").obWidget("error", filter_name + " text required.");
-
             return false;
         }
 
@@ -1460,6 +1470,29 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         else filter_description += " " + op_name + ' "' + val + '"';
     }
 
+    // container for added filter
+    const container = document.createElement("div");
+    container.id = "advanced_search_filter_" + OB.Sidebar.advanced_search_filter_id;
+    container.setAttribute("data-filter_description", filter_description);
+    container.setAttribute("data-filter", filter);
+    container.setAttribute("data-op", op);
+    container.setAttribute("data-val", val);
+
+    // add delete button
+    const deleteButton = document.createElement("a");
+    deleteButton.href = "javascript: OB.Sidebar.advancedSearchRemove(" + OB.Sidebar.advanced_search_filter_id + ");";
+    deleteButton.innerText = "[x]";
+    container.appendChild(deleteButton);
+
+    // add description
+    const description = document.createElement("span");
+    description.innerText = " " + filter_description;
+    container.appendChild(description);
+
+    // add the new element to the list
+    document.getElementById("advanced_search_criteria_list").prepend(container);
+
+    /*
     $("#advanced_search_criteria_list").prepend(
         '<div id="advanced_search_filter_' +
             OB.Sidebar.advanced_search_filter_id +
@@ -1477,11 +1510,11 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
     $(filter_div).attr("data-filter", filter);
     $(filter_div).attr("data-op", op);
     $(filter_div).attr("data-val", val);
+    */
 };
 
 OB.Sidebar.advancedSearchRemove = function (id) {
     $("#advanced_search_filter_" + id).remove();
-
     if ($("#advanced_search_criteria_list").children().length < 1) $("#advanced_search_no_criteria").show();
 };
 
