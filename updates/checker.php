@@ -291,6 +291,16 @@ class OBFChecker
             $errors[] = 'The assets/uploads directory is not writable by the server.';
         }
 
+        if (count($errors) == 0) {
+            // make sure there are no directories specified within the OB_CACHE directory
+            $cache = realpath(OB_CACHE);
+            foreach ([OB_MEDIA, OB_MEDIA_UPLOADS, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_ASSETS] as $dir) {
+                if (strpos(realpath($dir), $cache) === 0) {
+                    $errors[] = 'Directory ' . $dir . ' is within the cache directory.';
+                }
+            }
+        }
+
         if ($errors) {
             return ['Directories', implode('. ', $errors), 2];
         } else {
@@ -319,11 +329,14 @@ class OBFChecker
     public function database_privileges()
     {
         $db = new OBFDB();
+
+        // compares the db name against TABLE_SCHEMA column which may use a wildcard %.
         $db->query('SELECT * FROM information_schema.schema_privileges WHERE
-            TABLE_SCHEMA = "' . $db->escape(OB_DB_NAME) . '" AND
+            "' . $db->escape(OB_DB_NAME) . '" LIKE TABLE_SCHEMA AND
             GRANTEE LIKE "\'' . $db->escape(OB_DB_USER) . '%"
         ');
         $privileges = [];
+
         foreach ($db->assoc_list() as $row) {
             $privileges[] = $row['PRIVILEGE_TYPE'];
         }
