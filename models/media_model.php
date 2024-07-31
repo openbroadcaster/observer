@@ -318,6 +318,10 @@ class MediaModel extends OBFModel
         if (!is_array($args['media'])) {
             $this->db->where('id', $args['media']);
             $media = $this->db->get_one('media');
+
+            if (!$media) {
+                return false;
+            }
         } else {
             $media = $args['media'];
         }
@@ -329,10 +333,24 @@ class MediaModel extends OBFModel
         }
 
         $thumbnail_directory = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-        $thumbnail_file = $thumbnail_directory . '/' . $media['id'] . '.jpg';
-
         if (!file_exists($thumbnail_directory)) {
             mkdir($thumbnail_directory, 0755, true);
+        }
+
+        // TODO standardize to single location with cache, use webp?
+        $try_thumbnail_files = [
+            $thumbnail_directory . '/' . $media['id'] . '.jpg',
+            $thumbnail_directory . '/' . $media['id'] . '.png',
+            OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.jpg',
+            OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.png'
+        ];
+
+        $thumbnail_file = false;
+        foreach ($try_thumbnail_files as $try_thumbnail_file) {
+            if (file_exists($try_thumbnail_file)) {
+                $thumbnail_file = $try_thumbnail_file;
+                break;
+            }
         }
 
         if (($media['type'] == 'image' || $media['type'] == 'document') && !file_exists($thumbnail_file)) {

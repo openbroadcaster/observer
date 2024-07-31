@@ -667,15 +667,32 @@ class Media extends OBFController
      */
     public function thumbnail()
     {
-        $this->user->require_authenticated();
-
         $id = $this->data('id');
         $media = $this->models->media('get_by_id', ['id' => $id]);
 
-        if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
-            $this->user->require_permission('manage_media');
+        if (!$media) {
+            return [false,'Media not found.'];
         }
 
-        return $this->models->uploads('thumbnail_get', $id, 'media');
+        // check permissions
+        if ($media['status'] != 'public') {
+            $this->user->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $this->user->param('id');
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $this->user->require_permission('manage_media');
+            }
+        }
+
+        // get thumbnail
+        // $data = $this->models->uploads('thumbnail_get', $id, 'media');
+        $file = $this->models->media('thumbnail_file', ['media' => $id]);
+
+        if (!$file) {
+            return [false,'Thumbnail not found.'];
+        } else {
+            $mime = mime_content_type($file);
+            $data = $data = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($file));
+            return [true, null, $data];
+        }
     }
 }
