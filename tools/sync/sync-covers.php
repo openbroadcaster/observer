@@ -6,7 +6,7 @@ if (php_sapi_name()!='cli') {
 
 header('Content-Type: application/json');
 require_once('../../components.php');
-require_once('extras/getid3/getid3/getid3.php');
+require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
 $getID3 = new getID3();
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
@@ -20,11 +20,8 @@ if (!defined('OB_SYNC_USERID') || !defined('OB_SYNC_SOURCE') || !defined('OB_ACO
     die('OB_SYNC_USERID, OB_SYNC_SOURCE, and OB_ACOUSTID_KEY must be defined in config.php.'.PHP_EOL);
 }
 
-// create thumbnail directory if needed
-if (!file_exists(OB_CACHE.'/thumbnails')) {
-    if (!mkdir(OB_CACHE.'/thumbnails', 0755)) {
-        die('Unable to create thumbnail directory. Make sure the OB cache directory is writable.'.PHP_EOL);
-    }
+if (!is_dir(OB_THUMBNAILS)) {
+    die('OB_THUMBNAILS must be set to a valid directory in config.php.' . PHP_EOL);
 }
 
 while (true) {
@@ -68,14 +65,14 @@ while (true) {
             $l1 = $row['file_location'][0];
             $l2 = $row['file_location'][1];
 
-            if (!file_exists(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2)) {
-                if (!mkdir(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2, 0777, true)) {
+            if (!file_exists(OB_THUMBNAILS.'/'.$l1.'/'.$l2)) {
+                if (!mkdir(OB_THUMBNAILS.'/'.$l1.'/'.$l2, 0777, true)) {
                     die('Unable to create thumbnail directory; check permissions.'.PHP_EOL);
                 }
             }
             $cover_art_data = file_get_contents($cover_art_url);
             if ($cover_art_data) {
-                file_put_contents(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
+                file_put_contents(OB_THUMBNAILS.'/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
             }
         }
 

@@ -6,7 +6,7 @@ if (php_sapi_name()!='cli') {
 
 header('Content-Type: application/json');
 require_once('../../components.php');
-require_once('extras/getid3/getid3/getid3.php');
+require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
 $getID3 = new getID3();
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
@@ -18,13 +18,6 @@ if (php_sapi_name()!='cli') {
 
 if (!defined('OB_SYNC_USERID') || !defined('OB_SYNC_SOURCE') || !defined('OB_ACOUSTID_KEY')) {
     die('OB_SYNC_USERID, OB_SYNC_SOURCE, and OB_ACOUSTID_KEY must be defined in config.php.'.PHP_EOL);
-}
-
-// create thumbnail directory if needed
-if (!file_exists(OB_CACHE.'/thumbnails')) {
-    if (!mkdir(OB_CACHE.'/thumbnails', 0755)) {
-        die('Unable to create thumbnail directory. Make sure the OB cache directory is writable.'.PHP_EOL);
-    }
 }
 
 while (true) {

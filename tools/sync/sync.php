@@ -37,13 +37,6 @@ if (!defined('OB_SYNC_USERID') || !defined('OB_SYNC_SOURCE') || !defined('OB_ACO
     die('OB_SYNC_USERID, OB_SYNC_SOURCE, and OB_ACOUSTID_KEY must be defined in config.php.'.PHP_EOL);
 }
 
-// create thumbnail directory if needed
-if (!file_exists(OB_CACHE.'/thumbnails')) {
-    if (!mkdir(OB_CACHE.'/thumbnails', 0755)) {
-        die('Unable to create thumbnail directory. Make sure the OB cache directory is writable.'.PHP_EOL);
-    }
-}
-
 echo 'getting file list'.PHP_EOL;
 
 // get our file list
