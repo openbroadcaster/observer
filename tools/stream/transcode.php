@@ -32,7 +32,6 @@ if (php_sapi_name()!='cli') {
 
 // some settings
 define('OB_STREAM_VERSION', 1); // update this to re-transcode, etc.
-define('OB_THUMBNAIL_VERSION', 1); // update this to regenerate thumbnails
 
 // db init
 require(__DIR__.'/../../components.php');
@@ -54,8 +53,6 @@ $db->query('
     AND (
       stream_version IS NULL 
       OR stream_version < '.OB_STREAM_VERSION.'
-      OR thumbnail_version IS NULL
-      OR thumbnail_version < '.OB_THUMBNAIL_VERSION.'
     )
 ');
 
@@ -215,7 +212,7 @@ foreach ($media as $item) {
 }
 
 // handle thumbnail creation next
-// handle stream/transcode first
+/*
 foreach ($media as $item) {
     // skip item if up to date
     if ($item['thumbnail_version']>=OB_THUMBNAIL_VERSION) {
@@ -320,3 +317,4 @@ foreach ($media as $item) {
         $db->update('media', ['thumbnail_version'=>OB_THUMBNAIL_VERSION]);
     }
 }
+*/
