@@ -9,7 +9,7 @@ class PlayerNotices extends Cron
 {
     public function interval(): int
     {
-        return 0;
+        return 900;
     }
 
     public function run(): bool

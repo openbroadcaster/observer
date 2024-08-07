@@ -8,7 +8,6 @@ class OptimizeDB extends Cron
 {
     public function interval(): int
     {
-        // daily
         return 86400;
     }
 
