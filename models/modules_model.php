@@ -60,6 +60,7 @@ class ModulesModel extends OBFModel
      */
     public function get_all($installed = true, $object = false)
     {
+        // TODO ignore any module name "core" as this is a reserved name used as a prefix for core functionality.
         $modules = scandir('modules');
 
         $modules_list = [];
