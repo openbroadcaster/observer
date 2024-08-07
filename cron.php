@@ -21,6 +21,11 @@
 
 require_once('components.php');
 
+$lock = new OBFLock('core-cron');
+if (!$lock->acquire()) {
+    die('Unable to get cron lock. Already running?' . PHP_EOL);
+}
+
 $db = OBFDB::get_instance();
 
 // set cron last run
@@ -33,64 +38,41 @@ if (!$cron_last_run) {
     $db->update('settings', ['value' => time()]);
 }
 
-// delete expired uploads
-$db->where('expiry', time(), '<');
-$uploads = $db->get('uploads');
-
-foreach ($uploads as $upload) {
-    unlink(OB_ASSETS . '/uploads/' . $upload['id']);
-    $db->where('id', $upload['id']);
-    $db->delete('uploads');
+// require cron files
+// TODO add support for module cron classes (last run tracked in db as cron-modulename-classname).
+$jobs = [];
+require_once('classes/base/cron.php');
+foreach (glob('classes/cron/*.php') as $file) {
+    require_once($file);
+    $class = '\OB\Classes\Cron\\' . basename($file, '.php');
+    $jobs[] = new $class();
 }
 
-// remove cached schedule data for shows which stopped longer than 1 week ago (+/- some variablity due to timezones)
-$db->query('DELETE FROM shows_cache where DATE_ADD(start, INTERVAL duration SECOND) < "' . date('Y-m-d H:i:s', strtotime('-1 week')) . '"');
+// loop through jobs and check interval against last run. run if needed.
+foreach ($jobs as $job) {
+    // reliable way to get the class name without namespace
+    $classReflection = new ReflectionClass($job);
+    $className = strtolower($classReflection->getShortName());
 
-// send out player-last-connect warnings if appropriate. will not send out warnings if player has never connected.
-// TODO maybe put this into a notice model for similar re-use elsewhere.
-$cutoff = strtotime('-1 hour'); // connection must be made at least once/hour. this should be a setting at some point, maybe in player settings?
-$connect_types = ['schedule','playlog','emergency'];
-foreach ($connect_types as $type) {
-    $db->where('last_connect_' . $type, $cutoff, '<=');
-    $players = $db->get('players');
+    // get our last run time
+    $db->where('name', 'cron-core-' . $className);
+    $lastRun = $db->get_one('settings');
+    $interval = $job->interval();
 
-    foreach ($players as $player) {
-        $id = $player['id'];
+    // if no last run time, or time to run again...
+    if (!$lastRun || $lastRun['value'] + $interval < time()) {
+        $status = $job->run();
 
-        $db->where('player_id', $id);
-        $db->where('event', 'player_last_connect_' . $type . '_warning');
-        $db->where('toggled', 0);
-        $notices = $db->get('notices');
-
-        foreach ($notices as $notice) {
-            $mailer = new PHPMailer\PHPMailer\PHPMailer();
-            $mailer->Body = 'This is a warning that player "' . $player['name'] . '" has not connected for "' . $type . '" in the last hour.
-
-Please take steps to ensure this player is functioning properly.';
-            $mailer->From = OB_EMAIL_REPLY;
-            $mailer->FromName = OB_EMAIL_FROM;
-            $mailer->Subject = 'Player Warning';
-            $mailer->AddAddress($notice['email']);
-            $mailer->Send();
-
-            $db->where('id', $notice['id']);
-            $db->update('notices', ['toggled' => 1]);
-        }
-    }
-}
-
-// optimize tables if required
-$db->query('show table status');
-$tables = $db->assoc_list();
-if (!empty($tables)) {
-    foreach ($tables as $nfo) {
-        if (empty($nfo['Data_free'])) {
-            continue;
-        }
-        $fragmentation = $nfo['Data_free'] * 100 / $nfo['Data_length'];
-
-        if ($fragmentation > 10) {
-            $db->query('OPTIMIZE TABLE `' . $nfo['Name'] . '`');
+        // if successful, update last run time
+        if ($status) {
+            if ($lastRun) {
+                // has previous run, update time.
+                $db->where('name', 'cron-core-' . $className);
+                $db->update('settings', ['value' => time()]);
+            } else {
+                // first time running, insert time.
+                $db->insert('settings', ['name' => 'cron-core-' . $className, 'value' => time()]);
+            }
         }
     }
 }
