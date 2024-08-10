@@ -847,6 +847,29 @@ class MediaModel extends OBFModel
         $filters = $args['filters'];
 
         $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner'];
+        $allowed_operators = [
+            // deprecated
+            'like',
+            'not_like',
+            'is',
+            'not',
+            'gte',
+            'lte',
+            'has',
+            'not_has',
+
+            // new (use these)
+            'eq',
+            'neq',
+            'contains',
+            'ncontains',
+            'gt',
+            'gte',
+            'lt',
+            'lte',
+            'has',
+            'nhas'
+        ];
 
         $metadata_fields = $this->models->mediametadata('get_all');
 
@@ -863,7 +886,7 @@ class MediaModel extends OBFModel
             if (array_search($filter['filter'], $allowed_filters) === false) {
                 return false;
             }
-            if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','not_has']) === false) {
+            if (array_search($filter['op'], $allowed_operators) === false) {
                 return false;
             }
         }
@@ -943,8 +966,20 @@ class MediaModel extends OBFModel
                     $tmp_sql = 'NOT ' . $tmp_sql;
                 }
             } else {
-                // our possibile comparison operators
+                // new operators
                 $op_array = [];
+                $op_array['eq'] = '=';
+                $op_array['neq'] = '!=';
+                $op_array['contains'] = 'LIKE';
+                $op_array['ncontains'] = 'NOT LIKE';
+                $op_array['gt'] = '>';
+                $op_array['gte'] = '>=';
+                $op_array['lt'] = '<';
+                $op_array['lte'] = '<=';
+                $op_array['has'] = 'LIKE'; // TODO should be using joins?
+                $op_array['nhas'] = 'NOT LIKE'; // TODO should be using joins?
+
+                // deprecated
                 $op_array['like'] = 'LIKE';
                 $op_array['not_like'] = 'NOT LIKE';
                 $op_array['is'] = '=';
