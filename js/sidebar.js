@@ -1427,8 +1427,10 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
 
         // create metadata element
         const metadataElement = document.createElement(`ob-field-${type}`);
-        debugger;
         var filter_description = `${metadata.description} ${operators[op]} "${val}"`;
+
+        // server needs prefix for metadata fields
+        filter = "metadata_" + filter;
     } else {
         var $filter = $("#advanced_search_filter option:selected");
         var filter = $("#advanced_search_filter").val();

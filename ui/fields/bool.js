@@ -2,6 +2,8 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldBool extends OBField {
+    _value = false;
+
     static comparisonOperators = {
         eq: "is",
         neq: "is not",
