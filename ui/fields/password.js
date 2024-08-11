@@ -2,6 +2,8 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldPassword extends OBField {
+    _value = "";
+
     renderView() {
         render(html` ********* `, this.root);
     }

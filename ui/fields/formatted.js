@@ -2,6 +2,8 @@ import { html, render, marked, dompurify } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldFormatted extends OBField {
+    _value = "";
+
     #init;
     #editorInstance;
 

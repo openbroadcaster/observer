@@ -2,6 +2,8 @@ import { OBField } from "../base/field.js";
 import { html, render } from "../vendor.js";
 
 class OBFieldTextarea extends OBField {
+    _value = "";
+
     static comparisonOperators = {
         eq: "is",
         neq: "is not",
@@ -12,7 +14,7 @@ class OBFieldTextarea extends OBField {
     static comparisonField = "text";
 
     renderView() {
-        render(html`<div id="view">${this.value}</div>`, this.root);
+        render(html`<div id="view">${this._value}</div>`, this.root);
     }
 
     renderEdit() {
@@ -24,7 +26,7 @@ class OBFieldTextarea extends OBField {
     }
 
     textareaChange(event) {
-        this.value = event.target.value;
+        this._value = event.target.value;
     }
 
     scss() {
