@@ -23,7 +23,7 @@ class OBFieldNumber extends OBField {
     }
 
     inputChange(event) {
-        this.value = event.target.value;
+        this._value = parseInt(event.target.value);
     }
 
     set value(value) {
@@ -55,3 +55,6 @@ class OBFieldNumber extends OBField {
 }
 
 customElements.define("ob-field-number", OBFieldNumber);
+
+class OBFieldInteger extends OBFieldNumber {}
+customElements.define("ob-field-integer", OBFieldInteger);
