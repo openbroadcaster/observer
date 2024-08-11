@@ -307,7 +307,8 @@ class MediaModel extends OBFModel
     }
 
     /**
-     * Check if media thumbnail exists (create if necessary).
+     * Return the filename of a 600x600 thumbnail from the cache directory.
+     * Generate the cached thumbnail first if needed.
      *
      * @param media ID or media row array.
      */
@@ -332,52 +333,46 @@ class MediaModel extends OBFModel
             return false;
         }
 
-        $thumbnail_directory = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-        if (!file_exists($thumbnail_directory)) {
-            mkdir($thumbnail_directory, 0755, true);
+        // first search for a cached version of our resized thumbnail
+        $cache_directory = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
+        if (count($thumbnail_files) > 0) {
+            // early return of cached thumbnail
+            return $thumbnail_files[0];
         }
 
-        // TODO standardize to single location with cache, use webp?
-        $try_thumbnail_files = [
-            $thumbnail_directory . '/' . $media['id'] . '.jpg',
-            $thumbnail_directory . '/' . $media['id'] . '.png',
-            OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.jpg',
-            OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.png'
-        ];
-
-        $thumbnail_file = false;
-        foreach ($try_thumbnail_files as $try_thumbnail_file) {
-            if (file_exists($try_thumbnail_file)) {
-                $thumbnail_file = $try_thumbnail_file;
-                break;
-            }
-        }
-
-        if (($media['type'] == 'image' || $media['type'] == 'document') && !file_exists($thumbnail_file)) {
-            if ($media['is_archived'] == 1) {
-                $media_file = OB_MEDIA_ARCHIVE;
-            } elseif ($media['is_approved'] == 0) {
-                $media_file = OB_MEDIA_UPLOADS;
-            } else {
-                $media_file = OB_MEDIA;
-            }
-            $media_file .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-            $media_file = $media_file . '/' . $media['filename'];
-
+        // no cached version, let's try to create one from a source thumbnail/image
+        $thumbnail_directory = OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($thumbnail_directory . '/' . $media['id'] . '.*');
+        if (count($thumbnail_files) < 1) {
             if ($media['type'] == 'image') {
-                OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
+                // our thumbnail source is the image itself
+                $input_file = OB_MEDIA . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
+            } else {
+                // no thumbnail source available
+                return false;
             }
-
-            if ($media['type'] == 'document') {
-                OBFHelpers::pdf_thumbnail($media_file, $thumbnail_file, 600, 600);
-            }
-        }
-
-        if (file_exists($thumbnail_file)) {
-            return $thumbnail_file;
         } else {
-            return false;
+            // our thumbnail source comes from the thumbnail directory
+            $input_file = $thumbnail_files[0];
         }
+
+        $output_dir = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        if (!is_dir($output_dir)) {
+            mkdir($output_dir, 0777, true);
+        }
+        $output_file = $output_dir . '/' . $media['id'] . '.webp';
+
+        // resize our image to a webp thumbnail
+        OBFHelpers::image_resize($input_file, $output_file, 600, 600);
+
+        // return our file if it exists now
+        if (file_exists($output_file)) {
+            return $output_file;
+        }
+
+        // failed to create cached thumbnail
+        return false;
     }
 
     /**
