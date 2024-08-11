@@ -2,6 +2,8 @@ import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
 
 class OBFieldMedia extends OBField {
+    _value = [];
+
     #mediaItems;
     #mediaContent;
 

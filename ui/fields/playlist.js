@@ -4,7 +4,7 @@ import { OBField } from "../base/field.js";
 class OBFieldPlaylist extends OBField {
     #playlistItems;
     #playlistContent;
-    #setValue;
+    _value = [];
 
     static comparisonOperators = {
         eq: "is",
@@ -162,7 +162,7 @@ class OBFieldPlaylist extends OBField {
             return false;
         }
 
-        var selectedPlaylist = this._value || [];
+        var selectedPlaylist = this._value;
 
         Object.keys(window.dragHelperData).forEach((key) => {
             if (!window.dragHelperData[key].dataset) {

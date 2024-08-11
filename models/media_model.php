@@ -948,7 +948,8 @@ class MediaModel extends OBFModel
             }
 
             // find_in_set works a bit differently
-            if ($filter['op'] == 'has' || $filter['op'] == 'not_has') {
+            // TODO note not_has deprecated
+            if (in_array($filter['op'], ['has','not_has','nhas'])) {
                 if (isset($metadata_defaults[$filter['filter']])) {
                     $default = $metadata_defaults[$filter['filter']];
                     if (is_array($default)) {
@@ -962,7 +963,8 @@ class MediaModel extends OBFModel
                 }
 
                 $tmp_sql = 'FIND_IN_SET("' . $this->db->escape($filter['val']) . '",' . $set . ')';
-                if ($filter['op'] == 'not_has') {
+                // TODO note not_has deprecated
+                if ($filter['op'] == 'not_has' || $filter['op'] == 'nhas') {
                     $tmp_sql = 'NOT ' . $tmp_sql;
                 }
             } else {
@@ -976,8 +978,6 @@ class MediaModel extends OBFModel
                 $op_array['gte'] = '>=';
                 $op_array['lt'] = '<';
                 $op_array['lte'] = '<=';
-                $op_array['has'] = 'LIKE'; // TODO should be using joins?
-                $op_array['nhas'] = 'NOT LIKE'; // TODO should be using joins?
 
                 // deprecated
                 $op_array['like'] = 'LIKE';
@@ -1002,11 +1002,13 @@ class MediaModel extends OBFModel
 
                 $tmp_sql .= ' ' . $op_array[$filter['op']] . ' "';
 
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                // TODO like, not_like deprecated
+                if (in_array($filter['op'], ['like', 'not_like', 'contains', 'ncontains'])) {
                     $tmp_sql .= '%';
                 }
                 $tmp_sql .= $this->db->escape($filter['val']);
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                // TODO like, not_like deprecated
+                if (in_array($filter['op'], ['like', 'not_like', 'contains', 'ncontains'])) {
                     $tmp_sql .= '%';
                 }
                 $tmp_sql .= '"';
