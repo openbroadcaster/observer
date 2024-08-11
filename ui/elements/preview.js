@@ -157,17 +157,15 @@ class OBElementPreview extends OBElement {
         const videoElem = this.root.querySelector("video-js");
         if (videoElem) {
             let elem = this;
+            let thumbnailId = this.#queue[this.#itemId].id;
+            let thumbnailLink = "/thumbnail.php?id=" + thumbnailId;
+            let validThumbnail = (await fetch(thumbnailLink)).ok;
+            if (!validThumbnail) {
+                thumbnailLink = "/images/circle.svg";
+            }
 
             switch (this.#itemType) {
                 case "audio":
-                    let thumbnailId = this.#queue[this.#itemId].id;
-                    let thumbnailLink =
-                        "/preview.php?x=" + new Date().getTime() + "&id=" + thumbnailId + "&thumbnail=1";
-                    let validThumbnail = (await fetch(thumbnailLink)).ok;
-                    if (!validThumbnail) {
-                        thumbnailLink = "/images/circle.svg";
-                    }
-
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
@@ -186,6 +184,7 @@ class OBElementPreview extends OBElement {
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
+                        poster: thumbnailLink,
                     });
 
                     this.#videojsPlayer.ready(function () {
