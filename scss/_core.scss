@@ -191,6 +191,15 @@ select, textarea
   box-shadow: 0 0 0 40px white inset; // firefox autofill fix
 }
 
+#media_details_table .fieldrow > label {
+  padding-right: 10px;
+}
+
+#media_details_table .fieldrow > label + * {
+  position: relative;
+  top: 3px;
+}
+
 textarea, ob-tag-input, ob-user-input, ob-group-input, ob-media-input, ob-playlist-input
 {
   vertical-align: top;
