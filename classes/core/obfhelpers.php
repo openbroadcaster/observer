@@ -187,23 +187,18 @@ class OBFHelpers
         }
 
         $im = new Imagick();
-        $imgdata = file_get_contents($src);
-        $im->readImageBlob($imgdata);
+        $im->readImage($src);
+        $im->setImageBackgroundColor('white'); // Set white background if necessary
+        $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // Remove alpha channel
+        $im->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // Flatten image
+        $im->thumbnailImage($width, $height, true); // Adjust width and height as necessary (maintain aspect ratio)
 
-        $source_width = $im->getImageWidth();
-        $source_height = $im->getImageHeight();
-        $source_ratio = $source_width / $source_height;
-        $ratio = $width / $height;
+        // Set the image format and apply lossy compression
+        $im->setImageFormat('webp');
+        $im->setOption('webp:lossless', 'true'); // For lossless
+        $im->setOption('webp:quality', '85'); // Set quality (0-100) for lossy compression
 
-        if ($ratio > $source_ratio) {
-            $width = $height * $source_ratio;
-        } else {
-            $height = $width / $source_ratio;
-        }
-
-        $im->setImageFormat("jpeg");
-        $im->adaptiveResizeImage($width, $height);
-
+        // write image
         $im->writeImage($dst);
         $im->clear();
         $im->destroy();
