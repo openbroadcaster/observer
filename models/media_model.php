@@ -334,7 +334,7 @@ class MediaModel extends OBFModel
         }
 
         // first search for a cached version of our resized thumbnail
-        $cache_directory = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $cache_directory = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
         $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
         if (count($thumbnail_files) > 0) {
             // early return of cached thumbnail
@@ -357,7 +357,7 @@ class MediaModel extends OBFModel
             $input_file = $thumbnail_files[0];
         }
 
-        $output_dir = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $output_dir = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
         if (!is_dir($output_dir)) {
             mkdir($output_dir, 0777, true);
         }

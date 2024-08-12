@@ -26,10 +26,14 @@ class OBUpdate20240731 extends OBUpdate
     public function run()
     {
         if (!is_dir(OB_CACHE . '/thumbnails')) {
-            mkdir(OB_CACHE . '/thumbnails');
+            mkdir(OB_CACHE . '/thumbnails', 0777, true);
         }
 
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(OB_THUMBNAILS));
+        if (!is_dir(OB_THUMBNAILS . '/media')) {
+            mkdir(OB_THUMBNAILS . '/media', 0777, true);
+        }
+
+        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(OB_THUMBNAILS . '/media'));
         $thumbnails = [];
         foreach ($rii as $file) {
             if ($file->isDir()) {
@@ -82,7 +86,7 @@ class OBUpdate20240731 extends OBUpdate
             }
 
             // copy over to thumbnail directory
-            $newpath = OB_THUMBNAILS . '/' . $location[0] . '/' . $location[1] . '/' . $pathinfo['filename'] . '.' . $pathinfo['extension'];
+            $newpath = OB_THUMBNAILS . '/media/' . $location[0] . '/' . $location[1] . '/' . $pathinfo['filename'] . '.' . $pathinfo['extension'];
             if (!is_dir(dirname($newpath))) {
                 mkdir(dirname($newpath), 0777, true);
             }
@@ -91,8 +95,6 @@ class OBUpdate20240731 extends OBUpdate
             // checksum the original and destination to verify
             $checksum1 = md5_file($file->getPathname());
             $checksum2 = md5_file($newpath);
-            var_dump($checksum1);
-            var_dump($checksum2);
             if ($checksum1 != $checksum2) {
                 echo 'Failed to copy ' . $file->getPathname() . ' to ' . $newpath . PHP_EOL;
                 return false;

@@ -65,14 +65,14 @@ while (true) {
             $l1 = $row['file_location'][0];
             $l2 = $row['file_location'][1];
 
-            if (!file_exists(OB_THUMBNAILS.'/'.$l1.'/'.$l2)) {
-                if (!mkdir(OB_THUMBNAILS.'/'.$l1.'/'.$l2, 0777, true)) {
+            if (!file_exists(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2)) {
+                if (!mkdir(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2, 0777, true)) {
                     die('Unable to create thumbnail directory; check permissions.'.PHP_EOL);
                 }
             }
             $cover_art_data = file_get_contents($cover_art_url);
             if ($cover_art_data) {
-                file_put_contents(OB_THUMBNAILS.'/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
+                file_put_contents(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
             }
         }
 
