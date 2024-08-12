@@ -418,7 +418,7 @@ OB.Media.save = function () {
 
         if ($(element).attr("data-edit")) item.id = $(element).attr("data-id");
 
-        item.thumbnail = $(element).find(".thumbnail_field").val();
+        // item.thumbnail = $(element).find(".thumbnail_field").val();
 
         item.artist = $(element).find(".artist_field").val();
         item.title = $(element).find(".title_field").val();
@@ -553,7 +553,7 @@ OB.Media.editPage = function (ids) {
 
             let formElem = document.querySelector(".media_addedit:last-child");
             formElem.dataset.edit = 1;
-            formElem.querySelector(".thumbnail_field").value = media.thumbnail;
+            // formElem.querySelector(".thumbnail_field").value = media.thumbnail;
             formElem.querySelector(".artist_field").value = media.artist;
             formElem.querySelector(".title_field").value = media.title;
             formElem.querySelector(".album_field").value = media.album;
