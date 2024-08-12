@@ -773,7 +773,7 @@ class MediaModel extends OBFModel
             $items = $this->db->get('media');
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
-                $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
+                $item['stream_thumbnail'] = $item['thumbnail'];
 
                 // get metadata objects to run the media through processRow
                 foreach ($metadata_fields as $metadata_field) {
@@ -816,7 +816,7 @@ class MediaModel extends OBFModel
             $items = $this->db->get('media');
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
-                $item['stream_thumbnail'] = file_exists(OB_CACHE . '/streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg');
+                $item['stream_thumbnail'] = $item['thumbnail'];
 
                 // get metadata objects to run the media through processRow
                 foreach ($metadata_fields as $metadata_field) {
