@@ -587,6 +587,7 @@ body.sidebar-left #sidebar_search_playlist_footer .details
       td.sidebar_search_media_thumbnail
       {
         display: flex !important;
+        justify-content: center;
         height: 100px;
         overflow: hidden;
 
