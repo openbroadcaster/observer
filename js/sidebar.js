@@ -1284,8 +1284,8 @@ OB.Sidebar.advancedSearchWindowInit = function () {
         });
 
         $.each(OB.Settings.media_metadata, function (index, metadata) {
-            // skip hidden metadata
-            if (metadata.type == "hidden") return;
+            // skip hidden metadata and media/playlist currently unsupported for advanced search
+            if (metadata.type == "hidden" || metadata.type == "media" || metadata.type == "playlist") return;
 
             // access static operators property for this element
             const metadataType = metadata.type == "integer" ? "number" : metadata.type;
