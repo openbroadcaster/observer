@@ -18,5 +18,9 @@
 */
 
 OB.Media.download = function (id, version) {
-    window.open("/preview.php?id=" + id + "&dl=1" + (version ? "&v=" + version : ""), "Download");
+    if (version) {
+        window.open("/preview.php?id=" + id + "&dl=1" + (version ? "&v=" + version : ""), "Download");
+    } else {
+        OB.API.download("downloads/media/" + id);
+    }
 };

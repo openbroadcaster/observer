@@ -262,6 +262,11 @@ OB.API.callbackAppend = function (controller, action, callback) {
 
 // download with auth credentials
 OB.API.download = function (url) {
+    // strip leading "/" from url
+    if (url.charAt(0) == "/") url = url.substr(1);
+
+    url = "/api/v2/" + url;
+
     // get a nonce
     OB.API.post("account", "nonce", {}, function (data) {
         if (data.error) {
