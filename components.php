@@ -32,6 +32,9 @@ if (!defined('OB_ERROR_BAD_DATA')) {
 if (!defined('OB_ERROR_DENIED')) {
     define('OB_ERROR_DENIED', 4);
 }
+if (!defined('OB_ERROR_NOTFOUND')) {
+    define('OB_ERROR_NOTFOUND', 5);
+}
 if (!defined('OB_LOCAL')) {
     define('OB_LOCAL', __DIR__);
 }

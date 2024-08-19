@@ -26,8 +26,13 @@
  */
 class OBFIO
 {
+    private $use_http_status = false;
+
     public function __construct()
     {
+        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+            $this->use_http_status = true;
+        }
     }
 
     /**
@@ -59,7 +64,7 @@ class OBFIO
     {
         $user = OBFUser::get_instance();
 
-        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+        if ($this->use_http_status) {
             http_response_code(400);
         }
 
@@ -77,10 +82,17 @@ class OBFIO
                 break;
 
             case OB_ERROR_DENIED:
-                $msg = 'Access denied.';
-                if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
-                    http_response_code(401);
+                if ($this->use_http_status) {
+                    http_response_code(403);
                 }
+                $msg = 'Access denied.';
+                break;
+
+            case OB_ERROR_NOTFOUND:
+                if ($this->use_http_status) {
+                    http_response_code(404);
+                }
+                $msg = 'Not found.';
                 break;
         }
 
