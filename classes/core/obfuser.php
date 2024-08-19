@@ -70,15 +70,7 @@ class OBFUser
      */
     private function random_key()
     {
-        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-        $key = '';
-
-        for ($i = 1; $i < 64; $i++) {
-            $key .= $chars[mt_rand(0, (strlen($chars) - 1))];
-        }
-
-        return $key;
+        return bin2hex(openssl_random_pseudo_bytes(32));
     }
 
     /**
@@ -225,38 +217,18 @@ class OBFUser
 
         // session exists and key match?
         if ($valid_key) {
-            $this->db->where('id', $valid_key['user_id']);
-            $result = $this->db->get_one('users');
+            // set/init user
+            $this->set_user($valid_key['user_id']);
 
-            // cache our userdata.
-            $this->userdata = $result;
             $this->userdata['key_id'] = $valid_key['id'];
-
-            // add additional users settings
-            $this->db->where('user_id', $result['id']);
-            $settings = $this->db->get('users_settings');
-            foreach ($settings as $setting) {
-                $this->userdata[$setting['setting']] = $setting['value'];
-            }
 
             // update key expirey, return id, key, key_expiry.
             $key_expiry = strtotime('+1 hour');
             $last_access = time();
             $this->db->where('id', $valid_key['id']);
             $this->db->update('users_sessions', [
-            'key_expiry' => $key_expiry
+                'key_expiry' => $key_expiry
             ]);
-            $this->db->where('id', $result['id']);
-            $this->db->update('users', [
-            'last_access' => $last_access
-            ]);
-
-            // see if user is admin
-            $this->db->where('user_id', $result['id']);
-            $this->db->where('group_id', 1);
-            if ($this->db->get_one('users_to_groups')) {
-                $this->is_admin = true;
-            }
 
             return true;
         }
@@ -353,32 +325,13 @@ class OBFUser
             }
 
             if ($valid) {
-                $this->db->where('id', $result['user_id']);
-                $user = $this->db->get_one('users');
-
-                // Failed to find the user ID linked to the App Key.
-                if (!$user) {
-                    return false;
-                }
-
-                $this->userdata = $user;
-
-                $this->db->where('user_id', $user['id']);
-                $settings = $this->db->get('users_settings');
-                foreach ($settings as $setting) {
-                    $this->userdata[$setting['setting']] = $setting['value'];
-                }
-
-                $this->db->where('user_id', $user['id']);
-                $this->db->where('group_id', 1);
-                if ($this->db->get_one('users_to_groups')) {
-                    $this->is_admin = true;
-                }
+                // set/init user
+                $this->db->set_user($result['user_id']);
 
                 // Update last_access in App Keys table.
                 $this->db->where('id', $key_row);
                 $this->db->update('users_appkeys', [
-                'last_access' => time()
+                    'last_access' => time()
                 ]);
 
                 $this->using_appkey = true;
@@ -389,6 +342,29 @@ class OBFUser
 
         // No valid App Key found or some other error occurred.
         return false;
+    }
+
+    /**
+     * Authorize via a nonce.
+     */
+    public function auth_nonce($nonce)
+    {
+        // check if nonce valid (and get user_id from nonce)
+        $this->db->where('nonce', $nonce);
+        $this->db->where('created', time() - 60, '>'); // max age 60s
+        $nonce = $this->db->get_one('users_nonces');
+
+        if (!$nonce) {
+            return false;
+        }
+
+        $this->set_user($nonce['user_id']);
+
+        // remove nonce
+        $this->db->where('id', $nonce['id']);
+        $this->db->delete('users_nonces');
+
+        return true;
     }
 
     /**
@@ -551,6 +527,63 @@ class OBFUser
             'setting' => $name,
             'value' => $value
             ]);
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a nonce for the current user.
+     */
+    public function create_nonce()
+    {
+        if (!$this->param('id')) {
+            return false;
+        }
+
+        $nonce = $this->random_key();
+
+        $this->db->insert('users_nonces', [
+            'user_id' => $this->param('id'),
+            'nonce' => $nonce
+        ]);
+
+        return $nonce;
+    }
+
+    /**
+     * Directly set the logged in user.
+     */
+    private function set_user($user_id)
+    {
+        $this->db->where('id', $user_id);
+        $user = $this->db->get_one('users');
+
+        if (!$user) {
+            return false;
+        }
+
+        // cache our userdata.
+        $this->userdata = $user;
+
+        // add additional users settings
+        $this->db->where('user_id', $user_id);
+        $settings = $this->db->get('users_settings');
+        foreach ($settings as $setting) {
+            $this->userdata[$setting['setting']] = $setting['value'];
+        }
+
+        // set last access
+        $this->db->where('id', $user_id);
+        $this->db->update('users', [
+            'last_access' => time()
+        ]);
+
+        // see if user is admin
+        $this->db->where('user_id', $user_id);
+        $this->db->where('group_id', 1);
+        if ($this->db->get_one('users_to_groups')) {
+            $this->is_admin = true;
         }
 
         return true;

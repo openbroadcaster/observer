@@ -164,7 +164,13 @@ class OBFAPI
             $auth_key = $_POST['k'];
         }
 
-        if (empty($_SERVER['HTTP_AUTHORIZATION']) && !isset($_POST['appkey'])) {
+        if ($_GET['nonce'] ?? null) {
+            $valid = $this->user->auth_nonce($_GET['nonce']);
+            if (! $valid) {
+                $this->io->error(OB_ERROR_DENIED);
+                return;
+            }
+        } elseif (empty($_SERVER['HTTP_AUTHORIZATION']) && !isset($_POST['appkey'])) {
             // authorize our user (from post data, cookie data, whatever.)
             $this->user->auth($auth_id, $auth_key);
         } else {

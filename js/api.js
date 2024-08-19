@@ -259,3 +259,27 @@ OB.API.callbackAppend = function (controller, action, callback) {
 
     OB.API.callback_append_array[controller][action].push(callback);
 };
+
+// download with auth credentials
+OB.API.download = function (url) {
+    // get a nonce
+    OB.API.post("account", "nonce", {}, function (data) {
+        if (data.error) {
+            OB.UI.alert(data.error);
+            return;
+        }
+
+        const nonce = data.data.nonce;
+
+        // add nonce to url
+        url += "?nonce=" + nonce;
+
+        // create link and click it
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+};

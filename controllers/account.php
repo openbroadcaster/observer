@@ -400,4 +400,18 @@ class Account extends OBFController
 
         return $this->models->userstorage('get_all', $data);
     }
+
+    /**
+     * Create a nonce for a one-time GET requests.
+     *
+     * @route GET /v2/account/nonce/
+     *
+     * @return nonce
+     */
+    public function nonce()
+    {
+        $this->user->require_authenticated();
+        $nonce = $this->user->create_nonce();
+        return [true, 'Nonce created.', ['nonce' => $nonce]];
+    }
 }
