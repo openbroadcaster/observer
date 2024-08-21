@@ -1,17 +1,22 @@
 {
     "GET": [
         [
+            "/api/v2/downloads/media/(:id:)/version/(:version:)",
+            "downloads",
+            "version"
+        ],
+        [
             "/api/v2/downloads/media/(:id:)",
             "downloads",
             "media"
         ],
         [
-            "/api/v2/downloads/stream/(:id:)",
+            "/api/v2/downloads/media/(:id:)/stream",
             "downloads",
             "stream"
         ],
         [
-            "/api/v2/downloads/thumbnail/(:id:)",
+            "/api/v2/downloads/media/(:id:)/thumbnail",
             "downloads",
             "thumbnail"
         ],

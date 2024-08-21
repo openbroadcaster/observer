@@ -90,42 +90,18 @@ class MediaPreview extends OBFController
             $user->require_permission('manage_media');
         }
 
-        // download requires download_media if this is not the media owner
-        if ($download && !$is_media_owner && !$version) {
-            $user->require_permission('download_media');
-        }
-
-        // any version download requires manage_media_versions
-        if ($version) {
-            $user->require_permission('manage_media_versions');
-        }
-
-        // version download if not owner requires manage_media
-        if ($version && !$is_media_owner) {
-            $user->require_permission('manage_media');
-        }
-
-        // set media location for preview/download
-        if (!$version) {
-            if ($media['is_archived'] == 1) {
-                $media_location = OB_MEDIA_ARCHIVE;
-            } elseif ($media['is_approved'] == 0) {
-                $media_location = OB_MEDIA_UPLOADS;
-            } else {
-                $media_location = OB_MEDIA;
-            }
-
-            $media_location .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/';
-            $media_file = $media_location . $media['filename'];
-
-            $download_filename = $media['filename'];
+        if ($media['is_archived'] == 1) {
+            $media_location = OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved'] == 0) {
+            $media_location = OB_MEDIA_UPLOADS;
         } else {
-            $media_file = (defined('OB_MEDIA_VERSIONS') ? OB_MEDIA_VERSIONS : OB_MEDIA . '/versions') .
-                            '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' .
-                            $version['media_id'] . '-' . $version['created'] . '.' . $version['format'];
-
-            $download_filename = $version['media_id'] . '-' . $version['created'] . '.' . $version['format'];
+            $media_location = OB_MEDIA;
         }
+
+        $media_location .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/';
+        $media_file = $media_location . $media['filename'];
+
+        $download_filename = $media['filename'];
 
         // get our cached data directory ready if we don't already have it.
         if (!file_exists(OB_CACHE . '/media')) {
@@ -140,18 +116,6 @@ class MediaPreview extends OBFController
         $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
         if ($type == 'audio') {
-      // download mode
-            if ($download) {
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=' . $download_filename);
-                header('Content-Type: application/octet-stream');
-                header('Content-Length: ' . filesize($media_file));
-
-                $fp = fopen($media_file, 'rb');
-                fpassthru($fp);
-                exit();
-            }
-
             // get image used as thumbnail for media item if thumbnail parameter is set
             if (!empty($_GET['thumbnail'])) {
                 $cache_file = OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '.jpeg';
@@ -199,18 +163,6 @@ class MediaPreview extends OBFController
             $fp = fopen($cache_file, 'rb');
             fpassthru($fp);
         } elseif ($type == 'video') {
-      // download mode
-            if ($download) {
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=' . $download_filename);
-                header('Content-Type: application/octet-stream');
-                header('Content-Length: ' . filesize($media_file));
-
-                $fp = fopen($media_file, 'rb');
-                fpassthru($fp);
-                exit();
-            }
-
             if (!empty($_GET['w']) && !empty($_GET['h']) && preg_match('/^[0-9]+$/', $_GET['w']) && preg_match('/^[0-9]+$/', $_GET['h'])) {
                 $dest_width = $_GET['w'];
                 $dest_height = $_GET['h'];
@@ -218,10 +170,6 @@ class MediaPreview extends OBFController
                 $dest_width = 320;
                 $dest_height = 240;
             }
-
-            // we could use half resolution, then zoom by 200%. (faster encoding, lower birate) ...
-            // $dest_width = round($dest_width/2);
-            // $dest_height = round($dest_height/2);
 
             if (!empty($_GET['format']) && $_GET['format'] == 'mp4') {
                 $video_format = 'mp4';
@@ -253,32 +201,6 @@ class MediaPreview extends OBFController
             $fp = fopen($cache_file, 'rb');
             fpassthru($fp);
         } elseif ($type == 'image') {
-            // download mode
-            if ($download) {
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=' . $download_filename);
-
-                if ($format == 'png') {
-                    header('Content-Type: image/png');
-                } elseif ($format == 'jpg') {
-                    header('Content-Type: image/jpeg');
-                } elseif ($format == 'gif') {
-                    header('Content-Type: image/gif');
-                } elseif ($format == 'svg') {
-                    header('Content-Type: image/svg+xml');
-                } elseif ($format == 'tif') {
-                    header('Content-Type: image/tiff');
-                } else {
-                    die();
-                }
-
-                header('Content-Length: ' . filesize($media_file));
-
-                $fp = fopen($media_file, 'rb');
-                fpassthru($fp);
-                exit();
-            }
-
             if (!empty($_GET['w']) && !empty($_GET['h']) && preg_match('/^[0-9]+$/', $_GET['w']) && preg_match('/^[0-9]+$/', $_GET['h'])) {
                 $dest_width = $_GET['w'];
                 $dest_height = $_GET['h'];
@@ -303,17 +225,6 @@ class MediaPreview extends OBFController
             $fp = fopen($cache_file, 'rb');
             fpassthru($fp);
         } elseif ($type == 'document') {
-            // pdf is the only document type currently.
-            if ($download) {
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=' . $download_filename);
-                header('Content-Type: application/pdf');
-                header('Content-Length: ' . filesize($media_file));
-                $fp = fopen($media_file, 'rb');
-                fpassthru($fp);
-                exit();
-            }
-
             if (!empty($_GET['w']) && !empty($_GET['h']) && preg_match('/^[0-9]+$/', $_GET['w']) && preg_match('/^[0-9]+$/', $_GET['h'])) {
                 $dest_width = $_GET['w'];
                 $dest_height = $_GET['h'];
@@ -343,18 +254,5 @@ class MediaPreview extends OBFController
     }
 }
 
-// default is to preview active media file
-$download_mode = false;
-$version = false;
-
-// if version set, we are also downloading
-if (isset($_GET['v'])) {
-    $download_mode = true;
-    $version = (int) $_GET['v'];
-} elseif (isset($_GET['dl']) && $_GET['dl'] == 1) {
-    // or just downloading active media file
-    $download_mode = true;
-}
-
 $preview = new MediaPreview();
-$preview->output($_GET['id'], $download_mode, $version);
+$preview->output($_GET['id'], false, false);

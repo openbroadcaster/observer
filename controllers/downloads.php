@@ -35,6 +35,53 @@ class Downloads extends OBFController
     }
 
     /**
+     * Download media item version.
+     *
+     * @param id Media ID
+     * @param version Media version
+     *
+     * @route GET /v2/downloads/media/(:id:)/version/(:version:)
+     */
+    public function version()
+    {
+        $id = $this->data('id');
+        $version = $this->data('version');
+
+        // always need authorized user to download a version
+        $this->user->require_authenticated();
+
+        // always need manage_media_versions to download a version
+        $this->user->require_permission('manage_media_versions');
+
+        // get media
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+        if (!$media) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        // if not media owner, also need manage_media permission
+        $is_media_owner = $media['owner_id'] == $this->user->param('id');
+        if (!$is_media_owner) {
+            $this->user->require_permission('manage_media');
+        }
+
+        // get version
+        $this->db->where('media_id', $id);
+        $this->db->where('created', $version);
+        $version = $this->db->get_one('media_versions');
+        if (!$version) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        $fullpath = (defined('OB_MEDIA_VERSIONS') ? OB_MEDIA_VERSIONS : OB_MEDIA . '/versions') .
+                        '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' .
+                        $version['media_id'] . '-' . $version['created'] . '.' . $version['format'];
+        $filename = $version['media_id'] . '-' . $version['created'] . '.' . $version['format'];
+
+        $this->download($fullpath, $filename);
+    }
+
+    /**
      * Download media item.
      *
      * @param id Media ID
@@ -57,7 +104,7 @@ class Downloads extends OBFController
 
             // download requires download_media if this is not the media owner
             if (!$is_media_owner) {
-                $user->require_permission('download_media');
+                $this->user->require_permission('download_media');
             }
 
             // private media requires manage_media if this is not the media owner
@@ -78,18 +125,7 @@ class Downloads extends OBFController
 
         $fullpath = $filedir . '/' . $media['filename'];
 
-        if (!file_exists($fullpath)) {
-            $this->error(OB_ERROR_NOTFOUND);
-        }
-
-        header("Access-Control-Allow-Origin: *");
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header("Content-Transfer-Encoding: binary");
-        header("Content-Length: " . filesize($fullpath));
-        header('Content-Disposition: attachment; filename="' . $media['filename'] . '"');
-
-        readfile($fullpath);
+        $this->download($fullpath, $media['filename']);
     }
 
     /**
@@ -97,7 +133,7 @@ class Downloads extends OBFController
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/stream/(:id:)
+     * @route GET /v2/downloads/media/(:id:)/stream/
      */
     public function stream()
     {
@@ -108,7 +144,7 @@ class Downloads extends OBFController
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/thumbnail/(:id:)
+     * @route GET /v2/downloads/media/(:id:)/thumbnail/
      */
     public function thumbnail()
     {
@@ -144,6 +180,25 @@ class Downloads extends OBFController
     private function error($code)
     {
         $this->io->error($code);
+        die();
+    }
+
+    private function download($fullpath, $filename)
+    {
+        if (!file_exists($fullpath)) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        header("Access-Control-Allow-Origin: *");
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: binary");
+        header("Content-Length: " . filesize($fullpath));
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        readfile($fullpath);
+
+        // don't want any more output after outputting file
         die();
     }
 }
