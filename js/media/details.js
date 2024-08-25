@@ -117,13 +117,6 @@ OB.Media.detailsPage = function (id) {
             document.querySelector("#media_details_metadata").appendChild(metaElem);
         });
 
-        // add thumbnail if available
-        if (item.thumbnail) {
-            $("#media_details_fieldset > legend").after(
-                '<img alt="" id="media_thumbnail" src="/thumbnail.php?id=' + item.id + '">',
-            );
-        }
-
         // remove unused metadata
         $.each(OB.Settings.media_required_fields, function (field, status) {
             field = field.replace(/_id$/, "");

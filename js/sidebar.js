@@ -400,12 +400,6 @@ OB.Sidebar.mediaSearch = function (more) {
                             break;
                     }
 
-                    /*
-                    var thumbnail = media[i]["thumbnail"]
-                        ? '<img loading="lazy" src="/thumbnail.php?id=' + media[i]["id"] + '" />'
-                        : "";
-                    */
-
                     var thumbnail = "";
 
                     if (media[i]["thumbnail"]) {

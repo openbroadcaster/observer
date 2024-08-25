@@ -124,7 +124,7 @@ foreach ($media as $item) {
     } else {
         $thumbnail_file = 'thumbnails/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '.jpg';
         if (file_exists(OB_CACHE . '/' . $thumbnail_file)) {
-            $item['thumbnail'] = 'thumbnail.php?id=' . $item['id'];
+            $item['thumbnail'] = '/api/v2/downloads/media/'.$item['id'].'/thumbnail/';
         }
     }
 

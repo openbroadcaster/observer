@@ -153,14 +153,34 @@ OB.Playlist.addeditInsertItem = function (id, description, duration, type, prope
                 type +
                 '"></div>',
         )
-            .append(
-                $("<span></span>")
-                    .append('<img src="/thumbnail.php?id=' + id + '" onerror="this.remove()" />')
-                    .addClass("playlist_addedit_thumbnail"),
-            )
+            .append($("<span></span>").addClass("playlist_addedit_thumbnail"))
             .append($("<span></span>").text(description).addClass("playlist_addedit_description"))
             .append($("<span></span>").text(duration_text).addClass("playlist_addedit_duration")),
     );
+
+    const currentId = OB.Playlist.addedit_item_last_id;
+    OB.API.request({ endpoint: "downloads/media/" + id + "/thumbnail/", raw: true }).then(function (blob) {
+        if (blob) {
+            const imageUrl = URL.createObjectURL(blob);
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.onerror = function () {
+                this.remove();
+            }; // Remove the image if it fails to load
+            const targetElement = document.querySelector(
+                `#playlist_addedit_item_${currentId} .playlist_addedit_thumbnail`,
+            );
+            if (targetElement) {
+                targetElement.appendChild(img);
+            }
+
+            // revoke the URL when the image is loaded to free up memory
+            img.onload = function () {
+                URL.revokeObjectURL(imageUrl);
+            };
+        }
+    });
+
     //'+htmlspecialchars(description)+'<span class="playlist_addedit_duration">'+duration_text+'</span></div>');
     if (properties) {
         if (properties["crossfade"]) {

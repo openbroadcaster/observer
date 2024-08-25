@@ -163,10 +163,16 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             let elem = this;
             let thumbnailId = this.#queue[this.#itemId].id;
-            let thumbnailLink = "/thumbnail.php?id=" + thumbnailId;
-            let validThumbnail = (await fetch(thumbnailLink)).ok;
-            if (!validThumbnail) {
-                thumbnailLink = "/images/circle.svg";
+            let poster = null;
+
+            const blob = await OB.API.request({
+                endpoint: "downloads/media/" + thumbnailId + "/thumbnail/",
+                raw: true,
+            });
+            if (blob) {
+                poster = URL.createObjectURL(blob);
+            } else {
+                poster = "/images/circle.svg";
             }
 
             switch (this.#itemType) {
@@ -174,7 +180,7 @@ class OBElementPreview extends OBElement {
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
-                        poster: thumbnailLink,
+                        poster: poster,
                         audioPosterMode: true,
                     });
 
@@ -189,7 +195,7 @@ class OBElementPreview extends OBElement {
                     this.#videojsPlayer = videojs(videoElem, {
                         controls: true,
                         preload: "auto",
-                        poster: thumbnailLink,
+                        poster: poster,
                     });
 
                     this.#videojsPlayer.ready(function () {
