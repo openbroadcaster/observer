@@ -288,3 +288,37 @@ OB.API.download = function (url) {
         document.body.removeChild(link);
     });
 };
+
+// API v2 request
+OB.API.request = async function ({ endpoint, method = "GET", data = null, raw = false }) {
+    const url = `/api/v2/${endpoint}`;
+
+    const headers = {
+        "X-Auth-ID": readCookie("ob_auth_id"),
+        "X-Auth-Key": readCookie("ob_auth_key"),
+    };
+
+    if (data) {
+        headers["Content-Type"] = "application/json";
+        data = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, {
+        method,
+        headers,
+        body: data,
+    });
+
+    // if not okay, return false
+    if (!response.ok) {
+        return false;
+    }
+
+    if (raw) {
+        const blob = await response.blob();
+        return blob;
+    } else {
+        const responseData = await response.json();
+        return responseData?.data;
+    }
+};
