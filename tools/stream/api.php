@@ -23,14 +23,14 @@ header("Access-Control-Allow-Origin: *");
 
 require_once('../../components.php');
 
-if (!defined('OB_STREAM_API') || OB_STREAM_API!==true || (empty($_GET['category_id']) && empty($_GET['genre_id']) && empty($_GET['media_id']))) {
+if (!defined('OB_STREAM_API') || OB_STREAM_API !== true || (empty($_GET['category_id']) && empty($_GET['genre_id']) && empty($_GET['media_id']))) {
     http_response_code(404);
     die();
 }
 
 $return = [
-  'genres'=>[],
-  'media'=>[]
+  'genres' => [],
+  'media' => []
 ];
 
 $db = OBFDB::get_instance();
@@ -104,61 +104,61 @@ $media = $db->get('media');
 $return['media_total'] = $db->found_rows();
 
 foreach ($media as $item) {
-    $item['download'] = 'download.php?media_id='.$item['id'];
+    $item['download'] = 'api/v2/downloads/media/' . $item['id'];
 
     // stream available
     if ($item['stream_version']) {
-        $item['mime']='application/x-mpegURL';
-        $item['stream']='streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/'.($item['type']=='audio' ? 'audio.m3u8' : 'prog_index.m3u8');
+        $item['mime'] = 'application/x-mpegURL';
+        $item['stream'] = 'streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/' . ($item['type'] == 'audio' ? 'audio.m3u8' : 'prog_index.m3u8');
     }
 
     // if image, set stream to download URL. TODO srcset.
-    if ($item['type']=='image') {
-        $item['mime'] = $item['type'].'/'.$item['format'];
+    if ($item['type'] == 'image') {
+        $item['mime'] = $item['type'] . '/' . $item['format'];
         $item['stream'] = $item['download'];
     }
 
-    $thumbnail_file = 'streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/thumb.jpg';
-    if (file_exists(OB_CACHE.'/'.$thumbnail_file)) {
+    $thumbnail_file = 'streams/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '/thumb.jpg';
+    if (file_exists(OB_CACHE . '/' . $thumbnail_file)) {
         $item['thumbnail'] = $thumbnail_file;
     } else {
-        $thumbnail_file = 'thumbnails/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'.jpg';
-        if (file_exists(OB_CACHE.'/'.$thumbnail_file)) {
-            $item['thumbnail'] = 'thumbnail.php?id='.$item['id'];
+        $thumbnail_file = 'thumbnails/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '.jpg';
+        if (file_exists(OB_CACHE . '/' . $thumbnail_file)) {
+            $item['thumbnail'] = 'thumbnail.php?id=' . $item['id'];
         }
     }
 
     $item_return = [
-    'id'=>$item['id'],
-    'artist'=>$item['artist'],
-    'title'=>$item['title'],
-    'album'=>$item['album'],
-    'year'=>$item['year'],
-    'language_id'=>$item['language_id'],
-    'language_name'=>$item['language_name'],
-    'category_id'=>$item['category_id'],
-    'category_name'=>$item['category_name'],
-    'genre_id'=>$item['genre_id'],
-    'genre_name'=>$item['genre_name'],
-    'country_id'=>$item['country_id'],
-    'country_name'=>$item['country_name'],
-    'comments'=>$item['comments'],
-    'type'=>$item['type'],
-    'mime'=>$item['mime'] ?? null,
-    'stream'=>$item['stream'] ?? null,
-    'thumbnail'=>$item['thumbnail'] ?? null,
-    'download'=>$item['download']
-  ];
+    'id' => $item['id'],
+    'artist' => $item['artist'],
+    'title' => $item['title'],
+    'album' => $item['album'],
+    'year' => $item['year'],
+    'language_id' => $item['language_id'],
+    'language_name' => $item['language_name'],
+    'category_id' => $item['category_id'],
+    'category_name' => $item['category_name'],
+    'genre_id' => $item['genre_id'],
+    'genre_name' => $item['genre_name'],
+    'country_id' => $item['country_id'],
+    'country_name' => $item['country_name'],
+    'comments' => $item['comments'],
+    'type' => $item['type'],
+    'mime' => $item['mime'] ?? null,
+    'stream' => $item['stream'] ?? null,
+    'thumbnail' => $item['thumbnail'] ?? null,
+    'download' => $item['download']
+    ];
 
     // add caption file if we have it
-    if (file_exists(__DIR__.'/captions/'.$item['id'].'.vtt')) {
-        $item_return['captions']='tools/stream/captions/'.$item['id'].'.vtt';
+    if (file_exists(__DIR__ . '/captions/' . $item['id'] . '.vtt')) {
+        $item_return['captions'] = 'tools/stream/captions/' . $item['id'] . '.vtt';
     } else {
-        $item_return['captions']=false;
+        $item_return['captions'] = false;
     }
 
     foreach ($metadata as $metadata_column) {
-        $item_return['metadata_'.$metadata_column['name']] = $item['metadata_'.$metadata_column['name']];
+        $item_return['metadata_' . $metadata_column['name']] = $item['metadata_' . $metadata_column['name']];
     }
 
     // get our genre from this media item if we are just selecting a single media item. used below.
@@ -179,7 +179,7 @@ if ($genre_id || $category_id) {
     $genres = $db->get('media_genres');
 
     foreach ($genres as $genre) {
-        $return['genres'][] = ['id'=>$genre['id'], 'name'=>$genre['name'], 'description'=>$genre['description']];
+        $return['genres'][] = ['id' => $genre['id'], 'name' => $genre['name'], 'description' => $genre['description']];
     }
 }
 
