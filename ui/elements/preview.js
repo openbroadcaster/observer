@@ -72,9 +72,12 @@ class OBElementPreview extends OBElement {
             this.#itemType = this.#queue[this.#itemId].type;
         }
 
+        const sidebarLeft = document.querySelector("body").classList.contains("sidebar-left");
+        if (sidebarLeft) this.root.classList.add("-flipped");
+
         render(
             html`
-                <div id="preview">
+                <div id="preview" class="${sidebarLeft && "-flipped"}">
                     <div id="drag">
                         ${this.#itemType === "audio"
                             ? html`
@@ -136,13 +139,15 @@ class OBElementPreview extends OBElement {
                 this.#queue[this.#itemId] &&
                 html`
                     <div id="current">
+                        <span class="buttons queue"><button onclick=${() => this.queueToggleView()}>☰</button></span>
                         <span class="buttons">
-                            <button onclick=${() => this.queueToggleView()}>☰</button>
                             ${queueFirst
                                 ? html` <button disabled>«</button> `
                                 : html` <button onclick=${() => this.queuePrevious()}>«</button> `}
                         </span>
-                        <span>${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span>
+                        <span class="title"
+                            >${this.#queue[this.#itemId].artist} - ${this.#queue[this.#itemId].title}</span
+                        >
                         <span class="buttons">
                             ${queueLast
                                 ? html` <button disabled>»</button> `
@@ -257,7 +262,7 @@ class OBElementPreview extends OBElement {
                     bottom: 100%;
                     height: 100%;
 
-                    background-color: rgba(0, 0, 0, 0.2);
+                    background-color: rgba(0, 0, 0, 0.8);
                     border-radius: 5px;
                     border: 2px solid rgba(0, 0, 0, 0);
                     box-sizing: border-box;
@@ -277,11 +282,24 @@ class OBElementPreview extends OBElement {
 
                 #current {
                     display: flex;
-                    justify-content: space-between;
                     margin-top: 0.5em;
 
                     span.buttons {
                         white-space: nowrap;
+                    }
+
+                    .title { flex-grow: 1; text-align: center; padding: 0 5px; }
+                }
+
+                #root.-flipped 
+                {   
+                    #queue {
+                        right: auto;
+                        left: calc(100% + 0.5em);
+                    }
+
+                    #current {
+                        .buttons.queue { order: 1; }
                     }
                 }
             }
