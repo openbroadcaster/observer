@@ -158,8 +158,12 @@ class OBFAPI
             }
         }
 
-        // try to get an ID/key pair for user authorization.
-        if (!empty($_POST['i']) && !empty($_POST['k'])) {
+        if (!empty($_SERVER['HTTP_X_AUTH_ID']) && !empty($_SERVER['HTTP_X_AUTH_KEY'])) {
+            // first check X-Auth-ID and X-Auth-Key headers for user authorization.
+            $auth_id = $_SERVER['HTTP_X_AUTH_ID'];
+            $auth_key = $_SERVER['HTTP_X_AUTH_KEY'];
+        } elseif (!empty($_POST['i']) && !empty($_POST['k'])) {
+            // next try i and k post data for user authorization.
             $auth_id = $_POST['i'];
             $auth_key = $_POST['k'];
         }
