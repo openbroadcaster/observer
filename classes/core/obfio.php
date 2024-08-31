@@ -88,6 +88,13 @@ class OBFIO
                 $msg = 'Access denied.';
                 break;
 
+            case OB_ERROR_SERVER:
+                if ($this->use_http_status) {
+                    http_response_code(500);
+                }
+                $msg = 'Server error.';
+                break;
+
             case OB_ERROR_NOTFOUND:
                 if ($this->use_http_status) {
                     http_response_code(404);

@@ -35,6 +35,9 @@ if (!defined('OB_ERROR_DENIED')) {
 if (!defined('OB_ERROR_NOTFOUND')) {
     define('OB_ERROR_NOTFOUND', 5);
 }
+if (!defined('OB_ERROR_SERVER')) {
+    define('OB_ERROR_SERVER', 6);
+}
 if (!defined('OB_LOCAL')) {
     define('OB_LOCAL', __DIR__);
 }
