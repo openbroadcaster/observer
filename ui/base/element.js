@@ -49,7 +49,7 @@ export class OBElement extends HTMLElement {
 
         // look for any child elements starting with app- and refresh them also
         this.querySelectorAll("*").forEach((element) => {
-            if (element.tagName.startsWith("APP-")) {
+            if (element.tagName.startsWith("OB-")) {
                 if (element.refresh && typeof element.refresh == "function") {
                     element.refresh();
                 } else {
@@ -60,7 +60,7 @@ export class OBElement extends HTMLElement {
 
         if (this.shadowRoot) {
             this.shadowRoot.querySelectorAll("*").forEach((element) => {
-                if (element.tagName.startsWith("APP-")) {
+                if (element.tagName.startsWith("OB-")) {
                     if (element.refresh && typeof element.refresh == "function") {
                         element.refresh();
                     } else {
