@@ -75,35 +75,12 @@ class OBElementPreview extends OBElement {
         const sidebarLeft = document.querySelector("body").classList.contains("sidebar-left");
         if (sidebarLeft) this.root.classList.add("-flipped");
 
-        // get a nonce
-        const nonceRequest = await OB.API.request({ endpoint: "account/nonce" });
-        const nonce = nonceRequest.nonce;
-
         render(
             html`
                 <div id="preview" class="${sidebarLeft && "-flipped"}">
                     <div id="drag">
-                        ${this.#itemType === "audio"
-                            ? html`
-                                  <video-js>
-                                      <source
-                                          src="/api/v2/downloads/media/${this.#queue[this.#itemId]
-                                              .id}/preview/?nonce=${nonce}"
-                                          type="audio/mpeg"
-                                      />
-                                  </video-js>
-                              `
-                            : html``}
-                        ${this.#itemType === "video"
-                            ? html`
-                                  <video-js>
-                                      <source
-                                          src="/api/v2/downloads/media/${this.#queue[this.#itemId]
-                                              .id}/preview/?nonce=${nonce}"
-                                          type="video/mp4"
-                                      />
-                                  </video-js>
-                              `
+                        ${this.#itemType === "audio" || this.#itemType === "video"
+                            ? html` <video-js></video-js> `
                             : html``}
                         ${this.#itemType === "image" || this.#itemType === "document"
                             ? html`
@@ -153,11 +130,11 @@ class OBElementPreview extends OBElement {
         const videoElem = this.root.querySelector("video-js");
         if (videoElem) {
             let elem = this;
-            let thumbnailId = this.#queue[this.#itemId].id;
+            let mediaId = this.#queue[this.#itemId].id;
             let poster = null;
 
             const blob = await OB.API.request({
-                endpoint: "downloads/media/" + thumbnailId + "/thumbnail/",
+                endpoint: "downloads/media/" + mediaId + "/thumbnail/",
                 raw: true,
             });
             if (blob) {
@@ -165,6 +142,13 @@ class OBElementPreview extends OBElement {
             } else {
                 poster = "/images/circle.svg";
             }
+
+            // get media file
+            const mediaBlob = await OB.API.request({
+                endpoint: "downloads/media/" + mediaId + "/preview/",
+                raw: true,
+            });
+            const mediaUrl = URL.createObjectURL(mediaBlob);
 
             switch (this.#itemType) {
                 case "audio":
@@ -181,6 +165,12 @@ class OBElementPreview extends OBElement {
                         });
                     });
 
+                    this.#videojsPlayer.src({ type: "audio/mpeg", src: mediaUrl });
+
+                    this.#videojsPlayer.on("dispose", function () {
+                        URL.revokeObjectURL(mediaUrl);
+                    });
+
                     break;
                 case "video":
                     this.#videojsPlayer = videojs(videoElem, {
@@ -193,6 +183,12 @@ class OBElementPreview extends OBElement {
                         this.on("ended", function () {
                             elem.queueNext(true);
                         });
+                    });
+
+                    this.#videojsPlayer.src({ type: "video/mp4", src: mediaUrl });
+
+                    this.#videojsPlayer.on("dispose", function () {
+                        URL.revokeObjectURL(mediaUrl);
                     });
 
                     break;
