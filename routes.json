@@ -11,9 +11,9 @@
             "media"
         ],
         [
-            "/api/v2/downloads/media/(:id:)/stream",
+            "/api/v2/downloads/media/(:id:)/preview",
             "downloads",
-            "stream"
+            "preview"
         ],
         [
             "/api/v2/downloads/media/(:id:)/thumbnail",

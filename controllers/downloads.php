@@ -34,6 +34,19 @@ class Downloads extends OBFController
         $this->io = OBFIO::get_instance();
     }
 
+    private function media_file($media)
+    {
+        if ($media['is_archived'] == 1) {
+            $filedir = OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved'] == 0) {
+            $filedir = OB_MEDIA_UPLOADS;
+        } else {
+            $filedir = OB_MEDIA;
+        }
+
+        return $filedir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
+    }
+
     /**
      * Download media item version.
      *
@@ -113,17 +126,7 @@ class Downloads extends OBFController
             }
         }
 
-        if ($media['is_archived'] == 1) {
-            $filedir = OB_MEDIA_ARCHIVE;
-        } elseif ($media['is_approved'] == 0) {
-            $filedir = OB_MEDIA_UPLOADS;
-        } else {
-            $filedir = OB_MEDIA;
-        }
-
-        $filedir .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-
-        $fullpath = $filedir . '/' . $media['filename'];
+        $fullpath = $this->media_file($media);
 
         $this->download($fullpath, $media['filename']);
     }
@@ -133,10 +136,84 @@ class Downloads extends OBFController
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/media/(:id:)/stream/
+     * @route GET /v2/downloads/media/(:id:)/preview/
      */
-    public function stream()
+    public function preview()
     {
+        $id = $this->data('id');
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+
+        if (!$media) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        // not found if type is not audio or video
+        if ($media['type'] != 'audio' && $media['type'] != 'video') {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        // check permissions
+        if ($media['status'] != 'public') {
+            $this->user->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $this->user->param('id');
+
+            // private media requires manage_media if this is not the media owner
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $this->user->require_permission('manage_media');
+            }
+        }
+
+        $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+
+        // create dir if not exists
+        if (!file_exists($cache_dir)) {
+            mkdir($cache_dir, 0777, true);
+        }
+
+        // server error if dir not exists
+        if (!file_exists($cache_dir)) {
+            $this->error(OB_ERROR_SERVER);
+        }
+
+        $media_file = $this->media_file($media);
+
+        if ($media['type'] == 'audio') {
+            // audio preview transcode
+            $cache_file = $cache_dir . '/' . $media['id'] . '_audio.mp3';
+
+            if (!file_exists($cache_file)) {
+                $strtr_array = ['{infile}' => $media_file, '{outfile}' => $cache_file];
+                exec(strtr(OB_TRANSCODE_AUDIO_MP3, $strtr_array));
+            }
+
+            // if file not exists, server error
+            if (!file_exists($cache_file)) {
+                $this->error(OB_ERROR_SERVER);
+            }
+
+            header('Content-Type: audio/mpeg');
+        } else {
+            // video preview transcode
+            $cache_file = $cache_dir . '/' . $media['id'] . '.mp4';
+
+            if (!file_exists($cache_file)) {
+                $dest_width = 1280;
+                $dest_height = 720;
+
+                $strtr_array = ['{infile}' => $media_file, '{outfile}' => $cache_file, '{width}' => $dest_width, '{height}' => $dest_height];
+                exec(strtr(OB_TRANSCODE_VIDEO_MP4, $strtr_array));
+            }
+
+            // if file not exists, server error
+            if (!file_exists($cache_file)) {
+                $this->error(OB_ERROR_SERVER);
+            }
+
+            header('Content-Type: video/mp4');
+        }
+        header('Content-Length: ' . filesize($cache_file));
+        $fp = fopen($cache_file, 'rb');
+        fpassthru($fp);
     }
 
     /**
