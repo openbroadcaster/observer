@@ -75,6 +75,10 @@ class OBElementPreview extends OBElement {
         const sidebarLeft = document.querySelector("body").classList.contains("sidebar-left");
         if (sidebarLeft) this.root.classList.add("-flipped");
 
+        // get a nonce
+        const nonceRequest = await OB.API.request({ endpoint: "account/nonce" });
+        const nonce = nonceRequest.nonce;
+
         render(
             html`
                 <div id="preview" class="${sidebarLeft && "-flipped"}">
@@ -83,14 +87,9 @@ class OBElementPreview extends OBElement {
                             ? html`
                                   <video-js>
                                       <source
-                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
-                                              .id}&format=mp3"
+                                          src="/api/v2/downloads/media/${this.#queue[this.#itemId]
+                                              .id}/preview/?nonce=${nonce}"
                                           type="audio/mpeg"
-                                      />
-                                      <source
-                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
-                                              .id}&format=ogg"
-                                          type="audio/ogg"
                                       />
                                   </video-js>
                               `
@@ -99,24 +98,16 @@ class OBElementPreview extends OBElement {
                             ? html`
                                   <video-js>
                                       <source
-                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
-                                              .id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=mp4"
+                                          src="/api/v2/downloads/media/${this.#queue[this.#itemId]
+                                              .id}/preview/?nonce=${nonce}"
                                           type="video/mp4"
-                                      />
-                                      <source
-                                          src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
-                                              .id}&w=${this.#imageWidth}&h=${this.#imageHeight}&format=ogg"
-                                          type="video/ogg"
                                       />
                                   </video-js>
                               `
                             : html``}
                         ${this.#itemType === "image" || this.#itemType === "document"
                             ? html`
-                                  <img
-                                      src="/preview.php?x=${new Date().getTime()}&id=${this.#queue[this.#itemId]
-                                          .id}&w=${this.#imageWidth}&h=${this.#imageHeight}"
-                                  />
+                                  <ob-element-thumbnail data-id=${this.#queue[this.#itemId].id}></ob-element-thumbnail>
                               `
                             : html``}
                     </div>
@@ -359,7 +350,7 @@ class OBElementPreview extends OBElement {
                 this.#itemType = this.#queue[0].type;
             }
 
-            this.renderComponent();
+            this.refresh();
         }
     }
 
