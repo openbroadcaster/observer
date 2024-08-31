@@ -291,6 +291,7 @@ OB.API.download = function (url) {
 
 // API v2 request
 OB.API.request = async function ({ endpoint, method = "GET", data = null, raw = false }) {
+    if (endpoint.charAt(0) == "/") endpoint = endpoint.substr(1);
     const url = `/api/v2/${endpoint}`;
 
     const headers = {
