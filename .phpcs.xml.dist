@@ -12,7 +12,6 @@
 	<file>config.sample.php</file>
 	<file>cron.php</file>
 	<file>index.php</file>
-	<file>preview.php</file>
 	<file>remote.php</file>
 	<file>strings.php</file>
 	<file>tts.php</file>
