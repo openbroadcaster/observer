@@ -579,7 +579,7 @@ OB.Playlist.voicetrackValidate = function () {
     });
 };
 
-OB.Playlist.voicetrackPreview = function () {
+OB.Playlist.voicetrackPreview = async function () {
     if (!OB.Playlist.voicetrackEnabled()) return;
 
     OB.Playlist.voicetrackPreviewStop();
@@ -591,8 +591,15 @@ OB.Playlist.voicetrackPreview = function () {
     const voicetrackFadeoutBefore = document.querySelector("#audio_properties_voicetrack_fadeout_before").value;
     const voicetrackFadeinAfter = document.querySelector("#audio_properties_voicetrack_fadein_after").value;
 
-    OB.Playlist.voicetrackAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + voicetrackId);
-    OB.Playlist.mediaAudio = new Audio("/preview.php?x=" + new Date().getTime() + "&id=" + mediaId);
+    const voicetrackAudioBlob = await OB.API.request({
+        endpoint: "downloads/media/" + voicetrackId + "/preview/",
+        raw: true,
+    });
+    const mediaAudioBlob = await OB.API.request({ endpoint: "downloads/media/" + mediaId + "/preview/", raw: true });
+    const voicetrackAudioUrl = URL.createObjectURL(voicetrackAudioBlob);
+    const mediaAudioUrl = URL.createObjectURL(mediaAudioBlob);
+    OB.Playlist.voicetrackAudio = new Audio(voicetrackAudioUrl);
+    OB.Playlist.mediaAudio = new Audio(mediaAudioUrl);
 
     // Function for playing both audio tracks in the preview (function is helpful because it can get called in
     // two separate ways, see comments below about the 'playthroughboth' event).
