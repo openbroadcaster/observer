@@ -5,18 +5,27 @@ export class OBElementThumbnail extends OBElement {
     _mediaId;
 
     async connectedCallback() {
-        this._mediaId = this.getAttribute("data-id");
         this.resolveInitialized();
         this.renderComponent();
     }
 
     async renderComponent() {
-        OB.API.post("media", "thumbnail", { id: this._mediaId }, (response) => {
-            const imageBase64 = response.data;
-            const image = document.createElement("img");
-            image.src = response.data;
-            this.root.appendChild(image);
+        // get media id from data-id attribute
+        this._mediaId = this.getAttribute("data-id");
+
+        // API v2 request with raw (get blob data)
+        const image = await OB.API.request({
+            endpoint: "/downloads/media/" + this._mediaId + "/thumbnail/",
+            raw: true,
         });
+
+        // create image element from blob
+        const imageElement = document.createElement("img");
+        imageElement.src = URL.createObjectURL(image);
+
+        // replace root content with image element
+        this.root.innerHTML = "";
+        this.root.appendChild(imageElement);
     }
 
     scss() {
