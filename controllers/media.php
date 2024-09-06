@@ -75,7 +75,7 @@ class Media extends OBFController
 
         //T Media Settings
         //T File format settings saved.
-        return [true,['Media Settings','File format settings saved.']];
+        return [true,'File format settings saved.'];
     }
 
     /**
