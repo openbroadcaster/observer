@@ -197,8 +197,8 @@ class Downloads extends OBFController
             $cache_file = $cache_dir . '/' . $media['id'] . '.mp4';
 
             if (!file_exists($cache_file)) {
-                $dest_width = 1280;
-                $dest_height = 720;
+                $dest_width = 640;
+                $dest_height = 480;
 
                 $strtr_array = ['{infile}' => $media_file, '{outfile}' => $cache_file, '{width}' => $dest_width, '{height}' => $dest_height];
                 exec(strtr(OB_TRANSCODE_VIDEO_MP4, $strtr_array));
