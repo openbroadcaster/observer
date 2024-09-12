@@ -617,15 +617,18 @@ class Media extends OBFController
      */
     public function get()
     {
-        $this->user->require_authenticated();
 
         $id = $this->data('id');
-
         $media = $this->models->media('get_by_id', ['id' => $id]);
 
         //T Media not found.
         if (!$media) {
             return [false,'Media not found.'];
+        }
+
+        // if not public, require autenticated
+        if ($media['status'] != 'public') {
+            $this->user->require_authenticated();
         }
 
         if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
