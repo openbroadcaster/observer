@@ -8,7 +8,7 @@ class ExtractThumbnails extends Cron
 {
     public function interval(): int
     {
-        return 60;
+        return 1;
     }
 
     public function run(): bool
@@ -57,7 +57,7 @@ class ExtractThumbnails extends Cron
             }
         }
 
-        return false;
+        return true;
     }
 
     private function runVideo($item, $input_file, $output_file): bool

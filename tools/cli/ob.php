@@ -64,7 +64,8 @@ Commands:
 
         echo Helpers::table(spacing: 5, rows: [
             ['check', 'check installation for errors'],
-            ['cron run', 'run scheduled tasks'],
+            ['cron run', 'run scheduled tasks once'],
+            ['cron monitor', 'monitor and run cron tasks as needed'],
             ['updates list all', 'list all available updates'],
             ['updates list core', 'list core ob updates'],
             ['updates list module <name>', 'list updates for specified module'],
@@ -83,8 +84,8 @@ Commands:
     public function cron()
     {
         global $subcommand;
-        if ($subcommand == 'run') {
-            require('cron.php');
+        if ($subcommand == 'run' || $subcommand == 'monitor') {
+            require(__DIR__ . '/commands/cron.php');
         } else {
             $this->help();
         }

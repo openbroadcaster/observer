@@ -10,7 +10,6 @@
 	<file>api.php</file>
 	<file>components.php</file>
 	<file>config.sample.php</file>
-	<file>cron.php</file>
 	<file>index.php</file>
 	<file>remote.php</file>
 	<file>strings.php</file>
