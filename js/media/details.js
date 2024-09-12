@@ -75,7 +75,8 @@ OB.Media.detailsPage = function (id) {
 
         // handle metadata
         $("#media_details_id").text(id);
-        $("#media_details_thumbnail").val(item.thumbnail);
+        $("#media_details_thumbnail").attr("data-id", id);
+        $("#media_details_thumbnail")[0].refresh();
         $("#media_details_artist").text(item.artist);
         $("#media_details_title").text(item.title);
         $("#media_details_album").text(item.album);
