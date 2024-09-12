@@ -326,7 +326,7 @@ class OBFUser
 
             if ($valid) {
                 // set/init user
-                $this->db->set_user($result['user_id']);
+                $this->set_user($result['user_id']);
 
                 // Update last_access in App Keys table.
                 $this->db->where('id', $key_row);
