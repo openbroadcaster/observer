@@ -392,12 +392,20 @@ class OBFUser
     }
 
     /**
+     * Check if the user is currently authenticated.
+     */
+    public function check_authenticated()
+    {
+        return $this->param('id') != 0;
+    }
+
+    /**
      * Function to put on top of controller methods that require authentication.
      * This throws an error and  kills the call if no user is logged in.
      */
     public function require_authenticated()
     {
-        if ($this->param('id') == 0) {
+        if (!$this->check_authenticated()) {
             $this->io->error(OB_ERROR_DENIED);
             die();
         }
