@@ -4,15 +4,25 @@ namespace OB\Classes\Metadata;
 
 class Coordinates extends \OB\Classes\Base\Metadata
 {
+    private function isPointData($data)
+    {
+        // POINT binary should be exactly 25 bytes long
+        if (strlen($data) !== 25) {
+            return false;
+        }
+
+        // Check for the SRID and WKB type for POINT
+        $header = unpack('Lsrid/cbyteOrder/Lwkbtype', $data);
+
+        // WKB type for POINT is 1
+        return $header['wkbtype'] === 1;
+    }
+
     public function processRow(&$row)
     {
         $coordinates = $row['metadata_' . $this->name];
         if ($coordinates) {
-            // unpack binary if needed. note this check is very specific to this application and not a general solution
-            // the expected binary data is 25 bytes long, and the expected non-binary data is less than that
-            // note there is a very unlikely edge case if someone sets the default value to be a string of 25 characters (which is not possible via the UI, but could be done via the API)
-            // TODO this should be fixed with better metadata abstraction
-            if (strlen($coordinates) == 25) {
+            if ($this->isPointData($coordinates)) {
                 $data = unpack('x/x/x/x/corder/Ltype/dlat/dlon', $coordinates);
                 $coordinates = $data['lat'] . ',' . $data['lon'];
             }
