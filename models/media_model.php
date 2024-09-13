@@ -1446,6 +1446,7 @@ class MediaModel extends OBFModel
         $metadata_tags = [];
 
         foreach ($metadata_fields as $metadata_field) {
+            // TODO proper abstraction using metadata classes
             if ($metadata_field['type'] == 'tags') {
                 $tags = [];
                 if (!empty($item['metadata_' . $metadata_field['name']])) {
@@ -1458,6 +1459,8 @@ class MediaModel extends OBFModel
                     }
                 }
                 $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
+            } elseif ($metadata_field['type'] == 'coordinates') {
+                $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
             } else {
                 $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
             }

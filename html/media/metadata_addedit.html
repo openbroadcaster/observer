@@ -1,7 +1,6 @@
-
 <div>
 
-<obwidget id="metadata_addedit_message" type="message"></obwidget>
+  <obwidget id="metadata_addedit_message" type="message"></obwidget>
 
   <fieldset>
     <legend id="metadata_addedit_heading">New Metadata Field</legend>
@@ -31,7 +30,7 @@
         <ob-option value="tags">Tags</ob-option>
         <ob-option value="media">Media</ob-option>
         <ob-option value="playlist">Playlist</ob-option>
-        <!--<ob-option value="coordinates">Coordinates</ob-option>-->
+        <ob-option value="coordinates">Coordinates</ob-option>
       </ob-field-select>
     </div>
 
@@ -39,7 +38,7 @@
       <label class="required" data-t>Options (one per line)</label>
       <ob-field-textarea data-edit wrap="off" id="metadata_select_options"></ob-field-textarea>
     </div>
-    
+
     <div class="fieldrow">
       <label data-t>Suggestions</label>
       <ob-tag-input data-suggestions="false" id="metadata_tag_suggestions"></ob-tag-input>
@@ -66,12 +65,14 @@
       <ob-field-select data-edit class="hidden metadata_default metadata_default_bool">
         <ob-option value="1">Yes</ob-option>
         <ob-option value="0">No</ob-option>
-      ></ob-field-select>
+        ></ob-field-select>
       <ob-field-select data-edit class="hidden metadata_default metadata_default_select"></ob-field-select>
       <ob-tag-input data-suggestions="false" class="hidden metadata_default metadata_default_tags"></ob-tag-input>
       <ob-field-media data-edit data-single class="hidden metadata_default metadata_default_media"></ob-field-media>
-      <ob-field-playlist data-edit data-single class="hidden metadata_default metadata_default_playlist"></ob-field-playlist>
-      <ob-field-coordinates data-edit class="hidden metadata_default metadata_default_coordinates"></ob-field-coordinates>
+      <ob-field-playlist data-edit data-single
+        class="hidden metadata_default metadata_default_playlist"></ob-field-playlist>
+      <ob-field-coordinates data-edit
+        class="hidden metadata_default metadata_default_coordinates"></ob-field-coordinates>
     </div>
 
     <div class="fieldrow">
@@ -83,7 +84,8 @@
   <fieldset>
     <div class="fieldrow">
       <button class="add" id="item_properties_save" onclick="OB.Media.metadataSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.metadataDelete();" data-t>Delete</button>
+      <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.metadataDelete();"
+        data-t>Delete</button>
       <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
     </div>
   </fieldset>

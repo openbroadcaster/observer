@@ -794,6 +794,9 @@ class OBFDB
         foreach ($data as $item => $value) {
             if ($value === null) {
                 $setsql[] = $this->format_table_column($item) . '=NULL';
+            } elseif (preg_match('/^POINT\(-?\d+(\.\d+)?,-?\d+(\.\d+)?\)$/', $value)) {
+                // special case for POINT data type (no escape if strictly matches which we know is safe)
+                $setsql[] = $this->format_table_column($item) . '=' . $value;
             } else {
                 $setsql[] = $this->format_table_column($item) . '=' . $this->format_value($value);
             }
