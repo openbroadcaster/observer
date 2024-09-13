@@ -242,7 +242,7 @@ class MediaMetadataModel extends OBFModel
             $save['settings']['options'] = $save_options;
         }
 
-        // visibility, mode, default, and id3 key
+        // mode, default, and id3 key
         $save['settings']['mode'] = $data['mode'];
         $save['settings']['default'] = $data['default'];
         $save['settings']['id3_key'] = $data['id3_key'];

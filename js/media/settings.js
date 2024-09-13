@@ -361,6 +361,9 @@ OB.Media.metadataAddEditWindow = function (id) {
                 $("#metadata_addedit_id").after(
                     '<input type="hidden" id="metadata_type" value="' + metadata.type + '">',
                 );
+                if (metadata.visibility) {
+                    document.querySelector("#metadata_visibility").value = metadata.visibility;
+                }
                 $("#metadata_description").val(metadata.description);
                 if (metadata.type == "select" && metadata.settings && metadata.settings.options) {
                     $("#metadata_select_options").val(metadata.settings.options.join("\n"));
