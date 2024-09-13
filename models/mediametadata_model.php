@@ -48,6 +48,11 @@ class MediaMetadataModel extends OBFModel
                 $class = 'OB\Classes\Base\Metadata';
             }
 
+            // exclude this field if not public and not authenticated
+            if ($column['visibility'] != 'public' && !$this->user->check_authenticated()) {
+                continue;
+            }
+
             $objects[] = new $class($column['name'], $column['description'], $column['type'], $column['settings']);
         }
 
@@ -194,6 +199,11 @@ class MediaMetadataModel extends OBFModel
             return [false,'The field type is not valid.'];
         }
 
+        //T The visibility setting is not valid.
+        if (array_search($data['visibility'], ['visible','public']) === false) {
+            return [false,'The visibility setting is not valid.'];
+        }
+
         return [true,'Valid.'];
     }
 
@@ -210,6 +220,7 @@ class MediaMetadataModel extends OBFModel
         $save = [];
         $save['settings'] = [];
         $save['description'] = $data['description'];
+        $save['visibility'] = $data['visibility'];
 
         // if editing, use name/type from existing field.
         if ($id) {
@@ -231,7 +242,7 @@ class MediaMetadataModel extends OBFModel
             $save['settings']['options'] = $save_options;
         }
 
-        // mode, default, and id3 key
+        // visibility, mode, default, and id3 key
         $save['settings']['mode'] = $data['mode'];
         $save['settings']['default'] = $data['default'];
         $save['settings']['id3_key'] = $data['id3_key'];

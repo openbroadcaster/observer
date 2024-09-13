@@ -245,6 +245,7 @@ class MediaModel extends OBFModel
         $this->db->what('users.display_name', 'owner_name');
 
         foreach ($args['metadata_fields'] as $metadata_field) {
+            // add the field to the select portion of the query
             $query_select = $metadata_field->querySelect();
             if (!is_array($query_select)) {
                 $query_select = [$query_select];

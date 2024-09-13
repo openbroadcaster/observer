@@ -35,6 +35,13 @@
     </div>
 
     <div class="fieldrow">
+      <label class="required" data-t>Visibility</label>
+      <ob-field-select data-edit id="metadata_visibility">
+        <ob-option selected value="public">Allow Public</ob-option>
+        <ob-option value="visible">Internal Only</ob-option>
+    </div>
+
+    <div class="fieldrow">
       <label class="required" data-t>Options (one per line)</label>
       <ob-field-textarea data-edit wrap="off" id="metadata_select_options"></ob-field-textarea>
     </div>

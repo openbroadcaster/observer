@@ -429,6 +429,7 @@ OB.Media.metadataSave = function () {
     field.default = $("#metadata_default").val();
     field.mode = document.querySelector("#metadata_mode").value;
     field.id3_key = document.querySelector("#metadata_id3_key").value;
+    field.visibility = document.querySelector("#metadata_visibility").value;
 
     OB.API.post("metadata", "metadata_save", field, function (response) {
         if (response.status == false) {
