@@ -44,8 +44,19 @@ class OBFieldCoordinates extends OBField {
     }
 
     renderView() {
-        if (this._lat != null && this._lng != null) {
-            render(html` <div>${this._lat}, ${this._lng}</div> `, this.root);
+        let lat = null;
+        let lng = null;
+
+        if (this._lat != null) {
+            lat = parseFloat(this._lat).toFixed(5);
+        }
+
+        if (this._lng != null) {
+            lng = parseFloat(this._lng).toFixed(5);
+        }
+
+        if (lat != null && lat != null) {
+            render(html` <div>${lat}, ${lng}</div> `, this.root);
         } else {
             render(html` <div></div> `, this.root);
         }
@@ -85,7 +96,9 @@ class OBFieldCoordinates extends OBField {
 
     _updateLat(event) {
         const lat = parseFloat(event.target.value);
-        if (lat >= -90 && lat <= 90) {
+        if (isNaN(lat)) {
+            this._lat = null;
+        } else if (lat >= -90 && lat <= 90) {
             this._lat = lat;
         }
         this.refresh();
@@ -93,7 +106,9 @@ class OBFieldCoordinates extends OBField {
 
     _updateLng(event) {
         const lng = event.target.value;
-        if (lng >= -180 && lng <= 180) {
+        if (isNaN(lng)) {
+            this._lng = null;
+        } else if (lng >= -180 && lng <= 180) {
             this._lng = lng;
         }
         this.refresh();
