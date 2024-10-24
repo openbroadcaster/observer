@@ -195,7 +195,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T The field type is not valid.
-        if (array_search($data['type'], ['select','bool','text','textarea','formatted','integer','date','time','datetime','tags','hidden','media','playlist','coordinates']) === false) {
+        if (array_search($data['type'], ['select','bool','text','textarea','formatted','integer','date','time','datetime','tags','hidden','media','playlist','coordinates','license']) === false) {
             return [false,'The field type is not valid.'];
         }
 
@@ -296,33 +296,8 @@ class MediaMetadataModel extends OBFModel
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD CONSTRAINT ' . $this->db->format_backticks('fk_media_metadata_' . $data['name']) . ' FOREIGN KEY (' . $this->db->format_backticks('metadata_' . $data['name']) . ') REFERENCES ' . $this->db->format_backticks('playlists') . ' (' . $this->db->format_backticks('id') . ') ON UPDATE CASCADE ON DELETE SET NULL');
             } elseif ($save['type'] === 'coordinates') {
                 $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' POINT NULL DEFAULT NULL');
-                // TODO: Use triggers probably to make thsi actually convert to POINT(x y) format.
-                // Assumes field is named 'point' in example for testing.
-                // Need to replace before_insert_metadata_point, NEW.metadata_point, etc with actual field name.
-                /*$this->db->query("
-DELIMITER //
-
-CREATE TRIGGER before_insert_metadata_point
-BEFORE INSERT ON media
-FOR EACH ROW
-BEGIN
-    DECLARE x DECIMAL(10, 6);
-    DECLARE y DECIMAL(10, 6);
-
-    -- Split the coordinate_string into x and y
-    SET x = CAST(SUBSTRING_INDEX(NEW.metadata_point, ',', 1) AS DECIMAL(10, 6));
-    SET y = CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(NEW.metadata_point, ',', -1), ' ', -1) AS DECIMAL(10, 6));
-
-    -- Set the coordinate_point column
-    SET NEW.metadata_point = ST_GeomFromText(CONCAT('POINT(', x, ' ', y, ')'));
-END//
-
-DELIMITER ;
-                ");*/
-                if ($err = $this->db->error()) {
-                    var_dump($err);
-                    die();
-                }
+            } elseif ($save['type'] === 'license') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
             }
 
             return $id;
