@@ -31,6 +31,18 @@ class OBFAPI
 
     public function __construct()
     {
+        // merge in our apache headers with $_SERVER (if not already set)
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            foreach ($headers as $header => $value) {
+                $value = trim($value);
+                $index = 'HTTP_' . strtoupper(str_replace('-', '_', trim($header)));
+                if (!isset($_SERVER[$index])) {
+                    $_SERVER[$index] = $value;
+                }
+            }
+        }
+
         if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
             // we have routes for this request method? find the regex pattern to match with, and variables to extract.
             $routes = json_decode(file_get_contents('routes.json'));
