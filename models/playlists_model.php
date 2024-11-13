@@ -182,7 +182,7 @@ class PlaylistsModel extends OBFModel
                     $item['type'] = $item['media_type'];
                 }
 
-                if ($item['type'] == 'image') {
+                if ($item['type'] == 'image' || $item['type'] == 'document') {
                     $item['duration'] = $item['properties']['duration'];
                 }
 

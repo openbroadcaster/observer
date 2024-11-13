@@ -332,9 +332,9 @@ class Playlists extends OBFController
                 // track properties
                 $properties = [];
 
-                // image properties
+                // image properties (also applies to documents)
                 $media = $this->models->media('get_by_id', ['id' => $data['item_id']]);
-                if ($media && $media['type'] == 'image') {
+                if ($media && ($media['type'] == 'image' || $media['type'] == 'document')) {
                     $properties['duration'] = (int) $item['duration'];
                     if ($properties['duration'] <= 0) {
                         $properties['duration'] = 15;
