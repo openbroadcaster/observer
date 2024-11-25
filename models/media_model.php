@@ -1307,6 +1307,44 @@ class MediaModel extends OBFModel
     }
 
     /**
+     * Get or set a media property.
+     *
+     * @param item
+     *
+     * @return id
+     */
+    public function properties($args = [])
+    {
+        OBFHelpers::require_args($args, ['id']);
+        $media_id = $args['id'];
+        $properties = $args['properties'] ?? null;
+
+
+        $this->db->where('id', $media_id);
+        $media = $this->db->get_one('media');
+
+        if (!$media) {
+            return false;
+        }
+
+        if ($properties) {
+            $this->db->where('id', $media_id);
+            return $this->db->update('media', ['properties' => json_encode($properties)]);
+        } else {
+            $properties = $media['properties'];
+
+            if ($properties) {
+                $properties = json_decode($properties, true);
+            } else {
+                $properties = [];
+            }
+
+            return $properties;
+        }
+    }
+
+
+    /**
      * Insert or update a media item.
      *
      * @param item

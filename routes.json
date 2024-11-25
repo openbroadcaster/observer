@@ -76,6 +76,11 @@
             "search"
         ],
         [
+            "/api/v2/media/properties/(:id:)",
+            "media",
+            "get_properties"
+        ],
+        [
             "/api/v2/media/versions/(:media_id:)",
             "media",
             "versions"
@@ -356,6 +361,11 @@
             "/api/v2/media",
             "media",
             "save"
+        ],
+        [
+            "/api/v2/media/properties/(:id:)",
+            "media",
+            "save_properties"
         ],
         [
             "/api/v2/media/versions",

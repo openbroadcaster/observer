@@ -1,6 +1,5 @@
 <ob-tabs>
   <ob-tab data-name="Details">
-
     <div style="display: flex; justify-content: space-between;">
       <div>
         <h1 id="media_heading" data-t>Media Details</h1>
@@ -91,7 +90,6 @@
         </div>
 
       </div>
-
     </fieldset>
   </ob-tab>
   <ob-tab data-name="Where Used">
@@ -100,5 +98,21 @@
       <ul>
       </ul>
     </div>
+  </ob-tab>
+  <ob-tab data-name="Settings">
+    <h1>Media Settings</h1>
+    <div id="media_details_settings_saved" class="obwidget message hidden success" data-type="message">Settings saved.
+    </div>
+    <div class="media_details_settings" hidden data-type="image">
+      <h2>Image Rotate</h2>
+    </div>
+    <div class="media_details_settings" hidden data-type="none">
+      <p>There are currently no settings available for this media type.</p>
+    </div>
+    <fieldset class="media_details_settings_save" hidden>
+      <div class="fieldrow">
+        <button class="add" onclick="OB.MediaDetails.saveSettings()">Save</button>
+      </div>
+    </fieldset>
   </ob-tab>
 </ob-tabs>
