@@ -699,7 +699,7 @@ OB.Sidebar.contextMenuDownload = function (id) {
 };
 
 OB.Sidebar.contextMenuDetailsPage = function (id) {
-    OB.Media.detailsPage(id);
+    OB.MediaDetails.page(id);
 };
 
 OB.Sidebar.contextMenuVersionPage = function (id, title) {

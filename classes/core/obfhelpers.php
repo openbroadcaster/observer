@@ -164,7 +164,7 @@ class OBFHelpers
      * @param width Target width.
      * @param height Target height.
      */
-    public static function image_resize($src, $dst, $width, $height)
+    public static function image_resize($src, $dst, $width, $height, $rotate = 0)
     {
         if (!file_exists($src)) {
             trigger_error('The source file does not exist', E_USER_WARNING);
@@ -208,6 +208,8 @@ class OBFHelpers
         $im->setImageBackgroundColor('white'); // Set white background if necessary
         $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // Remove alpha channel
         $im->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN); // Flatten image
+        $im->rotateImage('white', $rotate);
+
         $im->thumbnailImage($width, $height, true); // Adjust width and height as necessary (maintain aspect ratio)
 
         // Set the image format and apply lossy compression

@@ -386,6 +386,49 @@ class Media extends OBFController
     }
 
     /**
+     * Save additional media properties.
+     *
+     * @param id
+     *
+     * @route POST /v2/media/properties/(:id:)
+     */
+    public function save_properties()
+    {
+        $this->user->require_authenticated();
+
+        $id = $this->data('id');
+        $properties = $this->data('properties');
+
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+
+        // trigger permission failure if can't edit
+        if (!$this->user_can_edit($media)) {
+            $this->user->require_permission('manage_media');
+        }
+
+        $this->models->media('properties', ['id' => $id, 'properties' => $properties]);
+
+        return [true, 'Properties saved.'];
+    }
+
+    /**
+     * Get additional media properties.
+     *
+     * @param id
+     *
+     * @route GET /v2/media/properties/(:id:)
+     */
+    public function get_properties()
+    {
+        $this->user->require_authenticated();
+
+        $id = $this->data('id');
+        $properties = $this->models->media('properties', ['id' => $id]);
+
+        return [true, 'Properties.', $properties];
+    }
+
+    /**
      * Checks that user can manage versions for media item. Does not return true
      * or false, but can throw a permissions error using 'require_permissions'.
      * Private method used by other version methods in this controller.

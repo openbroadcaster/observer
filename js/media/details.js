@@ -18,7 +18,10 @@
 */
 
 // media details page
-OB.Media.detailsPage = function (id) {
+OB.MediaDetails = {};
+OB.MediaDetails.currentId = null;
+OB.MediaDetails.page = function (id) {
+    OB.MediaDetails.currentId = id;
     OB.API.post("media", "get", { id: id, where_used: true }, function (response) {
         if (response.status == false) return;
 
@@ -26,6 +29,26 @@ OB.Media.detailsPage = function (id) {
 
         var item = response.data;
         var used = response.data.where_used.used;
+
+        if (item?.type == "image") {
+            OB.API.post("media", "get_properties", { id: id }, function (propertiesResponse) {
+                const properties = propertiesResponse.data;
+
+                const mediaDetailsSettings = document.querySelector('.media_details_settings[data-type="image"]');
+                mediaDetailsSettings.removeAttribute("hidden");
+                const imageRotate = document.createElement("ob-field-image-rotate");
+                // set class
+                imageRotate.className = "media_details_settings_imagerotate";
+                imageRotate.dataset.edit = "true";
+                imageRotate.dataset.id = item.id;
+                console.log(properties);
+                imageRotate.value = imageRotate.offset = properties?.rotate ?? 0;
+                mediaDetailsSettings.appendChild(imageRotate);
+                document.querySelector(".media_details_settings_save").removeAttribute("hidden");
+            });
+        } else {
+            $('.media_details_settings[data-type="none"]').show();
+        }
 
         // handle buttons
 
@@ -222,4 +245,28 @@ OB.Media.detailsPage = function (id) {
         $("#media_details_table").show();
         $("#media_details_used").show();
     });
+};
+
+OB.MediaDetails.saveSettings = async function () {
+    $("#media_details_settings_saved").hide();
+
+    const rotateField = document.querySelector(".media_details_settings_imagerotate");
+
+    if (rotateField) {
+        const data = {};
+        data.properties = {
+            rotate: rotateField.value,
+        };
+
+        OB.API.post(
+            "media",
+            "save_properties",
+            { id: OB.MediaDetails.currentId, properties: data.properties },
+            function (response) {
+                if (response.status == true) {
+                    $("#media_details_settings_saved").show();
+                }
+            },
+        );
+    }
 };

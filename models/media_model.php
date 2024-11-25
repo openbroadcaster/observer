@@ -243,6 +243,7 @@ class MediaModel extends OBFModel
         $this->db->what('media.status', 'status');
         $this->db->what('media.dynamic_select', 'dynamic_select');
         $this->db->what('users.display_name', 'owner_name');
+        $this->db->what('media.properties', 'properties');
 
         foreach ($args['metadata_fields'] as $metadata_field) {
             // add the field to the select portion of the query
@@ -334,6 +335,13 @@ class MediaModel extends OBFModel
             return false;
         }
 
+        $media_properties = json_decode($media['properties'], true);
+        if ($media_properties && $media_properties['rotate']) {
+            $rotate = $media_properties['rotate'];
+        } else {
+            $rotate = null;
+        }
+
         // first search for a cached version of our resized thumbnail
         $cache_directory = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
         $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
@@ -365,7 +373,7 @@ class MediaModel extends OBFModel
         $output_file = $output_dir . '/' . $media['id'] . '.webp';
 
         // resize our image to a webp thumbnail
-        OBFHelpers::image_resize($input_file, $output_file, 600, 600);
+        OBFHelpers::image_resize($input_file, $output_file, 600, 600, $rotate);
 
         // return our file if it exists now
         if (file_exists($output_file)) {
@@ -374,6 +382,43 @@ class MediaModel extends OBFModel
 
         // failed to create cached thumbnail
         return false;
+    }
+
+    /**
+     * Clear thumbnail cache.
+     *
+     * @param media ID or media row array.
+     */
+    public function thumbnail_clear($args = [])
+    {
+        OBFHelpers::require_args($args, ['media']);
+
+        if (!is_array($args['media'])) {
+            $this->db->where('id', $args['media']);
+            $media = $this->db->get_one('media');
+
+            if (!$media) {
+                return false;
+            }
+        } else {
+            $media = $args['media'];
+        }
+
+        OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
+        if (strlen($media['file_location']) != 2) {
+            trigger_error('Invalid media file location.', E_USER_WARNING);
+            return false;
+        }
+
+        // first search for a cached version of our resized thumbnail
+        $cache_directory = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
+
+        foreach ($thumbnail_files as $thumbnail_file) {
+            unlink($thumbnail_file);
+        }
+
+        return true;
     }
 
     /**
@@ -1305,6 +1350,45 @@ class MediaModel extends OBFModel
 
         return [true,$item['local_id']];
     }
+
+    /**
+     * Get or set a media property.
+     *
+     * @param item
+     *
+     * @return id
+     */
+    public function properties($args = [])
+    {
+        OBFHelpers::require_args($args, ['id']);
+        $media_id = $args['id'];
+        $properties = $args['properties'] ?? null;
+
+
+        $this->db->where('id', $media_id);
+        $media = $this->db->get_one('media');
+
+        if (!$media) {
+            return false;
+        }
+
+        if ($properties) {
+            $this->thumbnail_clear(['media' => $media_id]);
+            $this->db->where('id', $media_id);
+            return $this->db->update('media', ['properties' => json_encode($properties)]);
+        } else {
+            $properties = $media['properties'];
+
+            if ($properties) {
+                $properties = json_decode($properties, true);
+            } else {
+                $properties = [];
+            }
+
+            return $properties;
+        }
+    }
+
 
     /**
      * Insert or update a media item.
