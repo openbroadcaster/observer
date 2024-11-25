@@ -42,7 +42,7 @@ OB.MediaDetails.page = function (id) {
                 imageRotate.dataset.edit = "true";
                 imageRotate.dataset.id = item.id;
                 console.log(properties);
-                imageRotate.value = properties?.rotate ?? 0;
+                imageRotate.value = imageRotate.offset = properties?.rotate ?? 0;
                 mediaDetailsSettings.appendChild(imageRotate);
                 document.querySelector(".media_details_settings_save").removeAttribute("hidden");
             });

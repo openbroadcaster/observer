@@ -3,6 +3,7 @@ import { html, render } from "../vendor.js";
 
 class OBFieldImageRotate extends OBField {
     _value = 0;
+    _offset = 0; // how much the thumbnail is already rotated
 
     async renderEdit() {
         render(
@@ -21,6 +22,8 @@ class OBFieldImageRotate extends OBField {
 
         this.root.querySelector(".controls-left button").addEventListener("click", this.rotateLeft.bind(this));
         this.root.querySelector(".controls-right button").addEventListener("click", this.rotateRight.bind(this));
+
+        this.updateImage();
     }
 
     scss() {
@@ -76,21 +79,38 @@ class OBFieldImageRotate extends OBField {
         `;
     }
 
+    get offset() {
+        return this._offset;
+    }
+
+    set offset(offset) {
+        this._offset = offset;
+        this.updateImage();
+    }
+
     get value() {
         return this._value;
     }
 
     set value(value) {
         this._value = value;
+        this.updateImage();
+    }
+
+    updateImage() {
+        let rotate = (parseInt(this._value) - parseInt(this._offset)) % 360;
+        if (rotate < 0) {
+            rotate += 360;
+        }
 
         const thumbnail = this.root.querySelector("ob-element-thumbnail");
         if (thumbnail) {
-            thumbnail.dataset.rotate = value;
+            thumbnail.dataset.rotate = rotate;
         }
 
         const label = this.root.querySelector(".controls-label");
         if (label) {
-            label.innerText = `${value}°`;
+            label.innerText = `${this._value}°`;
         }
     }
 
