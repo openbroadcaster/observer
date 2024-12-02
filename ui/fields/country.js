@@ -1,31 +1,31 @@
 import { html, render } from "../vendor.js";
 import { OBField } from "../base/field.js";
+import { Api } from "../utils/api.js";
 
 class OBFieldCountry extends OBField {
-    static countries = null;
-
     static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };
 
-    async connected() {
-        if (!OBFieldCountry.countries) {
-            const result = await OB.API.postPromise("metadata", "country_list", {});
+    async _countries() {
+        const result = await Api.request({ endpoint: "metadata/countries", cache: true });
+        if (!result) return {};
 
-            if (!result.status) return false;
-
-            OBFieldCountry.countries = {};
-            for (const country of result.data) {
-                OBFieldCountry.countries[country.country_id] = country.name;
-            }
+        const countries = {};
+        for (const country of result) {
+            countries[country.country_id] = country.name;
         }
+
+        return countries;
     }
 
-    renderEdit() {
+    async renderEdit() {
+        const countries = await this._countries();
+
         render(html`<ob-field-select data-edit></ob-field-select>`, this.root);
         this.fieldSelect = this.root.querySelector("ob-field-select");
-        this.fieldSelect.options = OBFieldCountry.countries;
+        this.fieldSelect.options = countries;
         this.fieldSelect.value = this.value;
 
         if (this.initValue) {
@@ -35,13 +35,9 @@ class OBFieldCountry extends OBField {
         }
     }
 
-    renderView() {
-        render(html`${this.currentCountryName()}`, this.root);
-    }
-
-    async currentCountryName() {
-        await this.initialized;
-        return OBFieldCountry.countries[this.value];
+    async renderView() {
+        const countries = await this._countries();
+        render(html`${countries[this.value]}`, this.root);
     }
 
     get value() {
