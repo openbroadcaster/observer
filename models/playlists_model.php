@@ -786,14 +786,14 @@ class PlaylistsModel extends OBFModel
                 $media_search = $this->models->media('search', ['params' => ['query' => $playlist_item['properties']['query']], 'player_id' => $player_id]);
                 $media_items = $media_search[0] ?? [];
 
-                // Remove items that are already used in dynamic selection, 
+                // Remove items that are already used in dynamic selection,
                 // but allow manually selected items to be used in dynamic selection
-                $media_items = array_filter($media_items, function($media) use ($used_media_ids, $manually_selected_media_ids, $supports, $dayparting_exclude_ids) {
-                    return 
+                $media_items = array_filter($media_items, function ($media) use ($used_media_ids, $manually_selected_media_ids, $supports, $dayparting_exclude_ids) {
+                    return
                         // Not used in any previous selection
-                        !in_array($media['id'], $used_media_ids) && 
+                        !in_array($media['id'], $used_media_ids) &&
                         // Supports the player's media type
-                        in_array($media['type'], $supports) && 
+                        in_array($media['type'], $supports) &&
                         // Not excluded by dayparting
                         array_search($media['id'], $dayparting_exclude_ids) === false;
                 });
@@ -883,13 +883,13 @@ class PlaylistsModel extends OBFModel
                 $media_items = $this->db->assoc_list();
 
                 // remove unsupported and dayparting exclusions
-                $media_items = array_filter($media_items, function($media) use ($supports, $dayparting_exclude_ids) {
-                    return in_array($media['type'], $supports) && 
+                $media_items = array_filter($media_items, function ($media) use ($supports, $dayparting_exclude_ids) {
+                    return in_array($media['type'], $supports) &&
                         array_search($media['id'], $dayparting_exclude_ids) === false;
                 });
 
                 // Remove already used station IDs
-                $media_items = array_filter($media_items, function($media) use (&$used_station_ids) {
+                $media_items = array_filter($media_items, function ($media) use (&$used_station_ids) {
                     return !in_array($media['id'], $used_station_ids);
                 });
 
@@ -900,8 +900,8 @@ class PlaylistsModel extends OBFModel
                     $media_items = $this->db->assoc_list();
 
                     // Re-apply filters after reset
-                    $media_items = array_filter($media_items, function($media) use ($supports, $dayparting_exclude_ids) {
-                        return in_array($media['type'], $supports) && 
+                    $media_items = array_filter($media_items, function ($media) use ($supports, $dayparting_exclude_ids) {
+                        return in_array($media['type'], $supports) &&
                             array_search($media['id'], $dayparting_exclude_ids) === false;
                     });
                 }
@@ -973,30 +973,27 @@ class PlaylistsModel extends OBFModel
         }
 
             // remove or limit crossfade as required
-            foreach ($return as $index => &$item) {
-                // skip if crossfade not set
-                if ($item['type'] != 'media' || !isset($item['crossfade'])) {
-                    continue;
-                }
+        foreach ($return as $index => &$item) {
+            // skip if crossfade not set
+            if ($item['type'] != 'media' || !isset($item['crossfade'])) {
+                continue;
+            }
 
+            // limit crossfade to item/next-item duration
             if (!isset($return[$index + 1])) {
                 $max_crossfade = $item['duration'];
+            } else {
+                $max_crossfade = min($item['duration'], $return[$index + 1]['duration']);
             }
-                // limit crossfade to item/next-item duration
-                if (!isset($return[$index + 1])) {
-                    $max_crossfade = $item['duration'];
-                } else {
-                    $max_crossfade = min($item['duration'], $return[$index + 1]['duration']);
-                }
-                if ($item['crossfade'] > $max_crossfade) {
-                    $item['crossfade'] = $max_crossfade;
-                }
+            if ($item['crossfade'] > $max_crossfade) {
+                $item['crossfade'] = $max_crossfade;
+            }
 
-                // remove if last track or next track not audio
-                if ($index == count($return) - 1 || $return[$index + 1]['media_type'] != 'audio') {
-                    unset($item['crossfade']);
-                }
+            // remove if last track or next track not audio
+            if ($index == count($return) - 1 || $return[$index + 1]['media_type'] != 'audio') {
+                unset($item['crossfade']);
             }
+        }
 
         return $return;
     }
