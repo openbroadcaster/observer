@@ -51,6 +51,10 @@ OB.Media.mediaInfoImport = function (button) {
             $form.find(".title_field").val(OB.Media.media_info[id].comments.title[0]);
         if (typeof OB.Media.media_info[id].comments.comments != "undefined")
             $form.find(".comments_field").val(OB.Media.media_info[id].comments.comments[0]);
+        if(typeof OB.Media.media_info[id].comments.original_release_time != 'undefined')
+            $form.find('.year_field').val(OB.Media.media_info[id].comments.original_release_time[0]);
+        if(typeof OB.Media.media_info[id].comments.year != 'undefined')
+            $form.find('.year_field').val(OB.Media.media_info[id].comments.year[0]);
 
         let id3Comments = OB.Media.media_info[id].comments;
         Object.keys(id3Comments).forEach(function (key) {
