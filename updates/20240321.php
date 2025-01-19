@@ -16,7 +16,8 @@ class OBUpdate20240321 extends OBUpdate
     public function run()
     {
         // Add metadata columns to media table directly.
-        $metadataColumns = $this->models->mediametadata('get_all');
+        $this->db->query('SELECT * FROM media_metadata_columns');
+        $metadataColumns = $this->db->assoc_list();
         foreach ($metadataColumns as $metadataColumn) {
             switch ($metadataColumn['type']) {
                 case 'text':
