@@ -11,7 +11,9 @@ class OBFieldInputDevice extends OBField {
     #showDetailed;
     #showVideo;
 
-    async connectedCallback() {
+    #noPermission;
+
+    async connected() {
         if (this.#init) {
             return;
         }
@@ -27,21 +29,27 @@ class OBFieldInputDevice extends OBField {
             this.#showVideo = true;
         }
 
-        await navigator.mediaDevices.getUserMedia({ audio: true });
-        await this.#refreshDevices();
-        navigator.mediaDevices.ondevicechange = (event) => {
-            this.#refreshDevices();
-        };
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            console.log(stream);
+            stream.getTracks().forEach((track) => track.stop());
+            await this.#refreshDevices();
+            navigator.mediaDevices.ondevicechange = (event) => {
+                this.#refreshDevices();
+            };
 
-        this.renderComponent().then(() => {
-            if (this.#initAudio) {
-                this.audio = this.#initAudio;
-            }
+            this.renderComponent().then(() => {
+                if (this.#initAudio) {
+                    this.audio = this.#initAudio;
+                }
 
-            if (this.#initVideo) {
-                this.video = this.#initVideo;
-            }
-        });
+                if (this.#initVideo) {
+                    this.video = this.#initVideo;
+                }
+            });
+        } catch {
+            this.#noPermission = true;
+        }
     }
 
     async #refreshDevices() {
@@ -61,7 +69,16 @@ class OBFieldInputDevice extends OBField {
         this.renderComponent();
     }
 
+    renderNotAvailable() {
+        render(html`<div>Microphone permission not available.</div>`, this.root);
+    }
+
     renderEdit() {
+        if (this.#noPermission) {
+            this.renderNotAvailable();
+            return;
+        }
+
         render(
             html`
                 <div id="audio-input" class="${this.#showDetailed}">
@@ -89,7 +106,13 @@ class OBFieldInputDevice extends OBField {
     }
 
     renderView() {
-        render(html` <div>todo</div> `, this.root);
+        if (this.#noPermission) {
+            this.renderNotAvailable();
+            return;
+        }
+
+        // TODO?
+        render(html`<div></div> `, this.root);
     }
 
     scss() {
