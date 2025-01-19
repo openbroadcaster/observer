@@ -16,17 +16,18 @@
   {
     display: block;
     position: absolute;
-    bottom: -9999px;
+    bottom: 35px;
     z-index: 20000;
     opacity: 0;
-    transition: opacity 0.2s;
+    transition: opacity 0.1s;
     padding: 10px 0;
+    pointer-events: none;
   }
   
   li:hover ul 
   {
     opacity: 1;
-    bottom: 30px;
+    pointer-events: auto;
   }
 
   li li {
