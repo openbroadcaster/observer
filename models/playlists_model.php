@@ -722,6 +722,13 @@ class PlaylistsModel extends OBFModel
         $used_ids = [];
         $used_ids_stationid = [];
 
+        // add our static media items to our used IDs right away
+        foreach ($playlist_items as $playlist_item) {
+            if ($playlist_item['item_type'] == 'media') {
+                $used_ids[] = $playlist_item['item_id'];
+            }
+        }
+
         // track items to return
         $return = [];
 
@@ -772,7 +779,6 @@ class PlaylistsModel extends OBFModel
                         }
                     }
                     $media_items_tmp[] = $tmp;
-                    $used_ids[] = $tmp['id'];
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {
                 // dynamic item
