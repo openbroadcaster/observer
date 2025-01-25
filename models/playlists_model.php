@@ -697,6 +697,7 @@ class PlaylistsModel extends OBFModel
             $supports = ['audio','video','image','document'];
         }
 
+
         // TODO currently no player support for documents, but will be doing this at some point.
         $support_document = $player_id ? false : true;
 
@@ -718,17 +719,14 @@ class PlaylistsModel extends OBFModel
         $this->db->where('playlist_id', $playlist_id);
         $this->db->orderby('ord');
         $playlist_items = $this->db->get('playlists_items');
+        $used_ids = [];
+        $used_ids_stationid = [];
 
         // track items to return
         $return = [];
 
         // track offset for max duration
         $media_offset = 0.0;
-
-        // Global tracking of used media IDs across all selection types
-        $used_media_ids = [];
-        $used_station_ids = [];
-        $manually_selected_media_ids = []; // Track manually selected media separately
 
         foreach ($playlist_items as $playlist_item) {
             if ($playlist_item['properties']) {
@@ -748,7 +746,6 @@ class PlaylistsModel extends OBFModel
                 }
 
                 if ($media) {
-                    // Manually selected media is always allowed, even if previously used
                     $tmp = ['type' => 'media','id' => $playlist_item['item_id'], 'title' => $media['title'], 'artist' => $media['artist']];
                     if ($media['type'] == 'image') {
                         $tmp['duration'] = $playlist_item['properties']['duration'];
@@ -775,8 +772,7 @@ class PlaylistsModel extends OBFModel
                         }
                     }
                     $media_items_tmp[] = $tmp;
-                    $manually_selected_media_ids[] = $playlist_item['item_id'];
-                    $used_media_ids[] = $playlist_item['item_id'];
+                    $used_ids[] = $tmp['id'];
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {
                 // dynamic item
@@ -786,27 +782,43 @@ class PlaylistsModel extends OBFModel
                 $media_search = $this->models->media('search', ['params' => ['query' => $playlist_item['properties']['query']], 'player_id' => $player_id]);
                 $media_items = $media_search[0] ?? [];
 
-                // Remove items that are already used in dynamic selection,
-                // but allow manually selected items to be used in dynamic selection
-                $media_items = array_filter($media_items, function ($media) use ($used_media_ids, $manually_selected_media_ids, $supports, $dayparting_exclude_ids) {
+                // remove unsupported and dayparting exclusions
+                // foreach ($media_items as $index => $media_item) {
+                //     if (array_search($media_item['id'], $dayparting_exclude_ids) !== false) {
+                //         unset($media_items[$index]);
+                //     }
+                //     if (!in_array($media_item['type'], $supports)) {
+                //         unset($media_items[$index]);
+                //     }
+                // }
+
+                // remove unsupported and dayparting exclusions
+                $media_items = array_filter($media_items, function ($media_item) use ($supports, $dayparting_exclude_ids) {
                     return
-                        // Not used in any previous selection
-                        !in_array($media['id'], $used_media_ids) &&
-                        // Supports the player's media type
-                        in_array($media['type'], $supports) &&
-                        // Not excluded by dayparting
-                        array_search($media['id'], $dayparting_exclude_ids) === false;
+                        !in_array($media_item['id'], $dayparting_exclude_ids) &&
+                        in_array($media_item['type'], $supports);
                 });
 
-                // Reset used media IDs if all unique items have been exhausted
-                if (empty($media_items)) {
-                    $media_search = $this->models->media('search', ['params' => ['query' => $playlist_item['properties']['query']], 'player_id' => $player_id]);
-                    $media_items = $media_search[0] ?? [];
-                    $used_media_ids = array_diff($used_media_ids, $manually_selected_media_ids); // Keep manually selected media IDs
+                // get a list of items in our search set that have already been used
+                $media_item_duplicates = array_filter($media_items, function ($media_item) use ($used_ids) {
+                    return in_array($media_item['id'], $used_ids);
+                });
+
+                // remove items that have already been used
+                $media_items = array_filter($media_items, function ($media_item) use ($used_ids) {
+                    return !in_array($media_item['id'], $used_ids);
+                });
+
+                if ($playlist_item['properties']['num_items']) {
+                    // if we don't have enough items, add duplicates back in randomly until we do (or until we run out of duplicates)
+                    shuffle($media_item_duplicates);
+                    while (count($media_items) < $playlist_item['properties']['num_items'] && count($media_item_duplicates) > 0) {
+                        $media_items[] = array_pop($media_item_duplicates);
+                    }
                 }
 
                 if (!empty($media_items)) {
-                    // we keep searching until we have enough items
+                    // we keep searching until we have enough items.  this allows randomization, but will not have two of the same tracks playing nearby each other.
                     if ($playlist_item['properties']['num_items']) {
                         while (count($dynamic_items) < $playlist_item['properties']['num_items']) {
                             // randomize our items
@@ -823,7 +835,7 @@ class PlaylistsModel extends OBFModel
                                 $tmp['media_type'] = $media['type'];
                                 $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
                                 $dynamic_items[] = $tmp;
-                                $used_media_ids[] = $media['id'];
+                                $used_ids[] = $tmp['id'];
 
                                 // end loop if we have enough items
                                 if (count($dynamic_items) >= $playlist_item['properties']['num_items']) {
@@ -846,7 +858,7 @@ class PlaylistsModel extends OBFModel
                             $tmp['media_type'] = $media['type'];
                             $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
                             $dynamic_items[] = $tmp;
-                            $used_media_ids[] = $media['id'];
+                            $used_ids[] = $tmp['id'];
                         }
                     }
                 }
@@ -883,26 +895,33 @@ class PlaylistsModel extends OBFModel
                 $media_items = $this->db->assoc_list();
 
                 // remove unsupported and dayparting exclusions
+                // foreach ($media_items as $index => $media) {
+                //     if (array_search($media['id'], $dayparting_exclude_ids) !== false) {
+                //         unset($media_items[$index]);
+                //     }
+                //     if (!in_array($media['type'], $supports)) {
+                //         unset($media_items[$index]);
+                //     }
+                // }
+
+                // remove unsupported and dayparting exclusions
                 $media_items = array_filter($media_items, function ($media) use ($supports, $dayparting_exclude_ids) {
-                    return in_array($media['type'], $supports) &&
-                        array_search($media['id'], $dayparting_exclude_ids) === false;
+                    return
+                        !in_array($media['id'], $dayparting_exclude_ids) &&
+                        in_array($media['type'], $supports);
                 });
 
-                // Remove already used station IDs
-                $media_items = array_filter($media_items, function ($media) use (&$used_station_ids) {
-                    return !in_array($media['id'], $used_station_ids);
+                $media_items_duplicates = array_filter($media_items, function ($media) use ($used_ids_stationid) {
+                    return in_array($media['id'], $used_ids_stationid);
                 });
 
-                // Reset used station IDs if all unique items have been exhausted
-                if (empty($media_items)) {
-                    $used_station_ids = [];
-                    $this->db->query('SELECT media.* FROM players_station_ids LEFT JOIN media ON players_station_ids.media_id = media.id WHERE player_id="' . $this->db->escape($station_id_player) . '";');
-                    $media_items = $this->db->assoc_list();
-
-                    // Re-apply filters after reset
-                    $media_items = array_filter($media_items, function ($media) use ($supports, $dayparting_exclude_ids) {
-                        return in_array($media['type'], $supports) &&
-                            array_search($media['id'], $dayparting_exclude_ids) === false;
+                // if media items are all duplicates, reset the used_ids_stationid array. otherwise, remove duplicates.
+                if (count($media_items) == count($media_items_duplicates)) {
+                    $used_ids_stationid = [];
+                } else {
+                    // remove items that have already been used
+                    $media_items = array_filter($media_items, function ($media) use ($used_ids_stationid) {
+                        return !in_array($media['id'], $used_ids_stationid);
                     });
                 }
 
@@ -927,12 +946,12 @@ class PlaylistsModel extends OBFModel
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Station ID';
                     $media_items_tmp[] = $tmp;
-                    $used_station_ids[] = $media['id'];
+                    $used_ids_stationid = $tmp['id'];
                 }
             } elseif ($playlist_item['item_type'] == 'breakpoint') {
                 $media_items_tmp[] = ['type' => 'breakpoint'];
             } elseif ($playlist_item['item_type'] == 'custom') {
-                    // get the callback model/method in order for this custom item, add media items specified by the callback method.
+                // get the callback model/method in order for this custom item, add media items specified by the callback method.
                 $custom_item_query = $playlist_item['properties'];
                 $custom_item_name = $custom_item_query['name'] ?? '';
                 $this->db->where('name', $custom_item_name);
@@ -963,16 +982,16 @@ class PlaylistsModel extends OBFModel
                 }
             }
 
-            // Add items to return
+            // add our media items from this run to our complete set of media items.
             $return = array_merge($return, $media_items_tmp);
 
-            // Check max duration
-            if ($max_duration !== null && $media_offset > $max_duration) {
+            // break out of loop if we've met our max duration
+            if ($max_duration && $media_offset >= $max_duration) {
                 break;
             }
         }
 
-            // remove or limit crossfade as required
+        // remove or limit crossfade as required
         foreach ($return as $index => &$item) {
             // skip if crossfade not set
             if ($item['type'] != 'media' || !isset($item['crossfade'])) {
