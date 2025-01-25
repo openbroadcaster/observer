@@ -946,7 +946,7 @@ class PlaylistsModel extends OBFModel
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Station ID';
                     $media_items_tmp[] = $tmp;
-                    $used_ids_stationid = $tmp['id'];
+                    $used_ids_stationid[] = $tmp['id'];
                 }
             } elseif ($playlist_item['item_type'] == 'breakpoint') {
                 $media_items_tmp[] = ['type' => 'breakpoint'];
