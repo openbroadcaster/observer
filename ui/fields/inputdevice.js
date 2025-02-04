@@ -31,7 +31,6 @@ class OBFieldInputDevice extends OBField {
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            console.log(stream);
             stream.getTracks().forEach((track) => track.stop());
             await this.#refreshDevices();
             navigator.mediaDevices.ondevicechange = (event) => {
@@ -118,7 +117,7 @@ class OBFieldInputDevice extends OBField {
     scss() {
         return `
             :host {
-                display: inline-block; 
+                display: inline-block;
                 max-width: 100%;
 
                 #audio-input, #video-input {
