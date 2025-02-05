@@ -14,7 +14,7 @@ class OBFieldGenre extends OBField {
         neq: "is not",
     };
 
-    async connectedCallback() {
+    async connected() {
         if (this.#init) {
             return;
         }
