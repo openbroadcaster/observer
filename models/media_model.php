@@ -2362,10 +2362,11 @@ class MediaModel extends OBFModel
         $this->db->where('name', 'document_formats');
         $document = $this->db->get_one('settings');
 
-        $return['audio_formats'] = $audio ? explode(',', $audio['value']) : [];
-        $return['video_formats'] = $video ? explode(',', $video['value']) : [];
-        $return['image_formats'] = $image ? explode(',', $image['value']) : [];
-        $return['document_formats'] = $document ? explode(',', $document['value']) : [];
+        // TODO need for "trim" check here indicates a problem somewhere (db value had single space rather than empty string)
+        $return['audio_formats'] = $audio && trim($audio['value']) ? explode(',', $audio['value']) : [];
+        $return['video_formats'] = $video && trim($video['value']) ? explode(',', $video['value']) : [];
+        $return['image_formats'] = $image && trim($image['value']) ? explode(',', $image['value']) : [];
+        $return['document_formats'] = $document && trim($document['value']) ? explode(',', $document['value']) : [];
 
         return $return;
     }
