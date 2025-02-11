@@ -3,29 +3,31 @@ import { OBField } from "../base/field.js";
 import { Api } from "../utils/api.js";
 
 class OBFieldCountry extends OBField {
+    // Countries are common to all instances of this element.
+    static countries = null;
+
     static comparisonOperators = {
         eq: "is",
         neq: "is not",
     };
 
-    async _countries() {
-        const result = await Api.request({ endpoint: "metadata/countries", cache: true });
-        if (!result) return {};
+    async connected() {
+        if (OBFieldCountry.countries === null) {
+            OBFieldCountry.countries = {};
 
-        const countries = {};
-        for (const country of result) {
-            countries[country.country_id] = country.name;
+            const result = await Api.request({ endpoint: "metadata/countries", cache: true });
+            if (!result) return {};
+
+            for (const country of result) {
+                OBFieldCountry.countries[country.country_id] = country.name;
+            }
         }
-
-        return countries;
     }
 
     async renderEdit() {
-        const countries = await this._countries();
-
         render(html`<ob-field-select data-edit></ob-field-select>`, this.root);
         this.fieldSelect = this.root.querySelector("ob-field-select");
-        this.fieldSelect.options = countries;
+        this.fieldSelect.options = OBFieldCountry.countries;
         this.fieldSelect.value = this.value;
 
         if (this.initValue) {
@@ -36,8 +38,11 @@ class OBFieldCountry extends OBField {
     }
 
     async renderView() {
-        const countries = await this._countries();
-        render(html`${countries[this.value]}`, this.root);
+        render(html`${OBFieldCountry.countries[this.value]}`, this.root);
+    }
+
+    currentCountryName() {
+        return OBFieldCountry.countries[this.value];
     }
 
     get value() {
