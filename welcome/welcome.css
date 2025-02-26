@@ -10,7 +10,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
-  /*background: linear-gradient(to top left, #262226, #424163, #1d1b14);*/
+  background: linear-gradient(to top left, #262226, #424163, #1d1b14);
   line-height: 1.33;
   font-family: "Open Sans", sans-serif;
   min-width: 1100px;
@@ -20,13 +20,13 @@ body::before {
   content: "";
   position: fixed;
   bottom: 0;
-  /*left: -100px;
-  width: 100%;*/
-  min-width: 3800px;
-  height: 100%;
-  background-image: url("../welcome/Frostbyte_House_1920x1080.jpg");
-  background-size: cover;
-  background-position: center;
+  left: -100px;
+  width: 100%;
+  min-width: 1100px;
+  height: calc(100% - 100px);
+  background-image: url("../themes/openbroadcaster/svg/logo4e.svg");
+  background-size: contain;
+  background-position: bottom left;
   background-repeat: no-repeat;
 }
 
@@ -37,7 +37,6 @@ body::before {
   color: #fff;
   position: relative;
   text-align: center;
-  border-radius: 8px;
 }
 
 h1 {
@@ -80,6 +79,7 @@ form input[type=submit], form input[type=button], form button {
 }
 form input[type=text], form input[type=email], form input[type=password] {
   border: 1px solid transparent;
+  box-shadow: 0 0 0 40px white inset;
 }
 form input[type=text]:focus, form input[type=email]:focus, form input[type=password]:focus {
   outline: 0;
