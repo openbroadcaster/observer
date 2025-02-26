@@ -92,7 +92,11 @@ class Upload extends OBFController
 
         // make sure not too big. filesize limit in MB, default 1024.
         if (($realSize / 1024 / 1024) > OB_MEDIA_FILESIZE_LIMIT) {
-            echo json_encode(['error' => 'File too large (max size 1GB).']);
+            if (OB_MEDIA_FILESIZE_LIMIT > 1000) {
+                echo json_encode(['error' => 'File too large (max size ' . round(OB_MEDIA_FILESIZE_LIMIT / 1024, 1) . 'GB).']);
+            } else {
+                echo json_encode(['error' => 'File too large (max size ' . OB_MEDIA_FILESIZE_LIMIT . 'MB).']);
+            }
             unlink(OB_ASSETS . '/uploads/' . $id);
             return;
         }
