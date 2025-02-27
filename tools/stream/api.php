@@ -58,8 +58,8 @@ $db->what('media.artist');
 $db->what('media.title');
 $db->what('media.album');
 $db->what('media.year');
-$db->what('media.language_id');
-$db->what('media_languages.name', 'language_name');
+$db->what('media.language');
+$db->what('languages.ref_name', 'language_name');
 $db->what('media.category_id');
 $db->what('media_categories.name', 'category_name');
 $db->what('media.genre_id');
@@ -97,7 +97,7 @@ if ($limit) {
 // the rest
 $db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
 $db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
-$db->leftjoin('media_languages', 'media.language_id', 'media_languages.id');
+$db->leftjoin('languages', 'media.language', 'languages.language_id');
 $db->leftjoin('countries', 'media.country', 'countries.country_id');
 $db->calc_found_rows();
 $media = $db->get('media');
@@ -134,7 +134,7 @@ foreach ($media as $item) {
     'title' => $item['title'],
     'album' => $item['album'],
     'year' => $item['year'],
-    'language_id' => $item['language_id'],
+    'language_id' => $item['language'],
     'language_name' => $item['language_name'],
     'category_id' => $item['category_id'],
     'category_name' => $item['category_name'],
