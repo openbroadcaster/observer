@@ -80,7 +80,7 @@ class OBElementPreview extends OBElement {
                 <div id="preview" class="${sidebarLeft && "-flipped"}">
                     <div id="drag">
                         ${this.#itemType === "audio" || this.#itemType === "video"
-                            ? html` <video-js></video-js> `
+                            ? html`<video-js></video-js> `
                             : html``}
                         ${this.#itemType === "image" || this.#itemType === "document"
                             ? html`
@@ -131,24 +131,39 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             let elem = this;
             let mediaId = this.#queue[this.#itemId].id;
+            let stream = JSON.parse(this.#queue[this.#itemId].stream);
+            let captions = JSON.parse(this.#queue[this.#itemId].captions);
+            let thumbnail = this.#queue[this.#itemId].thumbnail;
             let poster = null;
 
-            const blob = await OB.API.request({
-                endpoint: "downloads/media/" + mediaId + "/thumbnail/",
-                raw: true,
-            });
+            let blob = false;
+            if (thumbnail) {
+                blob = await OB.API.request({
+                    endpoint: "downloads/media/" + mediaId + "/thumbnail/",
+                    raw: true,
+                });
+            }
             if (blob) {
                 poster = URL.createObjectURL(blob);
             } else {
                 poster = "/images/circle.svg";
             }
 
-            // get media file
-            const mediaBlob = await OB.API.request({
-                endpoint: "downloads/media/" + mediaId + "/preview/",
-                raw: true,
-            });
-            const mediaUrl = URL.createObjectURL(mediaBlob);
+            // TODO
+            // test audio and video streams
+            // make sure it works when no stream available (default to direct download?)
+            // add captions when stream
+
+            let mediaUrl = stream;
+            if (!stream) {
+                console.log("creating url");
+                const mediaBlob = await OB.API.request({
+                    endpoint: "downloads/media/" + mediaId + "/preview/",
+                    raw: true,
+                });
+                const mediaUrl = URL.createObjectURL(mediaBlob);
+                console.log("created url");
+            }
 
             switch (this.#itemType) {
                 case "audio":
@@ -165,7 +180,7 @@ class OBElementPreview extends OBElement {
                         });
                     });
 
-                    this.#videojsPlayer.src({ type: "audio/mpeg", src: mediaUrl });
+                    this.#videojsPlayer.src({ type: stream ? "application/x-mpegURL" : "audio/mpeg", src: mediaUrl });
 
                     this.#videojsPlayer.on("dispose", function () {
                         URL.revokeObjectURL(mediaUrl);
@@ -173,11 +188,24 @@ class OBElementPreview extends OBElement {
 
                     break;
                 case "video":
-                    this.#videojsPlayer = videojs(videoElem, {
+                    const videoJsOptions = {
                         controls: true,
                         preload: "auto",
                         poster: poster,
-                    });
+                    };
+
+                    if (captions) {
+                        videoJsOptions.tracks = [
+                            {
+                                src: captions,
+                                kind: "subtitles",
+                                srclang: "en",
+                                label: "English",
+                            },
+                        ];
+                    }
+
+                    this.#videojsPlayer = videojs(videoElem, videoJsOptions);
 
                     this.#videojsPlayer.ready(function () {
                         this.on("ended", function () {
@@ -185,7 +213,7 @@ class OBElementPreview extends OBElement {
                         });
                     });
 
-                    this.#videojsPlayer.src({ type: "video/mp4", src: mediaUrl });
+                    this.#videojsPlayer.src({ type: stream ? "application/x-mpegURL" : "video/mp4", src: mediaUrl });
 
                     this.#videojsPlayer.on("dispose", function () {
                         URL.revokeObjectURL(mediaUrl);
@@ -325,11 +353,15 @@ class OBElementPreview extends OBElement {
                     return;
                 }
 
+                console.log(item.dataset);
+
                 let queueItem = {
                     id: item.dataset.id,
                     type: item.dataset.type,
                     title: item.dataset.title,
                     artist: item.dataset.artist,
+                    stream: item.dataset.stream,
+                    captions: item.dataset.captions,
                 };
 
                 if (item.dataset.type === "image") {

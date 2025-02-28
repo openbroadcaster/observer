@@ -518,6 +518,18 @@ OB.Sidebar.mediaSearch = function (more) {
 
                     $("#sidebar_search_media_result_" + media[i]["id"]).attr("data-owner_id", media[i]["owner_id"]);
                     $("#sidebar_search_media_result_" + media[i]["id"]).attr("data-can_edit", media[i]["can_edit"]);
+                    $("#sidebar_search_media_result_" + media[i]["id"]).attr(
+                        "data-stream",
+                        JSON.stringify(media[i]["stream"]),
+                    );
+                    $("#sidebar_search_media_result_" + media[i]["id"]).attr(
+                        "data-captions",
+                        JSON.stringify(media[i]["captions"]),
+                    );
+                    $("#sidebar_search_media_result_" + media[i]["id"]).attr(
+                        "data-thumbnail",
+                        JSON.stringify(media[i]["thumbnail"]),
+                    );
 
                     if (media[i]["is_archived"] == 1)
                         $("#sidebar_search_media_result_" + media[i]["id"]).attr("data-status", "archived");
@@ -673,9 +685,6 @@ OB.Sidebar.mediaSearch = function (more) {
                 // new draggable attribute
                 document.querySelectorAll(".sidebar_search_media_result").forEach((element) => {
                     element.setAttribute("draggable", "true");
-                    element.addEventListener("dragstart", function (e) {
-                        console.log("Dragging test");
-                    });
                 });
 
                 OB.Layout.tableFixedHeaders($("#sidebar_search_media_headings"), $("#sidebar_search_media_results"));
@@ -1015,9 +1024,6 @@ OB.Sidebar.playlistSearch = function (more) {
                 // new draggable attribute
                 document.querySelectorAll(".sidebar_search_playlist_result").forEach((element) => {
                     element.setAttribute("draggable", "true");
-                    element.addEventListener("dragstart", function (e) {
-                        console.log("Dragging test");
-                    });
                 });
 
                 OB.Layout.tableFixedHeaders(

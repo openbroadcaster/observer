@@ -215,6 +215,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['metadata_fields']);
 
         $this->db->what('media.id', 'id');
+        $this->db->what('media.stream_version');
         $this->db->what('media.title', 'title');
         $this->db->what('media.artist', 'artist');
         $this->db->what('media.album', 'album');
@@ -663,6 +664,47 @@ class MediaModel extends OBFModel
     }
 
     /**
+     * Get captions URL for media item
+     *
+     * @param media
+     *
+     * @return captions_url
+     */
+    public function captions_url($media)
+    {
+        $id = $media['id'];
+
+        if (file_exists("tools/stream/captions/$id.vtt")) {
+            return "tools/stream/captions/$id.vtt";
+        }
+        return false;
+    }
+
+    /**
+     * Get stream URL for media item.
+     *
+     * @param media
+     *
+     * @return stream_url
+     */
+    public function stream_url($media)
+    {
+        if ($media['type'] == 'video') {
+            $path = 'streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '/' . '/prog_index.m3u8';
+        } elseif ($media['type'] == 'audio') {
+            $path = 'streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '/' . 'audio.m3u8';
+        } else {
+            return false;
+        }
+
+        if ($media['stream_version'] && defined('OB_STREAM_API') && OB_STREAM_API) {
+            return '/' . $path;
+        }
+
+        return false;
+    }
+
+    /**
      * Search media items.
      *
      * @param params
@@ -741,7 +783,16 @@ class MediaModel extends OBFModel
         if ($params['query']['mode'] == 'simple') {
             $params['query']['string'] = trim($params['query']['string']);
             if ($params['query']['string'] !== '') {
-                $where_array[] = '(artist like "%' . $this->db->escape($params['query']['string']) . '%" or title like "%' . $this->db->escape($params['query']['string']) . '%")';
+                $simple_search_where = [];
+                $simple_search_where[] = 'artist like "%' . $this->db->escape($params['query']['string']) . '%"';
+                $simple_search_where[] = 'title like "%' . $this->db->escape($params['query']['string']) . '%"';
+
+                // if only numbers, also search id
+                if (is_numeric($params['query']['string'])) {
+                    $simple_search_where[] = 'media.id = "' . $this->db->escape($params['query']['string']) . '"';
+                }
+
+                $where_array[] = '(' . implode(' OR ', $simple_search_where) . ')';
             }
             if (isset($params['default_filters'])) {
                 if (!$this->search_filters_validate(['filters' => $params['default_filters']])) {
@@ -820,6 +871,8 @@ class MediaModel extends OBFModel
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = $item['thumbnail'];
+                $item['stream'] = $this('stream_url', $item);
+                $item['captions'] = $this('captions_url', $item);
 
                 // get metadata objects to run the media through processRow
                 foreach ($metadata_fields as $metadata_field) {
@@ -863,6 +916,8 @@ class MediaModel extends OBFModel
             foreach ($items as &$item) {
                 $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
                 $item['stream_thumbnail'] = $item['thumbnail'];
+                $item['stream'] = $this('stream_url', $item);
+                $item['captions'] = $this('captions_url', $item);
 
                 // get metadata objects to run the media through processRow
                 foreach ($metadata_fields as $metadata_field) {
