@@ -34,6 +34,34 @@ class Downloads extends OBFController
         $this->io = OBFIO::get_instance();
     }
 
+    // send direct with server (if possible) to avoid keeping PHP proecss open, memory limit issues, etc.
+    private function sendfile($file, $type = null, $download = false)
+    {
+        if ($download) {
+            $type = 'application/octet-stream';
+            header("Access-Control-Allow-Origin: *");
+            header('Content-Description: File Transfer');
+            header("Content-Transfer-Encoding: binary");
+        }
+
+        if (!$type) {
+            $type = mime_content_type($file);
+        }
+
+        header('Content-Type: ' . $type);
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Content-Length: ' . filesize($file));
+
+        if (OB_SENDFILE_HEADER) {
+            header(OB_SENDFILE_HEADER . ': ' . $file);
+            die();
+        } else {
+            readfile($file);
+        }
+
+        die();
+    }
+
     private function media_file($media)
     {
         if ($media['is_archived'] == 1) {
@@ -190,8 +218,6 @@ class Downloads extends OBFController
             if (!file_exists($cache_file)) {
                 $this->error(OB_ERROR_SERVER);
             }
-
-            header('Content-Type: audio/mpeg');
         } else {
             // video preview transcode
             $cache_file = $cache_dir . '/' . $media['id'] . '.mp4';
@@ -208,12 +234,9 @@ class Downloads extends OBFController
             if (!file_exists($cache_file)) {
                 $this->error(OB_ERROR_SERVER);
             }
-
-            header('Content-Type: video/mp4');
         }
-        header('Content-Length: ' . filesize($cache_file));
-        $fp = fopen($cache_file, 'rb');
-        fpassthru($fp);
+
+        $this->sendfile($cache_file);
     }
 
     /**
@@ -247,10 +270,7 @@ class Downloads extends OBFController
         if (!$file || !file_exists($file)) {
             $this->error(OB_ERROR_NOTFOUND);
         } else {
-            $mime = mime_content_type($file);
-            $contents = file_get_contents($file);
-            header('Content-Type: ' . $mime);
-            echo $contents;
+            $this->sendfile($file);
         }
     }
 
@@ -266,14 +286,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        header("Access-Control-Allow-Origin: *");
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header("Content-Transfer-Encoding: binary");
-        header("Content-Length: " . filesize($fullpath));
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-
-        readfile($fullpath);
+        $this->sendfile($fullpath, null, true);
 
         // don't want any more output after outputting file
         die();

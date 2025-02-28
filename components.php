@@ -45,6 +45,17 @@ if (!defined('OB_LOCAL')) {
 // use same working directory regardless of where our script is.
 chdir(OB_LOCAL);
 
+// set appropriate SENDFILE header based on server
+if (!defined('OB_SENDFILE_HEADER')) {
+    if (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+        define('OB_SENDFILE_HEADER', 'X-Sendfile');
+    } elseif (strpos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
+        define('OB_SENDFILE_HEADER', 'X-Accel-Redirect');
+    } else {
+        define('OB_SENDFILE_HEADER', false);
+    }
+}
+
 // load config
 if (!file_exists('config.php')) {
     die('Settings file (config.php) not found.');
