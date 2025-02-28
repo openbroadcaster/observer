@@ -47,9 +47,9 @@ chdir(OB_LOCAL);
 
 // set appropriate SENDFILE header based on server
 if (!defined('OB_SENDFILE_HEADER')) {
-    if (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+    if (strpos($_SERVER['SERVER_SOFTWARE'] ?? null, 'Apache') !== false) {
         define('OB_SENDFILE_HEADER', 'X-Sendfile');
-    } elseif (strpos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
+    } elseif (strpos($_SERVER['SERVER_SOFTWARE'] ?? null, 'nginx') !== false) {
         define('OB_SENDFILE_HEADER', 'X-Accel-Redirect');
     } else {
         define('OB_SENDFILE_HEADER', false);
