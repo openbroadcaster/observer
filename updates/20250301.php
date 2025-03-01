@@ -19,6 +19,10 @@ class OBUpdate20250301 extends OBUpdate
             ALTER TABLE users_nonces ADD COLUMN delete_after_use BOOLEAN NOT NULL DEFAULT 1;
         ');
 
+        $this->db->query('
+            ALTER TABLE users_nonces ADD COLUMN scope VARCHAR(255) NULL DEFAULT NULL;
+        ');
+
         echo $this->db->error();
 
         return true;
