@@ -350,9 +350,8 @@ class OBFUser
     public function auth_nonce($nonce)
     {
         // check if nonce valid (and get user_id from nonce)
-        $this->db->where('nonce', $nonce);
-        $this->db->where('created', time() - 60, '>'); // max age 60s
-        $nonce = $this->db->get_one('users_nonces');
+        $this->db->query('SELECT * FROM users_nonces WHERE nonce = "' . $this->db->escape($nonce) . '" AND DATE_ADD(created, INTERVAL expiry SECOND) > NOW()');
+        $nonce = current($this->db->assoc_list());
 
         if (!$nonce) {
             return false;
@@ -361,8 +360,10 @@ class OBFUser
         $this->set_user($nonce['user_id']);
 
         // remove nonce
-        $this->db->where('id', $nonce['id']);
-        $this->db->delete('users_nonces');
+        if ($nonce['delete_after_use']) {
+            $this->db->where('id', $nonce['id']);
+            $this->db->delete('users_nonces');
+        }
 
         return true;
     }
@@ -543,7 +544,7 @@ class OBFUser
     /**
      * Create a nonce for the current user.
      */
-    public function create_nonce()
+    public function create_nonce($expiry_seconds = null, $delete_after_use = null)
     {
         if (!$this->param('id')) {
             return false;
@@ -551,10 +552,20 @@ class OBFUser
 
         $nonce = $this->random_key();
 
-        $this->db->insert('users_nonces', [
+        $data = [
             'user_id' => $this->param('id'),
             'nonce' => $nonce
-        ]);
+        ];
+
+        if ($expiry !== null) {
+            $data['expiry'] = $expiry_seconds;
+        }
+
+        if ($delete_after_use === false) {
+            $data['delete_after_use'] = 0;
+        }
+
+        $this->db->insert('users_nonces', $data);
 
         return $nonce;
     }

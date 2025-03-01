@@ -15,8 +15,8 @@ class CleanNonce extends Cron
     {
         $db = \OBFDB::get_instance();
 
-        // remove from users_nonces where created is older than 1 hour
-        $db->query('DELETE FROM users_nonces where created < "' . date('Y-m-d H:i:s', strtotime('-1 hour')) . '"');
+        // remove expired tokens
+        $db->query('DELETE FROM users_nonces WHERE DATE_ADD(created, INTERVAL expiry SECOND) < NOW()');
 
         return true;
     }
