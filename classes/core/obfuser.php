@@ -347,13 +347,18 @@ class OBFUser
     /**
      * Authorize via a nonce.
      */
-    public function auth_nonce($nonce)
+    public function auth_nonce($nonce, $url)
     {
         // check if nonce valid (and get user_id from nonce)
         $this->db->query('SELECT * FROM users_nonces WHERE nonce = "' . $this->db->escape($nonce) . '" AND DATE_ADD(created, INTERVAL expiry SECOND) > NOW()');
         $nonce = current($this->db->assoc_list());
 
         if (!$nonce) {
+            return false;
+        }
+
+        // url prefix check
+        if ($nonce['scope'] && !str_starts_with($url, $nonce['scope'])) {
             return false;
         }
 
@@ -544,10 +549,24 @@ class OBFUser
     /**
      * Create a nonce for the current user.
      */
-    public function create_nonce($expiry_seconds = null, $delete_after_use = null)
+    public function create_nonce($expiry_seconds = null, $delete_after_use = null, $scope = null)
     {
         if (!$this->param('id')) {
             return false;
+        }
+
+        // if not delete after use, see if we can reuse an existing nonce.
+        if ($delete_after_use === false && (!$expiry_seconds || $expiry_seconds >= 60)) {
+            $this->db->query('SELECT nonce FROM users_nonces WHERE 
+                user_id = "' . $this->db->escape($this->param('id')) . '" AND 
+                scope = "' . $this->db->escape($scope) . '" AND 
+                delete_after_use = 0 AND 
+                DATE_ADD(created, INTERVAL 10 SECOND) > NOW()');
+            $existing_nonce = $this->db->assoc_list();
+
+            if ($existing_nonce) {
+                return $existing_nonce[0]['nonce'];
+            }
         }
 
         $nonce = $this->random_key();
@@ -557,8 +576,14 @@ class OBFUser
             'nonce' => $nonce
         ];
 
-        if ($expiry !== null) {
+        if ($expiry_seconds !== null) {
             $data['expiry'] = $expiry_seconds;
+        } else {
+            $data['expiry'] = 60;
+        }
+
+        if ($scope !== null) {
+            $data['scope'] = $scope;
         }
 
         if ($delete_after_use === false) {

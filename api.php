@@ -181,7 +181,7 @@ class OBFAPI
         }
 
         if ($_GET['nonce'] ?? null) {
-            $valid = $this->user->auth_nonce($_GET['nonce']);
+            $valid = $this->user->auth_nonce($_GET['nonce'], $_SERVER['REQUEST_URI']);
             if (! $valid) {
                 $this->io->error(OB_ERROR_DENIED);
                 return;
