@@ -689,19 +689,29 @@ class MediaModel extends OBFModel
      */
     public function stream_url($media)
     {
-        if ($media['type'] == 'video') {
-            $path = 'streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '/' . '/prog_index.m3u8';
-        } elseif ($media['type'] == 'audio') {
-            $path = 'streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'] . '/' . 'audio.m3u8';
-        } else {
+        // must be video or audio
+        if ($media['type'] != 'video' && $media['type'] != 'audio') {
             return false;
         }
 
-        if ($media['stream_version'] && defined('OB_STREAM_API') && OB_STREAM_API) {
-            return '/' . $path;
+        // must have generated stream, and stream API must be enabled
+        if (!$media['stream_version'] || !defined('OB_STREAM_API') || !OB_STREAM_API) {
+            return false;
         }
 
-        return false;
+        $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
+
+        // create nonce if media not public
+        if ($media['status'] != 'public') {
+            // if not logged in, no luck
+            if (!$this->user->param('id')) {
+                return false;
+            }
+
+            $url .= '?nonce=' . $this->user->create_nonce(86400, false, $url);
+        }
+
+        return $url;
     }
 
     /**

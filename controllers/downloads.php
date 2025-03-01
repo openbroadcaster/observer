@@ -320,7 +320,11 @@ class Downloads extends OBFController
                 continue;
             }
 
-            $line = '?file=' . $line;
+            $line = '?file=' . urlencode($line);
+
+            if ($_GET['nonce'] ?? null) {
+                $line .= '&nonce=' . urlencode($_GET['nonce']);
+            }
         }
 
         $data = implode("\n", $lines);
