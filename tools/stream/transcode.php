@@ -42,13 +42,19 @@ if (!defined('OB_MEDIA') || !defined('OB_CACHE') || !is_dir(OB_MEDIA) || !is_dir
     die('Configuration invalid; please complete OB setup.'.PHP_EOL);
 }
 
+if(!defined('OB_STREAM_TRANSCODE_ALL') || !OB_STREAM_TRANSCODE_ALL) {
+    $public_only = 'status = "public" AND ';
+} else {
+    $public_only = '';
+}
+
 // get media without stream information
 $db->query('
   SELECT stream_version, thumbnail_version, file_location, filename, id, type, duration
   FROM media 
   WHERE
-    status="public" 
-    AND is_approved=1 
+    '.$public_only.'
+    is_approved=1 
     AND is_archived=0 
     AND (
       stream_version IS NULL 

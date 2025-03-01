@@ -74,6 +74,7 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 
 // enable public media browsing and streaming
 // define('OB_STREAM_API',true);
+// define('OB_STREAM_TRANSCODE_ALL', true); // set to TRUE to transcode all media (not just public)
 
 // import tool settings
 // OB_SYNC_USERID = 1; // owner for imported media
