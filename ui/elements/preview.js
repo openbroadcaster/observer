@@ -131,7 +131,7 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             let elem = this;
             let mediaId = this.#queue[this.#itemId].id;
-            let stream = JSON.parse(this.#queue[this.#itemId].stream);
+            let mediaUrl = JSON.parse(this.#queue[this.#itemId].stream);
             let captions = JSON.parse(this.#queue[this.#itemId].captions);
             let thumbnail = this.#queue[this.#itemId].thumbnail;
             let poster = null;
@@ -149,21 +149,8 @@ class OBElementPreview extends OBElement {
                 poster = "/images/circle.svg";
             }
 
-            // TODO
-            // test audio and video streams
-            // make sure it works when no stream available (default to direct download?)
-            // add captions when stream
-
-            let mediaUrl = stream;
-            if (!stream) {
-                console.log("creating url");
-                const mediaBlob = await OB.API.request({
-                    endpoint: "downloads/media/" + mediaId + "/preview/",
-                    raw: true,
-                });
-                const mediaUrl = URL.createObjectURL(mediaBlob);
-                console.log("created url");
-            }
+            // if ends in stream, we have stream
+            const stream = mediaUrl.endsWith("stream/");
 
             switch (this.#itemType) {
                 case "audio":
@@ -181,10 +168,6 @@ class OBElementPreview extends OBElement {
                     });
 
                     this.#videojsPlayer.src({ type: stream ? "application/x-mpegURL" : "audio/mpeg", src: mediaUrl });
-
-                    this.#videojsPlayer.on("dispose", function () {
-                        URL.revokeObjectURL(mediaUrl);
-                    });
 
                     break;
                 case "video":
@@ -214,10 +197,6 @@ class OBElementPreview extends OBElement {
                     });
 
                     this.#videojsPlayer.src({ type: stream ? "application/x-mpegURL" : "video/mp4", src: mediaUrl });
-
-                    this.#videojsPlayer.on("dispose", function () {
-                        URL.revokeObjectURL(mediaUrl);
-                    });
 
                     break;
             }

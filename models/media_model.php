@@ -696,10 +696,10 @@ class MediaModel extends OBFModel
 
         // must have generated stream, and stream API must be enabled
         if (!$media['stream_version'] || !defined('OB_STREAM_API') || !OB_STREAM_API) {
-            return false;
+            $url = '/api/v2/downloads/media/' . $media['id'] . '/preview/';
+        } else {
+            $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
         }
-
-        $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
 
         // create nonce if media not public
         if ($media['status'] != 'public') {
@@ -708,7 +708,7 @@ class MediaModel extends OBFModel
                 return false;
             }
 
-            $url .= '?nonce=' . $this->user->create_nonce(86400, false, $url);
+            $url .= '?nonce=' . $this->user->create_nonce(86400, false, '/api/v2/downloads/media/');
         }
 
         return $url;
