@@ -138,21 +138,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-
-            // download requires download_media if this is not the media owner
-            if (!$is_media_owner) {
-                $this->user->require_permission('download_media');
-            }
-
-            // private media requires manage_media if this is not the media owner
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
+        $this->download_media_auth($media);
 
         $fullpath = $this->media_file($media);
 
@@ -180,16 +166,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-
-            // private media requires manage_media if this is not the media owner
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
+        $this->preview_media_auth($media);
 
         $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
@@ -255,14 +232,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
+        $this->preview_media_auth($media);
 
         // get thumbnail
         $file = $this->models->media('thumbnail_file', ['media' => $id]);
@@ -273,6 +243,125 @@ class Downloads extends OBFController
             $this->sendfile($file);
         }
     }
+
+    /**
+     * Get stream m3u8 file for media item.
+     *
+     * @param id Media ID
+     *
+     * @route GET /v2/downloads/media/(:id:)/stream/
+     */
+    public function stream()
+    {
+        $id = (int) $this->data('id');
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+
+        if (!$media) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        $this->preview_media_auth($media);
+
+        $locationA = $media['file_location'][0];
+        $locationB = $media['file_location'][1];
+
+        $dir = OB_CACHE . "/streams/$locationA/$locationB/$id/";
+
+        if ($media['type'] == 'audio') {
+            $m3u8 = $dir . 'audio.m3u8';
+        } elseif ($media['type'] == 'video') {
+            $m3u8 = $dir . 'prog_index.m3u8';
+        } else {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        if (!file_exists($m3u8)) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        if ($_GET['file'] ?? null) {
+            $file = $_GET['file'];
+            $realpath = realpath($dir . $file);
+            $pathinfo = pathinfo($realpath);
+
+            if (!$realpath || strpos($realpath, $dir) !== 0) {
+                $this->error(OB_ERROR_NOTFOUND);
+            }
+
+            // make sure extension is m3u8 or ts
+            if ($pathinfo['extension'] != 'm3u8' && $pathinfo['extension'] != 'ts') {
+                $this->error(OB_ERROR_NOTFOUND);
+            }
+
+            if ($pathinfo['extension'] == 'ts') {
+                $this->sendfile($realpath, 'video/mp2t');
+            } else {
+                $this->output_modified_m3u8($realpath);
+            }
+        }
+
+        $this->output_modified_m3u8($m3u8);
+    }
+
+    private function output_modified_m3u8($m3u8)
+    {
+        // get m3u8 data
+        $data = file_get_contents($m3u8);
+
+        // get all lines starting with #EXTINF, then modify the following line that doesn't start with #
+        $lines = explode("\n", $data);
+
+        foreach ($lines as &$line) {
+            if (!str_ends_with($line, '.ts') && !str_ends_with($line, '.m3u8')) {
+                continue;
+            }
+
+            if (str_starts_with($line, '#')) {
+                continue;
+            }
+
+            $line = '?file=' . $line;
+        }
+
+        $data = implode("\n", $lines);
+
+        header('Content-Type: application/x-mpegURL');
+        echo $data;
+
+        die();
+    }
+
+    private function preview_media_auth($media)
+    {
+        // check permissions
+        if ($media['status'] != 'public') {
+            $this->user->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $this->user->param('id');
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $this->user->require_permission('manage_media');
+            }
+        }
+    }
+
+    private function download_media_auth($media)
+    {
+        // check permissions
+        if ($media['status'] != 'public') {
+            $this->user->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $this->user->param('id');
+
+            // download requires download_media if this is not the media owner
+            if (!$is_media_owner) {
+                $this->user->require_permission('download_media');
+            }
+
+            // private media requires manage_media if this is not the media owner
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $this->user->require_permission('manage_media');
+            }
+        }
+    }
+
 
     private function error($code)
     {
