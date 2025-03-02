@@ -27,6 +27,10 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 // THE FOLLOWING ARE OPTIONAL SETTINGS
 //
 
+// define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
+// define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
+// define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
+
 // define('OB_UPDATES_USER', 'updates'); // username/password for updates area
 // define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
 
