@@ -29,7 +29,7 @@
 .ansi_color_fg_brcyan { color: #93a1a1 }
 .ansi_color_bg_brcyan { background-color: #93a1a1 }
 .ansi_color_fg_brwhite { color: #fdf6e3 }
-.ansi_color_bg_brwhite { background-color: #fdf6e3 }        
+.ansi_color_bg_brwhite { background-color: #fdf6e3 }
 
 main {
     display: flex;
@@ -47,6 +47,7 @@ main {
     height: 500px;
     overflow-y: scroll;
     border-radius: 4px;
+    padding: 1em;
 }
 
 #cli-output p {
