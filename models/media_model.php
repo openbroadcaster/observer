@@ -694,8 +694,8 @@ class MediaModel extends OBFModel
             return false;
         }
 
-        // must have generated stream, and stream API must be enabled
-        if (!$media['stream_version'] || !defined('OB_STREAM_API') || !OB_STREAM_API) {
+        // must have generated stream, and stream API must be enabled. check stream exists, or audio we can do ondemand.
+        if ((! $media['stream_version'] && $media['type'] != 'audio') || !defined('OB_STREAM_API') || !OB_STREAM_API) {
             $url = '/api/v2/downloads/media/' . $media['id'] . '/preview/';
         } else {
             $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
