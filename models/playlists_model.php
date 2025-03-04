@@ -844,6 +844,8 @@ class PlaylistsModel extends OBFModel
                                 $media_offset += $tmp['duration'];
                                 $tmp['media_type'] = $media['type'];
                                 $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
+                                $tmp['stream'] = $this->models->media('stream_url', $media);
+                                $tmp['captions'] = $this->models->media('captions_url', $media);
                                 $dynamic_items[] = $tmp;
                                 $used_ids[] = $tmp['id'];
 
@@ -867,6 +869,8 @@ class PlaylistsModel extends OBFModel
                             $media_offset += $tmp['duration'];
                             $tmp['media_type'] = $media['type'];
                             $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
+                            $tmp['stream'] = $this->models->media('stream_url', $media);
+                            $tmp['captions'] = $this->models->media('captions_url', $media);
                             $dynamic_items[] = $tmp;
                             $used_ids[] = $tmp['id'];
                         }
