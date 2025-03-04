@@ -131,8 +131,8 @@ class OBElementPreview extends OBElement {
         if (videoElem) {
             let elem = this;
             let mediaId = this.#queue[this.#itemId].id;
-            let mediaUrl = JSON.parse(this.#queue[this.#itemId].stream);
-            let captions = JSON.parse(this.#queue[this.#itemId].captions);
+            let mediaUrl = this.#queue[this.#itemId].stream;
+            let captions = this.#queue[this.#itemId].captions;
             let thumbnail = this.#queue[this.#itemId].thumbnail;
             let poster = null;
 
@@ -291,8 +291,8 @@ class OBElementPreview extends OBElement {
                     .title { flex-grow: 1; text-align: center; padding: 0 5px; }
                 }
 
-                #root.-flipped 
-                {   
+                #root.-flipped
+                {
                     #queue {
                         right: auto;
                         left: calc(100% + 0.5em);
@@ -332,15 +332,13 @@ class OBElementPreview extends OBElement {
                     return;
                 }
 
-                console.log(item.dataset);
-
                 let queueItem = {
                     id: item.dataset.id,
                     type: item.dataset.type,
                     title: item.dataset.title,
                     artist: item.dataset.artist,
-                    stream: item.dataset.stream,
-                    captions: item.dataset.captions,
+                    stream: JSON.parse(item.dataset.stream),
+                    captions: JSON.parse(item.dataset.captions),
                 };
 
                 if (item.dataset.type === "image") {
@@ -442,6 +440,8 @@ class OBElementPreview extends OBElement {
                         type: item.media_type,
                         title: item.title,
                         artist: item.artist,
+                        stream: item.stream,
+                        captions: item.captions,
                     };
 
                     if (item.media_type === "image") {

@@ -778,6 +778,10 @@ class PlaylistsModel extends OBFModel
                             ];
                         }
                     }
+
+                    $tmp['stream'] = $this->models->media('stream_url', $media);
+                    $tmp['captions'] = $this->models->media('captions_url', $media);
+
                     $media_items_tmp[] = $tmp;
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {
