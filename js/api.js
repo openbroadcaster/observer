@@ -233,6 +233,10 @@ OB.API.postError = function (data_request, data_response) {
         if (typeof data_response[key] === "object" && !(data_response[key] instanceof Array)) {
             data_response[key] = JSON.stringify(data_response[key]);
         }
+
+        data_response[key] = data_response[key].replace(/(?:\r\n|\r|\n|\\n)/g, "<br>");
+        data_response[key] = data_response[key].replace(/\\"|\\'/g, '"');
+
         message = message + `<p><strong>${key}:</strong>&nbsp;${data_response[key]}</p>`;
     });
 
