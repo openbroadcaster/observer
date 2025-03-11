@@ -291,4 +291,101 @@ class OBFHelpers
             return false;
         }
     }
+
+    /**
+     * Send file directly with server (if possible) to avoid keeping PHP process open, memory limit
+     * issues, etc.
+     *
+     * @param file
+     * @param type Optional MIME type. Default NULL.
+     * @param download Optional download flag. Default false.
+     */
+    public static function sendfile($file, $type = null, $download = false)
+    {
+        if ($download) {
+            $type = 'application/octet-stream';
+            header("Access-Control-Allow-Origin: *");
+            header('Content-Description: File Transfer');
+            header("Content-Transfer-Encoding: binary");
+        }
+
+        if (!$type) {
+            $type = mime_content_type($file);
+        }
+
+        header('Content-Type: ' . $type);
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Content-Length: ' . filesize($file));
+
+        if (OB_SENDFILE_HEADER) {
+            header(OB_SENDFILE_HEADER . ': ' . $file);
+        } else {
+            readfile($file);
+        }
+
+        die();
+    }
+
+    /**
+     * Get the media file path.
+     *
+     * @param media
+     */
+    public static function media_file($media)
+    {
+        if ($media['is_archived'] == 1) {
+            $filedir = OB_MEDIA_ARCHIVE;
+        } elseif ($media['is_approved'] == 0) {
+            $filedir = OB_MEDIA_UPLOADS;
+        } else {
+            $filedir = OB_MEDIA;
+        }
+
+        return $filedir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
+    }
+
+    /**
+     * Authorize access to media preview, triggering an error if no access.
+     *
+     * @param media
+     */
+    public static function preview_media_auth($media)
+    {
+        $userInstance = OBFUser::get_instance();
+
+        // check permissions
+        if ($media['status'] != 'public') {
+            $userInstance->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $userInstance->param('id');
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $userInstance->require_permission('manage_media');
+            }
+        }
+    }
+
+    /**
+     * Authorize access to media download, triggering an error if no access.
+     *
+     * @param media
+     */
+    public static function download_media_auth($media)
+    {
+        $userInstance = OBFUser::get_instance();
+
+        // check permissions
+        if ($media['status'] != 'public') {
+            $userInstance->require_authenticated();
+            $is_media_owner = $media['owner_id'] == $userInstance->param('id');
+
+            // download requires download_media if this is not the media owner
+            if (!$is_media_owner) {
+                $userInstance->require_permission('download_media');
+            }
+
+            // private media requires manage_media if this is not the media owner
+            if ($media['status'] == 'private' && !$is_media_owner) {
+                $userInstance->require_permission('manage_media');
+            }
+        }
+    }
 }

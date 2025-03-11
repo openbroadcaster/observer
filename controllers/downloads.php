@@ -97,9 +97,9 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->download_media_auth($media);
+        OBFHelpers::download_media_auth($media);
 
-        $fullpath = $this->media_file($media);
+        $fullpath = OBFHelpers::media_file($media);
 
         $this->download($fullpath, $media['filename']);
     }
@@ -125,7 +125,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->preview_media_auth($media);
+        OBFHelpers::preview_media_auth($media);
 
         $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
@@ -139,7 +139,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_SERVER);
         }
 
-        $media_file = $this->media_file($media);
+        $media_file = OBFHelpers::media_file($media);
 
         if ($media['type'] == 'audio') {
             // audio preview transcode
@@ -172,7 +172,7 @@ class Downloads extends OBFController
             }
         }
 
-        $this->sendfile($cache_file);
+        OBFHelpers::sendfile($cache_file);
     }
 
     /**
@@ -191,7 +191,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->preview_media_auth($media);
+        OBFHelpers::preview_media_auth($media);
 
         // get thumbnail
         $file = $this->models->media('thumbnail_file', ['media' => $id]);
@@ -199,7 +199,7 @@ class Downloads extends OBFController
         if (!$file || !file_exists($file)) {
             $this->error(OB_ERROR_NOTFOUND);
         } else {
-            $this->sendfile($file);
+            OBFHelpers::sendfile($file);
         }
     }
 
@@ -229,7 +229,7 @@ class Downloads extends OBFController
             $index_file = 'prog_index.m3u8';
         }
 
-        $this->preview_media_auth($media);
+        OBFHelpers::preview_media_auth($media);
 
         $locationA = $media['file_location'][0];
         $locationB = $media['file_location'][1];
@@ -265,7 +265,7 @@ class Downloads extends OBFController
             if ($ondemand && !file_exists($dir . $file)) {
                 // find index by removing non-numeric characters from file
                 $segment_index = preg_replace('/[^0-9]/', '', $file);
-                $this->ondemand_transcode($this->media_file($media), $dir, $segment_index, 10);
+                $this->ondemand_transcode(OBFHelpers::media_file($media), $dir, $segment_index, 10);
             }
 
             // make sure it exists
@@ -278,7 +278,7 @@ class Downloads extends OBFController
             file_put_contents($dir . 'last_access_file', $file);
 
             // output
-            $this->sendfile($dir . $file, 'video/mp2t');
+            OBFHelpers::sendfile($dir . $file, 'video/mp2t');
         } else {
             // no index file but we can do this on-demand
             if ($media['type'] == 'audio' && !file_exists($dir . $index_file)) {
@@ -304,7 +304,7 @@ class Downloads extends OBFController
         $output_dir = OB_CACHE . '/ondemand/' . $randid . '/';
         mkdir($output_dir, 0775, true);
 
-        $media_file = $this->media_file($media);
+        $media_file = OBFHelpers::media_file($media);
 
         if (!file_exists($media_file)) {
             $this->error(OB_ERROR_NOTFOUND);
@@ -416,78 +416,6 @@ class Downloads extends OBFController
         die();
     }
 
-    // send direct with server (if possible) to avoid keeping PHP proecss open, memory limit issues, etc.
-    private function sendfile($file, $type = null, $download = false)
-    {
-        if ($download) {
-            $type = 'application/octet-stream';
-            header("Access-Control-Allow-Origin: *");
-            header('Content-Description: File Transfer');
-            header("Content-Transfer-Encoding: binary");
-        }
-
-        if (!$type) {
-            $type = mime_content_type($file);
-        }
-
-        header('Content-Type: ' . $type);
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        header('Content-Length: ' . filesize($file));
-
-        if (OB_SENDFILE_HEADER) {
-            header(OB_SENDFILE_HEADER . ': ' . $file);
-        } else {
-            readfile($file);
-        }
-
-        die();
-    }
-
-    private function media_file($media)
-    {
-        if ($media['is_archived'] == 1) {
-            $filedir = OB_MEDIA_ARCHIVE;
-        } elseif ($media['is_approved'] == 0) {
-            $filedir = OB_MEDIA_UPLOADS;
-        } else {
-            $filedir = OB_MEDIA;
-        }
-
-        return $filedir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
-    }
-
-    private function preview_media_auth($media)
-    {
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
-    }
-
-    private function download_media_auth($media)
-    {
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-
-            // download requires download_media if this is not the media owner
-            if (!$is_media_owner) {
-                $this->user->require_permission('download_media');
-            }
-
-            // private media requires manage_media if this is not the media owner
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
-    }
-
-
     private function error($code)
     {
         $this->io->error($code);
@@ -500,7 +428,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->sendfile($fullpath, null, true);
+        OBFHelpers::sendfile($fullpath, null, true);
 
         // don't want any more output after outputting file
         die();
