@@ -30,7 +30,7 @@ class OBFIO
 
     public function __construct()
     {
-        if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
+        if (str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api/v2/')) {
             $this->use_http_status = true;
         }
     }
