@@ -251,6 +251,9 @@ class Downloads extends OBFController
             }
 
             $dir = OB_CACHE . "/ondemand/$ondemand/";
+            if (! is_dir($dir)) {
+                $this->error(OB_ERROR_SERVER);
+            }
         }
 
         if ($file) {
