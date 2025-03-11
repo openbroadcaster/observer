@@ -19,8 +19,17 @@ $jobs = [];
 require_once('classes/base/cron.php');
 foreach (glob('classes/cron/*.php') as $file) {
     require_once($file);
-    $class = '\OB\Classes\Cron\\' . basename($file, '.php');
+    $class = '\\OB\\Classes\Cron\\' . basename($file, '.php');
     $jobs[] = new $class();
+}
+
+foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
+    foreach (glob($module . '/cron/*.php') as $file) {
+        $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', basename($module))));
+        require_once($file);
+        $class = '\\OB\\Modules\\' . $moduleNamespace . '\\Cron\\' . basename($file, '.php');
+        $jobs[] = new $class();
+    }
 }
 
 // check our jobs to see what needs to be run
@@ -30,8 +39,15 @@ foreach ($jobs as $index => $job) {
     $classReflection = new \ReflectionClass($job);
     $className = strtolower($classReflection->getShortName());
 
+    // check if module or core, if module, save module name
+    $moduleName = 'core';
+    $namespaceName = $classReflection->getNamespaceName();
+    if (strpos($namespaceName, 'OB\\Modules\\') === 0) {
+        $moduleName = strtolower(str_replace('\\Cron', '', str_replace('OB\\Modules\\', '', $namespaceName)));
+    }
+
     // get our last run time
-    $db->where('name', 'cron-core-' . $className);
+    $db->where('name', 'cron-' . $moduleName . '-' . $className);
     $lastRun = $db->get_one('settings');
 
     // if no last run time, set nextRun to zero
@@ -40,7 +56,11 @@ foreach ($jobs as $index => $job) {
     } else {
         $nextRun = $lastRun['value'] + $job->interval();
     }
-    $jobs_to_run[$index] = ['nextRun' => $nextRun, 'className' => $className];
+    $jobs_to_run[$index] = [
+        'nextRun' => $nextRun,
+        'className' => $className,
+        'moduleName' => $moduleName
+    ];
 }
 
 $run_jobs = function () use ($jobs, &$jobs_to_run, $db, $lock) {
@@ -69,11 +89,11 @@ $run_jobs = function () use ($jobs, &$jobs_to_run, $db, $lock) {
             // update last run time for this job
             if ($job_to_run['nextRun'] > 0) {
                 // has previous run, update time.
-                $db->where('name', 'cron-core-' . $job_to_run['className']);
+                $db->where('name', 'cron-' . $job_to_run['moduleName'] . '-' . $job_to_run['className']);
                 $db->update('settings', ['value' => time()]);
             } else {
                 // first time running, insert time.
-                $db->insert('settings', ['name' => 'cron-core-' . $job_to_run['className'], 'value' => time()]);
+                $db->insert('settings', ['name' => 'cron-' . $job_to_run['moduleName'] . '-' . $job_to_run['className'], 'value' => time()]);
             }
 
             // update next run time in our local variable
