@@ -333,6 +333,15 @@ class OBFHelpers
      */
     public static function media_file($media)
     {
+        if (is_string($media)) {
+            $media = intval($media);
+        }
+
+        if (is_int($media)) {
+            $models = OBFModels::get_instance();
+            $media = $models->media('get_by_id', ['id' => $media]);
+        }
+
         if ($media['is_archived'] == 1) {
             $filedir = OB_MEDIA_ARCHIVE;
         } elseif ($media['is_approved'] == 0) {
@@ -351,6 +360,15 @@ class OBFHelpers
      */
     public static function preview_media_auth($media)
     {
+        if (is_string($media)) {
+            $media = intval($media);
+        }
+
+        if (is_int($media)) {
+            $models = OBFModels::get_instance();
+            $media = $models->media('get_by_id', ['id' => $media]);
+        }
+
         $userInstance = OBFUser::get_instance();
 
         // check permissions
@@ -370,6 +388,15 @@ class OBFHelpers
      */
     public static function download_media_auth($media)
     {
+        if (is_string($media)) {
+            $media = intval($media);
+        }
+
+        if (is_int($media)) {
+            $models = OBFModels::get_instance();
+            $media = $models->media('get_by_id', ['id' => $media]);
+        }
+
         $userInstance = OBFUser::get_instance();
 
         // check permissions
