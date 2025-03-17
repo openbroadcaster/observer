@@ -698,7 +698,7 @@ class MediaModel extends OBFModel
         if ((! $media['stream_version'] && $media['type'] != 'audio') || !defined('OB_STREAM_API') || !OB_STREAM_API) {
             $url = '/api/v2/downloads/media/' . $media['id'] . '/preview/';
         } else {
-            $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
+            $url = '/api/v2/stream/' . $media['id'];
         }
 
         // create nonce if media not public

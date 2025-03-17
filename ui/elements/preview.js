@@ -150,7 +150,8 @@ class OBElementPreview extends OBElement {
             }
 
             // if ends in stream, we have stream
-            const stream = mediaUrl.endsWith("stream/");
+            const regex = new RegExp("/stream/");
+            const stream = regex.test(mediaUrl);
 
             switch (this.#itemType) {
                 case "audio":
