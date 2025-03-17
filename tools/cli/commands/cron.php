@@ -14,7 +14,6 @@ $db = \OBFDB::get_instance();
 $lock = new \OBFLock('core-cron');
 
 // require cron files
-// TODO add support for module cron classes (last run tracked in db as cron-modulename-classname).
 $jobs = [];
 require_once('classes/base/cron.php');
 foreach (glob('classes/cron/*.php') as $file) {
@@ -24,6 +23,15 @@ foreach (glob('classes/cron/*.php') as $file) {
 }
 
 foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
+    // Only run cron jobs for installed modules.
+    $moduleDir = basename($module);
+    $db->where('directory', $moduleDir);
+    $moduleInstalled = $db->get_one('modules');
+    if (!$moduleInstalled) {
+        continue;
+    }
+
+    // Require module cron files and add to jobs array.
     foreach (glob($module . '/cron/*.php') as $file) {
         $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', basename($module))));
         require_once($file);
