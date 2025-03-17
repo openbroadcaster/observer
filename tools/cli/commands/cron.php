@@ -2,6 +2,8 @@
 
 namespace ob\tools\cli;
 
+global $argv;
+
 if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
@@ -10,7 +12,72 @@ require_once('components.php');
 
 $db = \OBFDB::get_instance();
 
-// lock is aquired right before running task, and released right after.
+// Check if a specific cron job was specified, and if the 'now' flag is set.
+if (isset($argv[3]) && isset($argv[4])) {
+    $module = $argv[3];
+    $task = $argv[4];
+    $forceRun = ($argv[5] ?? '') === 'now';
+
+    // Get cron job class instance.
+    require_once('classes/base/cron.php');
+    if ($module === 'core') {
+        if (! file_exists('classes/cron/' . $task . '.php')) {
+            echo 'Task not found.' . PHP_EOL;
+            exit(1);
+        }
+
+        require_once('classes/cron/' . $task . '.php');
+        $class = '\\OB\\Classes\\Cron\\' . $task;
+    } else {
+        if (! file_exists('modules/' . $module . '/cron/' . $task . '.php')) {
+            echo 'Task not found.' . PHP_EOL;
+            exit(1);
+        }
+
+        require_once('modules/' . $module . '/cron/' . $task . '.php');
+        $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
+        $class = '\\OB\\Modules\\' . $moduleNamespace . '\\Cron\\' . $task;
+    }
+
+    $job = new $class();
+
+    // Check when last run if "now" isn't specified, and display an error if it's too
+    // soon.
+    $db->where('name', 'cron-' . $module . '-' . $task);
+    $lastRun = $db->get_one('settings');
+
+    if (! $forceRun && $lastRun && $lastRun['value'] + $job->interval() > time()) {
+        echo 'Task was run too recently. Use "now" to force run.' . PHP_EOL;
+        exit(1);
+    }
+
+    // Run job.
+    echo "Running job..." . PHP_EOL;
+    $status = $job->run();
+
+    if ($status) {
+        if ($lastRun) {
+            $db->where('name', 'cron-' . $module . '-' . $task);
+            $db->update('settings', [
+                'value' => time()
+            ]);
+        } else {
+            $db->insert('settings', [
+                'name' => 'cron-' . $module . '-' . $task, 'value' => time()
+            ]);
+        }
+
+        echo "Job ran successfully." . PHP_EOL;
+    } else {
+        echo "Failed to run job. Check individual cron job messages for more detailed information." . PHP_EOL;
+    }
+
+    exit();
+}
+
+// NOTE: Code below is for running cron jobs in monitor mode or running all jobs once.
+
+// lock is acquired right before running task, and released right after.
 $lock = new \OBFLock('core-cron');
 
 // require cron files
@@ -51,7 +118,9 @@ foreach ($jobs as $index => $job) {
     $moduleName = 'core';
     $namespaceName = $classReflection->getNamespaceName();
     if (strpos($namespaceName, 'OB\\Modules\\') === 0) {
-        $moduleName = strtolower(str_replace('\\Cron', '', str_replace('OB\\Modules\\', '', $namespaceName)));
+        $matches = [];
+        preg_match("/\/modules\/(.*)\/cron\//", $classReflection->getFileName(), $matches);
+        $moduleName = $matches[1];
     }
 
     // get our last run time

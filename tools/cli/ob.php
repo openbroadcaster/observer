@@ -65,6 +65,7 @@ Commands:
         echo Helpers::table(spacing: 5, rows: [
             ['check', 'check installation for errors'],
             ['cron run', 'run scheduled tasks once'],
+            ['cron run <module> <task> [now]', 'run scheduled task for module'],
             ['cron monitor', 'monitor and run cron tasks as needed'],
             ['updates list all', 'list all available updates'],
             ['updates list core', 'list core ob updates'],
