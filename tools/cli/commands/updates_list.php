@@ -44,7 +44,7 @@ function listUpdates($type = 'core', $module = null)
         foreach ($modules as $module) {
             $db->where('directory', $module);
             $installed = $db->get_one('modules');
-            if (!$installed) {
+            if (! $installed) {
                 continue;
             }
 
