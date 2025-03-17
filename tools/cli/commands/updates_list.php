@@ -37,9 +37,17 @@ function listUpdates($type = 'core', $module = null)
         // List specified module updates.
         $list = (new \OBFUpdates($module))->updates();
     } else {
+        $db = new \OBFDB();
+
         // List all module updates.
         $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
         foreach ($modules as $module) {
+            $db->where('directory', $module);
+            $installed = $db->get_one('modules');
+            if (!$installed) {
+                continue;
+            }
+
             $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $module)));
             echo "\033[94mModule:\033[0m " . $moduleClass . PHP_EOL;
             listUpdates('module', $module);
