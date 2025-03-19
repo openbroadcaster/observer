@@ -93,6 +93,10 @@ if (isset($argv[3]) && isset($argv[4])) {
         echo "Failed to run job. Check individual cron job messages for more detailed information." . PHP_EOL;
     }
 
+    // Removed PID from DB.
+    $db->where('name', 'cronpid-' . $module . '-' . $task);
+    $db->delete('settings');
+
     exit();
 }
 
