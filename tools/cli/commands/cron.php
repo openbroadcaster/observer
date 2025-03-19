@@ -108,17 +108,28 @@ if (isset($argv[3]) && isset($argv[4])) {
 $jobs = [];
 
 foreach (glob('classes/cron/*.php') as $file) {
+    require_once($file);
+    $class = '\\OB\\Classes\Cron\\' . basename($file, '.php');
+    $instance = new $class();
+
     $jobs[] = [
-        'module' => 'core',
-        'name'   => basename($file, '.php'),
+        'module'   => 'core',
+        'name'     => basename($file, '.php'),
+        'interval' => $instance->interval(),
     ];
 }
 
 foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
     foreach (glob($module . '/cron/*.php') as $file) {
+        require_once($file);
+        $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', basename($module))));
+        $class = '\\OB\\Modules\\' . $moduleNamespace . '\\Cron\\' . basename($file, '.php');
+        $instance = new $class();
+
         $jobs[] = [
-            'module' => basename($module),
-            'name'   => basename($file, '.php'),
+            'module'   => basename($module),
+            'name'     => basename($file, '.php'),
+            'interval' => $instance->interval(),
         ];
     }
 }
@@ -129,7 +140,21 @@ if ($subcommand === 'run') {
         exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
     }
 } elseif ($subcommand === 'monitor') {
-    // TODO
+    while (true) {
+        foreach ($jobs as $job) {
+            $db->where('name', 'cron-' . $job['module'] . '-' . $job['name']);
+            $lastRun = $db->get_one('settings');
+
+            if ($lastRun && $lastRun['value'] + $job['interval'] > time()) {
+                continue;
+            }
+
+            echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
+            exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+        }
+
+        sleep(1);
+    }
 }
 
 // lock is acquired right before running task, and released right after.
