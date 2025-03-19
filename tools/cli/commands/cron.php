@@ -2,6 +2,8 @@
 
 namespace ob\tools\cli;
 
+define('OB_CRON_LOG', '/tmp/cronlog');
+
 global $argv;
 
 if (!defined('OB_CLI')) {
@@ -102,8 +104,36 @@ if (isset($argv[3]) && isset($argv[4])) {
 
 // NOTE: Code below is for running cron jobs in monitor mode or running all jobs once.
 
+// Get all cron job module/name combinations.
+$jobs = [];
+
+foreach (glob('classes/cron/*.php') as $file) {
+    $jobs[] = [
+        'module' => 'core',
+        'name'   => basename($file, '.php'),
+    ];
+}
+
+foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
+    foreach (glob($module . '/cron/*.php') as $file) {
+        $jobs[] = [
+            'module' => basename($module),
+            'name'   => basename($file, '.php'),
+        ];
+    }
+}
+
+if ($subcommand === 'run') {
+    foreach ($jobs as $job) {
+        echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
+        exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+    }
+} elseif ($subcommand === 'monitor') {
+    // TODO
+}
+
 // lock is acquired right before running task, and released right after.
-$lock = new \OBFLock('core-cron');
+/*$lock = new \OBFLock('core-cron');
 
 // require cron files
 $jobs = [];
@@ -230,3 +260,4 @@ if ($subcommand === 'monitor') {
 } else {
     $run_jobs();
 }
+*/
