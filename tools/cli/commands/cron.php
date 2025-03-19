@@ -22,7 +22,7 @@ if (isset($argv[3]) && isset($argv[4])) {
     require_once('classes/base/cron.php');
     if ($module === 'core') {
         if (! file_exists('classes/cron/' . $task . '.php')) {
-            echo 'Task not found.' . PHP_EOL;
+            echo "Task '{$module}/{$task}' not found." . PHP_EOL;
             exit(1);
         }
 
@@ -30,7 +30,7 @@ if (isset($argv[3]) && isset($argv[4])) {
         $class = '\\OB\\Classes\\Cron\\' . $task;
     } else {
         if (! file_exists('modules/' . $module . '/cron/' . $task . '.php')) {
-            echo 'Task not found.' . PHP_EOL;
+            echo "Task '{$module}/{$task}' not found." . PHP_EOL;
             exit(1);
         }
 
@@ -47,8 +47,29 @@ if (isset($argv[3]) && isset($argv[4])) {
     $lastRun = $db->get_one('settings');
 
     if (! $forceRun && $lastRun && $lastRun['value'] + $job->interval() > time()) {
-        echo 'Task was run too recently. Use "now" to force run.' . PHP_EOL;
+        echo "Task '{$module}/{$task}' was run too recently. Use 'now' to force run." . PHP_EOL;
         exit(1);
+    }
+
+    // Check if already a PID exists in DB for this task, quitting if so. Otherwise, add the
+    // current process ID to the DB.
+    $db->where('name', 'cronpid-' . $module . '-' . $task);
+    $pid = $db->get_one('settings');
+    if ($pid && $pid['value'] !== null && posix_getpgid($pid['value'])) {
+        echo "Task '{$module}/{$task}' is already running." . PHP_EOL;
+        exit(1);
+    }
+
+    if ($pid) {
+        $db->where('name', 'cronpid-' . $module . '-' . $task);
+        $db->update('settings', [
+            'value' => getmypid()
+        ]);
+    } else {
+        $db->insert('settings', [
+            'name' => 'cronpid-' . $module . '-' . $task,
+            'value' => getmypid()
+        ]);
     }
 
     // Run job.
