@@ -194,7 +194,7 @@ class Stream extends OBFController
             echo \$\$ > {$output_dir}transcode.pid;
             ffmpeg -i "{$media_file}" \
             -map 0:a -hls_list_size 0 -hls_time {$segment_duration} \
-            -start_number ${segment_index} -ss ${start_time} -strict -2 "{$output_dir}audio.m3u8" -hide_banner;
+            -start_number {$segment_index} -ss {$start_time} -strict -2 "{$output_dir}audio.m3u8" -hide_banner;
             rm {$output_dir}transcode.pid
         ' > /dev/null 2>&1 & echo \$!
         CMD
