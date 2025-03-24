@@ -67,6 +67,10 @@ Commands:
             ['cron run', 'run scheduled tasks once'],
             ['cron run <module> <task> [now]', 'run scheduled task for module'],
             ['cron monitor', 'monitor and run cron tasks as needed'],
+            ['module list', 'list all modules and their status'],
+            ['module install <name>', 'install module'],
+            ['module uninstall <name>', 'uninstall module'],
+            ['module purge <name>', 'uninstall module and delete all data'],
             ['updates list all', 'list all available updates'],
             ['updates list core', 'list core ob updates'],
             ['updates list module <name>', 'list updates for specified module'],
@@ -87,6 +91,16 @@ Commands:
         global $subcommand;
         if ($subcommand == 'run' || $subcommand == 'monitor') {
             require(__DIR__ . '/commands/cron.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    public function module()
+    {
+        global $subcommand;
+        if (in_array($subcommand, ['list', 'install', 'uninstall', 'purge'])) {
+            require(__DIR__ . '/commands/module.php');
         } else {
             $this->help();
         }
