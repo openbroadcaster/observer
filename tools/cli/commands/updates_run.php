@@ -32,16 +32,23 @@ function runUpdates($type = 'core', $module = null)
 {
     require_once('updates/updates.php');
 
+    $db = new \OBFDB();
+
     if ($type === 'core') {
         // Run all core updates.
         $list = $u->updates();
     } elseif ($module !== null) {
+        $db->where('directory', $module);
+        $installed = $db->get_one('modules');
+        if (! $installed) {
+            echo "Module {$module} is not installed." . PHP_EOL;
+            return false;
+        }
+
         // Run specified module updates.
         $u = new \OBFUpdates($module);
         $list = $u->updates();
     } else {
-        $db = new \OBFDB();
-
         // Run all module updates.
         $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
         foreach ($modules as $module) {
@@ -54,6 +61,7 @@ function runUpdates($type = 'core', $module = null)
             echo "Running updates for module {$module}..." . PHP_EOL;
             runUpdates('module', $module);
         }
+
         return false;
     }
 
