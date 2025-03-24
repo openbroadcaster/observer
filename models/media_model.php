@@ -90,7 +90,11 @@ class MediaModel extends OBFModel
                 shell_exec('mv ' . escapeshellarg($args['filename']) . '-header.webm ' . escapeshellarg($args['filename']));
                 shell_exec('rm ' . escapeshellarg($args['filename']) . 'webm');
 
-                $mediainfo = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                $mediainfoNew = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                if (property_exists($mediainfoNew, 'format')) {
+                    $mediainfo = $mediainfoNew;
+                }
+
                 $mediainfo->format->format_name = 'webm';
             }
 
