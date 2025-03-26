@@ -137,14 +137,15 @@ class LoggerModule extends OBFModule
 
 	public function uninstall()
 	{
-
-		$this->db->query('DROP TABLE  `module_logger`');
-
 		$this->db->where('name','view_logger_log');
 		$this->db->delete('users_permissions');
 
 		return true;
+	}
 
+	public function purge()
+	{
+		$this->db->query('DROP TABLE IF NOT EXISTS `module_logger`');
 	}
 
 }
