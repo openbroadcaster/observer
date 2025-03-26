@@ -11,6 +11,7 @@ if (!defined('OB_CLI')) {
 require_once('components.php');
 
 $db = \OBFDB::get_instance();
+$models = \OBFModels::get_instance();
 $root = OB_LOCAL;
 
 switch ($argv[2]) {
@@ -41,7 +42,35 @@ switch ($argv[2]) {
         }
         break;
     case 'install':
-        // TODO
+        if (count($argv) < 4) {
+            (new OBCLI())->help();
+            exit(1);
+        }
+        $module = $argv[3];
+
+        // Check if module exists.
+        if (! is_dir($root . '/modules/' . $module)) {
+            echo "Module not found." . PHP_EOL;
+            exit(1);
+        }
+
+        // Check if module already installed first.
+        $db->where('directory', $module);
+        $installed = $db->get('modules');
+        if ($installed) {
+            echo "Module already installed." . PHP_EOL;
+            exit(1);
+        }
+
+        // Attempt to install module.
+        $success = $models->modules('install', $module);
+        if ($success) {
+            echo "Module installed." . PHP_EOL;
+        } else {
+            echo "An error occurred while attempting to install this module." . PHP_EOL;
+            exit(1);
+        }
+
         break;
     case 'uninstall':
         // TODO
