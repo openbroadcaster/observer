@@ -37,8 +37,7 @@ switch ($argv[2]) {
         // List all modules and their status.
         foreach ($modules as $module => $data) {
             echo Helpers::bold($module) . PHP_EOL;
-            echo "Installed: " . ($data['installed'] ? 'yes' : 'no') . PHP_EOL;
-            echo PHP_EOL;
+            echo "  Installed: " . ($data['installed'] ? 'yes' : 'no') . PHP_EOL;
         }
         break;
     case 'install':
