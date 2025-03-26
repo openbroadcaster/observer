@@ -65,7 +65,12 @@ Commands:
         echo Helpers::table(spacing: 5, rows: [
             ['check', 'check installation for errors'],
             ['cron run', 'run scheduled tasks once'],
+            ['cron run <module> <task> [now]', 'run scheduled task for module'],
             ['cron monitor', 'monitor and run cron tasks as needed'],
+            ['modules list', 'list all modules and their status'],
+            ['modules install <name>', 'install module'],
+            ['modules uninstall <name>', 'uninstall module'],
+            ['modules purge <name>', 'uninstall module and delete all data'],
             ['updates list all', 'list all available updates'],
             ['updates list core', 'list core ob updates'],
             ['updates list module <name>', 'list updates for specified module'],
@@ -86,6 +91,16 @@ Commands:
         global $subcommand;
         if ($subcommand == 'run' || $subcommand == 'monitor') {
             require(__DIR__ . '/commands/cron.php');
+        } else {
+            $this->help();
+        }
+    }
+
+    public function modules()
+    {
+        global $subcommand;
+        if (in_array($subcommand, ['list', 'install', 'uninstall', 'purge'])) {
+            require(__DIR__ . '/commands/modules.php');
         } else {
             $this->help();
         }

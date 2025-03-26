@@ -21,8 +21,8 @@
             "thumbnail"
         ],
         [
-            "/api/v2/downloads/media/(:id:)/stream/",
-            "downloads",
+            "/api/v2/stream/(:id:)",
+            "stream",
             "stream"
         ],
         [

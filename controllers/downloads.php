@@ -97,9 +97,9 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->download_media_auth($media);
+        OBFHelpers::download_media_auth($media);
 
-        $fullpath = $this->media_file($media);
+        $fullpath = OBFHelpers::media_file($media);
 
         $this->download($fullpath, $media['filename']);
     }
@@ -125,7 +125,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->preview_media_auth($media);
+        OBFHelpers::preview_media_auth($media);
 
         $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
@@ -139,7 +139,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_SERVER);
         }
 
-        $media_file = $this->media_file($media);
+        $media_file = OBFHelpers::media_file($media);
 
         if ($media['type'] == 'audio') {
             // audio preview transcode
@@ -172,7 +172,7 @@ class Downloads extends OBFController
             }
         }
 
-        $this->sendfile($cache_file);
+        OBFHelpers::sendfile($cache_file);
     }
 
     /**
@@ -191,7 +191,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->preview_media_auth($media);
+        OBFHelpers::preview_media_auth($media);
 
         // get thumbnail
         $file = $this->models->media('thumbnail_file', ['media' => $id]);
@@ -199,291 +199,9 @@ class Downloads extends OBFController
         if (!$file || !file_exists($file)) {
             $this->error(OB_ERROR_NOTFOUND);
         } else {
-            $this->sendfile($file);
+            OBFHelpers::sendfile($file);
         }
     }
-
-    /**
-     * Get stream m3u8 file for media item.
-     *
-     * @param id Media ID
-     *
-     * @route GET /v2/downloads/media/(:id:)/stream/
-     */
-    public function stream()
-    {
-        $id = (int) $this->data('id');
-        $media = $this->models->media('get_by_id', ['id' => $id]);
-
-        if (!$media) {
-            $this->error(OB_ERROR_NOTFOUND);
-        }
-
-        if ($media['type'] != 'audio' && $media['type'] != 'video') {
-            $this->error(OB_ERROR_NOTFOUND);
-        }
-
-        if ($media['type'] == 'audio') {
-            $index_file = 'audio.m3u8';
-        } else {
-            $index_file = 'prog_index.m3u8';
-        }
-
-        $this->preview_media_auth($media);
-
-        $locationA = $media['file_location'][0];
-        $locationB = $media['file_location'][1];
-        $dir = OB_CACHE . "/streams/$locationA/$locationB/$id/";
-
-        $file = $_GET['file'] ?? null;
-        $ondemand = $_GET['ondemand'] ?? null;
-
-        // ondemand only for audio
-        if ($media['type'] != 'audio' && $ondemand) {
-            $this->error(OB_ERROR_NOTFOUND);
-        }
-
-        // update dir if ondemand specified
-        if ($file && $ondemand) {
-            // make sure ondemand only alphanumeric
-            if (!ctype_alnum($ondemand)) {
-                $this->error(OB_ERROR_NOTFOUND);
-            }
-
-            $dir = OB_CACHE . "/ondemand/$ondemand/";
-        }
-
-        if ($file) {
-            // make sure filename is valid and safe
-            if (preg_match('/^[a-zA-Z0-9]+\.ts$/', $file) !== 1) {
-                 $this->error(OB_ERROR_NOTFOUND);
-            }
-
-            if ($ondemand && !file_exists($dir . $file)) {
-                // find index by removing non-numeric characters from file
-                $segment_index = preg_replace('/[^0-9]/', '', $file);
-                $this->ondemand_transcode($this->media_file($media), $dir, $segment_index, 10);
-            }
-
-            // make sure it exists
-            if (!file_exists($dir . $file)) {
-                $this->error(OB_ERROR_NOTFOUND);
-            }
-
-            // add a "last access" file
-            file_put_contents($dir . 'last_access_time', time());
-            file_put_contents($dir . 'last_access_file', $file);
-
-            // output
-            $this->sendfile($dir . $file, 'video/mp2t');
-        } else {
-            // no index file but we can do this on-demand
-            if ($media['type'] == 'audio' && !file_exists($dir . $index_file)) {
-                $this->output_modified_m3u8($this->ondemand_m3u8($media));
-            }
-
-            // no index file and no support for video on demand encoding yet
-            if (!file_exists($dir . $index_file)) {
-                echo 4;
-                $this->error(OB_ERROR_NOTFOUND);
-            }
-
-            // we have an index file, just send that
-            $this->output_modified_m3u8(file_get_contents($dir . $index_file));
-        }
-    }
-
-    private function ondemand_m3u8($media)
-    {
-        $segment_duration = 10;
-
-        $randid = bin2hex(random_bytes(20));
-        $output_dir = OB_CACHE . '/ondemand/' . $randid . '/';
-        mkdir($output_dir, 0775, true);
-
-        $media_file = $this->media_file($media);
-
-        if (!file_exists($media_file)) {
-            $this->error(OB_ERROR_NOTFOUND);
-            die();
-        }
-
-        $total_duration = trim(shell_exec('ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ' . escapeshellarg($media_file)));
-        if (!$total_duration) {
-            $this->error(OB_ERROR_SERVER);
-            die();
-        }
-
-        $this->ondemand_transcode($media_file, $output_dir, 0, $segment_duration);
-
-        $m3u8 = "#EXTM3U\n";
-        $m3u8 .= "#EXT-X-VERSION:3\n";
-        $m3u8 .= "#EXT-X-TARGETDURATION:$segment_duration\n";
-        $m3u8 .= "#EXT-X-MEDIA-SEQUENCE:0\n";
-
-        $current_position = 0;
-        $current_index = 0;
-
-        while ($current_position < $total_duration) {
-            $file = "audio$current_index.ts";
-            $m3u8 .= "#EXTINF:" . min($segment_duration, $total_duration - $current_position) . ",\n";
-            $m3u8 .= "$file\n";
-            $current_position += $segment_duration;
-            $current_index++;
-        }
-
-        // used by output_modified_m3u8
-        $_GET['ondemand'] = $randid;
-
-        $m3u8 .= "#EXT-X-ENDLIST\n";
-
-        return $m3u8;
-    }
-
-    private function ondemand_transcode($media_file, $output_dir, $segment_index, $segment_duration)
-    {
-        // check transcode.pid and stop it if it exists
-        $pid_file = $output_dir . 'transcode.pid';
-        if (file_exists($pid_file)) {
-            $pid = file_get_contents($pid_file);
-            exec("kill $pid");
-            // remove all files in the directory (the new transcode will invalidate the previous ones due to index markers and such in the ts files)
-            array_map('unlink', glob($output_dir . '*'));
-        }
-
-        $start_time = (int) $segment_index * (int) $segment_duration;
-
-        // launch transcode into the background
-        // this writes a transcode.pid file with the pid of the script, which is removed when the script is done (so we can easily check if done)
-        $pid = exec(<<<CMD
-        nohup bash -c '
-            echo \$\$ > {$output_dir}transcode.pid;
-            ffmpeg -i "{$media_file}" \
-            -map 0:a -hls_list_size 0 -hls_time {$segment_duration} \
-            -start_number ${segment_index} -ss ${start_time} -strict -2 "{$output_dir}audio.m3u8" -hide_banner;
-            rm {$output_dir}transcode.pid
-        ' > /dev/null 2>&1 & echo \$!
-        CMD
-        );
-
-        // wait for the audio0 file to be created
-        $first_ts_file = $output_dir . "audio$segment_index.ts";
-        $timeout = strtotime('+3 seconds');
-
-        while (!file_exists($first_ts_file) && time() < $timeout) {
-            usleep(100000);
-        }
-
-        if (!file_exists($first_ts_file)) {
-            $this->error(OB_ERROR_SERVER);
-            die();
-        }
-    }
-
-    private function output_modified_m3u8($data)
-    {
-        // get all lines starting with #EXTINF, then modify the following line that doesn't start with #
-        $lines = explode("\n", $data);
-
-        foreach ($lines as &$line) {
-            if (!str_ends_with($line, '.ts') && !str_ends_with($line, '.m3u8')) {
-                continue;
-            }
-
-            if (str_starts_with($line, '#')) {
-                continue;
-            }
-
-            $line = '?file=' . urlencode($line);
-
-            if ($_GET['ondemand'] ?? null) {
-                $line .= '&ondemand=' . urlencode($_GET['ondemand']);
-            }
-
-            if ($_GET['nonce'] ?? null) {
-                $line .= '&nonce=' . urlencode($_GET['nonce']);
-            }
-        }
-
-        $data = implode("\n", $lines);
-
-        header('Content-Type: application/x-mpegURL');
-        echo $data;
-
-        die();
-    }
-
-    // send direct with server (if possible) to avoid keeping PHP proecss open, memory limit issues, etc.
-    private function sendfile($file, $type = null, $download = false)
-    {
-        if ($download) {
-            $type = 'application/octet-stream';
-            header("Access-Control-Allow-Origin: *");
-            header('Content-Description: File Transfer');
-            header("Content-Transfer-Encoding: binary");
-        }
-
-        if (!$type) {
-            $type = mime_content_type($file);
-        }
-
-        header('Content-Type: ' . $type);
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        header('Content-Length: ' . filesize($file));
-
-        if (OB_SENDFILE_HEADER) {
-            header(OB_SENDFILE_HEADER . ': ' . $file);
-        } else {
-            readfile($file);
-        }
-
-        die();
-    }
-
-    private function media_file($media)
-    {
-        if ($media['is_archived'] == 1) {
-            $filedir = OB_MEDIA_ARCHIVE;
-        } elseif ($media['is_approved'] == 0) {
-            $filedir = OB_MEDIA_UPLOADS;
-        } else {
-            $filedir = OB_MEDIA;
-        }
-
-        return $filedir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
-    }
-
-    private function preview_media_auth($media)
-    {
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
-    }
-
-    private function download_media_auth($media)
-    {
-        // check permissions
-        if ($media['status'] != 'public') {
-            $this->user->require_authenticated();
-            $is_media_owner = $media['owner_id'] == $this->user->param('id');
-
-            // download requires download_media if this is not the media owner
-            if (!$is_media_owner) {
-                $this->user->require_permission('download_media');
-            }
-
-            // private media requires manage_media if this is not the media owner
-            if ($media['status'] == 'private' && !$is_media_owner) {
-                $this->user->require_permission('manage_media');
-            }
-        }
-    }
-
 
     private function error($code)
     {
@@ -497,7 +215,7 @@ class Downloads extends OBFController
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        $this->sendfile($fullpath, null, true);
+        OBFHelpers::sendfile($fullpath, null, true);
 
         // don't want any more output after outputting file
         die();

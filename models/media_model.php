@@ -90,7 +90,11 @@ class MediaModel extends OBFModel
                 shell_exec('mv ' . escapeshellarg($args['filename']) . '-header.webm ' . escapeshellarg($args['filename']));
                 shell_exec('rm ' . escapeshellarg($args['filename']) . 'webm');
 
-                $mediainfo = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                $mediainfoNew = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                if (property_exists($mediainfoNew, 'format')) {
+                    $mediainfo = $mediainfoNew;
+                }
+
                 $mediainfo->format->format_name = 'webm';
             }
 
@@ -698,7 +702,7 @@ class MediaModel extends OBFModel
         if ((! $media['stream_version'] && $media['type'] != 'audio') || !defined('OB_STREAM_API') || !OB_STREAM_API) {
             $url = '/api/v2/downloads/media/' . $media['id'] . '/preview/';
         } else {
-            $url = '/api/v2/downloads/media/' . $media['id'] . '/stream/';
+            $url = '/api/v2/stream/' . $media['id'];
         }
 
         // create nonce if media not public

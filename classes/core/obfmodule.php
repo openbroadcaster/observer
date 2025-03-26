@@ -61,4 +61,12 @@ class OBFModule
     {
         return true;
     }
+
+    /**
+     * Placeholder for module to override.
+     */
+    public function purge()
+    {
+        return true;
+    }
 }

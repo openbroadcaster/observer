@@ -20,7 +20,7 @@
 */
 
 /**
- * OpenBroadcaster aquire or release a lock.
+ * OpenBroadcaster acquire or release a lock.
  *
  * @package Class
  */
