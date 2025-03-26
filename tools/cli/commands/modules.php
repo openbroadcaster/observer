@@ -65,7 +65,7 @@ switch ($argv[2]) {
         // Attempt to install module.
         $success = $models->modules('install', $module);
         if ($success) {
-            echo "Module installed." . PHP_EOL;
+            echo "Module successfully installed." . PHP_EOL;
         } else {
             echo "An error occurred while attempting to install this module." . PHP_EOL;
             exit(1);
@@ -73,7 +73,29 @@ switch ($argv[2]) {
 
         break;
     case 'uninstall':
-        // TODO
+        if (count($argv) < 4) {
+            (new OBCLI())->help();
+            exit(1);
+        }
+        $module = $argv[3];
+
+        // Check if module actually installed.
+        $db->where('directory', $module);
+        $installed = $db->get('modules');
+        if (! $installed) {
+            echo "Module not installed or couldn't be found." . PHP_EOL;
+            exit(1);
+        }
+
+        // Attempt to uninstall module.
+        $success = $models->modules('uninstall', $module);
+        if ($success) {
+            echo "Module successfully uninstalled." . PHP_EOL;
+        } else {
+            echo "An error occurred while attempting to uninstall this module." . PHP_EOL;
+            exit(1);
+        }
+
         break;
     case 'purge':
         // TODO
