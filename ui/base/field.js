@@ -39,6 +39,10 @@ export class OBField extends OBElement {
             this._editable = true;
         }
 
+        if (this.constructor.name == "OBFieldRange" && this.hasAttribute("data-edit")) {
+            this._editable = true; // TODO (remove temporary fix for range field)
+        }
+
         this.resolveInitialized();
 
         this.renderComponent();

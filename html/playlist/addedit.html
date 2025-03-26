@@ -29,7 +29,11 @@
 
     <div class="fieldrow">
       <label data-t>Status</label>
-      <select id="playlist_status_input"><option value="private" data-t>Private (available to you only)</option><option value="visible" data-t>Visible (available to all users)</option><option value="public" data-t>Public (available to everyone)</option></select>
+      <select id="playlist_status_input">
+        <option value="private" data-t>Private (available to you only)</option>
+        <option value="visible" data-t>Visible (available to all users)</option>
+        <option value="public" data-t>Public (available to everyone)</option>
+      </select>
     </div>
 
     <div class="fieldrow">
@@ -43,7 +47,8 @@
 
     <div class="fieldrow" style="display: none;">
       <label data-t>Last Track Fade-Out</label>
-      <ob-field-range id="playlist_last_fadeout" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="5"></ob-field-range>
+      <ob-field-range id="playlist_last_fadeout" data-edit data-suffix="s" data-step="0.1" data-min="0"
+        data-max="5"></ob-field-range>
     </div>
 
   </fieldset>
@@ -65,29 +70,35 @@
   <div class="playlist_edit_container hidden" id="playlist_edit_advanced_container">
 
     <fieldset>
-    <legend data-t>Playlist Items</legend>
+      <legend data-t>Playlist Items</legend>
 
-    <p data-t>Drag media to the area below.  Double-click items to set properties.  Click to select item, then delete/backspace to remove, up/down keys to move.</p>
+      <p data-t>Drag media to the area below. Double-click items to set properties. Click to select item, then
+        delete/backspace to remove, up/down keys to move.</p>
 
-    <div class="fieldrow">
-      <button onclick="OB.Playlist.advancedZoomIn();" data-t>Zoom In</button>
-      <button onclick="OB.Playlist.advancedZoomOut();" data-t>Zoom Out</button>
-    </div>
+      <div class="fieldrow">
+        <button onclick="OB.Playlist.advancedZoomIn();" data-t>Zoom In</button>
+        <button onclick="OB.Playlist.advancedZoomOut();" data-t>Zoom Out</button>
+      </div>
 
-    <div id="playlist_edit_advanced" class="droppable_target_media droppable_target_playlist">
-    <table class="table">
-    <tr>
-      <td><div id="playlist_edit_advanced_times"></div></td>
-      <td><div id="playlist_edit_advanced_help" data-t>Drag Items Here</div><div id="playlist_edit_advanced_items"></div></td>
-    </tr>
-    </table>
-    </div>
+      <div id="playlist_edit_advanced" class="droppable_target_media droppable_target_playlist">
+        <table class="table">
+          <tr>
+            <td>
+              <div id="playlist_edit_advanced_times"></div>
+            </td>
+            <td>
+              <div id="playlist_edit_advanced_help" data-t>Drag Items Here</div>
+              <div id="playlist_edit_advanced_items"></div>
+            </td>
+          </tr>
+        </table>
+      </div>
 
 
-    <div class="playlist_data_save fieldrow">
-      <button class="edit" onclick="OB.Playlist.advancedRemoveAll();" data-t>Clear</button>
-      <button class="add" onclick="OB.Playlist.save();" data-t>Save</button>
-    </div>
+      <div class="playlist_data_save fieldrow">
+        <button class="edit" onclick="OB.Playlist.advancedRemoveAll();" data-t>Clear</button>
+        <button class="add" onclick="OB.Playlist.save();" data-t>Save</button>
+      </div>
 
     </fieldset>
 
@@ -96,37 +107,44 @@
   <div class="playlist_edit_container hidden" id="playlist_edit_standard_container">
 
     <fieldset>
-    <legend data-t>Playlist Items</legend>
+      <legend data-t>Playlist Items</legend>
 
-    <p data-t>Drag media and playlists to the area below.  Double-click items to set properties.  Click to select, then delete/backspace to remove, up/down keys to move.  You can also click-drag to reorder.</p>
+      <p data-t>Drag media and playlists to the area below. Double-click items to set properties. Click to select, then
+        delete/backspace to remove, up/down keys to move. You can also click-drag to reorder.</p>
 
-    <div id="playlist_items" class="droppable_target_media droppable_target_playlist droppable_target_media_dynamic">
+      <div id="playlist_items" class="droppable_target_media droppable_target_playlist droppable_target_media_dynamic">
         <div id="playlist_items_drag_help" data-t>Drag Items Here</div>
-    </div>
+      </div>
 
-    <p>
-      <span data-t>Total Duration</span>:
-      <span id="playlist_total_duration">0:00</span>
-      <span class="hidden" id="playlist_edit_estimated_help">(<span data-t>estimated due to variable length content</span>)</span>
-    </p>
+      <p>
+        <span data-t>Total Duration</span>:
+        <span id="playlist_total_duration">0:00</span>
+        <span class="hidden" id="playlist_edit_estimated_help">(<span data-t>estimated due to variable length
+            content</span>)</span>
+      </p>
 
-    <div class="playlist_data_save">
-      <button onclick="OB.Playlist.addeditInsertDynamic(true,OB.Sidebar.media_search_last_query);" data-t>Dynamic Selection</button>
-      <button onclick="OB.Playlist.addeditInsertStationId();" data-t>Station ID</button>
-      <button class="hidden" id="playlist_insert_breakpoint_button" onclick="OB.Playlist.addeditInsertBreakpoint();" data-t>Breakpoint</button>
-      <button onclick="OB.Playlist.addeditRemoveAll();" class="edit" data-t>Clear</button>
-      <button onclick="OB.Playlist.save();" class="add" data-t>Save</button>
-    </div>
+      <div class="playlist_data_save">
+        <button onclick="OB.Playlist.addeditInsertDynamic(true,OB.Sidebar.media_search_last_query);" data-t>Dynamic
+          Selection</button>
+        <button onclick="OB.Playlist.addeditInsertStationId();" data-t>Station ID</button>
+        <button id="playlist_insert_voicetrack_button" onclick="OB.Playlist.addeditInsertVoicetrack(true);" data-t>Voice
+          Track</button>
+        <button class="hidden" id="playlist_insert_breakpoint_button" onclick="OB.Playlist.addeditInsertBreakpoint();"
+          data-t>Breakpoint</button>
+        <button onclick="OB.Playlist.addeditRemoveAll();" class="edit" data-t>Clear</button>
+        <button onclick="OB.Playlist.save();" class="add" data-t>Save</button>
+      </div>
 
     </fieldset>
 
     <fieldset id="playlist_liveassist_buttons">
-    <legend data-t>Live Assist Buttons</legend>
+      <legend data-t>Live Assist Buttons</legend>
 
-      <p data-t>Drag playlists to this area to program the Live Assist button area.  Each playlist will be a column of buttons, with one button per playlist item.</p>
+      <p data-t>Drag playlists to this area to program the Live Assist button area. Each playlist will be a column of
+        buttons, with one button per playlist item.</p>
 
       <div id="playlist_liveassist_items" class="droppable_target_playlist">
-          <div id="playlist_liveassist_drag_help" data-t>Drag Items Here</div>
+        <div id="playlist_liveassist_drag_help" data-t>Drag Items Here</div>
       </div>
 
       <div class="playlist_data_save">

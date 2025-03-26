@@ -12,7 +12,7 @@ class OBFieldRange extends OBField {
     #min;
     #max;
 
-    async connectedCallback() {
+    async connected() {
         if (!this.#init) {
             this.#init = true;
 
@@ -35,7 +35,7 @@ class OBFieldRange extends OBField {
 
             if (this.dataset.hasOwnProperty("step")) {
                 this.#step = this.dataset.step;
-                this.#decimals = this.#step.split(".")[1].length;
+                this.#decimals = this.#step.split(".")[1]?.length ?? 0;
             }
 
             if (this.dataset.hasOwnProperty("min")) {
@@ -51,7 +51,7 @@ class OBFieldRange extends OBField {
                 this.value = parseFloat(this.getAttribute("value")).toFixed(this.#decimals);
             }
 
-            this.refresh();
+            // this.refresh();
         }
     }
 

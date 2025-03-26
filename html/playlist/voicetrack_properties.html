@@ -1,0 +1,66 @@
+<obwidget type="message" id="item_properties_message"></obwidget>
+
+<style>
+  .voicetrack-properties-window ob-element-voicetrack-graph {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+</style>
+
+<div class="voicetrack-properties-window">
+
+  <fieldset>
+    <legend data-t>Voicetrack Properties</legend>
+
+    <obwidget type="message" id="audio_properties_voicetrack_message"></obwidget>
+    <div class="fieldrow">
+      <label data-t>Voice Track</label>
+      <ob-field-media id="audio_properties_voicetrack" type="audio" data-edit data-single data-record
+        onchange="OB.Playlist.voicetrackChange()"></ob-field-media>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Offset Time</label>
+      <ob-field-range id="audio_properties_voicetrack_offset" data-edit data-suffix="s" data-step="0.1" data-min="-10"
+        data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Background Volume</label>
+      <ob-field-range id="audio_properties_voicetrack_volume" data-edit data-step="5" data-min="0" data-max="100"
+        value="10" data-suffix="%"></ob-field-range>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Fade-Out Duration</label>
+      <ob-field-range id="audio_properties_voicetrack_fadeout_before" data-edit data-suffix="s" data-step="0.1"
+        data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Fade-In Duration</label>
+      <ob-field-range id="audio_properties_voicetrack_fadein_after" data-edit data-suffix="s" data-step="0.1"
+        data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+    </div>
+
+    <div class="fieldrow">
+      <label data-t>Preview</label>
+      <!-- <button id="audio_properties_voicetrack_preview" data-t disabled
+        onclick="OB.Playlist.voicetrackPreview()">Preview</button>
+      <button id="audio_properties_voicetrack_preview_stop" data-t disabled
+        onclick="OB.Playlist.voicetrackPreviewStop()">Stop</button> -->
+      <ob-element-voicetrack-preview></ob-element-voicetrack-preview>
+    </div>
+
+    <ob-element-voicetrack-graph></ob-element-voicetrack-graph>
+
+  </fieldset>
+
+  <fieldset>
+    <div class=" fieldrow">
+      <button class="add" id="item_properties_save" data-t>Save</button>
+      <button id="item_properties_cancel" data-t>Cancel</button>
+    </div>
+  </fieldset>
+
+</div>

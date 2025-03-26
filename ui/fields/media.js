@@ -112,7 +112,7 @@ class OBFieldMedia extends OBField {
                                 class="trim"
                                 id="trim-start"
                                 value="0"
-                                step="0.1"
+                                step="0.05"
                                 min="0"
                                 max="100"
                                 onchange=${this.drawTrimStart.bind(this)}
@@ -123,7 +123,7 @@ class OBFieldMedia extends OBField {
                                 class="trim"
                                 id="trim-end"
                                 value="0"
-                                step="0.1"
+                                step="0.05"
                                 min="0"
                                 max="100"
                                 onchange=${this.drawTrimEnd.bind(this)}
@@ -750,6 +750,12 @@ class OBFieldMedia extends OBField {
         this._value = value;
 
         this.refresh();
+
+        // set data-duration on self // TODO
+        this.dataset.duration = 30;
+
+        // emit change event
+        this.dispatchEvent(new Event("change"));
     }
 }
 
