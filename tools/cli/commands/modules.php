@@ -98,7 +98,26 @@ switch ($argv[2]) {
 
         break;
     case 'purge':
-        // TODO
-        // TODO: Remember to run uninstall first as well.
+        if (count($argv) < 4) {
+            (new OBCLI())->help();
+            exit(1);
+        }
+        $module = $argv[3];
+
+        // Check if module exists.
+        if (! is_dir($root . '/modules/' . $module)) {
+            echo "Module not found." . PHP_EOL;
+            exit(1);
+        }
+
+        // Run purge on module. Note that the model is responsible for ensuring that
+        // the module is uninstalled first.
+        $success = $models->modules('purge', $module);
+        if ($success) {
+            echo "Module data successfully purged." . PHP_EOL;
+        } else {
+            echo "An error occurred while attempting to purge the module data." . PHP_EOL;
+            exit(1);
+        }
         break;
 }

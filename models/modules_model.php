@@ -151,9 +151,49 @@ class ModulesModel extends OBFModel
             return false;
         }
 
-        // add the module to our installed module list.
+        // remove module from installed module list in db
         $this->db->where('directory', $module_name);
         $this->db->delete('modules');
+
+        return true;
+    }
+
+    /**
+     * Purge the data from a module. Note that this method will first attempt to
+     * uninstall the module.
+     *
+     * @param module_name
+     *
+     * @return status
+     */
+    public function purge($module_name)
+    {
+        $modulesAvailable = $this->get_all(false, true);
+        $modulesInstalled = $this->get_all(true, true);
+
+        // Check if module exists in either available or installed modules.
+        if (isset($modulesAvailable[$module_name])) {
+            $module = $modulesAvailable[$module_name];
+        } elseif (isset($modulesInstalled[$module_name])) {
+            $module = $modulesInstalled[$module_name];
+
+            $uninstall = $module->uninstall();
+            if (! $uninstall) {
+                return false;
+            }
+
+            // Remove module from installed module list in db.
+            $this->db->where('directory', $module_name);
+            $this->db->delete('modules');
+        } else {
+            return false;
+        }
+
+        // Purge the module as per the modules instructions.
+        $purge = $module->purge();
+        if (! $purge) {
+            return false;
+        }
 
         return true;
     }
