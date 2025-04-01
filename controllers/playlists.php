@@ -241,6 +241,12 @@ class Playlists extends OBFController
             }
         }
 
+        // check if voicetracks are always followed by another media item
+        $validateVoidtracks = $this->models->playlists('validate_playlist_voicetracks', $items);
+        if ($validateVoidtracks[0] == false) {
+            return [false, $validateVoidtracks[1]];
+        }
+
         // check each liveassist button item
         if ($type == 'live_assist' && is_array($liveassist_button_items)) {
             foreach ($liveassist_button_items as $liveassist_button_item) {

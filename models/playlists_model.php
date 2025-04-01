@@ -357,8 +357,7 @@ class PlaylistsModel extends OBFModel
      */
     public function validate_playlist($data)
     {
-
-    //T A playlist name is required.
+        //T A playlist name is required.
         if (empty($data['name'])) {
             return [false,'A playlist name is required.'];
         }
@@ -372,6 +371,30 @@ class PlaylistsModel extends OBFModel
         }
 
         return [true,'Playlist is valid.'];
+    }
+
+    /**
+     * Validate voicetracks in a playlist. This checks that each voicetrack
+     * is followed by another media item.
+     *
+     * @param playlist_items
+     *
+     * @return is_valid
+     */
+    public function validate_playlist_voicetracks($playlist_items)
+    {
+        while ($current = current($playlist_items)) {
+            $next = next($playlist_items);
+            if ($next !== false && $current['type'] === 'voicetrack' && $next['type'] !== 'media') {
+                return [false, 'Voicetracks must be followed by a media item.'];
+            }
+
+            if ($next === false && $current['type'] === 'voicetrack') {
+                return [false, 'Voicetracks cannot be the last item in a playlist.'];
+            }
+        }
+
+        return [true, 'Playlist voicetracks are valid.'];
     }
 
     /**
@@ -394,7 +417,7 @@ class PlaylistsModel extends OBFModel
         }
 
         if ($item['type'] == 'media') {
-      //T One or more media durations are invalid or zero.
+            //T One or more media durations are invalid or zero.
             if (empty($item['duration']) || !preg_match('/^[0-9]+(\.[0-9]+)?$/', $item['duration']) || $item['duration'] <= 0) {
                 return [false,'One or more media durations are invalid or zero.'];
             }
