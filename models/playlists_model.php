@@ -389,7 +389,7 @@ class PlaylistsModel extends OBFModel
         }
 
         //T One or more playlist items are not valid.
-        if ($item['type'] != 'media' && $item['type'] != 'dynamic' && $item['type'] != 'station_id' && $item['type'] != 'breakpoint' && $item['type'] != 'custom') {
+        if (! in_array($item['type'], ['media', 'dynamic', 'station_id', 'breakpoint', 'custom', 'voicetrack'], true)) {
             return [false,'One or more playlist items are not valid.'];
         }
 
