@@ -393,6 +393,8 @@ class Playlists extends OBFController
                 // nothing special to set here.
             } elseif ($item['type'] == 'custom') {
                 $data['properties'] = json_encode(['name' => $item['query']['name']]);
+            } elseif ($item['type'] === 'voicetrack') {
+                $data['item_id'] = $item['id'];
             }
 
             $this->db->insert('playlists_items', $data);
