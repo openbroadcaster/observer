@@ -191,10 +191,7 @@ OB.Playlist.addeditInsertItem = function (id, description, duration, type, prope
         }
 
         if (properties["voicetrack"]) {
-            $("#playlist_addedit_item_" + OB.Playlist.addedit_item_last_id).attr(
-                "data-voicetrack",
-                properties["voicetrack"],
-            );
+            $("#playlist_addedit_item_" + OB.Playlist.addedit_item_last_id).attr("data-id", properties["voicetrack"]);
         }
 
         if (properties["voicetrack_volume"]) {
@@ -539,7 +536,7 @@ OB.Playlist.addeditGetItems = function () {
             else if ($(element).attr("data-type") == "voicetrack") {
                 items.push({
                     type: "voicetrack",
-                    id: $(element).attr("data-voicetrack"),
+                    id: $(element).attr("data-id"),
                     voicetrack_volume: $(element).attr("data-voicetrack_volume"),
                     voicetrack_offset: $(element).attr("data-voicetrack_offset"),
                     voicetrack_fadeout_before: $(element).attr("data-voicetrack_fadeout_before"),
@@ -551,7 +548,7 @@ OB.Playlist.addeditGetItems = function () {
                     id: $(element).attr("data-id"),
                     duration: $(element).attr("data-duration"),
                     crossfade: $(element).attr("data-crossfade"),
-                    voicetrack: $(element).attr("data-voicetrack"),
+                    voicetrack: $(element).attr("data-id"),
                     voicetrack_volume: $(element).attr("data-voicetrack_volume"),
                     voicetrack_offset: $(element).attr("data-voicetrack_offset"),
                     voicetrack_fadeout_before: $(element).attr("data-voicetrack_fadeout_before"),
