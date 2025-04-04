@@ -699,6 +699,7 @@ class PlaylistsModel extends OBFModel
      * @param player_id
      * @param parent_player_id
      * @param start_time Datetime object
+     * @param max_duration
      */
     public function resolve($playlist_id, $player_id, $parent_player_id = false, $start_time = null, $max_duration = null)
     {
