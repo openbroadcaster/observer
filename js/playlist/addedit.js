@@ -102,7 +102,7 @@ OB.Playlist.editPage = function (id) {
         $("#playlist_type_input").val(playlist_data["type"]);
 
         if (playlist_data["properties"] && playlist_data["properties"]["last_track_fadeout"]) {
-            $("#playlist_last_fadeout").val(playlist_data["properties"]["last_track_fadeout"]);
+            $("#playlist_last_fadeout_input").val(playlist_data["properties"]["last_track_fadeout"]);
         }
 
         OB.Playlist.addeditTypeChange();
@@ -729,7 +729,7 @@ OB.Playlist.save = function () {
     var type = $("#playlist_type_input").val();
 
     var properties = {};
-    var fadeout = $("#playlist_last_fadeout").val();
+    var fadeout = $("#playlist_last_fadeout_input").val();
     properties["last_track_fadeout"] = fadeout;
 
     var permissions_users = null;

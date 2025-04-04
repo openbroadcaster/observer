@@ -187,6 +187,7 @@ class Playlists extends OBFController
         $thumbnail = trim($this->data('thumbnail'));
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
+        $last_fadeout = trim($this->data('last_fadeout'));
         $type = trim($this->data('type'));
         $properties = $this->data('properties');
         $items = $this->data('items');
