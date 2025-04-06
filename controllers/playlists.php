@@ -353,26 +353,6 @@ class Playlists extends OBFController
                     if ($item['crossfade'] ?? false) {
                         $properties['crossfade'] = (float) $item['crossfade'];
                     }
-
-                    if ($item['voicetrack'] ?? false) {
-                        $properties['voicetrack'] = (int) $item['voicetrack'];
-                    }
-
-                    if ($item['voicetrack_volume'] ?? false) {
-                        $properties['voicetrack_volume'] = (float) $item['voicetrack_volume'];
-                    }
-
-                    if ($item['voicetrack_offset'] ?? false) {
-                        $properties['voicetrack_offset'] = (float) $item['voicetrack_offset'];
-                    }
-
-                    if ($item['voicetrack_fadeout_before'] ?? false) {
-                        $properties['voicetrack_fadeout_before'] = (float) $item['voicetrack_fadeout_before'];
-                    }
-
-                    if ($item['voicetrack_fadein_after'] ?? false) {
-                        $properties['voicetrack_fadein_after'] = (float) $item['voicetrack_fadein_after'];
-                    }
                 }
 
                 // set properties
@@ -396,6 +376,15 @@ class Playlists extends OBFController
                 $data['properties'] = json_encode(['name' => $item['query']['name']]);
             } elseif ($item['type'] === 'voicetrack') {
                 $data['item_id'] = $item['id'];
+
+                $properties = [];
+
+                $properties['voicetrack_volume'] = isset($item['voicetrack_volume']) ? (float) $item['voicetrack_volume'] : 0.1;
+                $properties['voicetrack_offset'] = isset($item['voicetrack_offset']) ? (float) $item['voicetrack_offset'] : 0.0;
+                $properties['voicetrack_fadeout_before'] = isset($item['voicetrack_fadeout_before']) ? (float) $item['voicetrack_fadeout_before'] : 0.0;
+                $properties['voicetrack_fadein_after'] = isset($item['voicetrack_fadein_after']) ? (float) $item['voicetrack_fadein_after'] : 0.0;
+
+                $data['properties'] = json_encode($properties);
             }
 
             $this->db->insert('playlists_items', $data);

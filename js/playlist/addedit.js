@@ -124,6 +124,7 @@ OB.Playlist.editPage = function (id) {
                     );
                 else if (item["type"] == "station_id") OB.Playlist.addeditInsertStationId();
                 else if (item["type"] == "breakpoint") OB.Playlist.addeditInsertBreakpoint();
+                else if (item["type"] == "voicetrack") OB.Playlist.addeditInsertVoicetrack(item);
                 else if (item["type"] == "custom") {
                     var custom_item_name = item["properties"]["name"];
                     var custom_item_description = null;
@@ -364,13 +365,13 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
     // if our this is required (new dynamic item for example), we remove the item if this is cancelled.
     if (required) {
         $("#item_properties_cancel").click(function () {
-            OB.Playlist.voicetrackPreviewStop();
+            //OB.Playlist.voicetrackPreviewStop();
             OB.UI.closeModalWindow();
             OB.Playlist.addeditRemoveItem(id);
         });
     } else {
         $("#item_properties_cancel").click(function () {
-            OB.Playlist.voicetrackPreviewStop();
+            //OB.Playlist.voicetrackPreviewStop();
             OB.UI.closeModalWindow();
         });
     }
@@ -430,15 +431,6 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
             // okay to save, advanced playlist.
             else {
                 OB.Playlist.advanced_items[id].crossfade = $("#audio_properties_crossfade").val();
-                OB.Playlist.advanced_items[id].voicetrack = $("#audio_properties_voicetrack").val()[0];
-                OB.Playlist.advanced_items[id].voicetrack_volume = $("#audio_properties_voicetrack_volume").val();
-                OB.Playlist.advanced_items[id].voicetrack_offset = $("#audio_properties_voicetrack_offset").val();
-                OB.Playlist.advanced_items[id].voicetrack_fadeout_before = $(
-                    "#audio_properties_voicetrack_fadeout_before",
-                ).val();
-                OB.Playlist.advanced_items[id].voicetrack_fadein_after = $(
-                    "#audio_properties_voicetrack_fadein_after",
-                ).val();
                 OB.UI.closeModalWindow();
             }
         }
@@ -498,18 +490,24 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
 };
 
 OB.Playlist.voicetrackUpdate = function () {
+    // update graph
     const voicetrackGraph = document.querySelector("ob-element-voicetrack-graph");
-    const voicetrackPreview = document.querySelector("ob-element-voicetrack-preview");
-    voicetrackPreview.fadeAmount = voicetrackGraph.fadeAmount = 100 - $("#audio_properties_voicetrack_volume").val();
-    voicetrackPreview.offsetTime = voicetrackGraph.offsetTime = $("#audio_properties_voicetrack_offset").val();
-    voicetrackPreview.fadeOutDuration = voicetrackGraph.fadeOutDuration = $(
-        "#audio_properties_voicetrack_fadeout_before",
-    ).val();
-    voicetrackPreview.fadeInDuration = voicetrackGraph.fadeInDuration = $(
-        "#audio_properties_voicetrack_fadein_after",
-    ).val();
     voicetrackGraph.trackDuration = parseFloat($("#audio_properties_voicetrack").attr("data-duration") ?? 5);
-    voicetrackPreview.voiceTrackId = $("#audio_properties_voicetrack").val();
+    voicetrackGraph.fadeAmount = 100 - $("#audio_properties_voicetrack_volume").val();
+    voicetrackGraph.offsetTime = $("#audio_properties_voicetrack_offset").val();
+    voicetrackGraph.fadeOutDuration = $("#audio_properties_voicetrack_fadeout_before").val();
+    voicetrackGraph.fadeInDuration = $("#audio_properties_voicetrack_fadein_after").val();
+
+    // const voicetrackPreview = document.querySelector("ob-element-voicetrack-preview");
+    // voicetrackPreview.fadeAmount = voicetrackGraph.fadeAmount = 100 - $("#audio_properties_voicetrack_volume").val();
+    // voicetrackPreview.offsetTime = voicetrackGraph.offsetTime = $("#audio_properties_voicetrack_offset").val();
+    // voicetrackPreview.fadeOutDuration = voicetrackGraph.fadeOutDuration = $(
+    //     "#audio_properties_voicetrack_fadeout_before",
+    // ).val();
+    // voicetrackPreview.fadeInDuration = voicetrackGraph.fadeInDuration = $(
+    //     "#audio_properties_voicetrack_fadein_after",
+    // ).val();
+    // voicetrackPreview.voiceTrackId = $("#audio_properties_voicetrack").val();
 };
 
 OB.Playlist.voicetrackEnabled = function () {
@@ -517,8 +515,6 @@ OB.Playlist.voicetrackEnabled = function () {
 };
 
 OB.Playlist.voicetrackChange = function () {
-    console.log("voice track change");
-
     if (!OB.Playlist.voicetrackEnabled()) return;
 
     const editable = document.querySelector("#audio_properties_voicetrack").value.length !== 0;
@@ -745,7 +741,6 @@ OB.Playlist.save = function () {
 
     if (type == "advanced") var items = OB.Playlist.advancedGetItems();
     else var items = OB.Playlist.addeditGetItems();
-    console.log(items);
 
     if (type == "live_assist") var liveassist_button_items = OB.Playlist.liveassistButtonItems();
     else var liveassist_button_items = false;

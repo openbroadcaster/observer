@@ -112,7 +112,7 @@ class OBFieldMedia extends OBField {
                                 class="trim"
                                 id="trim-start"
                                 value="0"
-                                step="0.05"
+                                step="0.01"
                                 min="0"
                                 max="100"
                                 onchange=${this.drawTrimStart.bind(this)}
@@ -123,7 +123,7 @@ class OBFieldMedia extends OBField {
                                 class="trim"
                                 id="trim-end"
                                 value="0"
-                                step="0.05"
+                                step="0.01"
                                 min="0"
                                 max="100"
                                 onchange=${this.drawTrimEnd.bind(this)}
@@ -635,15 +635,29 @@ class OBFieldMedia extends OBField {
     }
 
     drawTrimStart(event) {
-        const trim = this.root.querySelector("#trim-start").value;
-        const trimFrac = trim / this.#duration;
+        let trimStart = parseFloat(this.root.querySelector("#trim-start").value);
+        const trimEnd = parseFloat(this.root.querySelector("#trim-end").value);
+
+        if (trimStart + trimEnd > this.#duration) {
+            trimStart = this.root.querySelector("#trim-start").value = this.#duration - trimEnd;
+        }
+
+        // show trim on graph
+        const trimFrac = trimStart / this.#duration;
         this.#trimStart = trimFrac * this.#waveformWidth;
         this.modifyWaveform();
     }
 
     drawTrimEnd(event) {
-        const trim = this.root.querySelector("#trim-end").value;
-        const trimFrac = trim / this.#duration;
+        // enforce max duration
+        const trimStart = parseFloat(this.root.querySelector("#trim-start").value);
+        let trimEnd = parseFloat(this.root.querySelector("#trim-end").value);
+        if (trimStart + trimEnd > this.#duration) {
+            trimEnd = this.root.querySelector("#trim-end").value = this.#duration - trimStart;
+        }
+
+        // show trim on graph
+        const trimFrac = trimEnd / this.#duration;
         this.#trimEnd = trimFrac * this.#waveformWidth;
         this.modifyWaveform();
     }

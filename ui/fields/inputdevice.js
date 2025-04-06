@@ -83,7 +83,7 @@ class OBFieldInputDevice extends OBField {
                 <div id="audio-input" class="${this.#showDetailed}">
                     <span>Audio Input</span>
                     <select>
-                        ${this.#audioDevices.map(
+                        ${this.#audioDevices?.map(
                             (device) => html` <option value=${device.deviceId}>${device.label}</option> `,
                         )}
                     </select>

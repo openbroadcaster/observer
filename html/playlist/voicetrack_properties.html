@@ -19,40 +19,44 @@
         onchange="OB.Playlist.voicetrackChange()"></ob-field-media>
     </div>
 
-    <div class="fieldrow">
-      <label data-t>Offset Time</label>
-      <ob-field-range id="audio_properties_voicetrack_offset" data-edit data-suffix="s" data-step="0.1" data-min="-10"
-        data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-    </div>
+    <details>
+      <summary>Advanced Settings</summary>
+      <div>
+        <div class="fieldrow">
+          <label data-t>Offset Time</label>
+          <ob-field-range id="audio_properties_voicetrack_offset" data-edit data-suffix="s" data-step="0.1"
+            data-min="-10" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Background Volume</label>
-      <ob-field-range id="audio_properties_voicetrack_volume" data-edit data-step="5" data-min="0" data-max="100"
-        value="10" data-suffix="%"></ob-field-range>
-    </div>
+        <div class="fieldrow">
+          <label data-t>Background Volume</label>
+          <ob-field-range id="audio_properties_voicetrack_volume" data-edit data-step="5" data-min="0" data-max="100"
+            value="10" data-suffix="%"></ob-field-range>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Fade-Out Duration</label>
-      <ob-field-range id="audio_properties_voicetrack_fadeout_before" data-edit data-suffix="s" data-step="0.1"
-        data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-    </div>
+        <div class="fieldrow">
+          <label data-t>Fade-Out Duration</label>
+          <ob-field-range id="audio_properties_voicetrack_fadeout_before" data-edit data-suffix="s" data-step="0.1"
+            data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Fade-In Duration</label>
-      <ob-field-range id="audio_properties_voicetrack_fadein_after" data-edit data-suffix="s" data-step="0.1"
-        data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-    </div>
+        <div class="fieldrow">
+          <label data-t>Fade-In Duration</label>
+          <ob-field-range id="audio_properties_voicetrack_fadein_after" data-edit data-suffix="s" data-step="0.1"
+            data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
+        </div>
 
-    <div class="fieldrow">
+        <ob-element-voicetrack-graph></ob-element-voicetrack-graph>
+      </div>
+    </details>
+
+
+    <!-- <div class="fieldrow">
       <label data-t>Preview</label>
-      <!-- <button id="audio_properties_voicetrack_preview" data-t disabled
-        onclick="OB.Playlist.voicetrackPreview()">Preview</button>
-      <button id="audio_properties_voicetrack_preview_stop" data-t disabled
-        onclick="OB.Playlist.voicetrackPreviewStop()">Stop</button> -->
       <ob-element-voicetrack-preview></ob-element-voicetrack-preview>
-    </div>
+    </div> -->
 
-    <ob-element-voicetrack-graph></ob-element-voicetrack-graph>
+
 
   </fieldset>
 

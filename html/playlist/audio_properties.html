@@ -2,60 +2,23 @@
 
 <div>
 
-<fieldset>
-  <legend data-t>Audio Properties</legend>
+  <fieldset>
+    <legend data-t>Audio Properties</legend>
 
-  <input type="hidden" id="audio_properties_media_id" value="">
-  
-  <div class="fieldrow" hidden>
-    <label class="required" data-t>Crossfade With Next</label>
-    <input type="number" min="0" max="30" value="0" step="0.1" id="audio_properties_crossfade"> <span data-t>seconds</span>
-  </div>
-  
-</fieldset>
-    
-<fieldset>
-  <legend data-t>Voicetrack Properties</legend>
+    <input type="hidden" id="audio_properties_media_id" value="">
 
-  <obwidget type="message" id="audio_properties_voicetrack_message"></obwidget>
-  <div class="fieldrow">
-    <label data-t>Voice Track</label>
-    <ob-field-media id="audio_properties_voicetrack" type="audio" data-edit data-single data-record onchange="OB.Playlist.voicetrackChange()"></ob-field-media>
-  </div>
+    <div class="fieldrow" hidden>
+      <label class="required" data-t>Crossfade With Next</label>
+      <input type="number" min="0" max="30" value="0" step="0.1" id="audio_properties_crossfade"> <span
+        data-t>seconds</span>
+    </div>
+  </fieldset>
 
-  <div class="fieldrow">
-    <label data-t>Background Audio Track Volume</label>
-    <ob-field-range id="audio_properties_voicetrack_volume" data-edit data-step="0.05" data-min="0.00" data-max="1.00" value="0.1"></ob-field-range>  
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Offset Time</label>
-    <ob-field-range id="audio_properties_voicetrack_offset" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Track Fade-Out Before</label>
-    <ob-field-range id="audio_properties_voicetrack_fadeout_before" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Track Fade-In After</label>
-    <ob-field-range id="audio_properties_voicetrack_fadein_after" data-edit data-suffix="s" data-step="0.1" data-min="0" data-max="10" onchange="OB.Playlist.voicetrackValidate()"></ob-field-range>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Preview</label>
-    <button id="audio_properties_voicetrack_preview" data-t disabled onclick="OB.Playlist.voicetrackPreview()">Preview</button>
-    <button id="audio_properties_voicetrack_preview_stop" data-t disabled onclick="OB.Playlist.voicetrackPreviewStop()">Stop</button>
-  </div>
-
-</fieldset>
-
-<fieldset>
-  <div class="fieldrow">
-    <button class="add" id="item_properties_save" data-t>Save</button>
-    <button id="item_properties_cancel" data-t>Cancel</button>
-  </div>
-</fieldset>
+  <fieldset>
+    <div class="fieldrow">
+      <button class="add" id="item_properties_save" data-t>Save</button>
+      <button id="item_properties_cancel" data-t>Cancel</button>
+    </div>
+  </fieldset>
 
 </div>

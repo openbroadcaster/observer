@@ -1205,10 +1205,8 @@ OB.UI.replaceMain = function (file, attrs) {
 };
 
 OB.UI.scrollIntoView = function ($element) {
-    if ($element.closest("#layout_main_container").length)
-        var $container = $("#layout_main_container .simplebar-content-wrapper").first();
-    else if ($element.closest("#layout_modal_window").length)
-        var $container = $("#layout_modal_window .simplebar-content-wrapper").first();
+    if ($element.closest("#layout_main_container").length) var $container = $("#layout_main_container").first();
+    else if ($element.closest("#layout_modal_window").length) var $container = $("#layout_modal_window").first();
     else return;
 
     // TODO: some instances where element is not entirely visible still return as visible.

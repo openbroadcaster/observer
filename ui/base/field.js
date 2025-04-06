@@ -35,10 +35,6 @@ export class OBField extends OBElement {
             this._value = this.getAttribute("value");
         }
 
-        if (this.hasAttribute("data-edit") && this._editable === undefined) {
-            this._editable = true;
-        }
-
         if (this.constructor.name == "OBFieldRange" && this.hasAttribute("data-edit")) {
             this._editable = true; // TODO (remove temporary fix for range field)
         }
@@ -90,6 +86,10 @@ export class OBField extends OBElement {
     }
 
     async renderComponent() {
+        if (this.hasAttribute("data-edit") && this._editable === undefined) {
+            this._editable = true;
+        }
+
         if (this._editable) await this.renderEdit();
         else await this.renderView();
     }
