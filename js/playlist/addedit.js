@@ -102,7 +102,7 @@ OB.Playlist.editPage = function (id) {
         $("#playlist_type_input").val(playlist_data["type"]);
 
         if (playlist_data["properties"] && playlist_data["properties"]["last_track_fadeout"]) {
-            $("#playlist_last_fadeout").val(playlist_data["properties"]["last_track_fadeout"]);
+            $("#playlist_last_fadeout_input").val(playlist_data["properties"]["last_track_fadeout"]);
         }
 
         OB.Playlist.addeditTypeChange();
@@ -333,7 +333,7 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
             $("#audio_properties_crossfade").val($("#playlist_addedit_item_" + id).attr("data-crossfade"));
         }
     } else if (type == "voicetrack") {
-        $("#audio_properties_voicetrack").val([$("#playlist_addedit_item_" + id).attr("data-voicetrack")]);
+        $("#audio_properties_voicetrack").val([$("#playlist_addedit_item_" + id).attr("data-id")]);
         $("#audio_properties_voicetrack_volume").val($("#playlist_addedit_item_" + id).attr("data-voicetrack_volume"));
         $("#audio_properties_voicetrack_offset").val($("#playlist_addedit_item_" + id).attr("data-voicetrack_offset"));
         $("#audio_properties_voicetrack_fadeout_before").val(
@@ -444,7 +444,7 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
         }
 
         if (type == "voicetrack") {
-            $("#playlist_addedit_item_" + id).attr("data-voicetrack", $("#audio_properties_voicetrack").val());
+            $("#playlist_addedit_item_" + id).attr("data-id", $("#audio_properties_voicetrack").val());
             $("#playlist_addedit_item_" + id).attr(
                 "data-voicetrack_volume",
                 $("#audio_properties_voicetrack_volume").val(),
@@ -729,7 +729,7 @@ OB.Playlist.save = function () {
     var type = $("#playlist_type_input").val();
 
     var properties = {};
-    var fadeout = $("#playlist_last_fadeout").val();
+    var fadeout = $("#playlist_last_fadeout_input").val();
     properties["last_track_fadeout"] = fadeout;
 
     var permissions_users = null;
@@ -745,6 +745,7 @@ OB.Playlist.save = function () {
 
     if (type == "advanced") var items = OB.Playlist.advancedGetItems();
     else var items = OB.Playlist.addeditGetItems();
+    console.log(items);
 
     if (type == "live_assist") var liveassist_button_items = OB.Playlist.liveassistButtonItems();
     else var liveassist_button_items = false;

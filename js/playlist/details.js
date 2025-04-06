@@ -144,7 +144,7 @@ OB.Playlist.detailsPage = function (id) {
         }
 
         if (pldata["properties"] && pldata["properties"]["last_track_fadeout"]) {
-            $("#playlist_details_last_fadeout").text(pldata["properties"]["last_track_fadeout"] + "s");
+            $("#playlist_details_last_fadeout").text(pldata["properties"]["last_track_fadeout"]);
         }
 
         $("#playlist_details").show();

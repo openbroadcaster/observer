@@ -187,6 +187,7 @@ class Playlists extends OBFController
         $thumbnail = trim($this->data('thumbnail'));
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
+        $last_fadeout = trim($this->data('last_fadeout'));
         $type = trim($this->data('type'));
         $properties = $this->data('properties');
         $items = $this->data('items');
@@ -239,6 +240,12 @@ class Playlists extends OBFController
             if ($validate_item[0] == false) {
                 return [false,$validate_item[1]];
             }
+        }
+
+        // check if voicetracks are always followed by another media item
+        $validateVoidtracks = $this->models->playlists('validate_playlist_voicetracks', $items);
+        if ($validateVoidtracks[0] == false) {
+            return [false, $validateVoidtracks[1]];
         }
 
         // check each liveassist button item
@@ -387,6 +394,8 @@ class Playlists extends OBFController
                 // nothing special to set here.
             } elseif ($item['type'] == 'custom') {
                 $data['properties'] = json_encode(['name' => $item['query']['name']]);
+            } elseif ($item['type'] === 'voicetrack') {
+                $data['item_id'] = $item['id'];
             }
 
             $this->db->insert('playlists_items', $data);
