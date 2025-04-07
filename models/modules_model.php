@@ -189,6 +189,11 @@ class ModulesModel extends OBFModel
             return false;
         }
 
+        // Remove dbver for module from settings if it exists, to ensure updates
+        // are re-run on next install.
+        $this->db->where('name', 'dbver-' . $module_name);
+        $this->db->delete('settings');
+
         // Purge the module as per the modules instructions.
         $purge = $module->purge();
         if (! $purge) {
