@@ -69,4 +69,36 @@ class OBFModule
     {
         return true;
     }
+
+    final protected function permission_enable(string $category, string $name, string $description)
+    {
+        $this->db->where('name', $name);
+        $this->db->get('users_permissions');
+        if ($this->db->num_rows() > 0) {
+            $this->db->where('name', $name);
+            $this->db->update('users_permissions', [
+                'enabled' => 1
+            ]);
+        } else {
+            $this->db->insert('users_permissions', [
+                'name' => $name,
+                'description' => $description,
+                'category' => $category
+            ]);
+        }
+    }
+
+    final protected function permission_disable(string $name)
+    {
+        $this->db->where('name', $name);
+        $this->db->update('users_permissions', [
+            'enabled' => 0
+        ]);
+    }
+
+    final protected function permission_delete(string $name)
+    {
+        $this->db->where('name', $name);
+        $this->db->delete('users_permissions');
+    }
 }
