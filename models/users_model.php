@@ -191,7 +191,7 @@ class UsersModel extends OBFModel
     }
 
     /**
-     * Validate App Key permisisons.
+     * Validate App Key permissions.
      *
      * @param id
      * @param data Array of permissions for both v1 and v2 of the API.
@@ -489,6 +489,7 @@ class UsersModel extends OBFModel
                 $this->db->what('users_permissions_to_groups.item_id');
 
                 $this->db->where('group_id', $group['id']);
+                $this->db->where('users_permissions.enabled', 1);
 
                 $this->db->leftjoin('users_permissions', 'users_permissions_to_groups.permission_id', 'users_permissions.id');
 
@@ -510,6 +511,7 @@ class UsersModel extends OBFModel
      */
     public function permissions_list()
     {
+        $this->db->where('enabled', 1);
         $this->db->orderby('category');
         $permissions = $this->db->get('users_permissions');
 

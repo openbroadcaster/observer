@@ -41,6 +41,7 @@ class PermissionsModel extends OBFModel
 
         // special handling for admin group.  admins get all permissions.
         if ($id == 1) {
+            $this->db->where('enabled', 1);
             $permissions = $this->db->get('users_permissions');
             foreach ($permissions as $permission) {
                 $r[] = $permission['name'];
@@ -53,6 +54,7 @@ class PermissionsModel extends OBFModel
         $this->db->what('users_permissions.name', 'name');
         $this->db->leftjoin('users_permissions', 'users_permissions_to_groups.permission_id', 'users_permissions.id');
         $this->db->where('users_permissions_to_groups.group_id', $id);
+        $this->db->where('users_permissions_to_groups.enabled', 1);
 
         $permissions = $this->db->get('users_permissions_to_groups');
 
@@ -94,6 +96,7 @@ class PermissionsModel extends OBFModel
 
             $this->permission_cache[$id] = $result;
         }
+
 
         return $this->permission_cache[$id];
     }
@@ -139,7 +142,7 @@ class PermissionsModel extends OBFModel
         $permission_array = explode(' or ', $permission);
 
         foreach ($permission_array as $check_permission) {
-      // if we are looking for an item specific permission, then we will also accept the permission without the item id specified.
+            // if we are looking for an item specific permission, then we will also accept the permission without the item id specified.
             // in this case the permission is valid for all items.
             $check_permission_array = explode(':', $check_permission);
             if (count($check_permission_array) > 1) {
