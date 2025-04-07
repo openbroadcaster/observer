@@ -768,7 +768,7 @@ class PlaylistsModel extends OBFModel
             $media_items_tmp = [];
 
             // single media item
-            if ($playlist_item['item_type'] == 'media') {
+            if ($playlist_item['item_type'] === 'media' || $playlist_item['item_type'] === 'voicetrack') {
                 $media = $this->models->media('get_by_id', ['id' => $playlist_item['item_id']]);
 
                 // skip item if type not supported
@@ -778,6 +778,15 @@ class PlaylistsModel extends OBFModel
 
                 if ($media) {
                     $tmp = ['type' => 'media','id' => $playlist_item['item_id'], 'title' => $media['title'], 'artist' => $media['artist']];
+
+                    if ($playlist_item['item_type'] == 'voicetrack') {
+                        $tmp['type'] = 'voicetrack';
+                        $tmp['voicetrack_volume'] = $playlist_item['properties']['voicetrack_volume'] ?? 0.1;
+                        $tmp['voicetrack_offset'] = $playlist_item['properties']['voicetrack_offset'] ?? 0.0;
+                        $tmp['voicetrack_fadeout_before'] = $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0;
+                        $tmp['voicetrack_fadein_after'] = $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0;
+                    }
+
                     if ($media['type'] == 'image') {
                         $tmp['duration'] = $playlist_item['properties']['duration'];
                     } else {
@@ -789,19 +798,6 @@ class PlaylistsModel extends OBFModel
                     }
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Media';
-                    if (isset($playlist_item['properties']['voicetrack'])) {
-                        $voicetrack = $this->models->media('get_by_id', ['id' => $playlist_item['properties']['voicetrack']]);
-                        if ($voicetrack) {
-                            $tmp['voicetrack'] = [
-                                'id'             => $voicetrack['id'],
-                                'duration'       => $voicetrack['duration'],
-                                'volume'         => $playlist_item['properties']['voicetrack_volume'] ?? 0.0,
-                                'offset'         => $playlist_item['properties']['voicetrack_offset'] ?? 0.0,
-                                'fadeout-before' => $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0,
-                                'fadein-after'   => $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0,
-                            ];
-                        }
-                    }
 
                     $tmp['stream'] = $this->models->media('stream_url', $media);
                     $tmp['captions'] = $this->models->media('captions_url', $media);

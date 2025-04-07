@@ -310,7 +310,7 @@ class Remote
             } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
                 $playlist = $this->db->get_one('playlists');
-                $voicetrackxml = $showxml->addChild('voicetrack');
+                //$voicetrackxml = $showxml->addChild('voicetrack');
                 $showxml->addChild('description', $playlist['description']);
 
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
@@ -442,11 +442,6 @@ class Remote
                 $itemxml = $mediaxml->addChild('item');
                 $media_item['context'] = 'show';
                 $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
-
-                if (isset($media_item['voicetrack'])) {
-                    $voicetrackitemxml = $voicetrackxml->addChild('item');
-                    $this->voicetrack_item_xml($voicetrackitemxml, (array) $media_item['voicetrack'], $order_count, $media_offset);
-                }
 
                 if ($show['type'] == 'standard' || $show['type'] == 'live_assist') {
                     $media_offset += ($media_item['duration'] ?? 0) - ($media_item['crossfade'] ?? 0);
@@ -730,9 +725,10 @@ class Remote
         }
 
         // get full media metadata
-        if ($track['type'] == 'media') {
+        if ($track['type'] === 'media' || $track['type'] === 'voicetrack') {
             $media = $this->MediaModel('get_by_id', ['id' => $track['id']]);
             if (!$media) {
+                echo "uh oh";
                 return false;
             }
         }
@@ -746,7 +742,7 @@ class Remote
             $itemxml->addChild('offset', $offset);
         } // offset is replacing 'order' to allow multiple media to play at once.
 
-        if ($track['type'] == 'media') {
+        if ($track['type'] == 'media' || $track['type'] == 'voicetrack') {
             if (!empty($media['is_archived'])) {
                 $filerootdir = OB_MEDIA_ARCHIVE;
             } elseif (!empty($media['is_approved'])) {
@@ -777,6 +773,14 @@ class Remote
             if ($track['crossfade'] ?? null) {
                 $itemxml->addChild('crossfade', $track['crossfade']);
             }
+        }
+
+        if ($track['type'] == 'voicetrack') {
+            $voicetrackxml = $itemxml->addChild('voicetrack');
+            $voicetrackxml->addChild('fadeout_before', $track['voicetrack_fadeout_before']);
+            $voicetrackxml->addChild('fadein_after', $track['voicetrack_fadein_after']);
+            $voicetrackxml->addChild('volume', $track['voicetrack_volume']);
+            $voicetrackxml->addChild('offset', $track['voicetrack_offset']);
         }
 
         return true;
