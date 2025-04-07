@@ -115,21 +115,18 @@ class LoggerModule extends OBFModule
 	public function install()
 	{
 
-		$this->db->query('CREATE TABLE IF NOT EXISTS `module_logger` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `datetime` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `controller` varchar(255) NOT NULL,
-  `action` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;');
+		$this->db->query(<<<SQL
+		'CREATE TABLE IF NOT EXISTS `module_logger` (
+			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+			`datetime` int(10) unsigned NOT NULL,
+			`user_id` int(10) unsigned NOT NULL,
+			`controller` varchar(255) NOT NULL,
+			`action` varchar(255) NOT NULL,
+			PRIMARY KEY (`id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;'
+		SQL);
 
-		$data = array();
-		$data['name'] = 'view_logger_log';
-		$data['description'] = 'view log produced by logger module';
-		$data['category'] = 'administration';
-
-		$this->db->insert('users_permissions',$data);
+		$this->permission_enable('administration', 'view_logger_log', 'view log produced by logger module');
 
 		return true;
 
@@ -137,15 +134,18 @@ class LoggerModule extends OBFModule
 
 	public function uninstall()
 	{
-		$this->db->where('name','view_logger_log');
-		$this->db->delete('users_permissions');
+		$this->permission_disable('view_logger_log');
 
 		return true;
 	}
 
 	public function purge()
 	{
-		$this->db->query('DROP TABLE IF NOT EXISTS `module_logger`');
+		$this->db->query('DROP TABLE IF EXISTS `module_logger`');
+
+		$this->permission_delete('view_logger_log');
+
+		return true;
 	}
 
 }
