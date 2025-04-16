@@ -1,6 +1,7 @@
 {
   "name": "observer",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "chrono-node": "^2.7.6",
     "dayjs": "^1.11.11",
     "easymde": "^2.18.0",

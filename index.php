@@ -142,7 +142,7 @@ foreach ($jsModuleIterator as $file) {
     <link rel="stylesheet" type="text/css" href="extras/opendyslexic/opendyslexic.css?v=<?=urlencode($version)?>">
   <?php } ?>
 
-  <link rel="stylesheet" type="text/css" href="extras/fontawesome-free-5.15.3-web/css/all.css?v=<?=filemtime('extras/fontawesome-free-5.15.3-web/css/all.css')?>">
+  <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css?v=<?=filemtime('node_modules/@fortawesome/fontawesome-free/css/all.min.css')?>">
 
 </head>
 
