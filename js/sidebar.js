@@ -237,13 +237,14 @@ OB.Sidebar.mediaEditDeleteVisibility = function () {
     });
 
     if (visible) {
-        $("#sidebar_media_edit_button").show();
-        $("#sidebar_media_delete_button").show();
-        if (OB.Sidebar.media_search_filters.mode == "archived") $("#sidebar_media_unarchive_button").show();
+        $("#sidebar_media_edit_button").attr("hidden", false);
+        $("#sidebar_media_delete_button").attr("hidden", false);
+        if (OB.Sidebar.media_search_filters.mode == "archived")
+            $("#sidebar_media_unarchive_button").attr("hidden", false);
     } else {
-        $("#sidebar_media_edit_button").hide();
-        $("#sidebar_media_delete_button").hide();
-        $("#sidebar_media_unarchive_button").hide();
+        $("#sidebar_media_edit_button").attr("hidden", true);
+        $("#sidebar_media_delete_button").attr("hidden", true);
+        $("#sidebar_media_unarchive_button").attr("hidden", true);
     }
 };
 
@@ -808,11 +809,11 @@ OB.Sidebar.playlistEditDeleteVisibility = function () {
     });
 
     if (visible) {
-        $("#sidebar_playlist_edit_button").show();
-        $("#sidebar_playlist_delete_button").show();
+        $("#sidebar_playlist_edit_button").attr("hidden", false);
+        $("#sidebar_playlist_delete_button").attr("hidden", false);
     } else {
-        $("#sidebar_playlist_edit_button").hide();
-        $("#sidebar_playlist_delete_button").hide();
+        $("#sidebar_playlist_edit_button").attr("hidden", true);
+        $("#sidebar_playlist_delete_button").attr("hidden", true);
     }
 };
 
