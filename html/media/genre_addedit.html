@@ -1,50 +1,47 @@
-
 <div>
+    <obwidget id="genre_addedit_message" type="message"></obwidget>
 
-<obwidget id="genre_addedit_message" type="message"></obwidget>
+    <fieldset>
+        <legend data-t id="genre_addedit_heading">New Genre</legend>
 
+        <div class="fieldrow edit_only">
+            <label class="required" data-t>ID</label>
+            <span id="genre_id"></span>
+        </div>
 
-  <fieldset>
-    <legend data-t id="genre_addedit_heading">New Genre</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <input type="text" id="genre_name" />
+        </div>
 
-    <div class="fieldrow edit_only">
-      <label class="required" data-t>ID</label>
-      <span id="genre_id"></span>
-    </div>
+        <div class="fieldrow">
+            <label data-t>Description</label>
+            <input type="text" id="genre_description" />
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Name</label>
-      <input type="text" id="genre_name">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Category</label>
+            <select id="genre_categories"></select>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Description</label>
-      <input type="text" id="genre_description">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Default for New Media</label>
+            <select id="genre_default">
+                <option value="1" data-t>Yes</option>
+                <option value="0" data-t>No</option>
+            </select>
+        </div>
+    </fieldset>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Category</label>
-      <select id="genre_categories"></select>
-    </div>
-
-    <div class="fieldrow">
-      <label class="required" data-t>Default for New Media</label>
-      <select id="genre_default">
-        <option value="1" data-t>Yes</option>
-        <option value="0" data-t>No</option>
-      </select>
-    </div>
-
-  </fieldset>
-
-
-  <fieldset>
-    <div class="fieldrow">
-      <button class="add" id="item_properties_save" onclick="OB.Media.genreSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.genreDelete();" data-t>Delete</button>
-      <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-    </div>
-  </fieldset>
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" id="item_properties_save" onclick="OB.Media.genreSave();" data-t>Save</button>
+            <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.genreDelete();" data-t>
+                Delete
+            </button>
+            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 </div>
 
-<input type="hidden" id="genre_addedit_id">
+<input type="hidden" id="genre_addedit_id" />

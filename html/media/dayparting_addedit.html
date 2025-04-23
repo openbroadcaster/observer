@@ -1,74 +1,87 @@
 <obwidget type="message" id="dayparting_message"></obwidget>
 
 <ob-form id="dayparting_form">
-<fieldset>
-<legend data-t>Dayparting Properties</legend>
+    <fieldset>
+        <legend data-t>Dayparting Properties</legend>
 
-<p data-t>Provide a date or time range to <strong>exclude</strong> media items covered by this search.</p>
+        <p data-t>Provide a date or time range to <strong>exclude</strong> media items covered by this search.</p>
 
-<div class="fieldrow">
-  <label class="required" data-t>Description</label>
-  <input type="text" size="25" name="description">
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Description</label>
+            <input type="text" size="25" name="description" />
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Type</label>
-  <select id="dayparting_type" name="type"><option value="date">Date Range</option><option value="dow">Days of Week</option><option value="time">Time Range</option></select>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Type</label>
+            <select id="dayparting_type" name="type">
+                <option value="date">Date Range</option>
+                <option value="dow">Days of Week</option>
+                <option value="time">Time Range</option>
+            </select>
+        </div>
 
-<div id="dayparting_dates" hidden>
-  <div class="fieldrow">
-    <label class="required"><span data-t>Start</span> <span style="font-weight: 400;">(<span data-t>inclusive</span>)</span></label>
-    <ob-date-input data-name="start" data-placeholder="e.g. &quot;Jan 1&quot;" data-format="MMMM Do"></ob-date-input>
-  </div>
-  <div class="fieldrow">
-    <label class="required"><span data-t>End</span> <span style="font-weight: 400;">(<span data-t>inclusive</span>)</span></label>
-    <ob-date-input data-name="end" data-placeholder="e.g. &quot;Nov 30&quot;" data-format="MMMM Do"></ob-date-input>
-  </div>
-</div>
+        <div id="dayparting_dates" hidden>
+            <div class="fieldrow">
+                <label class="required"
+                    ><span data-t>Start</span>
+                    <span style="font-weight: 400">(<span data-t>inclusive</span>)</span></label
+                >
+                <ob-date-input data-name="start" data-placeholder='e.g. "Jan 1"' data-format="MMMM Do"></ob-date-input>
+            </div>
+            <div class="fieldrow">
+                <label class="required"
+                    ><span data-t>End</span>
+                    <span style="font-weight: 400">(<span data-t>inclusive</span>)</span></label
+                >
+                <ob-date-input data-name="end" data-placeholder='e.g. "Nov 30"' data-format="MMMM Do"></ob-date-input>
+            </div>
+        </div>
 
-<div id="dayparting_dow" hidden>
-  <div class="fieldrow">
-    <label class="required" data-t>Days</label>
-    <div>
-      <label><input type="checkbox" name="dow" value="Mon"> Monday</label><br>
-      <label><input type="checkbox" name="dow" value="Tue"> Tuesday</label><br>
-      <label><input type="checkbox" name="dow" value="Wed"> Wednesday</label><br>
-      <label><input type="checkbox" name="dow" value="Thu"> Thursday</label><br>
-      <label><input type="checkbox" name="dow" value="Fri"> Friday</label><br>
-      <label><input type="checkbox" name="dow" value="Sat"> Saturday</label><br>
-      <label><input type="checkbox" name="dow" value="Sun"> Sunday</label>
-    </div>
-  </div>
-</div>
+        <div id="dayparting_dow" hidden>
+            <div class="fieldrow">
+                <label class="required" data-t>Days</label>
+                <div>
+                    <label><input type="checkbox" name="dow" value="Mon" /> Monday</label><br />
+                    <label><input type="checkbox" name="dow" value="Tue" /> Tuesday</label><br />
+                    <label><input type="checkbox" name="dow" value="Wed" /> Wednesday</label><br />
+                    <label><input type="checkbox" name="dow" value="Thu" /> Thursday</label><br />
+                    <label><input type="checkbox" name="dow" value="Fri" /> Friday</label><br />
+                    <label><input type="checkbox" name="dow" value="Sat" /> Saturday</label><br />
+                    <label><input type="checkbox" name="dow" value="Sun" /> Sunday</label>
+                </div>
+            </div>
+        </div>
 
-<div id="dayparting_times" hidden>
-  <div class="fieldrow">
-    <label class="required"><span data-t>Start</span> <span style="font-weight: 400;">(<span data-t>inclusive</span>)</span></label>
-    <ob-time-input data-name="start"></ob-time-input>
-  </div>
-  <div class="fieldrow">
-    <label class="required" data-t>End</label>
-    <ob-time-input data-name="end"></ob-time-input>
-  </div>
-</div>
+        <div id="dayparting_times" hidden>
+            <div class="fieldrow">
+                <label class="required"
+                    ><span data-t>Start</span>
+                    <span style="font-weight: 400">(<span data-t>inclusive</span>)</span></label
+                >
+                <ob-time-input data-name="start"></ob-time-input>
+            </div>
+            <div class="fieldrow">
+                <label class="required" data-t>End</label>
+                <ob-time-input data-name="end"></ob-time-input>
+            </div>
+        </div>
 
-<div class="fieldrow">
-  <label style="vertical-align: top;" class="required" data-t>Query</label>
-  <span id="dayparting_query"></span>
-</div>
+        <div class="fieldrow">
+            <label style="vertical-align: top" class="required" data-t>Query</label>
+            <span id="dayparting_query"></span>
+        </div>
+    </fieldset>
 
-</fieldset>
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" onclick="OB.Dayparting.save();" data-t>Save</button>
+            <button class="delete" hidden id="dayparting_delete" onclick="OB.Dayparting.delete();" data-t>
+                Delete
+            </button>
+            <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 
-<fieldset>
-<div class="fieldrow">
-  <button class="add" onclick="OB.Dayparting.save();" data-t>Save</button>
-  <button class="delete" hidden id="dayparting_delete" onclick="OB.Dayparting.delete();" data-t>Delete</button>
-  <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-</fieldset>
-
-<input type="hidden" name="id" value="">
-<input type="hidden" name="filters" id="dayparting_filter" value="">
-
+    <input type="hidden" name="id" value="" />
+    <input type="hidden" name="filters" id="dayparting_filter" value="" />
 </ob-form>

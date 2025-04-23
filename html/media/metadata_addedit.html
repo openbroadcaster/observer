@@ -1,103 +1,117 @@
 <div>
+    <obwidget id="metadata_addedit_message" type="message"></obwidget>
 
-  <obwidget id="metadata_addedit_message" type="message"></obwidget>
+    <fieldset>
+        <legend id="metadata_addedit_heading">New Metadata Field</legend>
 
-  <fieldset>
-    <legend id="metadata_addedit_heading">New Metadata Field</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <ob-field-text data-edit id="metadata_name" maxlength="32"></ob-field-text>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Name</label>
-      <ob-field-text data-edit id="metadata_name" maxlength="32"></ob-field-text>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Description</label>
+            <ob-field-text data-edit id="metadata_description" maxlength="255"></ob-field-text>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Description</label>
-      <ob-field-text data-edit id="metadata_description" maxlength="255"></ob-field-text>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Type</label>
+            <ob-field-select data-edit id="metadata_type">
+                <ob-option selected value="text">Text (single line)</ob-option>
+                <ob-option value="textarea">Text (multiple lines)</ob-option>
+                <ob-option value="formatted">Text (formatted)</ob-option>
+                <ob-option value="integer">Number (integer)</ob-option>
+                <ob-option value="date">Date</ob-option>
+                <ob-option value="time">Time</ob-option>
+                <ob-option value="datetime">Date & Time</ob-option>
+                <ob-option value="bool">Yes/No</ob-option>
+                <ob-option value="select">Drop-Down Selection</ob-option>
+                <ob-option value="tags">Tags</ob-option>
+                <ob-option value="media">Media</ob-option>
+                <ob-option value="playlist">Playlist</ob-option>
+                <ob-option value="coordinates">Coordinates</ob-option>
+                <ob-option value="license">CC License</ob-option>
+            </ob-field-select>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Type</label>
-      <ob-field-select data-edit id="metadata_type">
-        <ob-option selected value="text">Text (single line)</ob-option>
-        <ob-option value="textarea">Text (multiple lines)</ob-option>
-        <ob-option value="formatted">Text (formatted)</ob-option>
-        <ob-option value="integer">Number (integer)</ob-option>
-        <ob-option value="date">Date</ob-option>
-        <ob-option value="time">Time</ob-option>
-        <ob-option value="datetime">Date & Time</ob-option>
-        <ob-option value="bool">Yes/No</ob-option>
-        <ob-option value="select">Drop-Down Selection</ob-option>
-        <ob-option value="tags">Tags</ob-option>
-        <ob-option value="media">Media</ob-option>
-        <ob-option value="playlist">Playlist</ob-option>
-        <ob-option value="coordinates">Coordinates</ob-option>
-        <ob-option value="license">CC License</ob-option>
-      </ob-field-select>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Visibility</label>
+            <ob-field-select data-edit id="metadata_visibility">
+                <ob-option selected value="public">Allow Public</ob-option>
+                <ob-option value="visible">Internal Only</ob-option>
+            </ob-field-select>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Visibility</label>
-      <ob-field-select data-edit id="metadata_visibility">
-        <ob-option selected value="public">Allow Public</ob-option>
-        <ob-option value="visible">Internal Only</ob-option>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Options (one per line)</label>
+            <ob-field-textarea data-edit wrap="off" id="metadata_select_options"></ob-field-textarea>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Options (one per line)</label>
-      <ob-field-textarea data-edit wrap="off" id="metadata_select_options"></ob-field-textarea>
-    </div>
+        <div class="fieldrow">
+            <label data-t>Suggestions</label>
+            <ob-tag-input data-suggestions="false" id="metadata_tag_suggestions"></ob-tag-input>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Suggestions</label>
-      <ob-tag-input data-suggestions="false" id="metadata_tag_suggestions"></ob-tag-input>
-    </div>
+        <div class="fieldrow">
+            <label data-t>Mode</label>
+            <ob-field-select data-edit id="metadata_mode">
+                <ob-option selected value="required">Required</ob-option>
+                <ob-option value="optional">Optional</ob-option>
+                <ob-option value="hidden">Hidden</ob-option>
+            </ob-field-select>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Mode</label>
-      <ob-field-select data-edit id="metadata_mode">
-        <ob-option selected value="required">Required</ob-option>
-        <ob-option value="optional">Optional</ob-option>
-        <ob-option value="hidden">Hidden</ob-option>
-      </ob-field-select>
-    </div>
+        <div class="fieldrow">
+            <label data-t>Default</label>
+            <ob-field-text data-edit class="hidden metadata_default metadata_default_text"></ob-field-text>
+            <ob-field-formatted
+                data-edit
+                class="hidden metadata_default metadata_default_formatted"
+            ></ob-field-formatted>
+            <ob-field-number data-edit class="hidden metadata_default metadata_default_integer"></ob-field-number>
+            <ob-field-date data-edit class="hidden metadata_default metadata_default_date"></ob-field-date>
+            <ob-field-time data-edit class="hidden metadata_default metadata_default_time"></ob-field-time>
+            <ob-field-datetime data-edit class="hidden metadata_default metadata_default_datetime"></ob-field-datetime>
+            <ob-field-textarea data-edit class="hidden metadata_default metadata_default_textarea"></ob-field-textarea>
+            <ob-field-select data-edit class="hidden metadata_default metadata_default_bool">
+                <ob-option value="1">Yes</ob-option>
+                <ob-option value="0">No</ob-option>
+                ></ob-field-select
+            >
+            <ob-field-select data-edit class="hidden metadata_default metadata_default_select"></ob-field-select>
+            <ob-tag-input data-suggestions="false" class="hidden metadata_default metadata_default_tags"></ob-tag-input>
+            <ob-field-media
+                data-edit
+                data-single
+                class="hidden metadata_default metadata_default_media"
+            ></ob-field-media>
+            <ob-field-playlist
+                data-edit
+                data-single
+                class="hidden metadata_default metadata_default_playlist"
+            ></ob-field-playlist>
+            <ob-field-coordinates
+                data-edit
+                class="hidden metadata_default metadata_default_coordinates"
+            ></ob-field-coordinates>
+            <ob-field-license data-edit class="hidden metadata_default metadata_default_license"></ob-field-license>
+        </div>
 
-    <div class="fieldrow">
-      <label data-t>Default</label>
-      <ob-field-text data-edit class="hidden metadata_default metadata_default_text"></ob-field-text>
-      <ob-field-formatted data-edit class="hidden metadata_default metadata_default_formatted"></ob-field-formatted>
-      <ob-field-number data-edit class="hidden metadata_default metadata_default_integer"></ob-field-number>
-      <ob-field-date data-edit class="hidden metadata_default metadata_default_date"></ob-field-date>
-      <ob-field-time data-edit class="hidden metadata_default metadata_default_time"></ob-field-time>
-      <ob-field-datetime data-edit class="hidden metadata_default metadata_default_datetime"></ob-field-datetime>
-      <ob-field-textarea data-edit class="hidden metadata_default metadata_default_textarea"></ob-field-textarea>
-      <ob-field-select data-edit class="hidden metadata_default metadata_default_bool">
-        <ob-option value="1">Yes</ob-option>
-        <ob-option value="0">No</ob-option>
-        ></ob-field-select>
-      <ob-field-select data-edit class="hidden metadata_default metadata_default_select"></ob-field-select>
-      <ob-tag-input data-suggestions="false" class="hidden metadata_default metadata_default_tags"></ob-tag-input>
-      <ob-field-media data-edit data-single class="hidden metadata_default metadata_default_media"></ob-field-media>
-      <ob-field-playlist data-edit data-single
-        class="hidden metadata_default metadata_default_playlist"></ob-field-playlist>
-      <ob-field-coordinates data-edit
-        class="hidden metadata_default metadata_default_coordinates"></ob-field-coordinates>
-      <ob-field-license data-edit class="hidden metadata_default metadata_default_license"></ob-field-license>
-    </div>
+        <div class="fieldrow">
+            <label data-t>ID3 Key</label>
+            <ob-field-text data-edit id="metadata_id3_key"></ob-field-text>
+        </div>
+    </fieldset>
 
-    <div class="fieldrow">
-      <label data-t>ID3 Key</label>
-      <ob-field-text data-edit id="metadata_id3_key"></ob-field-text>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <div class="fieldrow">
-      <button class="add" id="item_properties_save" onclick="OB.Media.metadataSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.metadataDelete();"
-        data-t>Delete</button>
-      <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-    </div>
-  </fieldset>
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" id="item_properties_save" onclick="OB.Media.metadataSave();" data-t>Save</button>
+            <button class="edit_only delete" id="item_properties_delete" onclick="OB.Media.metadataDelete();" data-t>
+                Delete
+            </button>
+            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 </div>
 
-<input type="hidden" id="metadata_addedit_id">
+<input type="hidden" id="metadata_addedit_id" />

@@ -1,333 +1,456 @@
 <div>
+    <h1 id="schedule_heading"></h1>
 
-<h1 id="schedule_heading"></h1>
+    <p id="schedule_for">
+        <span data-t>Schedule For:</span
+        ><select onchange="OB.Schedule.playerChange();" id="schedule_player_select"></select>
+    </p>
 
-<p id="schedule_for"><span data-t>Schedule For:</span><select onchange="OB.Schedule.playerChange();" id="schedule_player_select"></select></p>
+    <div id="schedule_details" class="hidden">
+        <div>
+            <table>
+                <tr>
+                    <td data-t>Name</td>
+                    <td id="schedule_details_name"></td>
+                </tr>
+                <tr>
+                    <td data-t>Owner</td>
+                    <td id="schedule_details_owner"></td>
+                </tr>
+                <tr>
+                    <td data-t>Date/Time</td>
+                    <td id="schedule_details_datetime"></td>
+                </tr>
+                <tr>
+                    <td data-t>Duration</td>
+                    <td id="schedule_details_duration"></td>
+                </tr>
+                <tr>
+                    <td data-t>Scheduled By</td>
+                    <td id="schedule_details_user"></td>
+                </tr>
+                <tr>
+                    <td data-t>Description</td>
+                    <td id="schedule_details_description"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-<div id="schedule_details" class="hidden"><div>
-<table>
-<tr>
-  <td data-t>Name</td>
-  <td id="schedule_details_name"></td>
-</tr>
-<tr>
-  <td data-t>Owner</td>
-  <td id="schedule_details_owner"></td>
-</tr>
-<tr>
-  <td data-t>Date/Time</td>
-  <td id="schedule_details_datetime"></td>
-</tr>
-<tr>
-  <td data-t>Duration</td>
-  <td id="schedule_details_duration"></td>
-</tr>
-<tr>
-  <td data-t>Scheduled By</td>
-  <td id="schedule_details_user"></td>
-</tr>
-<tr>
-  <td data-t>Description</td>
-  <td id="schedule_details_description"></td>
-</tr>
-</table>
-</div></div>
+    <p><span id="schedule_welcome"></span></p>
 
-<p><span id="schedule_welcome"></span></p>
+    <div id="schedule_container">
+        <table id="schedule_date_select">
+            <tr>
+                <td>
+                    <a href="javascript: OB.Schedule.prevWeek();">&lt; <span data-t>Prev</span></a>
+                </td>
+                <td id="schedule_date_range"></td>
+                <td>
+                    <a href="javascript: OB.Schedule.nextWeek();"><span data-t>Next</span> &gt;</a>
+                </td>
+            </tr>
+        </table>
 
-<div id="schedule_container">
+        <table id="schedule">
+            <thead>
+                <tr id="schedule_days">
+                    <th>&nbsp;</th>
+                    <th><span data-t>Sun</span> <span id="schedule_days_0"></span></th>
+                    <th><span data-t>Mon</span> <span id="schedule_days_1"></span></th>
+                    <th><span data-t>Tue</span> <span id="schedule_days_2"></span></th>
+                    <th><span data-t>Wed</span> <span id="schedule_days_3"></span></th>
+                    <th><span data-t>Thu</span> <span id="schedule_days_4"></span></th>
+                    <th><span data-t>Fri</span> <span id="schedule_days_5"></span></th>
+                    <th><span data-t>Sat</span> <span id="schedule_days_6"></span></th>
+                </tr>
+            </thead>
 
-<table id="schedule_date_select">
-  <tr>
-    <td><a href="javascript: OB.Schedule.prevWeek();">&lt; <span data-t>Prev</span></a></td>
-    <td id="schedule_date_range"></td>
-    <td><a href="javascript: OB.Schedule.nextWeek();"><span data-t>Next</span> &gt;</a></td>
-  </tr>
-</table>
+            <tbody>
+                <tr id="schedule_row_0">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(0);">12am</a>
+                        </div>
+                        <div id="schedule_time_0"></div>
+                    </td>
+                    <td><div class="schedule_data" id="schedule_data_0"></div></td>
+                    <td><div class="schedule_data" id="schedule_data_1"></div></td>
+                    <td><div class="schedule_data" id="schedule_data_2">&nbsp;</div></td>
+                    <td><div class="schedule_data" id="schedule_data_3">&nbsp;</div></td>
+                    <td><div class="schedule_data" id="schedule_data_4">&nbsp;</div></td>
+                    <td><div class="schedule_data" id="schedule_data_5">&nbsp;</div></td>
+                    <td><div class="schedule_data" id="schedule_data_6">&nbsp;</div></td>
+                </tr>
 
-<table id="schedule">
-  <thead>
-  <tr id="schedule_days">
-    <th>&nbsp;</th>
-    <th><span data-t>Sun</span> <span id="schedule_days_0"></span></th>
-    <th><span data-t>Mon</span> <span id="schedule_days_1"></span></th>
-    <th><span data-t>Tue</span> <span id="schedule_days_2"></span></th>
-    <th><span data-t>Wed</span> <span id="schedule_days_3"></span></th>
-    <th><span data-t>Thu</span> <span id="schedule_days_4"></span></th>
-    <th><span data-t>Fri</span> <span id="schedule_days_5"></span></th>
-    <th><span data-t>Sat</span> <span id="schedule_days_6"></span></th>
-  </tr>
-  </thead>
+                <tr id="schedule_row_1">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(1);">1am</a>
+                        </div>
+                        <div id="schedule_time_1"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tbody>
-  <tr id="schedule_row_0">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(0);">12am</a></div><div id="schedule_time_0"></div></td>
-    <td><div class="schedule_data" id="schedule_data_0"></div></td>
-    <td><div class="schedule_data" id="schedule_data_1"></div></td>
-    <td><div class="schedule_data" id="schedule_data_2">&nbsp;</div></td>
-    <td><div class="schedule_data" id="schedule_data_3">&nbsp;</div></td>
-    <td><div class="schedule_data" id="schedule_data_4">&nbsp;</div></td>
-    <td><div class="schedule_data" id="schedule_data_5">&nbsp;</div></td>
-    <td><div class="schedule_data" id="schedule_data_6">&nbsp;</div></td>
-  </tr>
+                <tr id="schedule_row_2">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(2);">2am</a>
+                        </div>
+                        <div id="schedule_time_2"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_1">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(1);">1am</a></div><div id="schedule_time_1"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_3">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(3);">3am</a>
+                        </div>
+                        <div id="schedule_time_3"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_2">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(2);">2am</a></div><div id="schedule_time_2"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_4">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(4);">4am</a>
+                        </div>
+                        <div id="schedule_time_4"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_3">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(3);">3am</a></div><div id="schedule_time_3"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_5">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(5);">5am</a>
+                        </div>
+                        <div id="schedule_time_5"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_4">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(4);">4am</a></div><div id="schedule_time_4"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_6">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(6);">6am</a>
+                        </div>
+                        <div id="schedule_time_6"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_5">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(5);">5am</a></div><div id="schedule_time_5"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_7">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(7);">7am</a>
+                        </div>
+                        <div id="schedule_time_7"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_6">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(6);">6am</a></div><div id="schedule_time_6"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_8">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(8);">8am</a>
+                        </div>
+                        <div id="schedule_time_8"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_7">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(7);">7am</a></div><div id="schedule_time_7"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_9">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(9);">9am</a>
+                        </div>
+                        <div id="schedule_time_9"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_8">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(8);">8am</a></div><div id="schedule_time_8"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_10">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(10);">10am</a>
+                        </div>
+                        <div id="schedule_time_10"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_9">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(9);">9am</a></div><div id="schedule_time_9"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_11">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(11);">11am</a>
+                        </div>
+                        <div id="schedule_time_11"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_10">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(10);">10am</a></div><div id="schedule_time_10"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_12">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(12);">12pm</a>
+                        </div>
+                        <div id="schedule_time_12"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_11">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(11);">11am</a></div><div id="schedule_time_11"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_13">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(13);">1pm</a>
+                        </div>
+                        <div id="schedule_time_13"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_12">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(12);">12pm</a></div><div id="schedule_time_12"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_14">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(14);">2pm</a>
+                        </div>
+                        <div id="schedule_time_14"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_13">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(13);">1pm</a></div><div id="schedule_time_13"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_15">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(15);">3pm</a>
+                        </div>
+                        <div id="schedule_time_15"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_14">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(14);">2pm</a></div><div id="schedule_time_14"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_16">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(16);">4pm</a>
+                        </div>
+                        <div id="schedule_time_16"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_15">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(15);">3pm</a></div><div id="schedule_time_15"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_17">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(17);">5pm</a>
+                        </div>
+                        <div id="schedule_time_17"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_16">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(16);">4pm</a></div><div id="schedule_time_16"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_18">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(18);">6pm</a>
+                        </div>
+                        <div id="schedule_time_18"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_17">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(17);">5pm</a></div><div id="schedule_time_17"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_19">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(19);">7pm</a>
+                        </div>
+                        <div id="schedule_time_19"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_18">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(18);">6pm</a></div><div id="schedule_time_18"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_20">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(20);">8pm</a>
+                        </div>
+                        <div id="schedule_time_20"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_19">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(19);">7pm</a></div><div id="schedule_time_19"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_21">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(21);">9pm</a>
+                        </div>
+                        <div id="schedule_time_21"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_20">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(20);">8pm</a></div><div id="schedule_time_20"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
+                <tr id="schedule_row_22">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(22);">10pm</a>
+                        </div>
+                        <div id="schedule_time_22"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
 
-  <tr id="schedule_row_21">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(21);">9pm</a></div><div id="schedule_time_21"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr id="schedule_row_22">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(22);">10pm</a></div><div id="schedule_time_22"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr id="schedule_row_23">
-    <td><div class="schedule_time_interval schedule_time_hour"><a href="javascript: OB.Schedule.zoomHour(23);">11pm</a></div><div id="schedule_time_23"></div></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  </tbody>
-
-</table>
-
-</div>
-
+                <tr id="schedule_row_23">
+                    <td>
+                        <div class="schedule_time_interval schedule_time_hour">
+                            <a href="javascript: OB.Schedule.zoomHour(23);">11pm</a>
+                        </div>
+                        <div id="schedule_time_23"></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

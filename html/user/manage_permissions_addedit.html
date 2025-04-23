@@ -1,28 +1,33 @@
 <obwidget id="permissions_addedit_message" type="message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>Edit Permissions For Group</legend>
 
-  <fieldset>
+        <div class="fieldrow" id="permissions_addedit_name">
+            <label class="required" data-t>Group Name</label>
+            <input type="text" id="group_name_input" />
+        </div>
+    </fieldset>
 
-    <legend data-t>Edit Permissions For Group</legend>
+    <div id="permissions_addedit_form"></div>
 
-    <div class="fieldrow" id="permissions_addedit_name">
-      <label class="required" data-t>Group Name</label>
-      <input type="text" id="group_name_input">
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" id="item_properties_save" onclick="OB.User.managePermissionsSave();" data-t>
+                Save
+            </button>
+            <button
+                class="edit_only delete"
+                id="item_properties_delete"
+                onclick="OB.User.managePermissionsDelete(false);"
+                data-t
+            >
+                Delete
+            </button>
+            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 
-    </div>
-  </fieldset>
-
-  <div id="permissions_addedit_form"></div>
-
-  <fieldset>
-    <div class="fieldrow">
-      <button class="add" id="item_properties_save" onclick="OB.User.managePermissionsSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.User.managePermissionsDelete(false);" data-t>Delete</button>
-      <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-    </div>
-  </fieldset>
-
-  <input type="hidden" id="group_addedit_id">
-
+    <input type="hidden" id="group_addedit_id" />
 </div>

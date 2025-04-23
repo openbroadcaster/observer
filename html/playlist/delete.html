@@ -1,26 +1,17 @@
 <div>
-<h1 data-t>Delete Playlists</h1>
+    <h1 data-t>Delete Playlists</h1>
 
-<p id="playlist_top_message" data-t>Are you sure you want to delete the following playlists?</p>
+    <p id="playlist_top_message" data-t>Are you sure you want to delete the following playlists?</p>
 
-<div class="playlist_delete_button">
+    <div class="playlist_delete_button">
+        <button class="delete" onclick="OB.Playlist.delete();" data-t>Yes, Delete</button>
+    </div>
 
-<button class="delete" onclick="OB.Playlist.delete();" data-t>Yes, Delete</button>
+    <ul id="playlist_delete_list"></ul>
 
-</div>
+    <div id="playlist_cannot_delete" class="hidden">
+        <p data-t>The following playlists will not be deleted, as you do not have adequate permissions.</p>
 
-<ul id="playlist_delete_list">
-
-</ul>
-
-<div id="playlist_cannot_delete" class="hidden">
-
-  <p data-t>The following playlists will not be deleted, as you do not have adequate permissions.</p>
-
-  <ul>
-
-  </ul>
-
-</div>
-
+        <ul></ul>
+    </div>
 </div>

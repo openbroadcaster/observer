@@ -1,27 +1,27 @@
 <div>
+    <fieldset class="addedit_form_legend">
+        <legend>
+            <span class="addedit_form_title"></span>
+            <button onclick="OB.Media.editToggle(this);" data-t>Collapse</button>
+            <button onclick="OB.Media.editCancel(this);" class="edit" data-t>Cancel</button>
+        </legend>
 
-<fieldset class="addedit_form_legend">
-<legend>
-  <span class="addedit_form_title"></span>
-  <button onclick="OB.Media.editToggle(this);" data-t>Collapse</button>
-  <button onclick="OB.Media.editCancel(this);" class="edit" data-t>Cancel</button>
-</legend>
+        <!--<div class="messagebox hidden"></div>-->
+        <obwidget type="message" class="addedit_form_message"></obwidget>
 
-<!--<div class="messagebox hidden"></div>-->
-<obwidget type="message" class="addedit_form_message"></obwidget>
+        <div class="addedit_form_container">
+            <input type="hidden" class="upload_file_id" />
+            <input type="hidden" class="upload_file_key" />
 
-<div class="addedit_form_container">
+            <div class="fieldrow new_media_only">
+                <label class="empty"></label>
+                <button class="hidden use_id3_button" onclick="OB.Media.mediaInfoImport(this);" class="edit" data-t>
+                    Use ID3 Data
+                </button>
+                <span class="new_media_status" data-t>File is in Upload Queue</span>
+            </div>
 
-  <input type="hidden" class="upload_file_id">
-  <input type="hidden" class="upload_file_key">
-
-  <div class="fieldrow new_media_only">
-    <label class="empty"></label>
-    <button class="hidden use_id3_button" onclick="OB.Media.mediaInfoImport(this);" class="edit" data-t>Use ID3 Data</button>
-    <span class="new_media_status" data-t>File is in Upload Queue</span>
-  </div>
-
-  <!--
+            <!--
   <div class="fieldrow">
     <label data-t>Thumbnail</label>
     <ob-field-thumbnail class="thumbnail_field" data-edit></ob-field-thumbnail>
@@ -29,98 +29,213 @@
   </div>
   -->
 
-  <div class="fieldrow">
-    <label class="required" data-t>Artist</label>
-    <input class="artist_field" type="text">
-    <button class="copy_to_all" data-field="artist_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label class="required" data-t>Artist</label>
+                <input class="artist_field" type="text" />
+                <button
+                    class="copy_to_all"
+                    data-field="artist_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label class="required"  data-t>Title</label>
-    <input class="title_field" type="text">
-    <button class="copy_to_all" data-field="title_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label class="required" data-t>Title</label>
+                <input class="title_field" type="text" />
+                <button
+                    class="copy_to_all"
+                    data-field="title_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t>Album</label>
-    <input class="album_field" type="text">
-    <button class="copy_to_all" data-field="album_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t>Album</label>
+                <input class="album_field" type="text" />
+                <button
+                    class="copy_to_all"
+                    data-field="album_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t>Year</label>
-    <ob-field-number data-edit class="year_field"></ob-field-number>
-    <button class="copy_to_all" data-field="year_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t>Year</label>
+                <ob-field-number data-edit class="year_field"></ob-field-number>
+                <button
+                    class="copy_to_all"
+                    data-field="year_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t class="required">Category</label>
-    <select class="category_field"></select>
-    <button class="copy_to_all" data-field="category_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t class="required">Category</label>
+                <select class="category_field"></select>
+                <button
+                    class="copy_to_all"
+                    data-field="category_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t class="required">Genre</label>
-    <select class="genre_field"></select>
-    <button class="copy_to_all" data-field="genre_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t class="required">Genre</label>
+                <select class="genre_field"></select>
+                <button
+                    class="copy_to_all"
+                    data-field="genre_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t class="required">Country</label>
-    <ob-field-country class="country_field" data-edit></ob-field-country>
-    <button class="copy_to_all" data-field="country_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t class="required">Country</label>
+                <ob-field-country class="country_field" data-edit></ob-field-country>
+                <button
+                    class="copy_to_all"
+                    data-field="country_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t class="required">Language</label>
-    <ob-field-language class="language_field" data-edit></ob-field-language>
-    <button class="copy_to_all" data-field="language_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t class="required">Language</label>
+                <ob-field-language class="language_field" data-edit></ob-field-language>
+                <button
+                    class="copy_to_all"
+                    data-field="language_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t>Comments</label>
-    <textarea class="comments_field"></textarea>
-    <button class="copy_to_all" data-field="comments_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t>Comments</label>
+                <textarea class="comments_field"></textarea>
+                <button
+                    class="copy_to_all"
+                    data-field="comments_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow" data-permissions="copyright_own_media manage_media">
-    <label data-t>Claim copyright for this media</label>
-    <select class="copyright_field"><option value="0" data-t>No</option><option value="1" data-t>Yes</option></select>
-    <button class="copy_to_all" data-field="copyright_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow" data-permissions="copyright_own_media manage_media">
+                <label data-t>Claim copyright for this media</label>
+                <select class="copyright_field">
+                    <option value="0" data-t>No</option>
+                    <option value="1" data-t>Yes</option>
+                </select>
+                <button
+                    class="copy_to_all"
+                    data-field="copyright_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow" data-permissions="approve_own_media manage_media">
-    <label data-t>Is media approved</label>
-    <select class="approved_field"><option value="0" data-t>No</option><option value="1" selected="selected" data-t>Yes</option></select>
-    <button class="copy_to_all" data-field="approved_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow" data-permissions="approve_own_media manage_media">
+                <label data-t>Is media approved</label>
+                <select class="approved_field">
+                    <option value="0" data-t>No</option>
+                    <option value="1" selected="selected" data-t>Yes</option>
+                </select>
+                <button
+                    class="copy_to_all"
+                    data-field="approved_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t>Status</label>
-    <select class="status_field"><option value="private" data-t>Private (available to you only)</option><option value="visible" data-t>Visible (available to all users)</option><option value="public" data-t>Public (available to everyone)</option></select>
-    <button class="copy_to_all" data-field="status_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t>Status</label>
+                <select class="status_field">
+                    <option value="private" data-t>Private (available to you only)</option>
+                    <option value="visible" data-t>Visible (available to all users)</option>
+                    <option value="public" data-t>Public (available to everyone)</option>
+                </select>
+                <button
+                    class="copy_to_all"
+                    data-field="status_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow">
-    <label data-t>Include in dynamic selections</label>
-    <select class="dynamic_select_field"><option value="1" data-t>Yes</option><option value="0" data-t>No</option></select>
-    <button class="copy_to_all" data-field="dynamic_select_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow">
+                <label data-t>Include in dynamic selections</label>
+                <select class="dynamic_select_field">
+                    <option value="1" data-t>Yes</option>
+                    <option value="0" data-t>No</option>
+                </select>
+                <button
+                    class="copy_to_all"
+                    data-field="dynamic_select_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow" data-permissions="media_advanced_permissions">
-    <label data-t>User Permissions</label>
-    <ob-field-user class="advanced_permissions_users_field" data-edit></ob-field-user>
-    <button class="copy_to_all" data-field="advanced_permissions_users_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
+            <div class="fieldrow" data-permissions="media_advanced_permissions">
+                <label data-t>User Permissions</label>
+                <ob-field-user class="advanced_permissions_users_field" data-edit></ob-field-user>
+                <button
+                    class="copy_to_all"
+                    data-field="advanced_permissions_users_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
 
-  <div class="fieldrow" data-permissions="media_advanced_permissions">
-    <label data-t>Group Permissions</label>
-    <ob-field-group class="advanced_permissions_groups_field" data-edit></ob-field-group>
-    <button class="copy_to_all" data-field="advanced_permissions_groups_field" onclick="OB.Media.copyField(this);" title="Copy To All"><i class="far fa-copy"></i></button>
-  </div>
-
-</div>
-
-</fieldset>
-
+            <div class="fieldrow" data-permissions="media_advanced_permissions">
+                <label data-t>Group Permissions</label>
+                <ob-field-group class="advanced_permissions_groups_field" data-edit></ob-field-group>
+                <button
+                    class="copy_to_all"
+                    data-field="advanced_permissions_groups_field"
+                    onclick="OB.Media.copyField(this);"
+                    title="Copy To All"
+                >
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </fieldset>
 </div>

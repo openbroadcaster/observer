@@ -1,24 +1,22 @@
 <div>
+    <obwidget type="message" id="version_edit_message"></obwidget>
 
-<obwidget type="message" id="version_edit_message"></obwidget>
+    <fieldset>
+        <legend data-t>Edit Version</legend>
 
-<fieldset>
-<legend data-t>Edit Version</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Notes</label>
+            <textarea id="version_edit_notes"></textarea>
+        </div>
+    </fieldset>
 
-<div class="fieldrow">
-  <label class="required" data-t>Notes</label>
-  <textarea id="version_edit_notes"></textarea>
-</div>
-</fieldset>
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" onclick="OB.Media.versionEditSave();" data-t>Save</button>
+            <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 
-<fieldset>
-<div class="fieldrow">
-  <button class="add" onclick="OB.Media.versionEditSave();" data-t>Save</button>
-  <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-</fieldset>
-
-<input type="hidden" id="version_edit_media_id">
-<input type="hidden" id="version_edit_created">
-
+    <input type="hidden" id="version_edit_media_id" />
+    <input type="hidden" id="version_edit_created" />
 </div>

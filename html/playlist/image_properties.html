@@ -1,24 +1,19 @@
 <obwidget type="message" id="item_properties_message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>Image Properties</legend>
 
-<fieldset>
-<legend data-t>Image Properties</legend>
+        <div class="fieldrow">
+            <label data-t>Image Duration</label>
+            <input type="text" size="5" value="" id="image_properties_duration" /> <span data-t>seconds</span>
+        </div>
+    </fieldset>
 
-<div class="fieldrow">
-  <label data-t>Image Duration</label>
-  <input type="text" size="5" value="" id="image_properties_duration"> <span data-t>seconds</span>
-</div>
-
-</fieldset>
-
-<fieldset>
-
-<div class="fieldrow">
-  <button value="Save" id="item_properties_save" class="add" data-t>Save</button>
-  <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-
-</fieldset>
-
+    <fieldset>
+        <div class="fieldrow">
+            <button value="Save" id="item_properties_save" class="add" data-t>Save</button>
+            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
+    </fieldset>
 </div>

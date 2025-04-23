@@ -1,72 +1,71 @@
 <div id="show_addedit_form">
+    <p data-t>To show the correct timeslots, select the desired week before scheduling.</p>
 
-<p data-t>To show the correct timeslots, select the desired week before scheduling.</p>
+    <obwidget type="message" id="show_addedit_message"></obwidget>
 
-<obwidget type="message" id="show_addedit_message"></obwidget>
+    <fieldset>
+        <legend data-t>Schedule Show</legend>
 
-<fieldset>
-<legend data-t>Schedule Show</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Item Name</label>
+            <span id="show_item_info"></span>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Item Name</label>
-  <span id="show_item_info"></span>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Timeslot</label>
+            <select onchange="OB.Schedule.addeditShowWindowTimeslotChange();" id="show_time_slot">
+                <option id="timeslot_manual_input_option" data-t>Manual Input</option>
+            </select>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Timeslot</label>
-  <select onchange="OB.Schedule.addeditShowWindowTimeslotChange();" id="show_time_slot"><option id="timeslot_manual_input_option" data-t>Manual Input</option></select>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Repeat</label>
+            <select id="show_mode">
+                <option value="once" data-t>None</option>
+                <option value="daily" data-t>Daily</option>
+                <option value="weekly" data-t>Weekly</option>
+                <option value="monthly" data-t>Monthly</option>
+                <option value="xdays" data-t>Every X Days</option>
+                <option value="xweeks" data-t>Every X Weeks</option>
+                <option value="xmonths" data-t>Every X Months</option>
+            </select>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Repeat</label>
-  <select id="show_mode">
-    <option value="once" data-t>None</option>
-    <option value="daily" data-t>Daily</option>
-    <option value="weekly" data-t>Weekly</option>
-    <option value="monthly" data-t>Monthly</option>
-    <option value="xdays" data-t>Every X Days</option>
-    <option value="xweeks" data-t>Every X Weeks</option>
-    <option value="xmonths" data-t>Every X Months</option>
-  </select>
-</div>
+        <div class="fieldrow hidden" id="show_addedit_x_data">
+            <label class="required" data-t>Recurring Every</label>
+            <input type="text" id="show_x_data" size="3" /> <span id="show_addedit_x_data_interval"></span>
+        </div>
 
-<div class="fieldrow hidden" id="show_addedit_x_data">
-  <label class="required" data-t>Recurring Every</label>
-  <input type="text" id="show_x_data" size="3"> <span id="show_addedit_x_data_interval"></span>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Start</label>
+            <ob-datetime-input id="show_start_datetime"></ob-datetime-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Start</label>
-  <ob-datetime-input id="show_start_datetime"></ob-datetime-input>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Duration</label>
+            <ob-duration-input id="show_duration"></ob-duration-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Duration</label>
-  <ob-duration-input id="show_duration"></ob-duration-input>
-</div>
+        <div class="fieldrow hidden" id="show_addedit_stop">
+            <label class="required" data-t>Until</label>
+            <ob-date-input id="show_stop_date"></ob-date-input>
+        </div>
+    </fieldset>
 
-<div class="fieldrow hidden" id="show_addedit_stop">
-  <label class="required" data-t>Until</label>
-  <ob-date-input id="show_stop_date"></ob-date-input>
-</div>
+    <fieldset>
+        <div class="fieldrow">
+            <button class="add" alue="Save" id="item_properties_save" onclick="OB.Schedule.saveShow();" data-t>
+                Save
+            </button>
+            <button class="delete edit_only" id="item_properties_delete" onclick="OB.Schedule.deleteShow();" data-t>
+                Delete
+            </button>
+            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+        </div>
 
-</fieldset>
+        <input type="hidden" id="show_item_type" value="" />
+        <input type="hidden" id="show_item_id" value="" />
 
-<fieldset>
-
-<div class="fieldrow">
-  <button class="add" alue="Save" id="item_properties_save" onclick="OB.Schedule.saveShow();" data-t>Save</button>
-  <button class="delete edit_only" id="item_properties_delete" onclick="OB.Schedule.deleteShow();" data-t>Delete</button>
-  <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-
-
-
-<input type="hidden" id="show_item_type" value="">
-<input type="hidden" id="show_item_id" value="">
-
-<input type="hidden" id="show_id" value="">
-
-</fieldset>
-
+        <input type="hidden" id="show_id" value="" />
+    </fieldset>
 </div>
