@@ -126,16 +126,17 @@
             content</span>)</span>
       </p>
 
-      <div class="playlist_data_save">
-        <button onclick="OB.Playlist.addeditInsertDynamic(true,OB.Sidebar.media_search_last_query);" data-t>Dynamic
-          Selection</button>
-        <button onclick="OB.Playlist.addeditInsertStationId();" data-t>Station ID</button>
-        <button id="playlist_insert_voicetrack_button" onclick="OB.Playlist.addeditInsertVoicetrack();" data-t>Voice
-          Track</button>
-        <button class="hidden" id="playlist_insert_breakpoint_button" onclick="OB.Playlist.addeditInsertBreakpoint();"
-          data-t>Breakpoint</button>
-        <button onclick="OB.Playlist.addeditRemoveAll();" class="edit" data-t>Clear</button>
-        <button onclick="OB.Playlist.save();" class="add" data-t>Save</button>
+      <div class="playlist_data_save" style="display: flex; gap: 10px;">
+        <ob-element-button onclick="OB.Playlist.addeditInsertDynamic(true,OB.Sidebar.media_search_last_query);"
+          data-text="Dynamic Selection" data-icon-name="dice-d20" data-icon-style="solid"></ob-element-button>
+        <ob-element-button onclick="OB.Playlist.addeditInsertStationId();" data-text="Station ID"
+          data-icon-name="tower-broadcast" data-icon-style="solid"></ob-element-button>
+        <ob-element-button onclick="OB.Playlist.addeditInsertVoicetrack();" data-text="Voice Track"
+          data-icon-name="podcast" data-icon-style="solid"></ob-element-button>
+        <ob-element-button onclick="OB.Playlist.addeditRemoveAll();" data-style="edit" data-text="Clear"
+          data-icon-name="xmark" data-icon-style="solid"></ob-element-button>
+        <ob-element-button onclick="OB.Playlist.save();" data-style="add" data-text="Save" data-icon-name="floppy-disk"
+          data-icon-style="solid"></ob-element-button>
       </div>
 
     </fieldset>
