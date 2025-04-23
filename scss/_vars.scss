@@ -1,5 +1,33 @@
-html
-{
+html {
+    --message-default-color: #2e3436;
+    --message-default-background: #eeeeec;
+    --message-success-color: #2e3436;
+    --message-success-background: #9de259;
+    --message-warning-color: #2e3436;
+    --message-warning-background: #fcef88;
+    --message-error-color: #eeeeec;
+    --message-error-background: #bf2121;
+
+    --button-default-color: var(--message-default-color);
+    --button-default-background: var(--message-default-background);
+    --button-default-radius: 5px;
+    --button-default-border: 0;
+
+    --button-add-color: var(--message-success-color);
+    --button-add-background: var(--message-success-background);
+    --button-add-radius: var(--button-default-radius);
+    --button-add-border: var(--button-default-border);
+
+    --button-edit-color: var(--message-warning-color);
+    --button-edit-background: var(--message-warning-background);
+    --button-edit-radius: var(--button-default-radius);
+    --button-edit-border: var(--button-default-border);
+
+    --button-delete-color: var(--message-error-color);
+    --button-delete-background: var(--message-error-background);
+    --button-delete-radius: var(--button-default-radius);
+    --button-delete-border: var(--button-default-border);
+
     --field-background: #eeeeec;
     --field-color: #2e3436;
     --field-border: 0;
