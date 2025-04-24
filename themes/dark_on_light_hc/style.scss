@@ -4,163 +4,153 @@
 
 @import "../../scss/all";
 
-html
-{
+html {
     --field-background: #272727;
     --field-color: #fff;
 }
 
-body, 
+body,
 #main_container,
 #footer_box_left a,
-#footer_box_right
-{
-  color: #000000; /**/ 
+#footer_box_right {
+    color: #000000; /**/
 
-  scrollbar-color: #272727 rgba(0,0,0,0);
+    scrollbar-color: #272727 rgba(0, 0, 0, 0);
 }
 
-a
-{
-  color: #11308c; /**/
+a {
+    color: #11308c; /**/
 }
 
-body, #main_container, ob-tag-suggestions
-{
-  background-color: #ededf1; /**/
+body,
+#main_container,
+ob-tag-suggestions {
+    background-color: #ededf1; /**/
 }
 
-fieldset, #layout_footer
-{
-  border-top-color: #000000;  /**/
+fieldset,
+#layout_footer {
+    border-top-color: #000000; /**/
 }
 
-.table th
-{
-  border-bottom: 1px solid #000;
+.table th {
+    border-bottom: 1px solid #000;
 }
 
-.table td
-{
-  border-bottom: 1px solid #555; /**/
+.table td {
+    border-bottom: 1px solid #555; /**/
 }
 
-ob-tab-select button
-{  
-  color: #000;
+ob-tab-select button {
+    color: #000;
 
-  &.active
-  {
-    border: 1px solid #000;
-  }
+    &.active {
+        border: 1px solid #000;
+    }
 }
 
-button, 
-input[type=submit], 
-input[type=reset], 
-input[type=button], 
-a.button, 
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+a.button,
 ob-tag-input ob-tag,
 ob-user-input ob-user,
 ob-group-input ob-group,
 ob-playlist-input ob-playlist,
-ob-media-input ob-media
-{
-  background-color: #272727; /**/
-  color: #fff; /**/
+ob-media-input ob-media {
+    background-color: #272727; /**/
+    color: #fff; /**/
 }
 
 ob-media-input:empty,
-ob-playlist-input:empty
-{
-  border-color: #000;
+ob-playlist-input:empty {
+    border-color: #000;
 }
 
-input, select, textarea
-{
-  border: 1px solid #000 !important;
+input,
+select,
+textarea {
+    border: 1px solid #000 !important;
 }
 
-ob-tag-input
-{
-  border-color: #000;
+ob-tag-input {
+    border-color: #000;
 }
 
-ob-playlist-input, ob-media-input
-{
-  padding: 0 5px;
+ob-playlist-input,
+ob-media-input {
+    padding: 0 5px;
 }
 
-
-button.add, button.edit, a.button.add, a.button.edit
-{
-  /* color: #fff; */ 
+button.add,
+button.edit,
+a.button.add,
+a.button.edit {
+    /* color: #fff; */
 }
 
-button.add, a.button.add
-{
-  background-color: #1e5a1e; /**/
-  color: #fff;
+button.add,
+a.button.add {
+    background-color: #1e5a1e; /**/
+    color: #fff;
 }
 
-button.edit, a.button.edit
-{
-  background-color: #DDC714; /**/
-  color: #000;
+button.edit,
+a.button.edit {
+    background-color: #ddc714; /**/
+    color: #000;
 }
 
-button.delete, a.button.delete
-{
-  color: #fff; /**/
+button.delete,
+a.button.delete {
+    color: #fff; /**/
 }
 
-.message
-{
-  color: #fff;
-  background-color: #272727;
+.message {
+    color: #fff;
+    background-color: #272727;
 }
 
-.message.success
-{
-  background-color: #1e5a1e;
-  color: #fff;
+.message.success {
+    background-color: #1e5a1e;
+    color: #fff;
 }
 
-.message.warning
-{
-  background-color: #DDC714; /**/
-  color: #000;
+.message.warning {
+    background-color: #ddc714; /**/
+    color: #000;
 }
 
-.message.error
-{
-  color: #fff;
+.message.error {
+    color: #fff;
 }
 
 ::-webkit-input-placeholder {
-  color: #2e3436;
-  text-align: center;
+    color: #2e3436;
+    text-align: center;
 }
 
-:-moz-placeholder { /* Firefox 18- */
-  color: #2e3436;
-  text-align: center;
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: #2e3436;
+    text-align: center;
 }
 
-::-moz-placeholder {  /* Firefox 19+ */
-  color: #2e3436;
-  text-align: center;
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #2e3436;
+    text-align: center;
 }
 
-:-ms-input-placeholder {  
-  color: #2e3436;
-  text-align: center; 
+:-ms-input-placeholder {
+    color: #2e3436;
+    text-align: center;
 }
 
-::input-placeholder
-{
-  color: #2e3436;
-  text-align: center;
+::input-placeholder {
+    color: #2e3436;
+    text-align: center;
 }
 
 /*
@@ -170,188 +160,163 @@ button.delete, a.button.delete
 }
 */
 
-.droppable_target_highlighted
-{
-  border: 1px dashed #c1360f !important; /**/
+.droppable_target_highlighted {
+    border: 1px dashed #c1360f !important; /**/
 }
-
 
 #obmenu li ul {
-  background-color: #ededf1; /**/
-  border: 1px solid #000000; /**/
+    background-color: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-#sidebar_player_main
-{
-  background-color: #ededf1; /**/
-  border: 1px solid #000000; /**/
+#sidebar_player_main {
+    background-color: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-#sidebar_search_playlist_container
-{
-  background: #ededf1; /**/
-  border: 1px solid #000000; /**/
+#sidebar_search_playlist_container {
+    background: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-.sidebar_search_media_container_basic
-{
-  background: #ededf1; /**/
-  border: 1px solid #000000; /**/
+.sidebar_search_media_container_basic {
+    background: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-.sidebar_search_media_container_detailed
-{
-  background: #ededf1; /**/
-  border: 1px solid #000000; /**/
+.sidebar_search_media_container_detailed {
+    background: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-#sidebar_search_tabs
-{
-  position: relative;
-  top: 1px;
+#sidebar_search_tabs {
+    position: relative;
+    top: 1px;
 }
 
-.sidebar_search_detailed #sidebar_search_tab_playlist
-{
-  background-color: #ededf1;
+.sidebar_search_detailed #sidebar_search_tab_playlist {
+    background-color: #ededf1;
 }
 
-.sidebar_search_tab
-{
-  background-color: transparent; 
-  border-right: 1px solid #000000; /**/
-  border-left: 1px solid #000000; /**/
-  border-top: 1px solid #000000; /**/
+.sidebar_search_tab {
+    background-color: transparent;
+    border-right: 1px solid #000000; /**/
+    border-left: 1px solid #000000; /**/
+    border-top: 1px solid #000000; /**/
 }
 
-.sidebar_search_tab.selected
-{
-  background-color: #ededf1; /**/
-  border: 1px solid #000000; /**/
-  border-bottom: 0;
-  font-weight: bold;
+.sidebar_search_tab.selected {
+    background-color: #ededf1; /**/
+    border: 1px solid #000000; /**/
+    border-bottom: 0;
+    font-weight: bold;
 }
 
-#sidebar_search_tabs a
-{
-  color: #000000; /**/ 
+#sidebar_search_tabs a {
+    color: #000000; /**/
 }
 
-.sidebar_search_noresults
-{
-  color: #000000; /**/
+.sidebar_search_noresults {
+    color: #000000; /**/
 }
 
-#sidebar_search_media_headings th, #sidebar_search_playlist_headings th
-{
-  border-bottom: 1px solid #333;
+#sidebar_search_media_headings th,
+#sidebar_search_playlist_headings th {
+    border-bottom: 1px solid #333;
 }
 
-.sidebar_search_media_selected, .sidebar_search_playlist_selected
-{
-  background-color: #272727;
-  color: #fff;
+.sidebar_search_media_selected,
+.sidebar_search_playlist_selected {
+    background-color: #272727;
+    color: #fff;
 }
 
-.context-menu, .my_searches_context_menu
-{
-  background-color: #ededf1; /**/
-  border: 1px solid #000000; /**/
+.context-menu,
+.my_searches_context_menu {
+    background-color: #ededf1; /**/
+    border: 1px solid #000000; /**/
 }
 
-#media_upload_form
-{
-  border: 1px solid #000000; /**/
-  background-color: transparent;
+#media_upload_form {
+    border: 1px solid #000000; /**/
+    background-color: transparent;
 }
 
-#playlist_edit_advanced
-{
-  background-color: transparent;
+#playlist_edit_advanced {
+    background-color: transparent;
 }
 
-#playlist_items, #playlist_liveassist_items
-{
-  background-color: transparent;
-  border: 1px solid #000000; /**/
+#playlist_items,
+#playlist_liveassist_items {
+    background-color: transparent;
+    border: 1px solid #000000; /**/
 }
 
-.playlist_addedit_item[data-type=dynamic], 
-.playlist_addedit_item[data-type=custom],
-.playlist_addedit_liveassist_item
-{
-  background-color: #babcb8; /**/
+.playlist_addedit_item[data-type="dynamic"],
+.playlist_addedit_item[data-type="custom"],
+.playlist_addedit_liveassist_item {
+    background-color: #babcb8; /**/
 }
 
-.playlist_addedit_item[data-type=station_id]
-{
-  background-color: #8cbaba; /**/
+.playlist_addedit_item[data-type="station_id"] {
+    background-color: #8cbaba; /**/
 }
 
-.playlist_addedit_item[data-type=breakpoint]
-{
-  background-color: #bdbe8c; /**/
+.playlist_addedit_item[data-type="breakpoint"] {
+    background-color: #bdbe8c; /**/
 }
 
-.playlist_addedit_item[data-type=audio], #playlist_edit_advanced .playlist_addedit_advanced_item_audio
-{
-  background-color: #A3A2E5; /**/
+.playlist_addedit_item[data-type="audio"],
+#playlist_edit_advanced .playlist_addedit_advanced_item_audio {
+    background-color: #a3a2e5; /**/
 }
 
-.playlist_addedit_item[data-type=image], #playlist_edit_advanced .playlist_addedit_advanced_item.image
-{
-  background-color: #E09998; /**/
+.playlist_addedit_item[data-type="image"],
+#playlist_edit_advanced .playlist_addedit_advanced_item.image {
+    background-color: #e09998; /**/
 }
 
-.playlist_addedit_item[data-type=video], #playlist_edit_advanced .playlist_addedit_advanced_item.video
-{
-  background-color: #afd5b0; /**/
-} 
-
-#schedule_container
-{
-  border: 1px solid #000000; /**/
-  background: transparent;
+.playlist_addedit_item[data-type="video"],
+#playlist_edit_advanced .playlist_addedit_advanced_item.video {
+    background-color: #afd5b0; /**/
 }
 
-#schedule_details > div
-{
-  background-color: #ededf1; /**/
-  border-color:#000000; /**/
+#schedule_container {
+    border: 1px solid #000000; /**/
+    background: transparent;
 }
 
-.schedule_data > div
-{
-  background-color: #454843;
-  color: #fff;
+#schedule_details > div {
+    background-color: #ededf1; /**/
+    border-color: #000000; /**/
 }
 
-#emergency_list_container
-{
-  background: transparent;
+.schedule_data > div {
+    background-color: #454843;
+    color: #fff;
 }
 
-#layout_modal_window
-{
-  color: #000000; /**/
-  background-color: #ededf1; /**/
-  border-color: #000000; /**/
+#emergency_list_container {
+    background: transparent;
 }
 
-#ob_ad_manager_drop
-{
-  padding: 25px;
+#layout_modal_window {
+    color: #000000; /**/
+    background-color: #ededf1; /**/
+    border-color: #000000; /**/
 }
 
-
-#alert, #confirm
-{
-  background-color: #ededf1;
-  border: 1px solid #000;
+#ob_ad_manager_drop {
+    padding: 25px;
 }
 
-#drag_helper
-{
-  background-color: #000;
-  color: #fff;
+#alert,
+#confirm {
+    background-color: #ededf1;
+    border: 1px solid #000;
+}
+
+#drag_helper {
+    background-color: #000;
+    color: #fff;
 }

@@ -22,8 +22,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "postinstall": "npm run build",
-    "format": "prettier --write \"{js,ui,html}/**/*.{js,html}\"",
-    "format:check": "prettier --check \"{js,ui,html}/**/*.{js,html}\" || (echo 'Format check failed.' && exit 1)",
+    "format": "prettier --write \"{js,ui,html,scss}/**/*.{js,html,scss}\"",
+    "format:check": "prettier --check \"{js,ui,html,scss}/**/*.{js,html,scss}\" || (echo 'Format check failed.' && exit 1)",
     "phpcs": "vendor/bin/phpcs --standard=.phpcs.xml.dist || (echo 'PHP CodeSniffer failed.' && exit 1)",
     "pre-commit": "npm run format:check && npm run phpcs"
   },
