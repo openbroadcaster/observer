@@ -11,6 +11,8 @@ class OBElementButton extends OBLitElement {
         };
     }
 
+    iconStyle = "solid"; // default
+
     static get styles() {
         return css`
             :host {

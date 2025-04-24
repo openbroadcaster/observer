@@ -34,9 +34,10 @@ class OBFieldPassword extends OBField {
                     font: inherit;
                     font-size: 13px;
                     display: inline-block;
-                    color: #2e3436;
-                    border-radius: 2px;
-                    border: 0;
+                    color: var(--field-color);
+                    background-color: var(--field-background);
+                    border-radius: var(--field-radius);
+                    border: var(--field-border);
                     padding: 5px;
                     width: 250px;
                     vertical-align: middle;

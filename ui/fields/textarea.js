@@ -39,10 +39,11 @@ class OBFieldTextarea extends OBField {
                 }
                 
                 textarea {
-                    color: #2e3436;
+                    color: var(--field-color);
+                    background-color: var(--field-background);
+                    border-radius: var(--field-radius);
+                    border: var(--field-border);
                     font-size: 13px;
-                    border-radius: 2px;
-                    border: 0;
                     padding: 5px;
                     width: 250px;
                     height: 100%;

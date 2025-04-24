@@ -4,80 +4,76 @@
 
 @import "../../scss/all";
 
-html
-{
-    --field-background: #2e3436;
-    --field-color: #eeeeec;
+html {
+  --field-background: #2e3436;
+  --field-color: #eeeeec;
 }
 
-body, 
+body,
 #main_container,
 #footer_box_left a,
-#footer_box_right
-{
+#footer_box_right {
   color: #333336;
 
-  scrollbar-color: #8d9090 rgba(0,0,0,0); 
+  scrollbar-color: #8d9090 rgba(0, 0, 0, 0);
 }
 
-a
-{
+a {
   color: #204a87;
 }
 
-body, #main_container, ob-tag-suggestions
-{
+body,
+#main_container,
+ob-tag-suggestions {
   background-color: #eeeeec;
 }
 
-fieldset, #layout_footer
-{
+fieldset,
+#layout_footer {
   border-top-color: #333336;
 }
 
-ob-tab-select button
-{  
+ob-tab-select button {
   color: #333336;
 
-  &.active
-  {
+  &.active {
     border: 1px solid #333336;
   }
 }
 
-button, 
-input[type=submit], 
-input[type=reset], 
-input[type=button], 
-a.button, 
+button,
+input[type=submit],
+input[type=reset],
+input[type=button],
+a.button,
 ob-tag-input ob-tag,
 ob-user-input ob-user,
 ob-group-input ob-group,
 ob-playlist-input ob-playlist,
-ob-media-input ob-media
-{
+ob-media-input ob-media {
   background-color: #2e3436;
   color: #eeeeec;
 }
 
 ob-media-input:empty,
-ob-playlist-input:empty
-{
+ob-playlist-input:empty {
   border-color: #333336;
 }
 
-button.add, button.edit, a.button.add, a.button.edit
-{
+button.add,
+button.edit,
+a.button.add,
+a.button.edit {
   color: #2e3436;
 }
 
-button.add, a.button.add
-{
+button.add,
+a.button.add {
   background-color: #a3c77f;
 }
 
-button.edit, a.button.edit
-{
+button.edit,
+a.button.edit {
   background-color: #e3dba0;
 }
 
@@ -86,110 +82,96 @@ button.edit, a.button.edit
   border-color: #333336;
 }
 
-#sidebar_player_draghere
-{
+#sidebar_player_draghere {
   color: #d3d7cf;
 }
 
-#sidebar_search_playlist_container
-{
+#sidebar_search_playlist_container {
   background: #d3d7cf;
 }
 
-.sidebar_search_media_container_basic
-{
+.sidebar_search_media_container_basic {
   background: #d3d7cf;
 }
 
-.sidebar_search_media_container_detailed
-{
+.sidebar_search_media_container_detailed {
   background: #d3d7cf;
 }
 
-.sidebar_search_tab
-{
-  background-color: #a6a6a5; /* matches rgba(0,0,0,0.3) but opaque */
+.sidebar_search_tab {
+  background-color: #a6a6a5;
+  /* matches rgba(0,0,0,0.3) but opaque */
 }
 
-.sidebar_search_tab.selected
-{
+.sidebar_search_tab.selected {
   background-color: #d3d7cf;
 }
 
-#sidebar_search_tabs a
-{
+#sidebar_search_tabs a {
   color: #333;
 }
 
-#sidebar_search_playlist_input, #sidebar_search_media_input
-{
+#sidebar_search_playlist_input,
+#sidebar_search_media_input {
   background-color: #eeeeec;
 }
 
-.context-menu, .my_searches_context_menu
-{
+.context-menu,
+.my_searches_context_menu {
   background-color: #eeeeec;
   border: 1px solid #333336;
 }
 
-.playlist_addedit_item[data-type=dynamic], 
+.playlist_addedit_item[data-type=dynamic],
 .playlist_addedit_item[data-type=custom],
-.playlist_addedit_liveassist_item
-{
+.playlist_addedit_liveassist_item {
   background-color: #d3d7cf;
 }
 
-.playlist_addedit_item[data-type=station_id]
-{
+.playlist_addedit_item[data-type=station_id] {
   background-color: #99bfbf;
 }
 
-.playlist_addedit_item[data-type=breakpoint]
-{
+.playlist_addedit_item[data-type=breakpoint] {
   background-color: #e3dba0;
 }
 
-.playlist_addedit_item[data-type=audio]
-{
+.playlist_addedit_item[data-type=audio] {
   background-color: #9b9bc4;
 }
 
-.playlist_addedit_item[data-type=image]
-{
+.playlist_addedit_item[data-type=image] {
   background-color: #ca9999;
 }
 
-.playlist_addedit_item[data-type=video]
-{
+.playlist_addedit_item[data-type=video] {
   background-color: #a3c77f;
-} 
-
-#schedule_details > div
-{
-  background-color: #ededf1; /**/
-  border-color:#333336; /**/
 }
 
-.schedule_data > div
-{
+#schedule_details>div {
+  background-color: #ededf1;
+  /**/
+  border-color: #333336;
+  /**/
+}
+
+.schedule_data>div {
   color: #eeeeec;
 }
 
-#layout_modal_window
-{
+#layout_modal_window {
   color: #333336;
   background-color: #eeeeec;
   border-color: #333336;
 }
 
-#alert, #confirm
-{
+#alert,
+#confirm {
   background-color: #eeeeec;
   border: 1px solid #333336;
 }
 
-#drag_helper
-{
-  background-color: rgba(0,0,0,0.8);
+#drag_helper {
+  background-color: rgba(0, 0, 0, 0.8);
   color: #fff;
 }

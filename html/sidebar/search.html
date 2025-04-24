@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <div id="sidebar_search_media_buttons" style="display: flex; gap: 10px; justify-content: center">
+    <div id="sidebar_search_media_buttons" class="button-container -centered">
         <ob-element-button
             id="sidebar_media_upload_button"
             data-permissions="create_own_media"
@@ -122,7 +122,6 @@
             data-style="add"
             data-text="New"
             data-icon-name="plus"
-            data-icon-style="solid"
         ></ob-element-button>
 
         <ob-element-button
@@ -132,7 +131,6 @@
             data-style="edit"
             data-text="Edit"
             data-icon-name="pen"
-            data-icon-style="solid"
         ></ob-element-button>
 
         <ob-element-button
@@ -141,7 +139,6 @@
             onclick="OB.Media.unarchivePage();"
             data-text="Restore"
             data-icon-name="trash-can-arrow-up"
-            data-icon-style="solid"
         ></ob-element-button>
 
         <ob-element-button
@@ -151,7 +148,6 @@
             data-style="delete"
             data-text="Delete"
             data-icon-name="trash"
-            data-icon-style="solid"
         ></ob-element-button>
     </div>
 </div>
@@ -206,7 +202,7 @@
         </div>
     </div>
 
-    <div id="sidebar_search_playlist_buttons" style="display: flex; gap: 10px; justify-content: center">
+    <div id="sidebar_search_playlist_buttons" class="button-container -centered">
         <ob-element-button
             data-permissions="create_own_playlists"
             onclick="OB.Playlist.newPage();"

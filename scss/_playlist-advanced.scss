@@ -1,81 +1,68 @@
-#playlist_edit_advanced
-{
+#playlist_edit_advanced {
   width: 100%;
   max-width: 800px;
   min-height: 100px;
   margin: 15px 0;
-  background-color: rgba(0,0,0,0.3);
-  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-default);
 }
 
-#playlist_edit_advanced_times
-{
-  position: relative; 
+#playlist_edit_advanced_times {
+  position: relative;
   min-height: 100px;
 }
 
-#playlist_edit_advanced_help
-{
+#playlist_edit_advanced_help {
   min-height: 100px;
   line-height: 100px;
 }
 
-#playlist_edit_advanced_items
-{
+#playlist_edit_advanced_items {
   position: relative;
   width: 500px;
 }
 
-#playlist_edit_advanced td
-{
+#playlist_edit_advanced td {
   vertical-align: top;
 }
 
-#playlist_edit_advanced td:first-child
-{
+#playlist_edit_advanced td:first-child {
   padding-left: 5px;
   min-height: 100px;
 }
 
-#playlist_edit_advanced .playlist_addedit_advanced_item
-{
+#playlist_edit_advanced .playlist_addedit_advanced_item {
   overflow: hidden;
   background: #aaa;
   outline: 1px solid #000;
-  position: absolute; 
+  position: absolute;
   z-index: 1;
   text-align: center;
 }
 
-#playlist_edit_advanced .playlist_addedit_advanced_item.audio
-{
+#playlist_edit_advanced .playlist_addedit_advanced_item.audio {
   background: #669;
 }
 
-#playlist_edit_advanced .playlist_addedit_advanced_item.video
-{
+#playlist_edit_advanced .playlist_addedit_advanced_item.video {
   background: #696;
 }
 
-#playlist_edit_advanced .playlist_addedit_advanced_item.image
-{
+#playlist_edit_advanced .playlist_addedit_advanced_item.image {
   background: #966;
 }
 
-#playlist_edit_advanced .playlist_addedit_advanced_item.selected
-{
+#playlist_edit_advanced .playlist_addedit_advanced_item.selected {
   outline: 2px solid #a00;
   z-index: 2;
 }
 
-#playlist_edit_advanced .playlist_edit_advanced_time
-{
+#playlist_edit_advanced .playlist_edit_advanced_time {
   position: absolute;
-  left: 0; 
+  left: 0;
 }
 
-#playlist_edit_advanced_help
-{
+#playlist_edit_advanced_help {
   text-align: center;
   display: none;
 }

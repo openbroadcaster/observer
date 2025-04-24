@@ -129,6 +129,10 @@ class OBFieldInputDevice extends OBField {
 
                     select {
                         width: 100%;
+                        color: var(--field-color);
+                        background-color: var(--field-background);
+                        border-radius: var(--field-radius);
+                        border: var(--field-border);
                     }
                 }
             }

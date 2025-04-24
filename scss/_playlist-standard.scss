@@ -6,7 +6,7 @@
   min-height: 100px;
   margin: 15px 0;
   background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
+  border-radius: var(--radius-default);
   overflow: hidden;
   padding: 5px;
 }

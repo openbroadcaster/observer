@@ -102,11 +102,14 @@ class OBFieldGenre extends OBField {
                     font: inherit;
                     font-size: 13px;
                     display: block;
-                    color: #2e3436;
                     padding: 5px;
                     width: 250px;
                     margin-bottom: 0.5em;
                     box-sizing: content-box;
+                    color: var(--field-color);
+                    background-color: var(--field-background);
+                    border-radius: var(--field-radius);
+                    border: var(--field-border);
                 }
             }
         `;

@@ -1,15 +1,14 @@
-html, body {
+html,
+body {
   height: 100%;
 }
 
-body
-{
+body {
   overflow: hidden;
   // TODO: overflow scroll styling here maybe?
 }
 
-#main_container
-{
+#main_container {
   top: 0;
   left: 0;
   width: 100%;
@@ -26,44 +25,38 @@ body
   flex-direction: column;
 }
 
-#layout_container
-{
+#layout_container {
   flex: 1 1 auto;
   max-height: calc(100vh - 60px);
   display: flex;
 }
 
-body.sidebar-left #layout_container
-{
+body.sidebar-left #layout_container {
   flex-direction: row-reverse;
 }
 
-#layout_main_container
-{
+#layout_main_container {
   overflow-y: auto;
   flex: 1 1 auto;
 
   scrollbar-width: thin;
+
   &:not(:hover) {
-    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
+    scrollbar-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
   }
 }
 
-@media (min-width: 1780px)
-{
-  body.sidebar-left.sidebar-expanded #layout_main_container
-  {
+@media (min-width: 1780px) {
+  body.sidebar-left.sidebar-expanded #layout_main_container {
     padding-left: 512px;
   }
 }
 
-#layout_main
-{
+#layout_main {
   padding: 15px 15px 25px 25px;
 }
 
-#layout_sidebar
-{
+#layout_sidebar {
   padding: 15px 15px 0 5px;
   flex: 0 0 370px;
   width: 370px;
@@ -72,8 +65,7 @@ body.sidebar-left #layout_container
   flex-direction: column;
 }
 
-#layout_footer
-{
+#layout_footer {
   flex: 0 0 60px;
   display: flex;
   align-items: center;
@@ -83,8 +75,7 @@ body.sidebar-left #layout_container
   box-sizing: border-box;
 }
 
-#footer_ajax
-{
+#footer_ajax {
   width: 24px;
   height: 21px;
   text-align: center;
@@ -95,58 +86,62 @@ body.sidebar-left #layout_container
 }
 
 @keyframes play {
-   from { background-position:    0px; }
-     to { background-position: -288px; }
+  from {
+    background-position: 0px;
+  }
+
+  to {
+    background-position: -288px;
+  }
 }
 
-#footer_box_left
-{
+#footer_box_left {
   display: flex;
   align-items: center;
 }
 
-#footer_box_right
-{
+#footer_box_right {
   color: #ccc;
   text-align: right;
   flex: 1 1 auto;
   margin-right: 25px;
-  display: flex; 
+  display: flex;
   justify-content: flex-end;
 }
 
-#alert_container, #confirm_container
-{
+#alert_container,
+#confirm_container {
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
   z-index: 20000;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#alert, #confirm
-{
+#alert,
+#confirm {
   width: 400px;
   min-height: 100px;
-  border-radius: 5px;
-  background-color: #333336;
-  border: 1px solid #eeeeec;
+  border-radius: var(--modal-radius);
+  background-color: var(--modal-background);
+  color: var(--modal-color);
+  border: var(--modal-border);
   padding: 15px 15px 70px 15px;
   position: relative;
 }
 
-#alert_message, #confirm_message
-{
+#alert_message,
+#confirm_message {
   white-space: pre-line;
 }
 
-#alert_buttons, #confirm_buttons
-{
+#alert_buttons,
+#confirm_buttons {
   position: absolute;
   left: 15px;
   bottom: 15px;
@@ -155,9 +150,8 @@ body.sidebar-left #layout_container
   padding-top: 15px;
 }
 
-#layout_modal_overlay
-{
-  background-color: rgba(0,0,0,0.75);
+#layout_modal_overlay {
+  background-color: rgba(0, 0, 0, 0.75);
   position: fixed;
   top: 0;
   left: 0;
@@ -167,13 +161,11 @@ body.sidebar-left #layout_container
   display: none;
 }
 
-body.modal-open #layout_modal_overlay
-{
+body.modal-open #layout_modal_overlay {
   display: block;
 }
 
-#layout_modal_container
-{
+#layout_modal_container {
   display: none;
   position: absolute;
   top: 0;
@@ -187,61 +179,43 @@ body.modal-open #layout_modal_overlay
   z-index: 10001;
 }
 
-@media (max-width: 1600px)
-{
-  body.sidebar-left #layout_modal_container
-  {
+@media (max-width: 1600px) {
+  body.sidebar-left #layout_modal_container {
     left: 400px;
     margin-left: 0;
   }
-  
-  body.sidebar-right #layout_modal_container
-  {
+
+  body.sidebar-right #layout_modal_container {
     left: auto;
     right: 400px;
     margin-left: 0;
   }
 }
 
-@media (max-width: 1225px)
-{
-  #layout_modal_container
-  {
+@media (max-width: 1225px) {
+  #layout_modal_container {
     width: calc(100vw - 425px);
   }
 }
 
-/*
-@media (max-width: 1100px)
-{
-  #layout_modal_container
-  {
-    left: auto;
-    right: 400px;
-    margin-left: 0;
-  }
-}
-*/
-
-body.modal-open #layout_modal_container
-{
+body.modal-open #layout_modal_container {
   display: flex;
 }
 
-#layout_modal_window
-{
-  color: #eeeeec;
-  border-radius: 5px;
-  background-color: #333336;
-  border: 1px solid #eeeeec;
+#layout_modal_window {
+  color: var(--modal-color);
+  border-radius: var(--modal-radius);
+  background-color: var(--modal-background);
+  border: var(--modal-border);
   padding: 10px;
   overflow: auto;
   max-height: 90%;
   width: 100%;
-  
+
   scrollbar-width: thin;
+
   &:not(:hover) {
-    scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0);
+    scrollbar-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
   }
 }
 
@@ -250,7 +224,15 @@ body.modal-open #layout_modal_container
   position: relative;
 }
 
-body.modal-open #obmenu
-{
+body.modal-open #obmenu {
   z-index: 9997;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.button-container.-centered {
+  justify-content: center;
 }

@@ -69,7 +69,7 @@ class OBFieldPlaylist extends OBField {
         return `
             :host {
                 .playlist-editable#playlist:empty {
-                    border: 2px dashed #eeeeec;
+                    border: 2px dashed var(--field-color);
                 }
 
                 .playlist-editable:empty::after {
@@ -84,7 +84,7 @@ class OBFieldPlaylist extends OBField {
                 }
 
                 #playlist.playlist-editable.dragging {
-                    border: 2px dashed #e09529;
+                    border: 2px dashed var(--message-warning-color);
                 }
 
                 /*
@@ -109,7 +109,7 @@ class OBFieldPlaylist extends OBField {
                 }
 
                 .playlist-editable .playlist-item {
-                    background-color: #eeeeec;
+                    background-color: var(--field-background);
                     color: #000;
                     padding: 5px;
                     border-radius: 2px;

@@ -32,7 +32,6 @@ class OBFieldCheckbox extends OBField {
                 input {
                     font: inherit;
                     font-size: 13px;
-                    color: #2e3436;
                 }
             }
         `;
