@@ -221,8 +221,17 @@ OB.Media.mediaAddeditForm = function (id, title, editing) {
     // one or more elements have visibility depending on permissions. call our update function to adjust this.
     OB.UI.permissionsUpdate();
 
-    // hide copy to add buttons if there is only one form loaded
+    // hide copy to all buttons if there is only one form loaded
     $(".media_addedit button.copy_to_all").toggle($(".media_addedit").length > 1);
+
+    const multiple = document.querySelectorAll(".media_addedit").length > 1;
+    document.querySelectorAll(".media_addedit .copy_to_all").forEach((button) => {
+        if (multiple) {
+            button.removeAttribute("hidden");
+        } else {
+            button.setAttribute("hidden", true);
+        }
+    });
 };
 
 /* Helper function that takes the global setting for a field (whether it's required,
