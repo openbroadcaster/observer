@@ -627,4 +627,55 @@ class PlayersModel extends OBFModel
 
         return $return;
     }
+
+    /**
+     * Set last connection time for the specified player and action.
+     *
+     * @param id
+     */
+    public function set_last_connect($playerId, $playerIp, $action)
+    {
+        $actionToColumn = [
+            'schedule' => 'schedule',
+            'emerg' => 'emergency',
+            'playlog_status' => 'playlog',
+            'playlog_post' => 'playlog',
+            'media' => 'media',
+            'thumbnail' => 'media'
+        ];
+
+        if (isset($actionToColumn[$action])) {
+            $lastConnectColumn = 'last_connect_' . $actionToColumn[$action];
+            $noticeColumn = 'player_last_connect_' . $actionToColumn[$action] . '_warning';
+        } else {
+            $lastConnectColumn = null;
+            $noticeColumn = null;
+        }
+
+
+        // set last connect time and last ip address
+        $updateData = [
+            'last_connect' => time(),
+            'last_ip_address' => $playerIp
+        ];
+
+        if ($lastConnectColumn) {
+            $updateData[$lastConnectColumn] = time();
+        }
+
+        $this->db->where('id', $playerId);
+        $this->db->update('players', $updateData);
+
+        // remove connection warning
+        $this->db->where('player_id', $playerId);
+        $this->db->where('event', 'player_last_connect_warning');
+        $this->db->update('notices', ['toggled' => 0]);
+
+        // remove specific connection warning
+        if ($noticeColumn) {
+            $this->db->where('player_id', $playerId);
+            $this->db->where('event', $noticeColumn);
+            $this->db->update('notices', ['toggled' => 0]);
+        }
+    }
 }
