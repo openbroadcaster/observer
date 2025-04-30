@@ -21,54 +21,34 @@
 
 require_once('components.php');
 
-// require_once all files in 'remote', starting with BaseAction
-require_once(__DIR__ . '/remote/BaseAction.php');
-$dir = new DirectoryIterator(__DIR__ . '/remote');
-foreach ($dir as $fileinfo) {
-    if ($fileinfo->isFile() && $fileinfo->getExtension() == 'php') {
-        require_once($fileinfo->getPathname());
-    }
-}
-
-// this script requires a long time when generating a lot of content
-ini_set('max_execution_time', max(300, ini_get('max_execution_time')));
-
-// required for some functions
-date_default_timezone_set('Etc/UTC');
-
 class Remote
 {
-    private $io;
     private $load;
-    private $user;
     private $db;
-
     private $auth_bypass;
     private $player;
-    private $buffer;
-    private $localtime;
-
-    private $xml;
-
-    private $TimeslotsModel;
-    private $ShowsModel;
-    private $MediaModel;
-    private $PlayersModel;
 
     public function __construct()
     {
+        // this script requires a long time when generating a lot of content
+        ini_set('max_execution_time', max(300, ini_get('max_execution_time')));
+
+        // required for some functions
+        date_default_timezone_set('Etc/UTC');
+
+        // require_once all files in 'remote', starting with BaseAction
+        require_once(__DIR__ . '/remote/BaseAction.php');
+        $dir = new DirectoryIterator(__DIR__ . '/remote');
+        foreach ($dir as $fileinfo) {
+            if ($fileinfo->isFile() && $fileinfo->getExtension() == 'php') {
+                require_once($fileinfo->getPathname());
+            }
+        }
+
         remoteDebug('remote.php called by ' . $_SERVER['REMOTE_ADDR'] . ' with ' . json_encode($_REQUEST));
 
-        $this->io = OBFIO::get_instance();
         $this->load = OBFLoad::get_instance();
-        $this->user = OBFUser::get_instance();
         $this->db = OBFDB::get_instance();
-
-        $this->TimeslotsModel = $this->load->model('Timeslots');
-        $this->ShowsModel = $this->load->model('Shows');
-        $this->MediaModel = $this->load->model('Media');
-        $this->PlayersModel = $this->load->model('Players');
-        $this->PlaylistsModel = $this->load->model('Playlists');
 
         // devmode bypasses auth
         if (!empty($_REQUEST['devmode']) && defined('OB_REMOTE_DEBUG') && $_REQUEST['devmode'] == OB_REMOTE_DEBUG) {
@@ -93,18 +73,10 @@ class Remote
             $this->error('action not found');
         } else {
             // set last connect time
-            $this->PlayersModel('set_last_connect', $this->player->id, $_SERVER['REMOTE_ADDR'], $_REQUEST['action'] ?? '');
+            $playersModel = $this->load->model('Players');
+            $playersModel('set_last_connect', $this->player->id, $_SERVER['REMOTE_ADDR'], $_REQUEST['action'] ?? '');
             return true;
         }
-
-        if (($action == 'schedule' || $action == 'emerg') && empty($this->buffer)) {
-            $this->error('required information missing');
-        }
-
-        $this->localtime = time();
-
-        // initialize xml stuff.
-        $this->xml = new SimpleXMLElement('<?xml version=\'1.0\' standalone=\'yes\'?><obconnect></obconnect>');
     }
 
     private function loadPlayer($player_id)
@@ -250,6 +222,7 @@ $remote = new Remote();
 
 
 // debug function that outputs/appends contents __DIR__ . '/debug.txt'
+// also used by classes in remote directory (TODO something cleaner)
 function remoteDebug($data)
 {
     return; // TODO disabled
