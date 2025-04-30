@@ -74,11 +74,37 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.Dayparting.save();" data-t>Save</button>
-            <button class="delete" hidden id="dayparting_delete" onclick="OB.Dayparting.delete();" data-t>
+            <ob-element-button
+                data-style="add"
+                class="add"
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                onclick="OB.Dayparting.save();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-style="delete"
+                class="delete"
+                data-text="Delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                hidden
+                id="dayparting_delete"
+                onclick="OB.Dayparting.delete();"
+                data-t
+            >
                 Delete
-            </button>
-            <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 

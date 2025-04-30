@@ -6,7 +6,16 @@
     <p id="media_second_message" class="bold"></p>
 
     <div class="media_delete_button center tbmargin">
-        <button class="delete" onclick="OB.Media.delete();" data-t>Yes, Delete</button>
+        <ob-element-button
+            class="delete"
+            data-style="delete"
+            data-text="Yes, Delete"
+            data-icon-name="trash"
+            data-icon-style="solid"
+            onclick="OB.Media.delete();"
+            data-t
+            >Yes, Delete</ob-element-button
+        >
     </div>
 
     <ul id="media_delete_list"></ul>

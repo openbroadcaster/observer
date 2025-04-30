@@ -25,9 +25,34 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.Media.categorySave();" data-t>Save</button>
-            <button class="delete edit_only" onclick="OB.Media.categoryDelete();" data-t>Delete</button>
-            <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            <ob-element-button
+                data-style="add"
+                class="add"
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                onclick="OB.Media.categorySave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-style="delete"
+                class="delete edit_only"
+                data-text="Delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                onclick="OB.Media.categoryDelete();"
+                data-t
+                >Delete</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 

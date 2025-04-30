@@ -6,7 +6,16 @@
     <p id="media_second_message" data-t>Item will be moved to approved media.</p>
 
     <div class="media_restore_button">
-        <button class="add" onclick="OB.Media.unarchive();" data-t>Yes, Restore</button>
+        <ob-element-button
+            data-style="add"
+            data-text="Yes, Restore"
+            data-icon-name="clock-rotate-left"
+            data-icon-style="solid"
+            class="add"
+            onclick="OB.Media.unarchive();"
+            data-t
+            >Yes, Restore</ob-element-button
+        >
     </div>
 
     <ul id="media_restore_list"></ul>
