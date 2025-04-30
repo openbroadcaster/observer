@@ -28,7 +28,7 @@ class PlayerNotices extends Cron
                 $db->where('player_id', $id);
 
                 // TODO change to "player_last_connect_"; will need an updates script to change the event names in the database.
-                $db->where('event', 'device_last_connect_' . $type . '_warning');
+                $db->where('event', 'player_last_connect_' . $type . '_warning');
                 $db->where('toggled', 0);
                 $notices = $db->get('notices');
 
