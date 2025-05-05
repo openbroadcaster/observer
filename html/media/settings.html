@@ -7,22 +7,8 @@
         <obwidget type="message" id="media_categories_message"></obwidget>
 
         <p>
-            <ob-element-button
-                data-text="Add a Category"
-                data-icon-name="plus"
-                data-icon-style="solid"
-                onclick="OB.Media.categoryAddeditWindow();"
-                data-t
-                >Add a Category</ob-element-button
-            >
-            <ob-element-button
-                data-text="Add a Genre"
-                data-icon-name="plus"
-                data-icon-style="solid"
-                onclick="OB.Media.genreAddeditWindow();"
-                data-t
-                >Add a Genre</ob-element-button
-            >
+            <button onclick="OB.Media.categoryAddeditWindow();" data-t>Add a Category</button>
+            <button onclick="OB.Media.genreAddeditWindow();" data-t>Add a Genre</button>
         </p>
 
         <table class="table">
@@ -139,18 +125,9 @@
 
             <fieldset>
                 <div class="fieldrow">
-                    <ob-element-button
-                        data-style="add"
-                        data-text="Save"
-                        data-icon-name="floppy-disk"
-                        data-icon-style="solid"
-                        class="add"
-                        id="media_settings_formats_save"
-                        onclick="OB.Media.formatsSave();"
-                        data-t
-                    >
+                    <button class="add" id="media_settings_formats_save" onclick="OB.Media.formatsSave();" data-t>
                         Save
-                    </ob-element-button>
+                    </button>
                 </div>
             </fieldset>
         </div>
@@ -213,16 +190,7 @@
             </div>
 
             <div class="fieldrow">
-                <ob-element-button
-                    data-style="add"
-                    data-text="Save"
-                    data-icon-name="floppy-disk"
-                    data-icon-style="solid"
-                    id="media_settings_fields_save"
-                    onclick="OB.Media.fieldsSave();"
-                    data-t
-                    >Save</ob-element-button
-                >
+                <button id="media_settings_fields_save" onclick="OB.Media.fieldsSave();" data-t>Save</button>
             </div>
         </fieldset>
     </ob-tab>
@@ -233,14 +201,7 @@
         <obwidget type="message" id="media_settings_metadata_message"></obwidget>
 
         <p>
-            <ob-element-button
-                data-text="New Field"
-                data-icon-name="plus"
-                data-icon-style="solid"
-                onclick="OB.Media.metadataAddEditWindow();"
-                data-t
-                >New Field</ob-element-button
-            >
+            <button onclick="OB.Media.metadataAddEditWindow();" data-t>New Field</button>
         </p>
 
         <table class="table" id="media_settings_metadata">
@@ -254,16 +215,7 @@
         </table>
 
         <div class="fieldrow">
-            <ob-element-button
-                data-style="add"
-                data-text="Save Order"
-                data-icon-name="floppy-disk"
-                data-icon-style="solid"
-                class="add"
-                onclick="OB.Media.metadataSaveOrder();"
-                data-t
-                >Save Order</ob-element-button
-            >
+            <button class="add" onclick="OB.Media.metadataSaveOrder();" data-t>Save Order</button>
         </div>
     </ob-tab>
 
@@ -276,14 +228,7 @@
         </p>
 
         <p>
-            <ob-element-button
-                data-text="New From Current Search"
-                data-icon-name="plus"
-                data-icon-style="solid"
-                onclick="OB.Dayparting.new();"
-                data-t
-                >New From Current Search</ob-element-button
-            >
+            <button onclick="OB.Dayparting.new();" data-t>New From Current Search</button>
         </p>
 
         <table class="table" id="dayparting_table">
@@ -336,16 +281,7 @@
             <div id="recording_custom_metadata"></div>
 
             <div class="fieldrow">
-                <ob-element-button
-                    data-style="add"
-                    data-text="Save Defaults"
-                    data-icon-name="floppy-disk"
-                    data-icon-style="solid"
-                    class="add"
-                    onclick="OB.Media.recordingDefaultsSave();"
-                    data-t
-                    >Save Defaults</ob-element-button
-                >
+                <button class="add" onclick="OB.Media.recordingDefaultsSave();" data-t>Save Defaults</button>
             </div>
         </fieldset>
     </ob-tab>
