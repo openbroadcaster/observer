@@ -14,18 +14,39 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" id="item_properties_save" onclick="OB.User.managePermissionsSave();" data-t>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="item_properties_save"
+                onclick="OB.User.managePermissionsSave();"
+                data-t
+            >
                 Save
-            </button>
-            <button
+            </ob-element-button>
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
                 class="edit_only delete"
                 id="item_properties_delete"
                 onclick="OB.User.managePermissionsDelete(false);"
                 data-t
             >
                 Delete
-            </button>
-            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 

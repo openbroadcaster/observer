@@ -70,7 +70,17 @@
         </div>
 
         <div class="fieldrow">
-            <button class="add" id="user_appkey_add" onclick="OB.User.manageUsersKeyAdd();" data-t>Add Key</button>
+            <ob-element-button
+                data-text="Add Key"
+                data-style="add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                class="add"
+                id="user_appkey_add"
+                onclick="OB.User.manageUsersKeyAdd();"
+                data-t
+                >Add Key</ob-element-button
+            >
         </div>
     </fieldset>
 
@@ -78,11 +88,38 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" id="item_properties_save" onclick="OB.User.manageUsersSave();" data-t>Save</button>
-            <button class="edit_only delete" id="item_properties_delete" onclick="OB.User.manageUsersDelete();" data-t>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="item_properties_save"
+                onclick="OB.User.manageUsersSave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                class="edit_only delete"
+                id="item_properties_delete"
+                onclick="OB.User.manageUsersDelete();"
+                data-t
+            >
                 Delete
-            </button>
-            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 

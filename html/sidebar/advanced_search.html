@@ -95,7 +95,14 @@
 
             &nbsp;
 
-            <button onclick="OB.Sidebar.advancedSearchAdd();" data-t>Add</button>
+            <ob-element-button
+                data-text="Add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Sidebar.advancedSearchAdd();"
+                data-t
+                >Add</ob-element-button
+            >
         </div>
     </fieldset>
 
@@ -115,17 +122,49 @@
         </div>
 
         <div class="fieldrow edit_my_search_item hidden">
-            <button class="add" id="edit_my_search_item_save" onclick="OB.Sidebar.mySearchesEdit();" data-t>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="edit_my_search_item_save"
+                onclick="OB.Sidebar.mySearchesEdit();"
+                data-t
+            >
                 Save
-            </button>
-            <button id="item_properties_cancel" onclick="OB.Sidebar.mySearchesWindow();" data-t>Cancel</button>
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.Sidebar.mySearchesWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 
     <fieldset class="fieldrow advanced_search_item">
         <div class="fieldrow">
-            <button onclick="OB.Sidebar.advancedSearch();" data-t>Search</button>
-            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            <ob-element-button
+                data-text="Search"
+                data-icon-name="magnifying-glass"
+                data-icon-style="solid"
+                onclick="OB.Sidebar.advancedSearch();"
+                data-t
+                >Search</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 </div>

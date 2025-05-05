@@ -8,7 +8,15 @@
             <span data-t>Allow new user registration from the welcome screen.</span>
         </div>
         <div class="fieldrow">
-            <button onclick="OB.User.manageUsersNew();" data-t id="users_new_user_button">Add a User</button>
+            <ob-element-button
+                data-text="Add a User"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.User.manageUsersNew();"
+                data-t
+                id="users_new_user_button"
+                >Add a User</ob-element-button
+            >
         </div>
     </fieldset>
 

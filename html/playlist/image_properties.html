@@ -12,8 +12,26 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button value="Save" id="item_properties_save" class="add" data-t>Save</button>
-            <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                value="Save"
+                id="item_properties_save"
+                class="add"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
         </div>
     </fieldset>
 </div>

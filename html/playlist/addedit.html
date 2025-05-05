@@ -78,8 +78,22 @@
             </p>
 
             <div class="fieldrow">
-                <button onclick="OB.Playlist.advancedZoomIn();" data-t>Zoom In</button>
-                <button onclick="OB.Playlist.advancedZoomOut();" data-t>Zoom Out</button>
+                <ob-element-button
+                    data-text="Zoom In"
+                    data-icon-name="magnifying-glass-plus"
+                    data-icon-style="solid"
+                    onclick="OB.Playlist.advancedZoomIn();"
+                    data-t
+                    >Zoom In</ob-element-button
+                >
+                <ob-element-button
+                    data-text="Zoom Out"
+                    data-icon-name="magnifying-glass-minus"
+                    data-icon-style="solid"
+                    onclick="OB.Playlist.advancedZoomOut();"
+                    data-t
+                    >Zoom Out</ob-element-button
+                >
             </div>
 
             <div id="playlist_edit_advanced" class="droppable_target_media droppable_target_playlist">
@@ -97,8 +111,26 @@
             </div>
 
             <div class="playlist_data_save fieldrow">
-                <button class="edit" onclick="OB.Playlist.advancedRemoveAll();" data-t>Clear</button>
-                <button class="add" onclick="OB.Playlist.save();" data-t>Save</button>
+                <ob-element-button
+                    data-text="Clear"
+                    data-style="edit"
+                    data-icon-name="xmark"
+                    data-icon-style="solid"
+                    class="edit"
+                    onclick="OB.Playlist.advancedRemoveAll();"
+                    data-t
+                    >Clear</ob-element-button
+                >
+                <ob-element-button
+                    data-text="Save"
+                    data-style="add"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    class="add"
+                    onclick="OB.Playlist.save();"
+                    data-t
+                    >Save</ob-element-button
+                >
             </div>
         </fieldset>
     </div>
@@ -176,8 +208,26 @@
             </div>
 
             <div class="playlist_data_save">
-                <button onclick="OB.Playlist.liveassistRemoveAll();" class="edit" data-t>Clear</button>
-                <button onclick="OB.Playlist.save();" class="add" data-t>Save</button>
+                <ob-element-button
+                    data-text="Clear"
+                    data-style="edit"
+                    data-icon-name="xmark"
+                    data-icon-style="solid"
+                    onclick="OB.Playlist.liveassistRemoveAll();"
+                    class="edit"
+                    data-t
+                    >Clear</ob-element-button
+                >
+                <ob-element-button
+                    data-text="Save"
+                    data-style="add"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    onclick="OB.Playlist.save();"
+                    class="add"
+                    data-t
+                    >Save</ob-element-button
+                >
             </div>
         </fieldset>
     </div>

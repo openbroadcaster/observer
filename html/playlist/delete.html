@@ -4,7 +4,16 @@
     <p id="playlist_top_message" data-t>Are you sure you want to delete the following playlists?</p>
 
     <div class="playlist_delete_button">
-        <button class="delete" onclick="OB.Playlist.delete();" data-t>Yes, Delete</button>
+        <ob-element-button
+            data-text="Yes, Delete"
+            data-style="delete"
+            data-icon-name="trash"
+            data-icon-style="solid"
+            class="delete"
+            onclick="OB.Playlist.delete();"
+            data-t
+            >Yes, Delete</ob-element-button
+        >
     </div>
 
     <ul id="playlist_delete_list"></ul>
