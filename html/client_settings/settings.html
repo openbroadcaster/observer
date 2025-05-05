@@ -19,7 +19,16 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.ClientSettings.save();" data-t>Save</button>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.ClientSettings.save();"
+                data-t
+                >Save</ob-element-button
+            >
         </div>
     </fieldset>
 </div>

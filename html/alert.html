@@ -3,7 +3,14 @@
         <div id="alert_message" data-t>OpenBroadcaster Alert</div>
 
         <div id="alert_buttons">
-            <button onclick="OB.UI.alertOff();" data-t>Okay</button>
+            <ob-element-button
+                data-text="Okay"
+                data-icon-name="check"
+                data-icon-style="solid"
+                onclick="OB.UI.alertOff();"
+                data-t
+                >Okay</ob-element-button
+            >
         </div>
     </div>
 </div>

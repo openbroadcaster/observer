@@ -38,8 +38,24 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.Account.keyPermissionsSave();" data-t>Save</button>
-            <button onclick="OB.UI.closeModalWindow();" data-t>Close</button>
+            <ob-element-button
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                data-style="add"
+                class="add"
+                onclick="OB.Account.keyPermissionsSave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Close"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Close</ob-element-button
+            >
         </div>
     </fieldset>
 

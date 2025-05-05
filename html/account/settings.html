@@ -107,13 +107,32 @@
         </div>
 
         <div class="fieldrow">
-            <button class="add" id="account_appkey_add" onclick="OB.Account.keyAdd();" data-t>Add Key</button>
+            <ob-element-button
+                data-text="Add Key"
+                data-style="add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                class="add"
+                id="account_appkey_add"
+                onclick="OB.Account.keyAdd();"
+                data-t
+                >Add Key</ob-element-button
+            >
         </div>
     </fieldset>
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.Account.settingsSubmit();" data-t>Save</button>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Account.settingsSubmit();"
+                data-t
+                >Save</ob-element-button
+            >
         </div>
     </fieldset>
 </div>
