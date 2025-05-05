@@ -62,7 +62,16 @@
                 <option value="not_like" class="hidden" data-t>does not contain</option>
             </select>
             <input type="text" id="monitor_filter_value" />
-            <button class="add" onclick="OB.Player.monitorFilterAdd();" data-t>Add Filter</button>
+            <ob-element-button
+                data-text="Add Filter"
+                data-style="add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.monitorFilterAdd();"
+                data-t
+                >Add Filter</ob-element-button
+            >
         </div>
 
         <div id="monitor_filter_list"></div>
@@ -70,10 +79,28 @@
 
     <fieldset>
         <div class="fieldrow">
-            <button class="add" onclick="OB.Player.monitorSearch();" data-t>Load Data</button>
-            <button class="add" id="monitor_download_csv" onclick="OB.Player.monitorSearch('csv');" data-t>
+            <ob-element-button
+                data-text="Load Data"
+                data-style="add"
+                data-icon-name="file-import"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.monitorSearch();"
+                data-t
+                >Load Data</ob-element-button
+            >
+            <ob-element-button
+                data-text="Download CSV"
+                data-style="add"
+                data-icon-name="download"
+                data-icon-style="solid"
+                class="add"
+                id="monitor_download_csv"
+                onclick="OB.Player.monitorSearch('csv');"
+                data-t
+            >
                 Download CSV
-            </button>
+            </ob-element-button>
             <a style="display: none" id="csv_result_link"></a>
         </div>
     </fieldset>

@@ -119,9 +119,35 @@
         </div>
 
         <div class="fieldrow">
-            <button class="add" onclick="OB.Player.savePlayer();" data-t>Save</button>
-            <button onclick="OB.UI.closeModalWindow();" data-t>Close</button>
-            <button class="delete player_existing" onclick="OB.Player.deletePlayer();" hidden data-t>Delete</button>
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.savePlayer();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Close"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Close</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                class="delete player_existing"
+                onclick="OB.Player.deletePlayer();"
+                hidden
+                data-t
+                >Delete</ob-element-button
+            >
             <input type="hidden" id="player_settings_id" />
         </div>
     </fieldset>

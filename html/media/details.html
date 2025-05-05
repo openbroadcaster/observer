@@ -4,11 +4,53 @@
             <div>
                 <h1 id="media_heading" data-t>Media Details</h1>
                 <p>
-                    <button data-t id="media_details_download" class="hidden add">Download</button>
-                    <button data-t id="media_details_edit" class="hidden edit">Edit</button>
-                    <button data-t id="media_details_restore" class="hidden">Restore</button>
-                    <button data-t id="media_details_delete" class="hidden delete">Delete</button>
-                    <button data-t id="media_details_versions" class="hidden">Versions</button>
+                    <ob-element-button
+                        data-text="Download"
+                        data-style="add"
+                        data-icon-name="floppy-disk"
+                        data-icon-style="solid"
+                        id="media_details_download"
+                        class="hidden add"
+                        >Download</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Edit"
+                        data-style="edit"
+                        data-icon-name="pen"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_edit"
+                        class="hidden edit"
+                        >Edit</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Restore"
+                        data-icon-name="clock-rotate-left"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_restore"
+                        class="hidden"
+                        >Restore</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Delete"
+                        data-style="delete"
+                        data-icon-name="trash"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_delete"
+                        class="hidden delete"
+                        >Delete</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Versions"
+                        data-icon-name="code-compare"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_versions"
+                        class="hidden"
+                        >Versions</ob-element-button
+                    >
                 </p>
             </div>
             <ob-element-thumbnail
@@ -78,7 +120,15 @@
         </div>
         <fieldset class="media_details_settings_save" hidden>
             <div class="fieldrow">
-                <button class="add" onclick="OB.MediaDetails.saveSettings()">Save</button>
+                <ob-element-button
+                    data-style="add"
+                    data-text="Save"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    class="add"
+                    onclick="OB.MediaDetails.saveSettings()"
+                    >Save</ob-element-button
+                >
             </div>
         </fieldset>
     </ob-tab>

@@ -53,48 +53,47 @@ OB.MediaDetails.page = function (id) {
         // handle buttons
 
         // we can download if we're the owner, or we have the download_media permission
-        if (OB.Account.user_id == item.owner_id || OB.Settings.permissions.indexOf("download_media") != -1)
-            $("#media_details_download")
-                .show()
-                .click(function () {
-                    OB.Media.download(id);
-                });
+        if (OB.Account.user_id == item.owner_id || OB.Settings.permissions.indexOf("download_media") != -1) {
+            $("#media_details_download").click(function () {
+                OB.Media.download(id);
+            });
+            document.querySelector("#media_details_download").classList.remove("hidden");
+        }
 
         // we can edit if we have manage_media (manage all media), or we're the owner and can create our own media
         if (item.can_edit) {
-            $("#media_details_edit")
-                .show()
-                .click(function () {
-                    OB.Media.editPage(id);
-                });
+            $("#media_details_edit").click(function () {
+                OB.Media.editPage(id);
+            });
+            document.querySelector("#media_details_edit").classList.remove("hidden");
 
             // we can also manage versions if we additionally have manage_media_versions
-            if (OB.Settings.permissions.indexOf("manage_media_versions") != -1)
-                $("#media_details_versions")
-                    .show()
-                    .click(function () {
-                        OB.Media.versionPage(id, item.title);
-                    });
+            if (OB.Settings.permissions.indexOf("manage_media_versions") != -1) {
+                $("#media_details_versions").click(function () {
+                    OB.Media.versionPage(id, item.title);
+                });
+                document.querySelector("#media_details_versions").classList.remove("hidden");
+            }
 
             // if regular approved media, we can delete. if not, we need manage_media to delete.
             if (
                 (item.is_archived == 0 && item.is_approved == 1) ||
                 OB.Settings.permissions.indexOf("manage_media") != -1
-            )
-                $("#media_details_delete")
-                    .show()
-                    .click(function () {
-                        OB.Media.deletePage(id);
-                    });
+            ) {
+                $("#media_details_delete").click(function () {
+                    OB.Media.deletePage(id);
+                });
+                document.querySelector("#media_details_delete").classList.remove("hidden");
+            }
         }
 
         // we can restore if this is already archived
-        if (item.is_archived == 1 && OB.Settings.permissions.indexOf("manage_media") != -1)
-            $("#media_details_restore")
-                .show()
-                .click(function () {
-                    OB.Media.unarchivePage(id);
-                });
+        if (item.is_archived == 1 && OB.Settings.permissions.indexOf("manage_media") != -1) {
+            $("#media_details_restore").click(function () {
+                OB.Media.unarchivePage(id);
+            });
+            document.querySelector("#media_details_restore").classList.remove("hidden");
+        }
 
         // handle metadata
         $("#media_details_id").text(id);
