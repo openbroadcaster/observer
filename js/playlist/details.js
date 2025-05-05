@@ -34,16 +34,14 @@ OB.Playlist.detailsPage = function (id) {
 
         // if we have permission, show edit/delete buttons.
         if (pldata.can_edit) {
-            $("#playlist_details_edit")
-                .show()
-                .click(function () {
-                    OB.Playlist.editPage(pldata.id);
-                });
-            $("#playlist_details_delete")
-                .show()
-                .click(function () {
-                    OB.Playlist.deletePage(pldata.id);
-                });
+            $("#playlist_details_edit").click(function () {
+                OB.Playlist.editPage(pldata.id);
+            });
+            document.querySelector("#playlist_details_edit").classList.remove("hidden");
+            $("#playlist_details_delete").click(function () {
+                OB.Playlist.deletePage(pldata.id);
+            });
+            document.querySelector("#playlist_details_delete").classList.remove("hidden");
         }
 
         $("#playlist_details_id").text(id);

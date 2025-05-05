@@ -3,8 +3,26 @@
         <h1 id="playlist_heading" data-t>Playlist Details</h1>
 
         <p>
-            <button data-t id="playlist_details_edit" class="hidden edit">Edit</button>
-            <button data-t id="playlist_details_delete" class="hidden delete">Delete</button>
+            <ob-element-button
+                data-text="Edit"
+                data-style="edit"
+                data-icon-name="pen"
+                data-icon-style="solid"
+                data-t
+                id="playlist_details_edit"
+                class="hidden edit"
+                >Edit</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                data-t
+                id="playlist_details_delete"
+                class="hidden delete"
+                >Delete</ob-element-button
+            >
         </p>
 
         <div id="playlist_details" class="hidden">
