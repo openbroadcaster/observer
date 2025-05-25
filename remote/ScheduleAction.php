@@ -31,6 +31,7 @@ class ScheduleAction extends BaseAction
         $this->ShowsModel = $this->load->model('Shows');
         $this->PlaylistsModel = $this->load->model('Playlists');
         $this->MediaModel = $this->load->model('Media');
+        $this->TimeslotsModel = $this->load->model('Timeslots');
 
         // a little buffer...
         $localtime = strtotime("-1 minute");
@@ -75,6 +76,7 @@ class ScheduleAction extends BaseAction
             }
 
             $mediaxml = $showxml->addChild('media');
+            $voicetrackxml = $showxml->addChild('voicetracks');
 
             if ($show['item_type'] == 'linein') {
                 $media_items = [['type' => 'linein','duration' => $show['duration']]];
@@ -99,7 +101,6 @@ class ScheduleAction extends BaseAction
             } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
                 $playlist = $this->db->get_one('playlists');
-                //$voicetrackxml = $showxml->addChild('voicetrack');
                 $showxml->addChild('description', $playlist['description']);
 
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
@@ -206,6 +207,18 @@ class ScheduleAction extends BaseAction
             $media_image_offset = 0.0;
 
             foreach ($media_items as $media_item) {
+                // disallow voicetrack for non-standard playlists
+                if ($show['type'] != 'standard' && $media_item['type'] == 'voicetrack') {
+                    continue;
+                }
+
+                // special handling for voicetrack
+                if ($media_item['type'] == 'voicetrack') {
+                    $itemxml = $voicetrackxml->addChild('item');
+                    $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
+                    continue;
+                }
+
                 if ($show['type'] == 'standard' && $media_offset > $show['duration']) {
                     break;
                 }
@@ -461,7 +474,6 @@ class ScheduleAction extends BaseAction
         return $new_items;
     }
 
-
     private function media_item_xml(&$itemxml, $track, $ord = false, $offset = false)
     {
         // special handling for 'breakpoint' (not really a media item, more of an instruction).
@@ -486,7 +498,7 @@ class ScheduleAction extends BaseAction
         }
 
         $itemxml->addChild('duration', $track['duration']);
-        $itemxml->addChild('type', $track['type'] == 'media' ? $media['type'] : $track['type']);
+        $itemxml->addChild('type', ($track['type'] == 'media' || $track['type'] == 'voicetrack') ? $media['type'] : $track['type']);
         if ($ord !== false) {
             $itemxml->addChild('order', $ord);
         }
@@ -529,8 +541,8 @@ class ScheduleAction extends BaseAction
 
         if ($track['type'] == 'voicetrack') {
             $voicetrackxml = $itemxml->addChild('voicetrack');
-            $voicetrackxml->addChild('fadeout_before', $track['voicetrack_fadeout_before']);
-            $voicetrackxml->addChild('fadein_after', $track['voicetrack_fadein_after']);
+            $voicetrackxml->addChild('fadeout', $track['voicetrack_fadeout_before']);
+            $voicetrackxml->addChild('fadein', $track['voicetrack_fadein_after']);
             $voicetrackxml->addChild('volume', $track['voicetrack_volume']);
             $voicetrackxml->addChild('offset', $track['voicetrack_offset']);
         }
@@ -548,7 +560,7 @@ class ScheduleAction extends BaseAction
     private function default_playlist_show_xml(&$showxml, $start, $max_duration)
     {
 
-        remoteDebug('default_playlist_show_xml called with start ' . gmdate('Y-m-d H:i:s', $start) . ' max duration ' . $max_duration);
+        remoteDebug('default_playlist_show_xml called with start ' . gmdate('Y - m - d H:i:s', $start) . ' max duration ' . $max_duration);
 
         if (empty($this->default_playlist_id)) {
             return 0;
@@ -597,7 +609,7 @@ class ScheduleAction extends BaseAction
 
             $cache = $this->db->get_one('shows_cache');
 
-            // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet.
+            // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet .
             if (!$cache) {
                 // don't specify max duration for playlist resolve since it's likely we'll need more items on subsequent sync.
                 // no max duration means the whole playlist will be rendered.
@@ -676,6 +688,7 @@ class ScheduleAction extends BaseAction
         $showxml->addChild('duration', min($max_duration, $duration));
 
         $mediaxml = $showxml->addChild('media');
+        $voicetrackxml = $showxml->addChild('voicetracks');
 
         $order_count = 0;
 
@@ -684,6 +697,18 @@ class ScheduleAction extends BaseAction
         $media_image_offset = 0.0;
 
         foreach ($show_media_items as $media_item) {
+            // disallow voicetrack for non-standard playlists
+            if ($playlist['type'] != 'standard' && $media_item['type'] == 'voicetrack') {
+                continue;
+            }
+
+            // special handling for voicetrack
+            if ($media_item['type'] == 'voicetrack') {
+                $itemxml = $voicetrackxml->addChild('item');
+                $this->media_item_xml($itemxml, $media_item, $order_count, $media_offset);
+                continue;
+            }
+
             if ($media_item['type'] == 'breakpoint') {
                 continue;
             } // completely ignore breakpoints. (live assist converted to standard playlist).
@@ -728,6 +753,7 @@ class ScheduleAction extends BaseAction
                 } // our next media offset is beyond max_duration, no more items to add.
             }
 
+            // voicetrack are on a separate layer so don't affect order count
             $order_count++;
         }
 
@@ -764,55 +790,6 @@ class ScheduleAction extends BaseAction
             return ceil($media_offset);
         }
     }
-
-    /*
-    // unused?
-    private function voicetrack_item_xml(&$itemxml, $track, $ord = false, $offset = false)
-    {
-        $voicetrack = $this->MediaModel('get_by_id', ['id' => $track['id']]);
-        if (! $voicetrack) {
-            return false;
-        }
-
-        $itemxml->addChild('duration', $track['duration']);
-        if ($ord !== false) {
-            $itemxml->addChild('order', $ord);
-        }
-        if ($offset !== false) {
-            $itemxml->addChild('offset', $offset);
-        }
-
-        if (! empty($voicetrack['is_archived'])) {
-            $filerootdir = OB_MEDIA_ARCHIVE;
-        } elseif (! empty($voicetrack['is_approved'])) {
-            $filerootdir = OB_MEDIA;
-        } else {
-            $filerootdir = OB_MEDIA_UPLOADS;
-        }
-        $fullfilepath = $filerootdir . '/' . $voicetrack['file_location'][0] . '/' . $voicetrack['file_location'][1] . '/' . $voicetrack['filename'];
-
-        $filesize = filesize($fullfilepath);
-        $itemxml->addChild('id', $track['id']);
-        $itemxml->addChild('filename', htmlspecialchars($voicetrack['filename']));
-        $itemxml->addChild('title', htmlspecialchars($voicetrack['title']));
-        $itemxml->addChild('artist', htmlspecialchars($voicetrack['artist']));
-        $itemxml->addChild('hash', $voicetrack['file_hash']);
-        $itemxml->addChild('filesize', $filesize);
-        $itemxml->addChild('location', $voicetrack['file_location']);
-        $itemxml->addChild('archived', $voicetrack['is_archived']);
-        $itemxml->addChild('approved', $voicetrack['is_approved']);
-        $itemxml->addChild('volume', $track['volume']);
-        $itemxml->addChild('delay', $track['offset']);
-        $itemxml->addChild('fadeout', $track['fadeout-before']);
-        $itemxml->addChild('fadein', $track['fadein-after']);
-
-        if (isset($voicetrack['thumbnail'])) {
-            $itemxml->addChild('thumbnail', $voicetrack['thumbnail']);
-        }
-
-        return true;
-    }
-    */
 
     private function loadRelatedPlayers()
     {

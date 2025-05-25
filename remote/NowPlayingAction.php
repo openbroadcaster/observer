@@ -57,5 +57,7 @@ class NowPlayingAction extends BaseAction
             'show_name'    => $current_show_name
         ];
         $this->db->insert('players_log', $entry);
+
+        return true;
     }
 }
