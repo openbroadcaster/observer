@@ -419,7 +419,7 @@ OB.Schedule.addShowWindow = function (type, id, name, duration) {
 
     OB.API.post("timeslots", "search", pfields, function (timeslots) {
         OB.Schedule.addeditShowWindow(timeslots.data);
-        $(".edit_only").hide();
+        $(".edit_only").attr("hidden", true);
 
         // if not using advanced permissions, the selected timeslot will be the first one.
         // run the timeslot change callback so that the start/duration is filled out.
