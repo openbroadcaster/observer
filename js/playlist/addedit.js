@@ -327,12 +327,12 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
 
     // initialize properties window for audio item.
     else if (type == "audio") {
-        if ($("#playlist_type_input").val() == "standard") {
-            document.querySelector("#audio_properties_media_id").value = document.querySelector(
-                "#playlist_addedit_item_" + id,
-            ).dataset.id;
-            $("#audio_properties_crossfade").val($("#playlist_addedit_item_" + id).attr("data-crossfade"));
-        }
+        // if ($("#playlist_type_input").val() == "standard") {
+        //     document.querySelector("#audio_properties_media_id").value = document.querySelector(
+        //         "#playlist_addedit_item_" + id,
+        //     ).dataset.id;
+        //     $("#audio_properties_crossfade").val($("#playlist_addedit_item_" + id).attr("data-crossfade"));
+        // }
     } else if (type == "voicetrack") {
         $("#audio_properties_voicetrack").val([$("#playlist_addedit_item_" + id).attr("data-id")]);
         $("#audio_properties_voicetrack_volume").val($("#playlist_addedit_item_" + id).attr("data-voicetrack_volume"));
