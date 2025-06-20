@@ -34,26 +34,6 @@ $(document).ready(function () {
     OB.Callbacks.callall("ready");
 });
 
-$(function () {
-    /*
-     * this swallows backspace keys on any non-input element.
-     * stops backspace -> back
-     */
-    var rx = /INPUT|SELECT|TEXTAREA|OB-TAG-INPUT/i;
-
-    $(document).bind("keydown keypress", function (e) {
-        if (e.which == 8) {
-            // 8 == backspace
-            if (customElements.get(e.target.tagName.toLowerCase()) && e.target.getAttribute("data-edit") !== null) {
-                return;
-            }
-            if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
-                e.preventDefault();
-            }
-        }
-    });
-});
-
 jQuery.fn.showFlex = function () {
     $(this).each(function (index, element) {
         $(element).css("display", "flex");
