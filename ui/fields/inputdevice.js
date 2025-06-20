@@ -133,6 +133,12 @@ class OBFieldInputDevice extends OBField {
                         background-color: var(--field-background);
                         border-radius: var(--field-radius);
                         border: var(--field-border);
+                        padding: 5px;
+                    }
+
+                    select:focus {
+                        outline: 2px solid var(--color-accent);
+                        outline-offset: 2px;
                     }
                 }
             }

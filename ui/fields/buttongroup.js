@@ -19,7 +19,7 @@ class OBFieldButtongroup extends OBLitElement {
 
         button {
             border: 0;
-            color: var(--buttongroup-inactive-color);
+            color: rgb(from var(--buttongroup-inactive-color) r g b / 0.66);
             background-color: var(--buttongroup-inactive-background);
             line-height: 0;
         }

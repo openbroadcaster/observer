@@ -25,7 +25,7 @@
 
         <div class="fieldrow">
             <label class="required" data-t>Sort</label>
-            <div>
+            <div style="display: flex; gap: 10px">
                 <div>
                     <select id="monitor_orderby">
                         <option value="media_id" data-t>Media ID</option>
@@ -36,7 +36,7 @@
                         <option value="notes" data-t>Notes</option>
                     </select>
                 </div>
-                <div>
+                <div style="margin: 0">
                     <select id="monitor_orderdesc">
                         <option value="0" data-t>Ascending</option>
                         <option value="1" selected="selected" data-t>Descending</option>
@@ -49,7 +49,7 @@
     <fieldset>
         <legend data-t>Filters</legend>
 
-        <div class="fieldset">
+        <div class="fieldset" style="display: flex; gap: 10px">
             <select onchange="OB.Player.monitorFilterFieldChange();" id="monitor_filter_field">
                 <option value="media_id" data-t>Media ID</option>
                 <option value="artist" data-t>Artist</option>

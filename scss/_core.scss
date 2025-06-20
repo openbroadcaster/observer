@@ -204,6 +204,17 @@ textarea {
     top: 3px;
 }
 
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    &:focus {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+}
+
 textarea,
 ob-tag-input,
 ob-user-input,

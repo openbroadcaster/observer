@@ -19,6 +19,10 @@ class OBElementButton extends OBLitElement {
                 display: inline-block;
             }
 
+            button:hover {
+                filter: brightness(1.1);
+            }
+
             button {
                 cursor: pointer;
                 padding: 4px 8px;
@@ -66,6 +70,10 @@ class OBElementButton extends OBLitElement {
                 background-color: transparent;
                 color: inherit;
                 padding: 0;
+            }
+
+            button.mini:hover {
+                color: var(--color-accent);
             }
 
             button.mini span {

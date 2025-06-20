@@ -3,9 +3,13 @@ html {
     --color-green: #9de259; // success, add
     --color-yellow: #fcef88; // warning, edit
     --color-orange: #e09529; // highlight droppable area
-    --color-blue: #204a87; // link
+    // --color-blue: #204a87;
+    --color-blue: hsl(216, 62%, 66%);
+
     --color-default: #eeeeec; // body text, general foreground
     --color-inverted: #333336; // general background
+    --color-accent: hsl(216, 62%, 66%);
+    --color-accent-inverted: hsl(216, 62%, 33%);
 
     --radius-default: 3px; // possible addition of small/large radius later for smaller/larger elements
 
