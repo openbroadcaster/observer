@@ -7,54 +7,13 @@
     </div>
 </div>
 
-<div id="sidebar_search_media_container" class="sidebar_search_media_container_basic">
-    <div id="sidebar_search_media_form">
-        <span id="sidebar_search_media_filters">
-            <a
-                title="View My Media Uploads"
-                id="sidebar_search_media_my"
-                href="javascript:OB.Sidebar.mediaSearchFilter('my');"
-                data-t
-                >my</a
-            >
-            &bull;
-            <a
-                title="View Approved Media"
-                id="sidebar_search_media_approved"
-                href="javascript:OB.Sidebar.mediaSearchFilter('approved');"
-                data-t
-                >ap</a
-            >
-            <a
-                title="View New (Unapproved) Media"
-                id="sidebar_search_media_unapproved"
-                href="javascript:OB.Sidebar.mediaSearchFilter('unapproved');"
-                data-t
-                >un</a
-            >
-            <a
-                data-permissions="manage_media"
-                title="View Archived Media"
-                id="sidebar_search_media_archived"
-                href="javascript:OB.Sidebar.mediaSearchFilter('archived');"
-                data-t
-                >ar</a
-            >
-        </span>
-        <input
-            type="text"
-            id="sidebar_search_media_input"
-            name="sidebar_search_media_input"
-            placeholder="Enter Search Query"
-            data-t
-        />
-        <div id="sidebar_search_media_mode">
-            <a href="javascript:OB.Sidebar.mediaSearchMode('advanced');" data-t>advanced</a> &bull;
-            <a href="javascript:OB.Sidebar.mediaSearchMode('simple');" data-t>simple</a> &bull;
-            <a href="javascript:OB.Sidebar.mySearchesWindow();" data-t>my searches</a> &bull;
-            <a href="javascript:OB.Sidebar.mediaDetails();" data-t>de</a> &bull;
-            <a href="javascript:OB.Sidebar.mediaThumbnails();" data-t>th</a>
-        </div>
+<div
+    id="sidebar_search_media_container"
+    class="sidebar_search_media_container_basic"
+    style="display: flex; flex-direction: column; gap: 10px"
+>
+    <div class="sidebar_search_media_form">
+        <ob-element-search-media style="position: relative; z-index: 1"></ob-element-search-media>
     </div>
 
     <table id="sidebar_search_media_headings">
@@ -153,24 +112,8 @@
 </div>
 
 <div id="sidebar_search_playlist_container" class="hidden">
-    <div id="sidebar_search_playlist_form">
-        <span id="sidebar_search_media_filters"
-            ><a
-                title="View My Playlists"
-                id="sidebar_search_playlist_my"
-                href="javascript:OB.Sidebar.playlistSearchFilter('my');"
-                data-t
-                >my</a
-            ></span
-        >
-        <input
-            type="text"
-            id="sidebar_search_playlist_input"
-            name="sidebar_search_playlist_input"
-            placeholder="Enter Search Query"
-            data-t
-        />
-        <div>&nbsp;</div>
+    <div class="sidebar_search_playlist_form" style="margin-bottom: 10px">
+        <ob-element-search-playlist style="position: relative; z-index: 1"></ob-element-search-playlist>
     </div>
 
     <table id="sidebar_search_playlist_headings">

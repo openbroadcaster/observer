@@ -2,7 +2,7 @@ html {
     --color-red: #bf2121; // error, delete
     --color-green: #9de259; // success, add
     --color-yellow: #fcef88; // warning, edit
-    --color-orange: #e09529; // highligh droppable area
+    --color-orange: #e09529; // highlight droppable area
     --color-blue: #204a87; // link
     --color-default: #eeeeec; // body text, general foreground
     --color-inverted: #333336; // general background
@@ -45,6 +45,11 @@ html {
     --button-delete-radius: var(--radius-default);
     --button-delete-border: 0;
 
+    --buttongroup-active-color: var(--color-inverted);
+    --buttongroup-active-background: var(--color-default);
+    --buttongroup-inactive-color: var(--color-default);
+    --buttongroup-inactive-background: transparent;
+
     --field-background: var(--color-default);
     --field-color: var(--color-inverted);
     --field-border: 0;
@@ -55,4 +60,8 @@ html {
     --modal-background: var(--color-inverted);
     --modal-color: var(--color-default);
     --modal-border: 1px solid var(--color-default);
+
+    --menu-color: var(--color-inverted);
+    --menu-background: var(--color-default);
+    --menu-divider: 1px solid var(--color-inverted);
 }

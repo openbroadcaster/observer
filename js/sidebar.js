@@ -23,6 +23,9 @@ OB.Sidebar.init = function () {
     OB.Callbacks.add("ready", -5, OB.Sidebar.sidebarInit);
 };
 
+OB.Sidebar.mediaSearchQuery = "";
+OB.Sidebar.playlistSearchQuery = "";
+
 OB.Sidebar.sidebarInit = function () {
     if (parseInt(OB.Account.userdata.sidebar_display_left)) {
         $("body").addClass("sidebar-left");
@@ -32,28 +35,47 @@ OB.Sidebar.sidebarInit = function () {
 
     OB.Sidebar.mediaDetails();
 
-    $("#sidebar_search_media_input").keyup(function (event) {
-        // cancel advanced search (if applicable)
-        OB.Sidebar.advanced_search_filters = null;
-
-        if (event.keyCode == "13") {
-            $.doTimeout("media_search_timeout"); // cancel timeout function below.
-            OB.Sidebar.mediaSearch();
-        } else
-            $.doTimeout("media_search_timeout", 750, function () {
-                OB.Sidebar.mediaSearch();
-            });
-    });
-
-    $("#sidebar_search_playlist_input").keyup(function () {
-        $.doTimeout("playlist_search_timeout", 750, function () {
-            OB.Sidebar.playlistSearch();
-        });
-    });
-
     OB.Sidebar.playlistEditDeleteVisibility();
     OB.Sidebar.mediaSearchFilter("approved");
     OB.Sidebar.playlistSearch();
+
+    OB.Sidebar.mediaSearchForm = document.querySelector("ob-element-search-media");
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-view-changed", function (e) {
+        if (e.detail.view == "list") {
+            OB.Sidebar.mediaDetails();
+        } else if (e.detail.view == "grid") {
+            OB.Sidebar.mediaThumbnails();
+        }
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-status-changed", function (e) {
+        OB.Sidebar.mediaSearchFilter(e.detail.status);
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-my-changed", function (e) {
+        OB.Sidebar.mediaSearchFilter("my");
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-filters-clicked", function () {
+        OB.Sidebar.advancedSearchWindow();
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-mode-changed", function (e) {
+        OB.Sidebar.mediaSearchFilter(e.detail.mode);
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-history-clicked", function (e) {
+        console.log(e);
+        OB.Sidebar.mySearchesWindow();
+    });
+    OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-query-changed", function (e) {
+        OB.Sidebar.mediaSearchQuery = e.detail.query;
+        OB.Sidebar.mediaSearch();
+    });
+
+    OB.Sidebar.playlistSearchForm = document.querySelector("ob-element-search-playlist");
+    OB.Sidebar.playlistSearchForm.addEventListener("ob-search-playlist-query-changed", function (e) {
+        OB.Sidebar.playlistSearchQuery = e.detail.query;
+        OB.Sidebar.playlistSearch();
+    });
+    OB.Sidebar.playlistSearchForm.addEventListener("ob-search-playlist-my-changed", function (e) {
+        OB.Sidebar.playlistSearchFilter("my");
+    });
 };
 
 OB.Sidebar.playerToggle = function () {
@@ -337,7 +359,7 @@ OB.Sidebar.mediaSearch = function (more) {
 
     if (OB.Sidebar.advanced_search_filters == null) {
         search_query.mode = "simple";
-        search_query.string = $("#sidebar_search_media_input").val();
+        search_query.string = OB.Sidebar.mediaSearchQuery; // $("#sidebar_search_media_input").val();
     } else {
         search_query.mode = "advanced";
         search_query.filters = OB.Sidebar.advanced_search_filters;
@@ -861,7 +883,7 @@ OB.Sidebar.playlistSearch = function (more) {
         {
             sort_by: OB.Sidebar.playlist_search_sort_by,
             sort_dir: OB.Sidebar.playlist_search_sort_dir,
-            q: $("#sidebar_search_playlist_input").val(),
+            q: OB.Sidebar.playlistSearchQuery, // $("#sidebar_search_playlist_input").val(),
             l: results_per_page,
             o: OB.Sidebar.playlist_search_offset,
             my: OB.Sidebar.playlist_search_filters.my,

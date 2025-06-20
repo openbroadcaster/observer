@@ -32,6 +32,8 @@ class OBElementButton extends OBLitElement {
                 border: var(--button-default-border);
                 font-weight: 600;
                 font-family: inherit;
+                justify-content: center;
+                height: 100%;
             }
 
             button.add {
@@ -90,7 +92,7 @@ class OBElementButton extends OBLitElement {
                 class=${this.style || "default"}
             >
                 ${this.iconName ? html`<i class="fa-${this.iconStyle} fa-${this.iconName}"></i>` : ""}
-                <span>${this.text}</span>
+                ${this.text ? html`<span>${this.text}</span>` : ""}
             </button>
         `;
     }
