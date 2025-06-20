@@ -305,7 +305,8 @@ OB.Account.keyLoad = function () {
             $tr.append($("<td/>").text(format_timestamp(row.last_access)));
             $tr.append(
                 $("<td/>").html(
-                    '<button onclick="OB.Account.keyPermissionsOpen(this);">Permissions</button><button class="delete" onclick="OB.Account.keyDelete(this);">Delete</button>',
+                    '<ob-element-button data-text="Permissions" data-icon-name="list" onclick="OB.Account.keyPermissionsOpen(this);"></ob-element-button>\
+                     <ob-element-button data-text="Delete" data-icon-name="trash" data-style="delete" onclick="OB.Account.keyDelete(this);"></ob-element-button>',
                 ),
             );
             $tr.data("appkey_permissions", row.permissions);

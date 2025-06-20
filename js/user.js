@@ -94,11 +94,11 @@ OB.User.manageUsersList = function () {
             $html.append('<td class="user_groups"></td>');
             //T Edit
             $html.append(
-                '<td><button onclick="OB.User.manageUsersEdit(' +
+                '<td><ob-element-button data-style="edit" data-icon-name="pen" data-text="' +
+                    htmlspecialchars(OB.t("Edit")) +
+                    '" onclick="OB.User.manageUsersEdit(' +
                     userdata.id +
-                    ');" >' +
-                    OB.t("Edit") +
-                    "</button></td>",
+                    ');" ></ob-element-button></td>',
             );
 
             $html.attr("id", "user_" + userdata.id);
@@ -344,22 +344,22 @@ OB.User.managePermissions = function () {
 
             $.each(groups, function (index, group) {
                 $thead.append(
-                    '<th id="group_permissions_' +
+                    '<th style="text-align: center; vertical-align: bottom;" id="group_permissions_' +
                         group.id +
                         '" ' +
                         'data-name="' +
                         htmlspecialchars(group.name) +
                         '"> ' +
                         (group.id != 1
-                            ? '<button onclick="OB.User.managePermissionsEdit(' +
+                            ? '<ob-element-button data-style="edit" data-text="' +
+                              htmlspecialchars(OB.t("Edit")) +
+                              '" data-icon-name="pen" onclick="OB.User.managePermissionsEdit(' +
                               group.id +
-                              ');">' +
-                              //T Edit
-                              OB.t("Edit") +
-                              "</button>"
+                              ');"></ob-element-button>'
                             : "") +
-                        "<br>" +
+                        '<div style="margin-top: 5px;">' +
                         htmlspecialchars(group.name) +
+                        "</div>" +
                         "</th>",
                 );
 

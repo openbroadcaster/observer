@@ -79,10 +79,11 @@ OB.Modules.modulesGet = function () {
                     "<td>" +
                     htmlspecialchars(module.description) +
                     "</td>" +
-                    "<td><button onclick=\"OB.Modules.moduleUninstall(false, '" +
+                    '<td><ob-element-button data-style="delete" data-text="' +
+                    htmlspecialchars(OB.t("Uninstall")) +
+                    '" data-icon-name="trash" onclick="OB.Modules.moduleUninstall(false, "' +
                     module.dir +
-                    "');\" >" +
-                    OB.t("uninstall") +
+                    '");"></ob-element-button>' +
                     "</td>" +
                     "</tr>",
             );
@@ -97,10 +98,11 @@ OB.Modules.modulesGet = function () {
                     "<td>" +
                     htmlspecialchars(module.description) +
                     "</td>" +
-                    "<td><button onclick=\"OB.Modules.moduleInstall(false, '" +
+                    '<td><ob-element-button data-icon-name="download" data-style="add" data-text="' +
+                    htmlspecialchars(OB.t("Install")) +
+                    '" onclick="OB.Modules.moduleInstall(false, "' +
                     module.dir +
-                    "');\" >" +
-                    OB.t("install") +
+                    ');">' +
                     "</td></tr>",
             );
         });

@@ -47,14 +47,17 @@ OB.Schedule.schedule = function () {
     OB.Schedule.setScheduleDates();
     OB.Schedule.scheduleInit();
 
+    $("#schedule_linein button").text(OB.t("Schedule Line-In"));
+
     //T Shows
     $("#schedule_heading").text(OB.t("Shows"));
     //T Drag media or playlist onto schedule. Double-click show to edit.
     $("#schedule_welcome").text(OB.t("Drag media or playlist onto schedule. Double-click show to edit."));
     $("#schedule_welcome").prepend(
-        '<span id="schedule_linein" class="hidden"><button onclick="OB.Schedule.addShowWindow(\'linein\');"></button> &nbsp; </span>',
+        '<span id="schedule_linein" class="hidden"><ob-element-button data-icon-name="wave-square" data-text="' +
+            htmlspecialchars(OB.t("Schedule Line-In")) +
+            '" onclick="OB.Schedule.addShowWindow(\'linein\');"></ob-element-button> &nbsp; </span>',
     );
-    $("#schedule_linein button").text(OB.t("Schedule Line-In"));
 
     // setup schedule table as drop area for playlists and media
     $("#schedule_container").addClass("droppable_target_media");
@@ -112,7 +115,10 @@ OB.Schedule.scheduleTimeslots = function () {
     var instructions_text = htmlspecialchars(OB.t("or double-click a box to edit/delete."));
 
     $("#schedule_welcome").html(
-        '<button onclick="OB.Schedule.addTimeslotWindow();">' + add_text + "</button> " + instructions_text,
+        '<ob-element-button data-text="' +
+            add_text +
+            '" onclick="OB.Schedule.addTimeslotWindow();" data-icon-name="clock"></ob-element-button> &nbsp;' +
+            instructions_text,
     );
 };
 

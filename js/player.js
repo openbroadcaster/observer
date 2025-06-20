@@ -96,7 +96,9 @@ OB.Player.playerOverview = function (orderby = "name", orderdesc = null) {
             //T Edit
             $html.append(
                 $("<td/>").html(
-                    '<button class="edit" onclick="OB.Player.editPlayer(' + player.id + ');">Edit</button>',
+                    '<ob-element-button data-text="Edit" data-icon-name="pen" class="edit" data-style="edit" onclick="OB.Player.editPlayer(' +
+                        player.id +
+                        ');"></ob-element-button>',
                 ),
             );
 

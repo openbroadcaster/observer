@@ -176,7 +176,6 @@ OB.Alert.saveAlert = function () {
     fields.mode = document.querySelector("#alert_mode").value;
     fields.properties = {
         voicetrack_volume: document.querySelector("#alert_voicetrack_volume").value,
-        voicetrack_offset: document.querySelector("#alert_voicetrack_offset").value,
         voicetrack_fadeout_before: document.querySelector("#alert_voicetrack_fadeout_before").value,
         voicetrack_fadein_after: document.querySelector("#alert_voicetrack_fadein_after").value,
     };
@@ -273,7 +272,7 @@ OB.Alert.deleteAlert = function (confirm) {
 
 OB.Alert.changeMode = function () {
     if (document.querySelector("#alert_mode").value === "voicetrack") {
-        document.querySelectorAll(".alert_mode_voicetrack").forEach((node) => (node.style.display = "inline-block"));
+        document.querySelectorAll(".alert_mode_voicetrack").forEach((node) => (node.style.display = "flex"));
     } else {
         document.querySelectorAll(".alert_mode_voicetrack").forEach((node) => (node.style.display = "none"));
     }
