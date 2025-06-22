@@ -33,7 +33,7 @@ OB.Help.initMenu = function () {
 };
 
 OB.Help.documentation = function () {
-    window.open("https://wiki.openbroadcaster.com/Observer");
+    window.open("https://support.openbroadcaster.com/observer/");
 };
 
 OB.Help.update = function () {
