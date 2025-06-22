@@ -184,22 +184,23 @@ class OBFChecker
 
             if (stripos(OB_SITE, 'http://') !== 0 && stripos(OB_SITE, 'https://') !== 0) {
                 $errors[] = 'OB_SITE (installation web address) is not valid.';
-            } else {
-                $curl = curl_init(OB_SITE);
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
-                curl_setopt($curl, CURLOPT_HEADER, true);
-                curl_setopt($curl, CURLOPT_NOBODY, true);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-                $response = curl_exec($curl);
-                curl_close($curl);
-
-                if (!$response) {
-                    $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
-                } elseif (stripos($response, 'OpenBroadcaster-Application: index') === false) {
-                    $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
-                }
             }
+        // else {
+            //     $curl = curl_init(OB_SITE);
+            //     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
+            //     curl_setopt($curl, CURLOPT_HEADER, true);
+            //     curl_setopt($curl, CURLOPT_NOBODY, true);
+            //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            //     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            //     $response = curl_exec($curl);
+            //     curl_close($curl);
+            //
+            //     if (!$response) {
+            //         $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
+            //     } elseif (stripos($response, 'OpenBroadcaster-Application: index') === false) {
+            //         $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
+            //     }
+            // }
 
             if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) {
                 $errors[] = 'OB_EMAIL_REPLY (email address used to send emails) is not valid.';
