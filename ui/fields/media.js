@@ -1,7 +1,8 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldMedia extends OBField {
+    _value = [];
 
     #mediaItems;
     #mediaContent;
@@ -9,6 +10,7 @@ class OBFieldMedia extends OBField {
     #mediaRecorder;
     #recordData;
     #recordUrl;
+    #audioDevice;
 
     #blob;
     #playback;
@@ -20,90 +22,147 @@ class OBFieldMedia extends OBField {
 
     #init;
 
-    connectedCallback() {
-        this.#mediaItems    = [];
-        this.#mediaContent  = {};
+    static comparisonOperators = {
+        eq: "is",
+        neq: "is not",
+    };
 
-        this.#recordData    = [];
-        this.#recordUrl     = "";
+    async connected() {
+        if (this.#init) {
+            return;
+        }
+
+        this.#init = true;
+
+        this.#mediaItems = [];
+        this.#mediaContent = {};
+
+        this.#recordData = [];
+        this.#recordUrl = "";
         this.#mediaRecorder = null;
+        this.#audioDevice = null;
 
-        this.#blob           = null;
-        this.#playback       = null;
-        this.#duration       = 0.0;
-        this.#waveformWidth  = 350;
+        this.#blob = null;
+        this.#playback = null;
+        this.#duration = 0.0;
+        this.#waveformWidth = 350;
         this.#waveformHeight = 100;
-        this.#trimStart      = 0.0;
-        this.#trimEnd        = 0.0;
+        this.#trimStart = 0.0;
+        this.#trimEnd = 0.0;
 
-        this.renderComponent();
-
-        if (!this.#init) {
-            this.#init = true;
-
+        this.renderComponent().then(() => {
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-        }
-    }
 
-    renderEdit() {
-        render(html`
-            <div id="media" class="media-editable" 
-            data-single="${this.dataset.hasOwnProperty('single')}"
-            data-record="${this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')}"
-            data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}"
-            onmouseup=${this.onMouseUp.bind(this)}>
-                ${this.#mediaItems.map((mediaItem) => html`
-                    <div class="media-item" data-id=${mediaItem}>
-                        ${this.#mediaContent[mediaItem]}
-                        <span class="media-item-remove" onclick=${this.mediaRemove.bind(this)}></span>
-                    </div>
-                `)}
-                ${
-                    this.dataset.status === "cached"
-                    ? html`
-                        <canvas height="100" width="350" id="waveform"></canvas>
-                        <canvas style="display: none;" height="100" width="350" id="waveform-unedited"></canvas>
-                        <audio style="display: none;" id="audio" controls src=${this.#recordUrl}></audio>
-                    `
-                    : html``
-                }
-            </div>
-            ${
-                (this.#mediaItems.length === 0 && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record'))
-                ? html`<span class="media-record" data-status="${this.dataset.hasOwnProperty('status') ? this.dataset.status : 'none'}">
-                    <div class="trim-container">
-                        <span class="trim">Trim Start</span>
-                        <input type="number" class="trim" id="trim-start" value="0" step="0.1" min="0" max="100" onchange=${this.drawTrimStart.bind(this)} />
-                        <span class="trim">Trim End</span>
-                        <input type="number" class="trim" id="trim-end" value="0" step="0.1" min="0" max="100" onchange=${this.drawTrimEnd.bind(this)} />
-                    </div>
-                    <div class="button-container">
-                        <span class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>▶️</span>
-                        <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
-                        <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
-                        <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
-                    </div>
-                </span>`
-                : html``
+            const accountAudioDevice = OB.Account.userdata.input_audio;
+            const inputDeviceElem = this.root.querySelector("ob-field-input-device");
+            if (accountAudioDevice && inputDeviceElem) {
+                inputDeviceElem.audio = accountAudioDevice;
             }
-        `, this.root);
+        });
     }
 
-    renderView() {
-        render(html`
-            <div id="media" class="media-viewable">
-                ${this.#mediaItems.map((mediaItem) => html`
-                    <div class="media-item" data-id=${mediaItem}>${this.#mediaContent[mediaItem]}</div>
-                `)}
-            </div>
-        `, this.root);
+    async renderEdit() {
+        await this.mediaContent();
+
+        render(
+            html`
+                <div
+                    id="media"
+                    class="media-editable"
+                    data-single="${this.dataset.hasOwnProperty("single")}"
+                    data-record="${this.dataset.hasOwnProperty("single") && this.dataset.hasOwnProperty("record")}"
+                    data-status="${this.dataset.hasOwnProperty("status") ? this.dataset.status : "none"}"
+                    onmouseup=${this.onMouseUp.bind(this)}
+                >
+                    ${this._value &&
+                    this._value.map(
+                        (mediaItem) => html`
+                            <div class="media-item" data-id=${mediaItem}>
+                                ${this.#mediaContent[mediaItem]}
+                                <span class="media-item-remove" onclick=${this.mediaRemove.bind(this)}></span>
+                            </div>
+                        `,
+                    )}
+                    ${this.dataset.status === "cached"
+                        ? html`
+                              <canvas height="100" width="350" id="waveform"></canvas>
+                              <canvas style="display: none;" height="100" width="350" id="waveform-unedited"></canvas>
+                              <audio style="display: none;" id="audio" controls src=${this.#recordUrl}></audio>
+                          `
+                        : html``}
+                </div>
+                ${this._value &&
+                this._value.length === 0 &&
+                this.dataset.hasOwnProperty("single") &&
+                this.dataset.hasOwnProperty("record") &&
+                html`
+                    <div id="validation-error" class="hidden"></div>
+                    <div id="input-container">
+                        <ob-field-input-device data-edit></ob-field-input-device>
+                    </div>
+                    <span
+                        class="media-record"
+                        data-status="${this.dataset.hasOwnProperty("status") ? this.dataset.status : "none"}"
+                    >
+                        <div class="trim-container">
+                            <span class="trim">Trim Start</span>
+                            <input
+                                type="number"
+                                class="trim"
+                                id="trim-start"
+                                value="0"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                onchange=${this.drawTrimStart.bind(this)}
+                            />
+                            <span class="trim">Trim End</span>
+                            <input
+                                type="number"
+                                class="trim"
+                                id="trim-end"
+                                value="0"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                onchange=${this.drawTrimEnd.bind(this)}
+                            />
+                        </div>
+                        <div class="button-container">
+                            <span class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>▶️</span>
+                            <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
+                            <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
+                            <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
+                        </div>
+                    </span>
+                `}
+            `,
+            this.root,
+        );
+    }
+
+    async renderView() {
+        await this.mediaContent();
+
+        render(
+            html`
+                <div id="media" class="media-viewable">
+                    ${this._value?.map(
+                        (mediaItem) => html`
+                            <div class="media-item" data-id=${mediaItem}>${this.#mediaContent[mediaItem]}</div>
+                        `,
+                    )}
+                </div>
+            `,
+            this.root,
+        );
     }
 
     scss() {
         return `
             :host {
-                #media:empty {
+                .media-editable:empty {
                     border: 2px dashed #eeeeec;
                 }
 
@@ -211,6 +270,7 @@ class OBFieldMedia extends OBField {
                     }
                 }
 
+                /*
                 .media-viewable:empty::after {
                     content: "No Media";
                     display: block;
@@ -221,6 +281,7 @@ class OBFieldMedia extends OBField {
                 .media-viewable[data-single="true"]:empty::after {
                     content: "No Media (Single)";
                 }
+                */
 
                 #media {
                     box-sizing: border-box;
@@ -242,7 +303,7 @@ class OBFieldMedia extends OBField {
                     /*min-height: 180px;*/
                 }
 
-                .media-item {
+                .media-editable .media-item {
                     background-color: #eeeeec;
                     color: #000;
                     padding: 5px;
@@ -267,6 +328,25 @@ class OBFieldMedia extends OBField {
                         content: "x";
                     }
                 }
+
+                #input-container {
+                    width: 350px;
+                }
+
+                ob-field-input-device {
+                    width: 100%;
+                }
+
+                #validation-error {
+                    color: #f33;
+                    font-size: 14px;
+                    width: 100%;
+                    vertical-align: center;
+
+                    &.hidden {
+                        display: none;
+                    }
+                }
             }
         `;
     }
@@ -274,7 +354,7 @@ class OBFieldMedia extends OBField {
     onDragStart(event) {
         let editable = this.root.querySelector("#media.media-editable");
 
-        if  (! editable) {
+        if (!editable) {
             return false;
         }
 
@@ -284,7 +364,7 @@ class OBFieldMedia extends OBField {
     onDragEnd(event) {
         let editable = this.root.querySelector("#media.media-editable");
 
-        if (! editable) {
+        if (!editable) {
             return false;
         }
 
@@ -292,14 +372,14 @@ class OBFieldMedia extends OBField {
     }
 
     onMouseUp(event) {
-        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
+        if (!window.dragHelperData || !window.dragHelperData[0].classList.contains("sidebar_search_media_result")) {
             return false;
         }
 
-        var selectedMedia = this.#mediaItems;
+        var selectedMedia = this._value;
 
         Object.keys(window.dragHelperData).forEach((key) => {
-            if (! window.dragHelperData[key].dataset) {
+            if (!window.dragHelperData[key].dataset) {
                 return false;
             }
 
@@ -314,20 +394,31 @@ class OBFieldMedia extends OBField {
     }
 
     async mediaContent() {
-        return Promise.all(this.#mediaItems.map(async (mediaItem) => {
-            if (this.#mediaContent[mediaItem]) {
-                return;
-            }
+        if (!this._value || !this.#mediaContent) return;
 
-            const result = await OB.API.postPromise('media', 'get', { id: mediaItem });
-            if (!result.status) {
-                return;
-            }
+        return Promise.all(
+            this._value.map(async (mediaItem) => {
+                if (this.#mediaContent[mediaItem]) {
+                    return;
+                }
 
-            const data = result.data;
-            this.#mediaContent[mediaItem] = data.artist + " - " + data.title;
-            this.refresh();
-        }));
+                const result = await OB.API.postPromise("media", "get", {
+                    id: mediaItem,
+                });
+                if (!result.status) {
+                    return;
+                }
+
+                const data = result.data;
+
+                const name = [];
+                if (data.artist) name.push(data.artist);
+                if (data.title) name.push(data.title);
+
+                this.#mediaContent[mediaItem] = name.join(" - ");
+                this.refresh();
+            }),
+        );
     }
 
     mediaTrimBuffer(buffer, trimStart, trimEnd) {
@@ -349,8 +440,8 @@ class OBFieldMedia extends OBField {
         var ctx = new window.AudioContext();
         this.#blob.arrayBuffer().then((arrayBuffer) => {
             ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-                const trimStart = this.root.querySelector('#trim-start').value;
-                const trimEnd = this.root.querySelector('#trim-end').value;
+                const trimStart = this.root.querySelector("#trim-start").value;
+                const trimEnd = this.root.querySelector("#trim-end").value;
                 const trimmedBuffer = this.mediaTrimBuffer(audioBuffer, trimStart, trimEnd);
 
                 if (this.#playback !== null) {
@@ -366,38 +457,58 @@ class OBFieldMedia extends OBField {
     }
 
     mediaRemove(event) {
-        const newItems = this.#mediaItems.filter((item) => {
+        const newItems = this._value.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
         this.value = newItems;
     }
 
     mediaRecordStart(event) {
-        if (this.#mediaRecorder === null && this.dataset.hasOwnProperty('single') && this.dataset.hasOwnProperty('record')) {
+        const inputDeviceElem = this.root.querySelector("ob-field-input-device");
+        if (inputDeviceElem) {
+            this.#audioDevice = inputDeviceElem.audio;
+        }
+
+        if (
+            this.#mediaRecorder === null &&
+            this.dataset.hasOwnProperty("single") &&
+            this.dataset.hasOwnProperty("record")
+        ) {
             if (navigator.mediaDevices.getUserMedia) {
                 var self = this;
                 let onSuccess = function (stream) {
                     self.#mediaRecorder = new MediaRecorder(stream, {
-                        mimetype: "audio/webm"
+                        mimetype: "audio/webm",
                     });
                     self.#mediaRecorder.ondataavailable = function (e) {
                         self.#recordData.push(e.data);
-                    }
+                    };
 
-                    // 250ms timeout because browsers may not be ready to record immediately 
+                    // 250ms timeout because browsers may not be ready to record immediately
                     // after creating MediaRecorder, causing a small gap in the initial recording
                     setTimeout(() => self.mediaRecordStart(event), "250");
-                }
+                };
 
                 let onError = function (stream) {
                     // TODO: Update element look
                     console.error(`The following getUserMedia error occurred: ${err}`);
+                };
+
+                let mediaSettings = {
+                    audio: true,
+                };
+                if (this.#audioDevice) {
+                    mediaSettings = {
+                        audio: {
+                            deviceId: this.#audioDevice,
+                        },
+                    };
                 }
 
-                this.#mediaRecorder = navigator.mediaDevices.getUserMedia({audio: true}).then(onSuccess, onError);
+                this.#mediaRecorder = navigator.mediaDevices.getUserMedia(mediaSettings).then(onSuccess, onError);
             } else {
                 // TODO: Update element look.
-                console.error('getUserMedia not supported on your browser!');
+                console.error("getUserMedia not supported on your browser!");
             }
         } else {
             if (this.#mediaRecorder.state !== "inactive") {
@@ -405,10 +516,15 @@ class OBFieldMedia extends OBField {
             }
 
             if (this.dataset.status === "cached") {
-                OB.UI.confirm("Are you sure you want to overwrite the existing recording?", () => {
-                    this.dataset.status = "none";
-                    this.mediaRecordStart(event);
-                }, "Yes", "No");
+                OB.UI.confirm(
+                    "Are you sure you want to overwrite the existing recording?",
+                    () => {
+                        this.dataset.status = "none";
+                        this.mediaRecordStart(event);
+                    },
+                    "Yes",
+                    "No",
+                );
             } else {
                 this.#recordData = [];
                 this.#trimStart = 0.0;
@@ -435,8 +551,10 @@ class OBFieldMedia extends OBField {
             this.refresh().then(() => {
                 this.drawWaveform();
             });
-        }
+        };
         this.#mediaRecorder.stop();
+        this.#mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+        this.#mediaRecorder = null;
     }
 
     mediaRecordSave(event) {
@@ -444,75 +562,120 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        fetch('/upload.php', {
-            method: 'POST',
-            body: this.#blob
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            const fileKey = data.file_key;
-            const fileId  = data.file_id;
-            const date    = new Date();
-            const dateStr = date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+        fetch("/upload.php", {
+            method: "POST",
+            body: this.#blob,
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                const fileKey = data.file_key;
+                const fileId = data.file_id;
+                const date = new Date();
+                const dateStr =
+                    date.getFullYear() +
+                    "-" +
+                    ("0" + (date.getMonth() + 1)).slice(-2) +
+                    "-" +
+                    ("0" + date.getDate()).slice(-2);
 
-            const media = OB.API.postPromise('media', 'save', {
-                media: {
-                    0: {
-                        file_id: fileId,
-                        file_key: fileKey,
-                        artist: OB.Account.userdata.display_name,
-                        title: "Media Field Recording " + dateStr,
-                        local_id: 1,
-                        status: "private",
-                        language: 25571,
-                        is_copyright_owner: 1,
-                        is_approved: 1,
-                        dynamic_select: 0,
-                        trim_start: this.root.querySelector('#trim-start').value,
-                        trim_end: this.root.querySelector('#trim-end').value
+                var mediaItem = {
+                    file_id: fileId,
+                    file_key: fileKey,
+                    artist: OB.Account.userdata.display_name,
+                    title: "Media Field Recording " + dateStr,
+                    local_id: 1,
+                    status: "private",
+                    language: 25571,
+                    is_copyright_owner: 1,
+                    is_approved: 1,
+                    dynamic_select: 0,
+                    trim_start: this.root.querySelector("#trim-start").value,
+                    trim_end: this.root.querySelector("#trim-end").value,
+
+                    album: OB.Settings.recording_metadata.album,
+                    year: OB.Settings.recording_metadata.year,
+                    category_id: OB.Settings.recording_metadata.category,
+                    genre_id: OB.Settings.recording_metadata.genre,
+                    comments: OB.Settings.recording_metadata.comments,
+                    country: OB.Settings.recording_metadata.country,
+                    language: OB.Settings.recording_metadata.language,
+                };
+
+                Object.entries(OB.Settings.recording_metadata.custom_metadata).forEach((meta) => {
+                    let key = "metadata_" + meta[0];
+                    let value = meta[1];
+
+                    mediaItem[key] = value;
+                });
+
+                const media = OB.API.postPromise("media", "save", {
+                    media: {
+                        0: mediaItem,
+                    },
+                });
+                media.then((data) => {
+                    if (!data.status) {
+                        let error = data.data.reduce((errMsg, elem) => {
+                            return errMsg + elem[2] + " ";
+                        }, "");
+
+                        this.root.querySelector("#validation-error").classList.remove("hidden");
+                        this.root.querySelector("#validation-error").innerText = error;
+                    } else {
+                        this.root.querySelector("#validation-error").classList.add("hidden");
+                        this.value = data.data;
                     }
-                }
+                });
+            })
+            .catch((error) => {
+                console.error(error);
             });
-            media.then((data) => {
-                if (! data.status) {
-                    console.error(data.msg);
-                } else {
-                    this.value = data.data;
-                }
-            });
-        }).catch((error) => {
-            console.error(error);
-        });
     }
 
     drawTrimStart(event) {
-        const trim = this.root.querySelector('#trim-start').value;
-        const trimFrac = trim / this.#duration;
+        let trimStart = parseFloat(this.root.querySelector("#trim-start").value);
+        const trimEnd = parseFloat(this.root.querySelector("#trim-end").value);
+
+        if (trimStart + trimEnd > this.#duration) {
+            trimStart = this.root.querySelector("#trim-start").value = this.#duration - trimEnd;
+        }
+
+        // show trim on graph
+        const trimFrac = trimStart / this.#duration;
         this.#trimStart = trimFrac * this.#waveformWidth;
         this.modifyWaveform();
     }
 
     drawTrimEnd(event) {
-        const trim = this.root.querySelector('#trim-end').value;
-        const trimFrac = trim / this.#duration;
+        // enforce max duration
+        const trimStart = parseFloat(this.root.querySelector("#trim-start").value);
+        let trimEnd = parseFloat(this.root.querySelector("#trim-end").value);
+        if (trimStart + trimEnd > this.#duration) {
+            trimEnd = this.root.querySelector("#trim-end").value = this.#duration - trimStart;
+        }
+
+        // show trim on graph
+        const trimFrac = trimEnd / this.#duration;
         this.#trimEnd = trimFrac * this.#waveformWidth;
         this.modifyWaveform();
     }
 
     modifyWaveform() {
-        const canvas = this.root.querySelector('#waveform');
-        const canvasCtx = canvas.getContext('2d');
+        const canvas = this.root.querySelector("#waveform");
+        const canvasCtx = canvas.getContext("2d");
         canvasCtx.clearRect(0, 0, this.#waveformWidth, this.#waveformHeight);
-        canvasCtx.drawImage(this.root.querySelector('#waveform-unedited'), 0, 0);
+        canvasCtx.drawImage(this.root.querySelector("#waveform-unedited"), 0, 0);
 
-        canvasCtx.fillStyle = 'rgba(51, 51, 204, 0.8)';
+        canvasCtx.fillStyle = "rgba(51, 51, 204, 0.8)";
         canvasCtx.fillRect(0, 0, this.#trimStart, this.#waveformHeight);
         canvasCtx.fillRect(this.#waveformWidth - this.#trimEnd, 0, this.#trimEnd, this.#waveformHeight);
     }
 
     drawWaveform() {
-        const canvas = this.root.querySelector('#waveform');
-        const canvasCtx = canvas.getContext('2d');
+        const canvas = this.root.querySelector("#waveform");
+        const canvasCtx = canvas.getContext("2d");
 
         var ctx = new window.AudioContext();
         this.#blob.arrayBuffer().then((arrayBuffer) => {
@@ -531,9 +694,9 @@ class OBFieldMedia extends OBField {
                     let blockStart = blockSize * i;
                     let sum = 0;
                     for (let j = 0; j < blockSize; j++) {
-                        sum = sum  + Math.abs(rawData[blockStart + j]);
+                        sum = sum + Math.abs(rawData[blockStart + j]);
                     }
-                    if (max < (sum / blockSize)) {
+                    if (max < sum / blockSize) {
                         max = sum / blockSize;
                     }
                     filteredData.push(sum / blockSize);
@@ -542,19 +705,19 @@ class OBFieldMedia extends OBField {
                 canvasCtx.clearRect(0, 0, width, height);
                 canvasCtx.fillStyle = "rgb(200, 200, 200)";
                 canvasCtx.fillRect(0, 0, width, height);
-        
+
                 canvasCtx.lineWidth = 0.1;
                 canvasCtx.strokeStyle = "rgb(0, 0, 0)";
-        
+
                 canvasCtx.beginPath();
-        
+
                 const sliceWidth = (width * 1.0) / samples;
                 let x = 0;
 
                 for (let i = 0; i < samples; i++) {
                     const v = filteredData[i];
-                    const y = ((v / max) * (height / 2)) + (height / 2);
-                    const yNeg = ((-v / max) * (height / 2)) + (height / 2);
+                    const y = (v / max) * (height / 2) + height / 2;
+                    const yNeg = (-v / max) * (height / 2) + height / 2;
 
                     canvasCtx.moveTo(x, height / 2);
                     canvasCtx.lineTo(x, y);
@@ -565,23 +728,23 @@ class OBFieldMedia extends OBField {
                 }
 
                 canvasCtx.stroke();
-                
-                // copy to waveform-unedited to use for overwriting any potential changes 
+
+                // copy to waveform-unedited to use for overwriting any potential changes
                 // from trim
-                const canvasUnedited = this.root.querySelector('#waveform-unedited');
-                const canvasCtxUnedited = canvasUnedited.getContext('2d');
+                const canvasUnedited = this.root.querySelector("#waveform-unedited");
+                const canvasCtxUnedited = canvasUnedited.getContext("2d");
                 canvasCtxUnedited.drawImage(canvas, 0, 0);
             });
         });
     }
 
     get value() {
-        return this.#mediaItems;
+        return this._value;
     }
 
     set value(value) {
         if (!Array.isArray(value)) {
-            return false;
+            value = [value];
         }
 
         value = value.map((x) => parseInt(x));
@@ -590,7 +753,7 @@ class OBFieldMedia extends OBField {
             return false;
         }
 
-        if (this.dataset.hasOwnProperty('single')) {
+        if (this.dataset.hasOwnProperty("single")) {
             value = value.slice(-1);
         }
 
@@ -598,16 +761,16 @@ class OBFieldMedia extends OBField {
         this.#recordUrl = "";
         this.#recordData = [];
 
-        this.#mediaItems = value;
-        this.mediaContent().then(() => {
-            this.#mediaItems = this.#mediaItems.filter((item) => {
-                return Object.keys(this.#mediaContent).includes(item.toString());
-            });
-            this.refresh();
+        this._value = value;
 
-            this.dispatchEvent(new Event('change'));
-        });
+        this.refresh();
+
+        // set data-duration on self // TODO
+        this.dataset.duration = 30;
+
+        // emit change event
+        this.dispatchEvent(new Event("change"));
     }
 }
 
-customElements.define('ob-field-media', OBFieldMedia);
+customElements.define("ob-field-media", OBFieldMedia);

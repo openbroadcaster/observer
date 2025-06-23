@@ -4,7 +4,7 @@ class OBUpdate20160409 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Security updates. Users will be required to reset their password after this update.';
         $updates[] = 'Device password will be reset the next time each device connects. Manually reset passwords for any devices that do not connect regularly.';
         return $updates;
@@ -25,7 +25,7 @@ class OBUpdate20160409 extends OBUpdate
 
             if ($info['algo'] == 0) {
                 $this->db->where('id', $user['id']);
-                $this->db->update('users', array('password' => ''));
+                $this->db->update('users', ['password' => '']);
             }
         }
 

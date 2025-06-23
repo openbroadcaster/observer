@@ -151,9 +151,9 @@ class MediaCategoriesModel extends OBFModel
     {
         //T A category name is required.
         if (!$data['name']) {
-            return array(false,['Category Edit','A category name is required.']);
+            return [false,['Category Edit','A category name is required.']];
         }
-        return array(true,'Valid.');
+        return [true,'Valid.'];
     }
 
     /**
@@ -171,9 +171,9 @@ class MediaCategoriesModel extends OBFModel
 
         //T You must remove the genres within this category before deleting the category.
         if (count($genres) > 0) {
-            return array(false,['Category Edit','You must remove the genres within this category before deleting the category.']);
+            return [false,['Category Edit','You must remove the genres within this category before deleting the category.']];
         } else {
-            return array(true,'Can delete.');
+            return [true,'Can delete.'];
         }
     }
 

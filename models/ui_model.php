@@ -150,10 +150,10 @@ class UIModel extends OBFModel
         $languages = [];
 
         foreach ($this->db->get('translations_languages') as $language) {
-            $languages[] = array(
+            $languages[] = [
             'name' => $language['name'],
             'code' => $language['code']
-            );
+            ];
         }
 
         return $languages;

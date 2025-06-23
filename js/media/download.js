@@ -17,9 +17,10 @@
     along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-OB.Media.download = function(id, version)
-{
-  window.open('/preview.php?id='+id+'&dl=1'+(version ? '&v='+version : ''),'Download');
-}
-
+OB.Media.download = function (id, version) {
+    if (version) {
+        OB.API.download("downloads/media/" + id + "/version/" + version);
+    } else {
+        OB.API.download("downloads/media/" + id);
+    }
+};

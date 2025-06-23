@@ -4,7 +4,7 @@ class OBUpdate20161206 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Support last ip address of a device.';
         return $updates;
     }

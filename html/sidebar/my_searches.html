@@ -1,43 +1,49 @@
-
-<obwidget id ="my_searches_message" type="message"></obwidget>
+<obwidget id="my_searches_message" type="message"></obwidget>
 
 <div>
+    <p data-t>Click to search again. Right-click for more options.</p>
 
-<p data-t>Click to search again.  Right-click for more options.</p>
+    <fieldset>
+        <legend data-t>Saved Searches</legend>
 
-  <fieldset>
-    <legend data-t>Saved Searches</legend>
+        <p id="my_searches_saved_nosearches" class="hidden" data-t>No searches found.</p>
 
-    <p id="my_searches_saved_nosearches" class="hidden" data-t>No searches found.</p>
+        <div id="my_searches_saved"></div>
+    </fieldset>
 
-    <div id="my_searches_saved"></div>
-  </fieldset>
+    <fieldset>
+        <legend data-t>Search History</legend>
 
-  <fieldset>
-    <legend data-t>Search History</legend>
+        <p id="my_searches_history_nosearches" class="hidden" data-t>No searches found.</p>
+        <div id="my_searches_history"></div>
+    </fieldset>
 
-    <p id="my_searches_history_nosearches" class="hidden" data-t>No searches found.</p>
-    <div id="my_searches_history"></div>
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Close"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Close</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-  </fieldset>
-
-  <fieldset>
-    <div class="fieldrow">
-      <button onclick="OB.UI.closeModalWindow();" data-t>Close</button>
+    <div class="my_searches_context_menu" id="my_searches_history_context_menu">
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesSave();" data-t>Save</a></div>
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesDelete();" data-t>Delete</a></div>
     </div>
 
-  </fieldset>
-
-  <div class="my_searches_context_menu" id="my_searches_history_context_menu">
-    <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesSave();" data-t>Save</a></div>
-    <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesDelete();" data-t>Delete</a></div>
-  </div>
-
-  <div class="my_searches_context_menu" id="my_searches_saved_context_menu">
-    <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesEditWindow();" data->Edit</a></div>
-    <div class="hidden" id="my_searches_context_menu_set_default"><a class="context_menu_item" onclick="OB.Sidebar.mySearchesMakeDefault();" data-t>Make Default</a></div>
-    <div class="hidden" id="my_searches_context_menu_unset_default" ><a class="context_menu_item" onclick="OB.Sidebar.mySearchesUnsetDefault();" data-t>Unset Default</a></div>
-    <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesDelete();" data-t>Delete</a></div>
-  </div>
-
+    <div class="my_searches_context_menu" id="my_searches_saved_context_menu">
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesEditWindow();" data->Edit</a></div>
+        <div class="hidden" id="my_searches_context_menu_set_default">
+            <a class="context_menu_item" onclick="OB.Sidebar.mySearchesMakeDefault();" data-t>Make Default</a>
+        </div>
+        <div class="hidden" id="my_searches_context_menu_unset_default">
+            <a class="context_menu_item" onclick="OB.Sidebar.mySearchesUnsetDefault();" data-t>Unset Default</a>
+        </div>
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesDelete();" data-t>Delete</a></div>
+    </div>
 </div>

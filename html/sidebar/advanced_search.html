@@ -1,115 +1,170 @@
-<obwidget id="advanced_search_message" type="message" ></obwidget>
+<obwidget id="advanced_search_message" type="message"></obwidget>
 
 <div>
-  <fieldset class="advanced_search">
-    <legend class="advanced_search_item" data-t>Advanced Search</legend>
-    <legend class="edit_my_search_item hidden" data-t>Edit Advanced Search</legend>
+    <fieldset class="advanced_search">
+        <legend class="advanced_search_item" data-t>Advanced Search</legend>
+        <legend class="edit_my_search_item hidden" data-t>Edit Advanced Search</legend>
 
-    <div class="fieldrow">
+        <div class="fieldrow">
+            <select onchange="OB.Sidebar.advancedSearchFilterChange();" id="advanced_search_filter">
+                <option value="artist" data-compare="text" data-value="text" data-t>Artist</option>
+                <option value="title" data-compare="text" data-value="text" data-t>Title</option>
+                <option value="album" data-compare="text" data-value="text" data-t>Album</option>
+                <option value="year" data-compare="number" data-value="text" data-t>Year</option>
+                <option value="type" data-compare="select" data-value="media_type" data-t>Media Type</option>
+                <option value="category" data-compare="select" data-value="category" data-t>Category</option>
+                <option value="country" data-compare="select" data-value="country" data-t>Country</option>
+                <option value="language" data-compare="select" data-value="language" data-t>Language</option>
+                <option value="genre" data-compare="select" data-value="genre" data-t>Genre</option>
+                <option value="comments" data-compare="text" data-value="text" data-t>Comments</option>
+                <option value="duration" data-compare="duration" data-value="text" data-t>Duration</option>
+                <option value="is_copyright_owner" data-compare="select" data-value="bool" data-t>
+                    Is Copyright Owner
+                </option>
+            </select>
 
-      <select onchange="OB.Sidebar.advancedSearchFilterChange();" id="advanced_search_filter">
-        <option value="artist" data-compare="text" data-value="text" data-t>Artist</option>
-        <option value="title" data-compare="text" data-value="text" data-t>Title</option>
-        <option value="album" data-compare="text" data-value="text" data-t>Album</option>
-        <option value="year" data-compare="number" data-value="text" data-t>Year</option>
-        <option value="type" data-compare="select" data-value="media_type" data-t>Media Type</option>
-        <option value="category" data-compare="select" data-value="category" data-t>Category</option>
-        <option value="country" data-compare="select" data-value="country" data-t>Country</option>
-        <option value="language" data-compare="select" data-value="language" data-t>Language</option>
-        <option value="genre" data-compare="select" data-value="genre" data-t>Genre</option>
-        <option value="comments" data-compare="text" data-value="text" data-t>Comments</option>
-        <option value="duration" data-compare="duration" data-value="text" data-t>Duration</option>
-        <option value="is_copyright_owner" data-compare="select" data-value="bool" data-t>Is Copyright Owner</option>
-      </select>
+            <select id="advanced_search_text_compare" data-type="compare" data-name="text">
+                <option value="like">contains</option>
+                <option value="not_like">does not contain</option>
+                <option value="is">is exactly</option>
+                <option value="not">is not</option>
+            </select>
 
-      <select id="advanced_search_text_compare" data-type="compare" data-name="text">
-        <option value="like">contains</option>
-        <option value="not_like">does not contain</option>
-        <option value="is">is exactly</option>
-        <option value="not">is not</option>
-      </select>
+            <select id="advanced_search_tag_compare" data-type="compare" data-name="tags" class="hidden">
+                <option value="has">contains</option>
+                <option value="not_has">does not contain</option>
+            </select>
 
-      <select id="advanced_search_tag_compare" data-type="compare" data-name="tags" class="hidden">
-        <option value="has">contains</option>
-        <option value="not_has">does not contain</option>
-      </select>
+            <select id="advanced_search_number_compare" data-type="compare" data-name="number" class="hidden">
+                <option value="is">is exactly</option>
+                <option value="not">is not</option>
+                <option value="gte">is greater than or equal to</option>
+                <option value="lte">is less than or equal to</option>
+            </select>
 
-      <select id="advanced_search_number_compare" data-type="compare" data-name="number" class="hidden">
-        <option value="is">is exactly</option>
-        <option value="not">is not</option>
-        <option value="gte">is greater than or equal to</option>
-        <option value="lte">is less than or equal to</option>
-      </select>
+            <select id="advanced_search_duration_compare" data-type="compare" data-name="duration" class="hidden">
+                <option value="gte">is greater than or equal to (seconds)</option>
+                <option value="lte">is less than or equal to (seconds)</option>
+            </select>
 
-      <select id="advanced_search_duration_compare" data-type="compare" data-name="duration" class="hidden">
-        <option value="gte">is greater than or equal to (seconds)</option>
-        <option value="lte">is less than or equal to (seconds)</option>
-      </select>
+            <select id="advanced_search_select_compare" data-type="compare" data-name="select" class="hidden">
+                <option value="is">is</option>
+                <option value="not">is not</option>
+            </select>
 
-      <select id="advanced_search_select_compare" data-type="compare" data-name="select" class="hidden">
-        <option value="is">is</option>
-        <option value="not">is not</option>
-      </select>
+            <select id="advanced_search_type_options" data-type="value" data-name="media_type" class="hidden">
+                <option value="audio" data-t>Audio</option>
+                <option value="video" data-t>Video</option>
+                <option value="image" data-t>Image</option>
+                <option value="document" data-t>Document</option>
+            </select>
 
-      <select id="advanced_search_type_options" data-type="value" data-name="media_type" class="hidden">
-        <option value="audio" data-t>Audio</option>
-        <option value="video" data-t>Video</option>
-        <option value="image" data-t>Image</option>
-      </select>
+            <select
+                id="advanced_search_category_options"
+                data-type="value"
+                data-name="category"
+                class="hidden"
+            ></select>
 
-      <select id="advanced_search_category_options" data-type="value" data-name="category" class="hidden"></select>
+            <ob-field-country
+                id="advanced_search_country_options"
+                data-type="value"
+                data-name="country"
+                class="hidden"
+                data-edit
+            ></ob-field-country>
 
-      <select id="advanced_search_country_options" data-type="value" data-name="country" class="hidden"></select>
+            <ob-field-language
+                id="advanced_search_language_options"
+                data-type="value"
+                data-name="language"
+                class="hidden"
+                data-edit
+            ></ob-field-language>
 
-      <!--<select id="advanced_search_language_options" data-type="value" data-name="language" class="hidden"></select>-->
-      <ob-field-language id="advanced_search_language_options" data-type="value" data-name="language" class="hidden" data-edit></ob-field-language>
+            <select id="advanced_search_genre_options" data-type="value" data-name="genre" class="hidden"></select>
 
-      <select id="advanced_search_genre_options" data-type="value" data-name="genre" class="hidden"></select>
+            <select id="advanced_search_bool_options" data-type="value" data-name="bool" class="hidden">
+                <option value="1" data-t>Yes</option>
+                <option value="0" data-t>No</option>
+            </select>
 
-      <select id="advanced_search_bool_options" data-type="value" data-name="bool" class="hidden">
-        <option value="1" data-t>Yes</option>
-        <option value="0" data-t>No</option>
-      </select>
+            <input type="text" id="advanced_search_value" data-type="value" data-name="text" />
 
-      <input type="text" id="advanced_search_value" data-type="value" data-name="text">
+            <div id="advanced_search_metadata" style="display: none; align-items: flex-start; gap: 10px"></div>
 
-      &nbsp;
+            &nbsp;
 
-      <button onclick="OB.Sidebar.advancedSearchAdd();" data-t>Add</button>
+            <ob-element-button
+                data-text="Add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Sidebar.advancedSearchAdd();"
+                data-t
+                >Add</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-    </div>
+    <fieldset>
+        <legend data-t>Search Criteria</legend>
 
-  </fieldset>
+        <p id="advanced_search_no_criteria" data-t>Add criteria using the above form.</p>
 
-  <fieldset>
-    <legend data-t>Search Criteria</legend>
+        <div id="advanced_search_criteria_list"></div>
+    </fieldset>
 
-    <p id="advanced_search_no_criteria" data-t>Add criteria using the above form.</p>
+    <fieldset class="edit_my_search_item hidden">
+        <legend data-t>Search Description</legend>
+        <p data-t>Enter a search description to display instead of the search filter list (optional).</p>
+        <div class="fieldrow">
+            <textarea id="edit_my_search_item_description"></textarea>
+        </div>
 
-    <div id="advanced_search_criteria_list"></div>
+        <div class="fieldrow edit_my_search_item hidden">
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="edit_my_search_item_save"
+                onclick="OB.Sidebar.mySearchesEdit();"
+                data-t
+            >
+                Save
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.Sidebar.mySearchesWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-  </fieldset>
-
-  <fieldset class="edit_my_search_item hidden">
-    <legend data-t>Search Description</legend>
-    <p data-t>Enter a search description to display instead of the search filter list (optional).</p>
-    <div class="fieldrow">
-      <textarea id="edit_my_search_item_description"></textarea>
-    </div>
-
-    <div class="fieldrow edit_my_search_item hidden">
-      <button class="add" id="edit_my_search_item_save" onclick="OB.Sidebar.mySearchesEdit();" data-t>Save</button>
-      <button id="item_properties_cancel" onclick="OB.Sidebar.mySearchesWindow();" data-t>Cancel</button>
-    </div>
-
-  </fieldset>
-
-  <fieldset class="fieldrow advanced_search_item">
-    <div class="fieldrow">
-      <button onclick="OB.Sidebar.advancedSearch();" data-t>Search</button>
-      <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-    </div>
-  </fieldset>
-
-
+    <fieldset class="fieldrow advanced_search_item">
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Search"
+                data-icon-name="magnifying-glass"
+                data-icon-style="solid"
+                onclick="OB.Sidebar.advancedSearch();"
+                data-t
+                >Search</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
 </div>

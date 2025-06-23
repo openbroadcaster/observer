@@ -46,7 +46,11 @@ $image_files = $models->ui('image_files');
 
 $js_dependencies = [
   'node_modules/jquery/dist/jquery.min.js',
-  'node_modules/jquery-migrate/dist/jquery-migrate.min.js'
+  'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
+  'node_modules/video.js/dist/video.min.js',
+  'node_modules/dayjs/dayjs.min.js',
+  'node_modules/easymde/dist/easymde.min.js',
+  'bundles/chrono-bundle.js'
 ];
 
 ?><!DOCTYPE html>
@@ -107,12 +111,10 @@ foreach ($jsModuleIterator as $file) {
   <script type="text/javascript" src="extras/parseduration.js?v=<?=filemtime('extras/parseduration.js')?>"></script>
   <script type="text/javascript" src="extras/tinymce/js/tinymce/tinymce.min.js?v=<?=filemtime('extras/tinymce/js/tinymce/tinymce.min.js')?>"></script>
 
-  <script type="text/javascript" src="extras/simplebar/simplebar.min.js?v=<?=filemtime('extras/simplebar/simplebar.min.js')?>"></script>
-  <link rel="stylesheet" type="text/css" href="extras/simplebar/simplebar.min.css?v=<?=filemtime('extras/simplebar/simplebar.min.css')?>">
-
   <link type="text/css" href="extras/opensans/opensans.css?v=<?=filemtime('extras/opensans/opensans.css')?>" rel="stylesheet">
   <link type="text/css" href="extras/jquery-ui-darkness/jquery-ui.min.css?v=<?=filemtime('extras/jquery-ui-darkness/jquery-ui.min.css')?>" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="extras/jquery-ui-timepicker-addon.css?v=<?=filemtime('extras/jquery-ui-timepicker-addon.css')?>">
+  <link rel="stylesheet" type="text/css" href="node_modules/video.js/dist/video-js.min.css?v=<?=filemtime('node_modules/video.js/dist/video-js.min.css')?>">
 
   <script>
   OB_API_REWRITE = false;
@@ -140,7 +142,7 @@ foreach ($jsModuleIterator as $file) {
     <link rel="stylesheet" type="text/css" href="extras/opendyslexic/opendyslexic.css?v=<?=urlencode($version)?>">
   <?php } ?>
 
-  <link rel="stylesheet" type="text/css" href="extras/fontawesome-free-5.15.3-web/css/all.css?v=<?=filemtime('extras/fontawesome-free-5.15.3-web/css/all.css')?>">
+  <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css?v=<?=filemtime('node_modules/@fortawesome/fontawesome-free/css/all.min.css')?>">
 
 </head>
 

@@ -1,6 +1,136 @@
 {
     "GET": [
         [
+            "/api/v2/downloads/media/(:id:)/version/(:version:)",
+            "downloads",
+            "version"
+        ],
+        [
+            "/api/v2/downloads/media/(:id:)",
+            "downloads",
+            "media"
+        ],
+        [
+            "/api/v2/downloads/media/(:id:)/preview/",
+            "downloads",
+            "preview"
+        ],
+        [
+            "/api/v2/downloads/media/(:id:)/thumbnail/",
+            "downloads",
+            "thumbnail"
+        ],
+        [
+            "/api/v2/stream/(:id:)",
+            "stream",
+            "stream"
+        ],
+        [
+            "/api/v2/clientsettings/login-message",
+            "clientsettings",
+            "get_login_message"
+        ],
+        [
+            "/api/v2/clientsettings/welcome-page",
+            "clientsettings",
+            "get_welcome_page"
+        ],
+        [
+            "/api/v2/users/can-register",
+            "users",
+            "user_registration_get"
+        ],
+        [
+            "/api/v2/users/all",
+            "users",
+            "user_list"
+        ],
+        [
+            "/api/v2/users",
+            "users",
+            "user_manage_list"
+        ],
+        [
+            "/api/v2/users/appkeys/(:id:)",
+            "users",
+            "user_manage_key_load"
+        ],
+        [
+            "/api/v2/users/groups",
+            "users",
+            "group_list"
+        ],
+        [
+            "/api/v2/users/permissions",
+            "users",
+            "permissions_manage_list"
+        ],
+        [
+            "/api/v2/media/formats",
+            "media",
+            "formats_get"
+        ],
+        [
+            "/api/v2/media/searches",
+            "media",
+            "media_my_searches"
+        ],
+        [
+            "/api/v2/media/search",
+            "media",
+            "search"
+        ],
+        [
+            "/api/v2/media/properties/(:id:)",
+            "media",
+            "get_properties"
+        ],
+        [
+            "/api/v2/media/(:media_id:)/versions",
+            "media",
+            "versions"
+        ],
+        [
+            "/api/v2/media/(:id:)",
+            "media",
+            "get"
+        ],
+        [
+            "/api/v2/media/thumbnail/(:id:)",
+            "media",
+            "thumbnail"
+        ],
+        [
+            "/api/v2/playlists/editable",
+            "playlists",
+            "user_can_edit"
+        ],
+        [
+            "/api/v2/playlists/(:id:)",
+            "playlists",
+            "get"
+        ],
+        [
+            "/api/v2/playlists",
+            "playlists",
+            "search"
+        ],
+        [
+            "/api/v2/playlists/validate",
+            "playlists",
+            "validate_dynamic_properties"
+        ],
+        [
+            "/api/v2/playlists/resolve/(:id:)",
+            "playlists",
+            "resolve"
+        ],
+        [
+            "/api/v2/modules",
+            "modules",
+            "search"
+        ],
+        [
             "/api/v2/players",
             "players",
             "search"
@@ -26,8 +156,28 @@
             "now_playing"
         ],
         [
-            "/api/v2/modules",
-            "modules",
+            "/api/v2/alerts/(:id:)",
+            "alerts",
+            "get"
+        ],
+        [
+            "/api/v2/alerts/search/(:player_id:)",
+            "alerts",
+            "search"
+        ],
+        [
+            "/api/v2/settings/version",
+            "settings",
+            "get_ob_version"
+        ],
+        [
+            "/api/v2/timeslots/(:id:)",
+            "timeslots",
+            "get"
+        ],
+        [
+            "/api/v2/timeslots",
+            "timeslots",
             "search"
         ],
         [
@@ -39,56 +189,6 @@
             "/api/v2/dayparting/(:id:)",
             "dayparting",
             "get"
-        ],
-        [
-            "/api/v2/clientsettings/login-message",
-            "clientsettings",
-            "get_login_message"
-        ],
-        [
-            "/api/v2/clientsettings/welcome-page",
-            "clientsettings",
-            "get_welcome_page"
-        ],
-        [
-            "/api/v2/alerts/(:id:)",
-            "alerts",
-            "get"
-        ],
-        [
-            "/api/v2/alerts/search/(:player_id:)",
-            "alerts",
-            "search"
-        ],
-        [
-            "/api/v2/playlog/(:id:)/(:start:)/(:end:)",
-            "playlog",
-            "get"
-        ],
-        [
-            "/api/v2/playlog/(:id:)/(:start:)",
-            "playlog",
-            "get"
-        ],
-        [
-            "/api/v2/settings/version",
-            "settings",
-            "get_ob_version"
-        ],
-        [
-            "/api/v2/shows/(:id:)",
-            "shows",
-            "get"
-        ],
-        [
-            "/api/v2/shows/(:id:)/thumbnail",
-            "shows",
-            "thumbnail"
-        ],
-        [
-            "/api/v2/shows",
-            "shows",
-            "search"
         ],
         [
             "/api/v2/account/uid",
@@ -116,6 +216,31 @@
             "key_load"
         ],
         [
+            "/api/v2/account/nonce/",
+            "account",
+            "nonce"
+        ],
+        [
+            "/api/v2/shows/(:id:)",
+            "shows",
+            "get"
+        ],
+        [
+            "/api/v2/shows/(:id:)/thumbnail",
+            "shows",
+            "thumbnail"
+        ],
+        [
+            "/api/v2/shows",
+            "shows",
+            "search"
+        ],
+        [
+            "/api/v2/playlog/(:id:)/(:start:)",
+            "playlog",
+            "get"
+        ],
+        [
             "/api/v2/metadata/tags",
             "metadata",
             "metadata_tag_search"
@@ -129,6 +254,11 @@
             "/api/v2/metadata/core",
             "metadata",
             "media_get_fields"
+        ],
+        [
+            "/api/v2/metadata/recording",
+            "metadata",
+            "recording_default_values"
         ],
         [
             "/api/v2/metadata/categories",
@@ -174,99 +304,9 @@
             "/api/v2/ui/html",
             "ui",
             "html"
-        ],
-        [
-            "/api/v2/playlists/editable",
-            "playlists",
-            "user_can_edit"
-        ],
-        [
-            "/api/v2/playlists/(:id:)",
-            "playlists",
-            "get"
-        ],
-        [
-            "/api/v2/playlists",
-            "playlists",
-            "search"
-        ],
-        [
-            "/api/v2/playlists/validate",
-            "playlists",
-            "validate_dynamic_properties"
-        ],
-        [
-            "/api/v2/media/formats",
-            "media",
-            "formats_get"
-        ],
-        [
-            "/api/v2/media/searches",
-            "media",
-            "media_my_searches"
-        ],
-        [
-            "/api/v2/media/search",
-            "media",
-            "search"
-        ],
-        [
-            "/api/v2/media/versions/(:media_id:)",
-            "media",
-            "versions"
-        ],
-        [
-            "/api/v2/media/(:id:)",
-            "media",
-            "get"
-        ],
-        [
-            "/api/v2/users/can-register",
-            "users",
-            "user_registration_get"
-        ],
-        [
-            "/api/v2/users/all",
-            "users",
-            "user_list"
-        ],
-        [
-            "/api/v2/users",
-            "users",
-            "user_manage_list"
-        ],
-        [
-            "/api/v2/users/appkeys/(:id:)",
-            "users",
-            "user_manage_key_load"
-        ],
-        [
-            "/api/v2/users/groups",
-            "users",
-            "group_list"
-        ],
-        [
-            "/api/v2/users/permissions",
-            "users",
-            "permissions_manage_list"
-        ],
-        [
-            "/api/v2/timeslots/(:id:)",
-            "timeslots",
-            "get"
-        ],
-        [
-            "/api/v2/timeslots",
-            "timeslots",
-            "search"
         ]
     ],
     "POST": [
-        [
-            "/api/v2/players",
-            "players",
-            "save"
-        ],
         [
             "/api/v2/clientsettings/login-message",
             "clientsettings",
@@ -278,14 +318,44 @@
             "set_welcome_page"
         ],
         [
-            "/api/v2/alerts",
-            "alerts",
-            "save"
+            "/api/v2/users/appkeys",
+            "users",
+            "user_manage_key_new"
         ],
         [
-            "/api/v2/shows",
-            "shows",
-            "save"
+            "/api/v2/media/formats",
+            "media",
+            "formats_save"
+        ],
+        [
+            "/api/v2/media/searches",
+            "media",
+            "media_my_searches_save"
+        ],
+        [
+            "/api/v2/media/searches/default",
+            "media",
+            "media_my_searches_default"
+        ],
+        [
+            "/api/v2/media/properties/(:id:)",
+            "media",
+            "save_properties"
+        ],
+        [
+            "/api/v2/media/versions",
+            "media",
+            "version_add"
+        ],
+        [
+            "/api/v2/media/archive",
+            "media",
+            "archive"
+        ],
+        [
+            "/api/v2/media/archive/undo",
+            "media",
+            "unarchive"
         ],
         [
             "/api/v2/account/login",
@@ -313,39 +383,31 @@
             "key_new"
         ],
         [
-            "/api/v2/metadata",
+            "/api/v2/metadata/recording",
             "metadata",
-            "metadata_save"
+            "recording_default_values_save"
+        ]
+    ],
+    "PUT": [
+        [
+            "/api/v2/users/can-register",
+            "users",
+            "user_registration_set"
         ],
         [
-            "/api/v2/metadata/categories",
-            "metadata",
-            "category_save"
+            "/api/v2/users/(:id:)",
+            "users",
+            "user_manage_addedit"
         ],
         [
-            "/api/v2/metadata/genres",
-            "metadata",
-            "genre_save"
+            "/api/v2/users/permissions/(:id:)",
+            "users",
+            "permissions_manage_addedit"
         ],
         [
-            "/api/v2/playlists",
-            "playlists",
-            "save"
-        ],
-        [
-            "/api/v2/media/formats",
+            "/api/v2/media/searches/(:id:)",
             "media",
-            "formats_save"
-        ],
-        [
-            "/api/v2/media/searches",
-            "media",
-            "media_my_searches_save"
-        ],
-        [
-            "/api/v2/media/searches/default",
-            "media",
-            "media_my_searches_default"
+            "media_my_searches_edit"
         ],
         [
             "/api/v2/media",
@@ -353,45 +415,13 @@
             "save"
         ],
         [
-            "/api/v2/media/versions",
+            "/api/v2/media/versions/(:media_id:)/(:created:)",
             "media",
-            "version_add"
+            "version_edit"
         ],
         [
-            "/api/v2/media/archive",
-            "media",
-            "archive"
-        ],
-        [
-            "/api/v2/media/archive/undo",
-            "media",
-            "unarchive"
-        ],
-        [
-            "/api/v2/users",
-            "users",
-            "user_manage_addedit"
-        ],
-        [
-            "/api/v2/users/appkeys",
-            "users",
-            "user_manage_key_new"
-        ],
-        [
-            "/api/v2/users/permissions",
-            "users",
-            "permissions_manage_addedit"
-        ],
-        [
-            "/api/v2/timeslots",
-            "timeslots",
-            "save"
-        ]
-    ],
-    "PUT": [
-        [
-            "/api/v2/players/(:id:)",
-            "players",
+            "/api/v2/playlists/(:id:)",
+            "playlists",
             "save"
         ],
         [
@@ -400,8 +430,8 @@
             "install"
         ],
         [
-            "/api/v2/dayparting/(:id:)",
-            "dayparting",
+            "/api/v2/players/(:id:)",
+            "players",
             "save"
         ],
         [
@@ -410,8 +440,13 @@
             "save"
         ],
         [
-            "/api/v2/shows/(:id:)",
-            "shows",
+            "/api/v2/timeslots/(:id:)",
+            "timeslots",
+            "save"
+        ],
+        [
+            "/api/v2/dayparting/(:id:)",
+            "dayparting",
             "save"
         ],
         [
@@ -423,6 +458,11 @@
             "/api/v2/account/key/(:id:)",
             "account",
             "key_permissions_save"
+        ],
+        [
+            "/api/v2/shows/(:id:)",
+            "shows",
+            "save"
         ],
         [
             "/api/v2/metadata/order",
@@ -448,98 +488,23 @@
             "/api/v2/metadata/genres/(:id:)",
             "metadata",
             "genre_save"
-        ],
-        [
-            "/api/v2/playlists/(:id:)",
-            "playlists",
-            "save"
-        ],
-        [
-            "/api/v2/media/searches/(:id:)",
-            "media",
-            "media_my_searches_edit"
-        ],
-        [
-            "/api/v2/media",
-            "media",
-            "save"
-        ],
-        [
-            "/api/v2/media/versions/(:media_id:)/(:created:)",
-            "media",
-            "version_edit"
-        ],
-        [
-            "/api/v2/users/can-register",
-            "users",
-            "user_registration_set"
-        ],
-        [
-            "/api/v2/users/(:id:)",
-            "users",
-            "user_manage_addedit"
-        ],
-        [
-            "/api/v2/users/permissions/(:id:)",
-            "users",
-            "permissions_manage_addedit"
-        ],
-        [
-            "/api/v2/timeslots/(:id:)",
-            "timeslots",
-            "save"
         ]
     ],
     "DELETE": [
         [
-            "/api/v2/players/(:id:)",
-            "players",
-            "delete"
+            "/api/v2/users/(:id:)",
+            "users",
+            "user_manage_delete"
         ],
         [
-            "/api/v2/modules/(:name:)",
-            "modules",
-            "uninstall"
+            "/api/v2/users/appkeys/(:user_id:)/(:id:)",
+            "users",
+            "user_manage_key_delete"
         ],
         [
-            "/api/v2/dayparting/(:id:)",
-            "dayparting",
-            "delete"
-        ],
-        [
-            "/api/v2/alerts/(:id:)",
-            "alerts",
-            "delete"
-        ],
-        [
-            "/api/v2/shows/(:id:)",
-            "shows",
-            "delete"
-        ],
-        [
-            "/api/v2/account/key/(:id:)",
-            "account",
-            "key_delete"
-        ],
-        [
-            "/api/v2/metadata/(:id:)",
-            "metadata",
-            "metadata_delete"
-        ],
-        [
-            "/api/v2/metadata/categories/(:id:)",
-            "metadata",
-            "category_delete"
-        ],
-        [
-            "/api/v2/metadata/genres/(:id:)",
-            "metadata",
-            "genre_delete"
-        ],
-        [
-            "/api/v2/playlists",
-            "playlists",
-            "delete"
+            "/api/v2/users/permissions/(:id:)",
+            "users",
+            "permissions_manage_delete"
         ],
         [
             "/api/v2/media/searches/(:id:)",
@@ -562,24 +527,59 @@
             "delete"
         ],
         [
-            "/api/v2/users/(:id:)",
-            "users",
-            "user_manage_delete"
+            "/api/v2/playlists",
+            "playlists",
+            "delete"
         ],
         [
-            "/api/v2/users/appkeys/(:user_id:)/(:id:)",
-            "users",
-            "user_manage_key_delete"
+            "/api/v2/modules/(:name:)",
+            "modules",
+            "uninstall"
         ],
         [
-            "/api/v2/users/permissions/(:id:)",
-            "users",
-            "permissions_manage_delete"
+            "/api/v2/players/(:id:)",
+            "players",
+            "delete"
+        ],
+        [
+            "/api/v2/alerts/(:id:)",
+            "alerts",
+            "delete"
         ],
         [
             "/api/v2/timeslots/(:id:)",
             "timeslots",
             "delete"
+        ],
+        [
+            "/api/v2/dayparting/(:id:)",
+            "dayparting",
+            "delete"
+        ],
+        [
+            "/api/v2/account/key/(:id:)",
+            "account",
+            "key_delete"
+        ],
+        [
+            "/api/v2/shows/(:id:)",
+            "shows",
+            "delete"
+        ],
+        [
+            "/api/v2/metadata/(:id:)",
+            "metadata",
+            "metadata_delete"
+        ],
+        [
+            "/api/v2/metadata/categories/(:id:)",
+            "metadata",
+            "category_delete"
+        ],
+        [
+            "/api/v2/metadata/genres/(:id:)",
+            "metadata",
+            "genre_delete"
         ]
     ],
     "PATCH": [

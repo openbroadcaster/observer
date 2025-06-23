@@ -4,7 +4,7 @@ class OBUpdate20221010 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Rename old emergencies tables.';
         $updates[] = 'Rename emergency broadcasts permission.';
         $updates[] = 'Rename parent emergency field in players table.';

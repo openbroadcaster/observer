@@ -4,7 +4,7 @@ class OBUpdate20210309 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Refactor database structure for timeslots and shows.';
         return $updates;
     }

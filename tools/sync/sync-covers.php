@@ -6,7 +6,7 @@ if (php_sapi_name()!='cli') {
 
 header('Content-Type: application/json');
 require_once('../../components.php');
-require_once('extras/getid3/getid3/getid3.php');
+require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
 $getID3 = new getID3();
 $db = OBFDB::get_instance();
 $models = OBFModels::get_instance();
@@ -20,17 +20,14 @@ if (!defined('OB_SYNC_USERID') || !defined('OB_SYNC_SOURCE') || !defined('OB_ACO
     die('OB_SYNC_USERID, OB_SYNC_SOURCE, and OB_ACOUSTID_KEY must be defined in config.php.'.PHP_EOL);
 }
 
-// create thumbnail directory if needed
-if (!file_exists(OB_CACHE.'/thumbnails')) {
-    if (!mkdir(OB_CACHE.'/thumbnails', 0755)) {
-        die('Unable to create thumbnail directory. Make sure the OB cache directory is writable.'.PHP_EOL);
-    }
+if (!is_dir(OB_THUMBNAILS)) {
+    die('OB_THUMBNAILS must be set to a valid directory in config.php.' . PHP_EOL);
 }
 
 while (true) {
     echo 'getting items requiring cover art'.PHP_EOL;
 
-    $db->query('SELECT media.file_location, media.id, sync_releasegroup_id  FROM `media_metadata` left join media on media_metadata.media_id = media.id WHERE sync_coverart_raw is null and sync_releasegroup_id is not null and sync_releasegroup_id!="" order by media_id desc limit 25');
+    $db->query('SELECT file_location, id, sync_releasegroup_id  FROM `media` WHERE metadata_sync_coverart_raw is null and metadata_sync_releasegroup_id is not null and metadata_sync_releasegroup_id!="" order by id desc limit 25');
     $rows = $db->assoc_list();
 
     foreach ($rows as $row) {
@@ -68,20 +65,20 @@ while (true) {
             $l1 = $row['file_location'][0];
             $l2 = $row['file_location'][1];
 
-            if (!file_exists(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2)) {
-                if (!mkdir(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2, 0777, true)) {
+            if (!file_exists(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2)) {
+                if (!mkdir(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2, 0777, true)) {
                     die('Unable to create thumbnail directory; check permissions.'.PHP_EOL);
                 }
             }
             $cover_art_data = file_get_contents($cover_art_url);
             if ($cover_art_data) {
-                file_put_contents(OB_CACHE.'/thumbnails/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
+                file_put_contents(OB_THUMBNAILS.'/media/'.$l1.'/'.$l2.'/'.$row['id'].'.jpg', $cover_art_data);
             }
         }
 
-        $db->where('media_id', $row['id']);
-        $db->update('media_metadata', [
-      'sync_coverart_raw'=>$coverart_raw_response
+        $db->where('id', $row['id']);
+        $db->update('media', [
+      'metadata_sync_coverart_raw'=>$coverart_raw_response
     ]);
     }
 

@@ -1,31 +1,37 @@
 <div>
+    <h1 id="media_heading" data-t>Upload Media</h1>
 
-<h1 id="media_heading" data-t>Upload Media</h1>
+    <p id="media_top_instructions" data-t>
+        Click on the grey box below, or drag files onto the box to upload. Maximum file size is 1GB.
+    </p>
 
-<p id="media_top_instructions" data-t>Click on the grey box below, or drag files onto the box to upload. Maximum file size is 1GB.</p>
+    <obwidget type="message" id="media_top_message"></obwidget>
 
-<obwidget type="message" id="media_top_message"></obwidget>
+    <fieldset id="media_upload_container">
+        <legend data-t>Select Files</legend>
 
-<fieldset id="media_upload_container">
-  <legend data-t>Select Files</legend>
-
-  <div id="media_upload_form">
-    <input name="file[]" id="media_upload_file_field" type="file" multiple="multiple">
-    <div id="media_upload_file_instructions" data-t>Click to select files, or drag &amp; drop files here.</div>
-  </div>
-
-</fieldset>
-
+        <div id="media_upload_form">
+            <input name="file[]" id="media_upload_file_field" type="file" multiple="multiple" />
+            <div id="media_upload_file_instructions" data-t>Click to select files, or drag &amp; drop files here.</div>
+        </div>
+    </fieldset>
 </div>
 
 <div id="media_data" class="hidden">
+    <div id="media_data_middle"></div>
 
-  <div id="media_data_middle"></div>
-
-  <fieldset>
-  <div class="fieldrow">
-    <button class="add" onclick="OB.Media.save();" data-t>Save</button>
-  </div>
-  </fieldset>
-
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                class="add"
+                onclick="OB.Media.save();"
+                data-t
+                data-style="add"
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                >Save</ob-element-button
+            >
+        </div>
+    </fieldset>
 </div>

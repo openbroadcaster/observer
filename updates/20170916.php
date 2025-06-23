@@ -4,7 +4,7 @@ class OBUpdate20170916 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Media table index updates.';
         return $updates;
     }

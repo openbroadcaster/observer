@@ -46,6 +46,8 @@ class AlertsModel extends OBFModel
         $this->db->what('alerts.start', 'start');
         $this->db->what('alerts.stop', 'stop');
         $this->db->what('alerts.player_id', 'player_id');
+        $this->db->what('alerts.mode', 'mode');
+        $this->db->what('alerts.properties', 'properties');
 
         $this->db->leftjoin('media', 'alerts.item_id', 'media.id');
     }
@@ -79,6 +81,8 @@ class AlertsModel extends OBFModel
             $alert['duration'] = $alert['item_duration'];
         }
         unset($alert['item_duration']);
+
+        $alert['properties'] = json_decode($alert['properties'], true);
 
         return $alert;
     }
@@ -132,8 +136,8 @@ class AlertsModel extends OBFModel
         }
 
         // required fields?
-        if (empty($name) || empty($player_id) || empty($item_id) || empty($frequency) || empty($start) || empty($stop)) {
-            return array(false,'Required Field Missing');
+        if (empty($name) || empty($player_id) || empty($item_id) || empty($frequency) || empty($start) || empty($stop) || empty($mode)) {
+            return [false,'Required Field Missing'];
         }
 
         // check if ID is valid (if editing)
@@ -141,60 +145,65 @@ class AlertsModel extends OBFModel
         if (!empty($args['id'])) {
             //T The item you are attempting to edit does not appear to exist.
             if (!$this->db->id_exists('alerts', $args['id'])) {
-                return array(false,'The item you are attempting to edit does not appear to exist.');
+                return [false,'The item you are attempting to edit does not appear to exist.'];
             }
         }
 
         // check if player ID is valid
         //T This player does not appear to exist.
         if (!$this->db->id_exists('players', $player_id)) {
-            return array(false,'This player does not appear to exist.');
+            return [false,'This player does not appear to exist.'];
         }
 
         // check if media ID is valid
         if (empty($item_id)) {
-            return array(false,'Media Invalid');
+            return [false,'Media Invalid'];
         }
         $this->db->where('id', $item_id);
         $media = $this->db->get_one('media');
         if (!$media) {
-            return array(false,'Media Invalid');
+            return [false,'Media Invalid'];
         }
         //T Media must be approved.
         if ($media['is_approved'] == 0) {
-            return array(false,'Media must be approved.');
+            return [false,'Media must be approved.'];
         }
         //T Media must not be archived.
         if ($media['is_archived'] == 1) {
-            return array(false,'Media must not be archived.');
+            return [false,'Media must not be archived.'];
         }
 
         // is frequency valid?
         //T The frequency is invalid.
         if (!preg_match('/^[0-9]+$/', $frequency) || $frequency < 1) {
-            return array(false,'The frequency is invalid.');
+            return [false,'The frequency is invalid.'];
         }
 
         // is duration valid? only needed for images...
         if ($media['type'] == 'image' && (!preg_match('/^[0-9]+$/', $duration) || $duration < 1)) {
-            return array(false,'Duration Invalid');
+            return [false,'Duration Invalid'];
         }
 
         // is start/stop valid?
         //T The start date/time is invalid.
         if (!preg_match('/^[0-9]+$/', $start)) {
-            return array(false,'The start date/time is invalid.');
+            return [false,'The start date/time is invalid.'];
         }
         //T The stop date/time is invalid.
         if (!preg_match('/^[0-9]+$/', $stop)) {
-            return array(false,'The stop date/time is invalid.');
+            return [false,'The stop date/time is invalid.'];
         }
         //T The stop date/time must occur after the start date/time.
         if ($start >= $stop) {
-            return array(false,'The stop date/time must occur after the start date/time.');
+            return [false,'The stop date/time must occur after the start date/time.'];
         }
 
-        return array(true,'');
+        //T The mode must be either an interrupt or a voicetrack.
+        if ($mode !== 'interrupt' && $mode !== 'voicetrack') {
+            return [false, 'The mode must be either an interrupt or a voicetrack.'];
+        }
+
+        return [true,''];
     }
 
     /**

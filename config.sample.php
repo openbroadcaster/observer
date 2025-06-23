@@ -27,6 +27,10 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 // THE FOLLOWING ARE OPTIONAL SETTINGS
 //
 
+// define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
+// define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
+// define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
+
 // define('OB_UPDATES_USER', 'updates'); // username/password for updates area
 // define('OB_UPDATES_PW', 'PASSWORD_HASH'); // get password hash with: php -r "echo password_hash('password',PASSWORD_DEFAULT).\"\n\";"
 
@@ -74,6 +78,7 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 
 // enable public media browsing and streaming
 // define('OB_STREAM_API',true);
+// define('OB_STREAM_TRANSCODE_ALL', true); // set to TRUE to transcode all media (not just public)
 
 // import tool settings
 // OB_SYNC_USERID = 1; // owner for imported media
@@ -84,3 +89,6 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 // see updates/checker.php method names for available checks
 // default false
 // define('OB_INIT_VERIFY', ['database_version', 'config_file_valid']);
+
+// Google API key for geocoding fields
+// define('OB_GOOGLE_API_KEY', 'YOUR_API_KEY');

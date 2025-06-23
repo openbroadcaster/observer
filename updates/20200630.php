@@ -4,7 +4,7 @@ class OBUpdate20200630 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Add sessions table for user logins, allowing users to be logged in in multiple locations at once.";
         $updates[] = "Delete session column from users table. No need to move them as sessions will rely on session row ID rather than user ID from this point on.";
         return $updates;

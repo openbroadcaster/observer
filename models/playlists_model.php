@@ -147,7 +147,7 @@ class PlaylistsModel extends OBFModel
      */
     public function get_items($id)
     {
-        $return = array();
+        $return = [];
 
         // get playlist items.
         $this->db->orderby('playlists_items.ord');
@@ -182,8 +182,8 @@ class PlaylistsModel extends OBFModel
                     $item['type'] = $item['media_type'];
                 }
 
-                if ($item['type'] == 'image') {
-                    $item['duration'] = $item['properties']['duration'];
+                if ($item['type'] == 'image' || $item['type'] == 'document') {
+                    $item['duration'] = $item['properties']['duration'] ?? 15;
                 }
 
                 // we don't use this (merged into 'type')
@@ -230,9 +230,9 @@ class PlaylistsModel extends OBFModel
      */
     public function where_used($id)
     {
-        $info = array();
+        $info = [];
 
-        $info['used'] = array();
+        $info['used'] = [];
         $info['id'] = $id;
         $info['can_delete'] = true;
 
@@ -308,7 +308,7 @@ class PlaylistsModel extends OBFModel
      */
     public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false)
     {
-        $where_strings = array();
+        $where_strings = [];
 
         if ($query !== '' && $query !== false && $query !== null) {
             $where_strings[] = '(name LIKE "%' . $this->db->escape($query) . '%" OR description LIKE "%' . $this->db->escape($query) . '%")';
@@ -334,7 +334,7 @@ class PlaylistsModel extends OBFModel
         }
 
         // otherwise, if posted sort by data is valid, use that...
-        if (($sort_dir == 'asc' || $sort_dir == 'desc') && array_search($sort_by, array('name','description','updated')) !== false) {
+        if (($sort_dir == 'asc' || $sort_dir == 'desc') && array_search($sort_by, ['name','description','updated']) !== false) {
             $this->db->orderby($sort_by, $sort_dir);
         } else {
             // otherwise, show the most recently updated first
@@ -345,7 +345,7 @@ class PlaylistsModel extends OBFModel
 
         $playlists = $this->db->get('playlists');
 
-        return array('num_results' => $this->db->found_rows(),'playlists' => $playlists);
+        return ['num_results' => $this->db->found_rows(),'playlists' => $playlists];
     }
 
     /**
@@ -357,21 +357,44 @@ class PlaylistsModel extends OBFModel
      */
     public function validate_playlist($data)
     {
-
-    //T A playlist name is required.
+        //T A playlist name is required.
         if (empty($data['name'])) {
-            return array(false,'A playlist name is required.');
+            return [false,'A playlist name is required.'];
         }
         //T A valid status is required.
         if ($data['status'] != 'private' && $data['status'] != 'visible' && $data['status'] != 'public') {
-            return array(false,'A valid status is required.');
+            return [false,'A valid status is required.'];
         }
         //T A valid type is required.
         if ($data['type'] != 'standard' && $data['type'] != 'advanced' && $data['type'] != 'live_assist') {
-            return array(false,'A valid type is required.');
+            return [false,'A valid type is required.'];
         }
 
-        return array(true,'Playlist is valid.');
+        return [true,'Playlist is valid.'];
+    }
+
+    /**
+     * Validate voicetracks in a playlist. This checks that each voicetrack
+     * is followed by another media item.
+     *
+     * @param playlist_items
+     *
+     * @return is_valid
+     */
+    public function validate_playlist_voicetracks($playlist_items)
+    {
+        while ($current = current($playlist_items)) {
+            $next = next($playlist_items);
+            if ($next !== false && $current['type'] === 'voicetrack' && $next['type'] !== 'media') {
+                return [false, 'Voicetracks must be followed by a media item.'];
+            }
+
+            if ($next === false && $current['type'] === 'voicetrack') {
+                return [false, 'Voicetracks cannot be the last item in a playlist.'];
+            }
+        }
+
+        return [true, 'Playlist voicetracks are valid.'];
     }
 
     /**
@@ -389,14 +412,14 @@ class PlaylistsModel extends OBFModel
         }
 
         //T One or more playlist items are not valid.
-        if ($item['type'] != 'media' && $item['type'] != 'dynamic' && $item['type'] != 'station_id' && $item['type'] != 'breakpoint' && $item['type'] != 'custom') {
-            return array(false,'One or more playlist items are not valid.');
+        if (! in_array($item['type'], ['media', 'dynamic', 'station_id', 'breakpoint', 'custom', 'voicetrack'], true)) {
+            return [false,'One or more playlist items are not valid.'];
         }
 
         if ($item['type'] == 'media') {
-      //T One or more media durations are invalid or zero.
+            //T One or more media durations are invalid or zero.
             if (empty($item['duration']) || !preg_match('/^[0-9]+(\.[0-9]+)?$/', $item['duration']) || $item['duration'] <= 0) {
-                return array(false,'One or more media durations are invalid or zero.');
+                return [false,'One or more media durations are invalid or zero.'];
             }
 
             $this->db->where('id', $item['id']);
@@ -404,12 +427,12 @@ class PlaylistsModel extends OBFModel
 
             //T One or more playlist items are not valid.
             if (!$media) {
-                return array(false,'One or more playlist items are not valid.');
+                return [false,'One or more playlist items are not valid.'];
             }
 
             //T Only approved, unarchived media can be used in playlists.
             if ($media['is_approved'] == 0 || $media['is_archived'] == 1) {
-                return array(false,'Only approved, unarchived media can be used in playlists.');
+                return [false,'Only approved, unarchived media can be used in playlists.'];
             }
 
             // can't use private media that isn't ours unless we have 'manage_media' permission.
@@ -420,28 +443,28 @@ class PlaylistsModel extends OBFModel
             // can't add private media to a playlist with a different owner.
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if (!$playlist_id && $media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
-                return array(false,'A media item is marked as private. It can only be used in playlists created by the same owner.');
+                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if ($playlist_id && $media['status'] == 'private' && $media['owner_id'] != $original_playlist['owner_id']) {
-                return array(false,'A media item is marked as private. It can only be used in playlists created by the same owner.');
+                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
         } elseif ($item['type'] == 'dynamic') {
             $dynamic_validation = $this('validate_dynamic_properties', json_decode($item['query']), $item['num_items'], $item['num_items_all'], $item['image_duration']);
             //T One or more dynamic playlist items are not valid.
             if ($dynamic_validation[0] == false) {
-                return array(false,'One or more dynamic playlist items are not valid.');
+                return [false,'One or more dynamic playlist items are not valid.'];
             }
         } elseif ($item['type'] == 'custom') {
             $custom_name = $item['query']['name'] ?? '';
             $this->db->where('name', $custom_name);
             //T One or more custom playlist items are not valid.
             if (!$this->db->get_one('playlists_items_types')) {
-                return array(false,'One or more custom playlist items are not valid.');
+                return [false,'One or more custom playlist items are not valid.'];
             }
         }
 
-        return array(true,'Playlist item is valid.');
+        return [true,'Playlist item is valid.'];
     }
 
     /**
@@ -454,10 +477,10 @@ class PlaylistsModel extends OBFModel
     public function validate_liveassist_button_item($playlist_id)
     {
         if ($this->db->id_exists('playlists', $playlist_id)) {
-            return array(true,'Live Assist button item is valid.');
+            return [true,'Live Assist button item is valid.'];
         } else {
             //T One or more Live Assist button playlists are invalid.
-            return array(false,'One or more Live Assist button playlists are invalid.');
+            return [false,'One or more Live Assist button playlists are invalid.'];
         }
     }
 
@@ -477,11 +500,11 @@ class PlaylistsModel extends OBFModel
 
         //T The number of items is invalid.
         if (!$num_items_all && (!preg_match('/^[0-9]+$/', $num_items) || $num_items == '0')) {
-            return array(false,'The number of items is invalid.');
+            return [false,'The number of items is invalid.'];
         }
         //T The image duration is invalid.
         if (!preg_match('/^[0-9]+$/', $image_duration) || $image_duration == '0') {
-            return array(false,'The image duration is invalid.');
+            return [false,'The image duration is invalid.'];
         }
 
         if ($search_query['mode'] == 'advanced') {
@@ -498,17 +521,17 @@ class PlaylistsModel extends OBFModel
 
                 //T Invalid search criteria.
                 if (array_search($filter['filter'], $allowed_filters) === false) {
-                    return array(false,'Invalid search criteria.');
+                    return [false,'Invalid search criteria.'];
                 }
 
                 //T Invalid search criteria.
-                if (array_search($filter['op'], array('like','not_like','is','not','gte','lte','has','not_has')) === false) {
-                    return array(false,'Invalid search criteria.'.$filter['op']);
+                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','not_has']) === false) {
+                    return [false, 'Invalid search criteria.' . $filter['op']];
                 }
             }
         }
 
-        return array(true,'Dynamic selection is valid.');
+        return [true,'Dynamic selection is valid.'];
     }
 
     /**
@@ -525,7 +548,7 @@ class PlaylistsModel extends OBFModel
         $ord = 0;
 
         foreach ($items as $item) {
-            $data = array();
+            $data = [];
             $data['playlist_id'] = $playlist_id;
             $data['order_id'] = $ord;
             $data['button_playlist_id'] = $item;
@@ -552,7 +575,7 @@ class PlaylistsModel extends OBFModel
     {
         $search_query = (array) $search_query; // convert to array (might come in as object with json_decode)
 
-        $where = array();
+        $where = [];
 
         // simple mode
         if ($search_query['mode'] == 'simple') {
@@ -560,14 +583,62 @@ class PlaylistsModel extends OBFModel
         } else {
             // advanced mode.  Filters should be already validated!
             $filters = $search_query['filters'];
-            
-            // sql segment for filters from media model
-            $where = array_merge($this->models->media('search_filters_where_array', ['filters' => $filters]));
+
+            foreach ($filters as $filter) {
+                $filter = (array) $filter;
+
+                // TODO fix code duplication with media model
+
+                // our possible column (mappings)
+                $column_array = [];
+                $column_array['artist'] = 'media.artist';
+                $column_array['title'] = 'media.title';
+                $column_array['album'] = 'media.album';
+                $column_array['year'] = 'media.year';
+                $column_array['type'] = 'media.type';
+                $column_array['category'] = 'media.category_id';
+                $column_array['country'] = 'media.country';
+                $column_array['language'] = 'media.language';
+                $column_array['genre'] = 'media.genre_id';
+                $column_array['duration'] = 'media.duration';
+                $column_array['comments'] = 'media.comments';
+
+                $metadata_fields = $this->models->mediametadata('get_all');
+                foreach ($metadata_fields as $metadata_field) {
+                    $column_array['metadata_' . $metadata_field['name']] = 'media_metadata.' . $metadata_field['name'];
+                }
+
+                // our possibile comparison operators
+                $op_array = [];
+                $op_array['like'] = 'LIKE';
+                $op_array['not_like'] = 'NOT LIKE';
+                $op_array['is'] = '=';
+                $op_array['not'] = '!=';
+                $op_array['gte'] = '>=';
+                $op_array['lte'] = '<=';
+
+                // put together our query segment
+                $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
+
+                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                    $tmp_sql .= '%';
+                }
+
+                $tmp_sql .= $this->db->escape($filter['val']);
+
+                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                    $tmp_sql .= '%';
+                }
+
+                $tmp_sql .= '"';
+
+                $where[] = $tmp_sql;
+            }
         }
 
         // 'all items' selected.
         if (empty($num_items)) {
-            $this->db->query('select sum(if(duration is null, ' . $image_duration . ', duration)) as total from media left join media_metadata on media.id=media_metadata.media_id where ' . implode(' AND ', $where));
+            $this->db->query('select sum(if(duration is null, ' . $image_duration . ', duration)) as total from media where ' . implode(' AND ', $where));
             $result = $this->db->assoc_list();
 
             if (empty($result[0]['total'])) {
@@ -576,7 +647,7 @@ class PlaylistsModel extends OBFModel
             return $result[0]['total'];
         } else {
             // complete
-            $this->db->query('select avg(if(duration is null, ' . $image_duration . ', duration)) as avg from media left join media_metadata on media.id=media_metadata.media_id where ' . implode(' AND ', $where));
+            $this->db->query('select avg(if(duration is null, ' . $image_duration . ', duration)) as avg from media where ' . implode(' AND ', $where));
             $result = $this->db->assoc_list();
 
             if (empty($result[0]['avg'])) {
@@ -628,11 +699,31 @@ class PlaylistsModel extends OBFModel
      * @param player_id
      * @param parent_player_id
      * @param start_time Datetime object
+     * @param max_duration
      */
     public function resolve($playlist_id, $player_id, $parent_player_id = false, $start_time = null, $max_duration = null)
     {
         // get main player
         $player = $this->models->players('get_one', $player_id);
+
+        if ($player_id) {
+            $supports = [];
+            if ($player['support_audio']) {
+                $supports[] = 'audio';
+            }
+            if ($player['support_video']) {
+                $supports[] = 'video';
+            }
+            if ($player['support_images']) {
+                $supports[] = 'image';
+            }
+        } else {
+            $supports = ['audio','video','image','document'];
+        }
+
+
+        // TODO currently no player support for documents, but will be doing this at some point.
+        $support_document = $player_id ? false : true;
 
         // get playlist. max_duration currently supported by standard playlist only. (TODO)
         $playlist = $this('get_by_id', $playlist_id);
@@ -652,6 +743,15 @@ class PlaylistsModel extends OBFModel
         $this->db->where('playlist_id', $playlist_id);
         $this->db->orderby('ord');
         $playlist_items = $this->db->get('playlists_items');
+        $used_ids = [];
+        $used_ids_stationid = [];
+
+        // add our static media items to our used IDs right away
+        foreach ($playlist_items as $playlist_item) {
+            if ($playlist_item['item_type'] == 'media') {
+                $used_ids[] = $playlist_item['item_id'];
+            }
+        }
 
         // track items to return
         $return = [];
@@ -668,10 +768,25 @@ class PlaylistsModel extends OBFModel
             $media_items_tmp = [];
 
             // single media item
-            if ($playlist_item['item_type'] == 'media') {
+            if ($playlist_item['item_type'] === 'media' || $playlist_item['item_type'] === 'voicetrack') {
                 $media = $this->models->media('get_by_id', ['id' => $playlist_item['item_id']]);
+
+                // skip item if type not supported
+                if ($media && !in_array($media['type'], $supports)) {
+                    continue;
+                }
+
                 if ($media) {
-                    $tmp = ['type' => 'media','id' => $playlist_item['item_id']];
+                    $tmp = ['type' => 'media','id' => $playlist_item['item_id'], 'title' => $media['title'], 'artist' => $media['artist']];
+
+                    if ($playlist_item['item_type'] == 'voicetrack') {
+                        $tmp['type'] = 'voicetrack';
+                        $tmp['voicetrack_volume'] = $playlist_item['properties']['voicetrack_volume'] ?? 0.1;
+                        $tmp['voicetrack_offset'] = $playlist_item['properties']['voicetrack_offset'] ?? 0.0;
+                        $tmp['voicetrack_fadeout_before'] = $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0;
+                        $tmp['voicetrack_fadein_after'] = $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0;
+                    }
+
                     if ($media['type'] == 'image') {
                         $tmp['duration'] = $playlist_item['properties']['duration'];
                     } else {
@@ -683,19 +798,10 @@ class PlaylistsModel extends OBFModel
                     }
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Media';
-                    if (isset($playlist_item['properties']['voicetrack'])) {
-                        $voicetrack = $this->models->media('get_by_id', ['id' => $playlist_item['properties']['voicetrack']]);
-                        if ($voicetrack) {
-                            $tmp['voicetrack'] = [
-                                'id'             => $voicetrack['id'],
-                                'duration'       => $voicetrack['duration'],
-                                'volume'         => $playlist_item['properties']['voicetrack_volume'] ?? 0.0,
-                                'offset'         => $playlist_item['properties']['voicetrack_offset'] ?? 0.0,
-                                'fadeout-before' => $playlist_item['properties']['voicetrack_fadeout_before'] ?? 0.0,
-                                'fadein-after'   => $playlist_item['properties']['voicetrack_fadein_after'] ?? 0.0,
-                            ];
-                        }
-                    }
+
+                    $tmp['stream'] = $this->models->media('stream_url', $media);
+                    $tmp['captions'] = $this->models->media('captions_url', $media);
+
                     $media_items_tmp[] = $tmp;
                 }
             } elseif ($playlist_item['item_type'] == 'dynamic') {
@@ -706,10 +812,38 @@ class PlaylistsModel extends OBFModel
                 $media_search = $this->models->media('search', ['params' => ['query' => $playlist_item['properties']['query']], 'player_id' => $player_id]);
                 $media_items = $media_search[0] ?? [];
 
-                // remove dayparting exclusions
-                foreach ($media_items as $index => $media_item) {
-                    if (array_search($media_item['id'], $dayparting_exclude_ids) !== false) {
-                        unset($media_items[$index]);
+                // remove unsupported and dayparting exclusions
+                // foreach ($media_items as $index => $media_item) {
+                //     if (array_search($media_item['id'], $dayparting_exclude_ids) !== false) {
+                //         unset($media_items[$index]);
+                //     }
+                //     if (!in_array($media_item['type'], $supports)) {
+                //         unset($media_items[$index]);
+                //     }
+                // }
+
+                // remove unsupported and dayparting exclusions
+                $media_items = array_filter($media_items, function ($media_item) use ($supports, $dayparting_exclude_ids) {
+                    return
+                        !in_array($media_item['id'], $dayparting_exclude_ids) &&
+                        in_array($media_item['type'], $supports);
+                });
+
+                // get a list of items in our search set that have already been used
+                $media_item_duplicates = array_filter($media_items, function ($media_item) use ($used_ids) {
+                    return in_array($media_item['id'], $used_ids);
+                });
+
+                // remove items that have already been used
+                $media_items = array_filter($media_items, function ($media_item) use ($used_ids) {
+                    return !in_array($media_item['id'], $used_ids);
+                });
+
+                if ($playlist_item['properties']['num_items']) {
+                    // if we don't have enough items, add duplicates back in randomly until we do (or until we run out of duplicates)
+                    shuffle($media_item_duplicates);
+                    while (count($media_items) < $playlist_item['properties']['num_items'] && count($media_item_duplicates) > 0) {
+                        $media_items[] = array_pop($media_item_duplicates);
                     }
                 }
 
@@ -721,16 +855,19 @@ class PlaylistsModel extends OBFModel
                             shuffle($media_items);
 
                             foreach ($media_items as $media) {
-                                $tmp = ['type' => 'media','id' => $media['id']];
+                                $tmp = ['type' => 'media','id' => $media['id'], 'title' => $media['title'], 'artist' => $media['artist']];
                                 if ($media['type'] == 'image') {
-                                    $tmp['duration'] = $playlist_item['properties']['duration'];
+                                    $tmp['duration'] = $playlist_item['properties']['duration'] ?? $playlist_item['properties']['image_duration'] ?? 0;
                                 } else {
                                     $tmp['duration'] = $media['duration'];
                                 }
                                 $media_offset += $tmp['duration'];
                                 $tmp['media_type'] = $media['type'];
                                 $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
+                                $tmp['stream'] = $this->models->media('stream_url', $media);
+                                $tmp['captions'] = $this->models->media('captions_url', $media);
                                 $dynamic_items[] = $tmp;
+                                $used_ids[] = $tmp['id'];
 
                                 // end loop if we have enough items
                                 if (count($dynamic_items) >= $playlist_item['properties']['num_items']) {
@@ -743,7 +880,7 @@ class PlaylistsModel extends OBFModel
                         shuffle($media_items);
 
                         foreach ($media_items as $media) {
-                            $tmp = ['type' => 'media','id' => $media['id']];
+                            $tmp = ['type' => 'media','id' => $media['id'], 'title' => $media['title'], 'artist' => $media['artist']];
                             if ($media['type'] == 'image') {
                                 $tmp['duration'] = $playlist_item['properties']['duration'];
                             } else {
@@ -751,7 +888,11 @@ class PlaylistsModel extends OBFModel
                             }
                             $media_offset += $tmp['duration'];
                             $tmp['media_type'] = $media['type'];
+                            $tmp['context'] = 'Dynamic Selection: ' . $playlist_item['properties']['name'];
+                            $tmp['stream'] = $this->models->media('stream_url', $media);
+                            $tmp['captions'] = $this->models->media('captions_url', $media);
                             $dynamic_items[] = $tmp;
+                            $used_ids[] = $tmp['id'];
                         }
                     }
                 }
@@ -787,11 +928,35 @@ class PlaylistsModel extends OBFModel
                 $this->db->query('SELECT media.* FROM players_station_ids LEFT JOIN media ON players_station_ids.media_id = media.id WHERE player_id="' . $this->db->escape($station_id_player) . '";');
                 $media_items = $this->db->assoc_list();
 
-                // remove dayparting exclusions
-                foreach ($media_items as $index => $media) {
-                    if (array_search($media['id'], $dayparting_exclude_ids) !== false) {
-                        unset($media_items[$index]);
-                    }
+                // remove unsupported and dayparting exclusions
+                // foreach ($media_items as $index => $media) {
+                //     if (array_search($media['id'], $dayparting_exclude_ids) !== false) {
+                //         unset($media_items[$index]);
+                //     }
+                //     if (!in_array($media['type'], $supports)) {
+                //         unset($media_items[$index]);
+                //     }
+                // }
+
+                // remove unsupported and dayparting exclusions
+                $media_items = array_filter($media_items, function ($media) use ($supports, $dayparting_exclude_ids) {
+                    return
+                        !in_array($media['id'], $dayparting_exclude_ids) &&
+                        in_array($media['type'], $supports);
+                });
+
+                $media_items_duplicates = array_filter($media_items, function ($media) use ($used_ids_stationid) {
+                    return in_array($media['id'], $used_ids_stationid);
+                });
+
+                // if media items are all duplicates, reset the used_ids_stationid array. otherwise, remove duplicates.
+                if (count($media_items) == count($media_items_duplicates)) {
+                    $used_ids_stationid = [];
+                } else {
+                    // remove items that have already been used
+                    $media_items = array_filter($media_items, function ($media) use ($used_ids_stationid) {
+                        return !in_array($media['id'], $used_ids_stationid);
+                    });
                 }
 
                 // randomize our selection
@@ -815,6 +980,7 @@ class PlaylistsModel extends OBFModel
                     $tmp['media_type'] = $media['type'];
                     $tmp['context'] = 'Station ID';
                     $media_items_tmp[] = $tmp;
+                    $used_ids_stationid[] = $tmp['id'];
                 }
             } elseif ($playlist_item['item_type'] == 'breakpoint') {
                 $media_items_tmp[] = ['type' => 'breakpoint'];
@@ -879,13 +1045,6 @@ class PlaylistsModel extends OBFModel
             // remove if last track or next track not audio
             if ($index == count($return) - 1 || $return[$index + 1]['media_type'] != 'audio') {
                 unset($item['crossfade']);
-            }
-        }
-
-        // unset temporary data
-        foreach ($return as $index => &$item) {
-            if (isset($item['media_type'])) {
-                unset($item['media_type']);
             }
         }
 

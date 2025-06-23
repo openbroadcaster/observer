@@ -41,7 +41,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filename']);
 
         // this is the info we want -- if we can't get it, it will remain null.
-        $return = array();
+        $return = [];
         $return['type'] = null;
         $return['duration'] = null;
         $return['format'] = null;
@@ -68,7 +68,12 @@ class MediaModel extends OBFModel
                 $return['format'] = 'png';
             } elseif ($mime_array[1] == 'svg+xml') {
                 $return['format'] = 'svg';
+            } elseif ($mime_array[1] == 'tiff') {
+                $return['format'] = 'tif';
             }
+        } elseif ($mime == 'application/pdf') {
+            $return['type'] = 'document';
+            $return['format'] = 'pdf';
         } else {
             // if we have an audio or a video, then we use avprobe to find format and duration.
             $mediainfo_json = shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename']));
@@ -85,7 +90,11 @@ class MediaModel extends OBFModel
                 shell_exec('mv ' . escapeshellarg($args['filename']) . '-header.webm ' . escapeshellarg($args['filename']));
                 shell_exec('rm ' . escapeshellarg($args['filename']) . 'webm');
 
-                $mediainfo = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                $mediainfoNew = json_decode(shell_exec('ffprobe -show_format -show_streams -of json ' . escapeshellarg($args['filename'])));
+                if (property_exists($mediainfoNew, 'format')) {
+                    $mediainfo = $mediainfoNew;
+                }
+
                 $mediainfo->format->format_name = 'webm';
             }
 
@@ -100,7 +109,7 @@ class MediaModel extends OBFModel
                 $avconv_return_var = null;
                 $avconv_output = [];
 
-                $strtr_array = array('{infile}' => escapeshellarg($args['filename']));
+                $strtr_array = ['{infile}' => escapeshellarg($args['filename'])];
                 exec(strtr(OB_MEDIA_VERIFY_CMD, $strtr_array), $avconv_output, $avconv_return_var);
                 if ($avconv_return_var != 0) {
                     return $return;
@@ -110,7 +119,7 @@ class MediaModel extends OBFModel
             $has_video_stream = false;
             $has_audio_stream = false;
 
-            $possibly_audio = array_search($mediainfo->format->format_name, array('flac','mp3','ogg','webm','wav')) !== false || $mediainfo->format->format_long_name == 'QuickTime / MOV';
+            $possibly_audio = array_search($mediainfo->format->format_name, ['flac','mp3','ogg','webm','wav']) !== false || $mediainfo->format->format_long_name == 'QuickTime / MOV';
 
             foreach ($mediainfo->streams as $stream) {
                 if (!isset($stream->codec_name) || !isset($stream->codec_type)) {
@@ -210,34 +219,26 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['metadata_fields']);
 
         $this->db->what('media.id', 'id');
+        $this->db->what('media.stream_version');
         $this->db->what('media.title', 'title');
         $this->db->what('media.artist', 'artist');
         $this->db->what('media.album', 'album');
         $this->db->what('media.year', 'year');
-
         $this->db->what('media.type', 'type');
         $this->db->what('media.format', 'format');
-
         $this->db->what('media.category_id', 'category_id');
         $this->db->what('media_categories.name', 'category_name');
-
-        $this->db->what('media.country_id', 'country_id');
-        $this->db->what('media_countries.name', 'country_name');
-
+        $this->db->what('media.country', 'country');
+        $this->db->what('countries.name', 'country_name');
         $this->db->what('media.language', 'language');
         $this->db->what('languages.ref_name', 'language_name');
-
         $this->db->what('media.is_approved', 'is_approved');
-
         $this->db->what('media.genre_id', 'genre_id');
         $this->db->what('media_genres.name', 'genre_name');
-
         $this->db->what('media.comments', 'comments');
-
         $this->db->what('media.filename', 'filename');
         $this->db->what('media.file_hash', 'file_hash');
         $this->db->what('media.file_location', 'file_location');
-
         $this->db->what('media.is_copyright_owner', 'is_copyright_owner');
         $this->db->what('media.duration', 'duration');
         $this->db->what('media.owner_id', 'owner_id');
@@ -246,19 +247,17 @@ class MediaModel extends OBFModel
         $this->db->what('media.is_archived', 'is_archived');
         $this->db->what('media.status', 'status');
         $this->db->what('media.dynamic_select', 'dynamic_select');
-
         $this->db->what('users.display_name', 'owner_name');
+        $this->db->what('media.properties', 'properties');
 
         foreach ($args['metadata_fields'] as $metadata_field) {
-            if (isset($metadata_field['settings']->default)) {
-                $default = $metadata_field['settings']->default;
-                if (is_array($default)) {
-                    $default = implode(',', $default);
-                }
-
-                $this->db->what('COALESCE(' . $this->db->format_table_column('media_metadata.' . $metadata_field['name']) . ',"' . $this->db->escape($default) . '")', 'metadata_' . $metadata_field['name'], false);
-            } else {
-                $this->db->what('media_metadata.' . $metadata_field['name'], 'metadata_' . $metadata_field['name']);
+            // add the field to the select portion of the query
+            $query_select = $metadata_field->querySelect();
+            if (!is_array($query_select)) {
+                $query_select = [$query_select];
+            }
+            foreach ($query_select as $select) {
+                $this->db->what($select, null, false);
             }
         }
     }
@@ -272,10 +271,9 @@ class MediaModel extends OBFModel
     {
         $this->db->leftjoin('media_categories', 'media_categories.id', 'media.category_id');
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
-        $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
+        $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('users', 'media.owner_id', 'users.id');
-        $this->db->leftjoin('media_metadata', 'media_metadata.media_id', 'media.id');
     }
 
     /**
@@ -286,7 +284,7 @@ class MediaModel extends OBFModel
     {
         $metadata_fields = $this->models->mediametadata('get_all');
 
-        $this('get_init_what', ['metadata_fields' => $metadata_fields]);
+        $this('get_init_what', ['metadata_fields' => $this->models->mediametadata('get_all_objects')]);
         $this('get_init_join');
     }
 
@@ -306,26 +304,32 @@ class MediaModel extends OBFModel
         $this->db->where('media.id', $args['id']);
         $media = $this->db->get_one('media');
 
-        // DEPRECATED: Old media thumbnail code (interferes with new thumbnail items).
-        /* if ($media) {
-            $media['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $media]);
-        } */
+        // get metadata objects to run the media through processRow
+        $metadata_fields = $this->models->mediametadata('get_all_objects');
+        foreach ($metadata_fields as $metadata_field) {
+            $metadata_field->processRow($media);
+        }
 
         return $media;
     }
 
     /**
-     * Check if media thumbnail exists (create if necessary).
+     * Return the filename of a 600x600 thumbnail from the cache directory.
+     * Generate the cached thumbnail first if needed.
      *
      * @param media ID or media row array.
      */
-    public function media_thumbnail_exists($args = [])
+    public function thumbnail_file($args = [])
     {
         OBFHelpers::require_args($args, ['media']);
 
         if (!is_array($args['media'])) {
             $this->db->where('id', $args['media']);
             $media = $this->db->get_one('media');
+
+            if (!$media) {
+                return false;
+            }
         } else {
             $media = $args['media'];
         }
@@ -336,27 +340,90 @@ class MediaModel extends OBFModel
             return false;
         }
 
-        $thumbnail_directory = OB_CACHE . '/thumbnails/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-        $thumbnail_file = $thumbnail_directory . '/' . $media['id'] . '.jpg';
-
-        if (!file_exists($thumbnail_directory)) {
-            mkdir($thumbnail_directory, 0755, true);
+        $media_properties = json_decode($media['properties'], true);
+        if ($media_properties && $media_properties['rotate']) {
+            $rotate = $media_properties['rotate'];
+        } else {
+            $rotate = null;
         }
 
-        if ($media['type'] == 'image' && !file_exists($thumbnail_file)) {
-            if ($media['is_archived'] == 1) {
-                $media_file = OB_MEDIA_ARCHIVE;
-            } elseif ($media['is_approved'] == 0) {
-                $media_file = OB_MEDIA_UPLOADS;
+        // first search for a cached version of our resized thumbnail
+        $cache_directory = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
+        if (count($thumbnail_files) > 0) {
+            // early return of cached thumbnail
+            return $thumbnail_files[0];
+        }
+
+        // no cached version, let's try to create one from a source thumbnail/image
+        $thumbnail_directory = OB_THUMBNAILS . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($thumbnail_directory . '/' . $media['id'] . '.*');
+        if (count($thumbnail_files) < 1) {
+            if ($media['type'] == 'image') {
+                // our thumbnail source is the image itself
+                $input_file = OB_MEDIA . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
             } else {
-                $media_file = OB_MEDIA;
+                // no thumbnail source available
+                return false;
             }
-            $media_file .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
-            $media_file = $media_file . '/' . $media['filename'];
-            OBFHelpers::image_resize($media_file, $thumbnail_file, 600, 600);
+        } else {
+            // our thumbnail source comes from the thumbnail directory
+            $input_file = $thumbnail_files[0];
         }
 
-        return file_exists($thumbnail_file);
+        $output_dir = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        if (!is_dir($output_dir)) {
+            mkdir($output_dir, 0777, true);
+        }
+        $output_file = $output_dir . '/' . $media['id'] . '.webp';
+
+        // resize our image to a webp thumbnail
+        OBFHelpers::image_resize($input_file, $output_file, 600, 600, $rotate);
+
+        // return our file if it exists now
+        if (file_exists($output_file)) {
+            return $output_file;
+        }
+
+        // failed to create cached thumbnail
+        return false;
+    }
+
+    /**
+     * Clear thumbnail cache.
+     *
+     * @param media ID or media row array.
+     */
+    public function thumbnail_clear($args = [])
+    {
+        OBFHelpers::require_args($args, ['media']);
+
+        if (!is_array($args['media'])) {
+            $this->db->where('id', $args['media']);
+            $media = $this->db->get_one('media');
+
+            if (!$media) {
+                return false;
+            }
+        } else {
+            $media = $args['media'];
+        }
+
+        OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
+        if (strlen($media['file_location']) != 2) {
+            trigger_error('Invalid media file location.', E_USER_WARNING);
+            return false;
+        }
+
+        // first search for a cached version of our resized thumbnail
+        $cache_directory = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
+        $thumbnail_files = glob($cache_directory . '/' . $media['id'] . '.*');
+
+        foreach ($thumbnail_files as $thumbnail_file) {
+            unlink($thumbnail_file);
+        }
+
+        return true;
     }
 
     /**
@@ -425,13 +492,13 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['id', 'user_id']);
 
         $this->db->where('user_id', $args['user_id']);
-        $this->db->update('media_searches', array('default' => 0));
+        $this->db->update('media_searches', ['default' => 0]);
 
         $this->db->where('user_id', $args['user_id']);
         $this->db->where('id', $args['id']);
         $this->db->where('type', 'saved'); // can only make 'saved' searches the default.
 
-        if ($this->db->update('media_searches', array('default' => 1))) {
+        if ($this->db->update('media_searches', ['default' => 1])) {
             return true;
         } else {
             return false;
@@ -448,7 +515,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['user_id']);
 
         $this->db->where('user_id', $args['user_id']);
-        $this->db->update('media_searches', array('default' => 0));
+        $this->db->update('media_searches', ['default' => 0]);
         return true;
     }
 
@@ -484,7 +551,7 @@ class MediaModel extends OBFModel
             $this->db->delete('media_searches');
         }
 
-        $this->db->insert('media_searches', array('user_id' => $this->user->param('id'),'query' => $query,'type' => 'history'));
+        $this->db->insert('media_searches', ['user_id' => $this->user->param('id'),'query' => $query,'type' => 'history']);
 
         // shrink our history list down to the top 5.
         $this->db->query('select id from media_searches where user_id = "' . $this->db->escape($this->user->param('id')) . '" and type="history"');
@@ -547,7 +614,7 @@ class MediaModel extends OBFModel
             $this->db->where('user_id', $args['user_id']);
         }
 
-        return $this->db->update('media_searches', array('type' => 'saved'));
+        return $this->db->update('media_searches', ['type' => 'saved']);
     }
 
     /**
@@ -594,10 +661,61 @@ class MediaModel extends OBFModel
             $this->db->where('user_id', $args['user_id']);
         }
         $this->db->where('id', $args['id']);
-        $query = array('mode' => 'advanced','filters' => $args['filters']);
-        $this->db->update('media_searches', array('query' => serialize($query),'description' => $args['description']));
+        $query = ['mode' => 'advanced','filters' => $args['filters']];
+        $this->db->update('media_searches', ['query' => serialize($query),'description' => $args['description']]);
 
         return true;
+    }
+
+    /**
+     * Get captions URL for media item
+     *
+     * @param media
+     *
+     * @return captions_url
+     */
+    public function captions_url($media)
+    {
+        $id = $media['id'];
+
+        if (file_exists("tools/stream/captions/$id.vtt")) {
+            return "tools/stream/captions/$id.vtt";
+        }
+        return false;
+    }
+
+    /**
+     * Get stream URL for media item.
+     *
+     * @param media
+     *
+     * @return stream_url
+     */
+    public function stream_url($media)
+    {
+        // must be video or audio
+        if ($media['type'] != 'video' && $media['type'] != 'audio') {
+            return false;
+        }
+
+        // must have generated stream, and stream API must be enabled. check stream exists, or audio we can do ondemand.
+        if ((! $media['stream_version'] && $media['type'] != 'audio') || !defined('OB_STREAM_API') || !OB_STREAM_API) {
+            $url = '/api/v2/downloads/media/' . $media['id'] . '/preview/';
+        } else {
+            $url = '/api/v2/stream/' . $media['id'];
+        }
+
+        // create nonce if media not public
+        if ($media['status'] != 'public') {
+            // if not logged in, no luck
+            if (!$this->user->param('id')) {
+                return false;
+            }
+
+            $url .= '?nonce=' . $this->user->create_nonce(86400, false, '/api/v2/downloads/media/');
+        }
+
+        return $url;
     }
 
     /**
@@ -616,6 +734,10 @@ class MediaModel extends OBFModel
         OBFHelpers::default_args($args['params'], ['sort_by' => null]);
         OBFHelpers::default_args($args, ['player_id' => false, 'random_order' => false, 'include_private' => false]);
 
+        // get metadata objects needed for postprocessing (done before other db stuff to prevent conflict)
+        // TODO FIX models should be able to act without affecting other models (have own db class instance with shared connection)
+        $metadata_fields = $this->models->mediametadata('get_all_objects');
+
         // if we are accessing from a remote, determine the valid media types.
         if ($args['player_id']) {
             $this->db->where('id', $args['player_id']);
@@ -625,7 +747,7 @@ class MediaModel extends OBFModel
                 return false;
             }
 
-            $supported_types = array();
+            $supported_types = [];
 
             if ($player['support_audio'] == 1) {
                 $supported_types[] = 'media.type = "audio"';
@@ -644,7 +766,7 @@ class MediaModel extends OBFModel
 
         // default status is "approved"
 
-        $where_array = array();
+        $where_array = [];
         $params = $args['params'];
 
         if (isset($params['status']) && $params['status'] == 'archived') {
@@ -666,10 +788,6 @@ class MediaModel extends OBFModel
             $where_array[] = '(status = "public" OR status = "visible" OR owner_id = "' . $this->db->escape($this->user->param('id')) . '")';
         }
 
-        //if($random_order) $this('get_init_join');
-        //else $this('get_init');
-        //if(!$random_order) $this('get_init');
-
         // limit by id?
         if (!empty($params['id'])) {
             $where_array[] = 'media.id = "' . $this->db->escape($params['id']) . '"';
@@ -679,7 +797,16 @@ class MediaModel extends OBFModel
         if ($params['query']['mode'] == 'simple') {
             $params['query']['string'] = trim($params['query']['string']);
             if ($params['query']['string'] !== '') {
-                $where_array[] = '(artist like "%' . $this->db->escape($params['query']['string']) . '%" or title like "%' . $this->db->escape($params['query']['string']) . '%")';
+                $simple_search_where = [];
+                $simple_search_where[] = 'artist like "%' . $this->db->escape($params['query']['string']) . '%"';
+                $simple_search_where[] = 'title like "%' . $this->db->escape($params['query']['string']) . '%"';
+
+                // if only numbers, also search id
+                if (is_numeric($params['query']['string'])) {
+                    $simple_search_where[] = 'media.id = "' . $this->db->escape($params['query']['string']) . '"';
+                }
+
+                $where_array[] = '(' . implode(' OR ', $simple_search_where) . ')';
             }
             if (isset($params['default_filters'])) {
                 if (!$this->search_filters_validate(['filters' => $params['default_filters']])) {
@@ -704,10 +831,9 @@ class MediaModel extends OBFModel
 
         // put all the where data together.
         $this->db->where_string(implode(' AND ', $where_array));
-        $this->db->leftjoin('media_metadata', 'media.id', 'media_metadata.media_id');
         $this->db->leftjoin('media_genres', 'media.genre_id', 'media_genres.id');
         $this->db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
-        $this->db->leftjoin('media_countries', 'media.country_id', 'media_countries.id');
+        $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
 
         if ($params['sort_by'] == 'category_name') {
@@ -715,7 +841,7 @@ class MediaModel extends OBFModel
         } elseif ($params['sort_by'] == 'genre_name') {
             $params['sort_by'] = 'media_genres.name';
         } elseif ($params['sort_by'] == 'country_name') {
-            $params['sort_by'] = 'media_countries.name';
+            $params['sort_by'] = 'countries.name';
         } elseif ($params['sort_by'] == 'language_name') {
             $params['sort_by'] = 'languages.ref_name';
         }
@@ -729,7 +855,7 @@ class MediaModel extends OBFModel
             }
 
             // otherwise, if posted sort by data is valid, use that...
-            if (isset($params['sort_dir']) && ($params['sort_dir'] == 'asc' || $params['sort_dir'] == 'desc') && array_search($params['sort_by'], array('artist','album','title','year','media_categories.name','media_genres.name','media_countries.name','languages.ref_name','duration','updated')) !== false) {
+            if (isset($params['sort_dir']) && ($params['sort_dir'] == 'asc' || $params['sort_dir'] == 'desc') && array_search($params['sort_by'], ['artist','album','title','year','media_categories.name','media_genres.name','countries.name','languages.ref_name','duration','updated']) !== false) {
                 $this->db->orderby($params['sort_by'], $params['sort_dir']);
             } else {
                 // otherwise, show the most recently updated first
@@ -743,7 +869,7 @@ class MediaModel extends OBFModel
             $total_media_found = $this->db->found_rows();
 
             if (empty($media)) {
-                return array(array(), $total_media_found);
+                return [[], $total_media_found];
             }
 
             $ids = [];
@@ -757,10 +883,18 @@ class MediaModel extends OBFModel
 
             $items = $this->db->get('media');
             foreach ($items as &$item) {
-                $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
+                $item['stream_thumbnail'] = $item['thumbnail'];
+                $item['stream'] = $this('stream_url', $item);
+                $item['captions'] = $this('captions_url', $item);
+
+                // get metadata objects to run the media through processRow
+                foreach ($metadata_fields as $metadata_field) {
+                    $metadata_field->processRow($item);
+                }
             }
 
-            return array($items,$total_media_found);
+            return [$items,$total_media_found];
         } else {
             $this->db->what('media.id');
             $media = $this->db->get('media');
@@ -768,7 +902,7 @@ class MediaModel extends OBFModel
             $total_media_found = count($media);
 
             if (!$total_media_found) {
-                return array(array(), 0);
+                return [[], 0];
             }
 
             if (!empty($params['limit']) && $params['limit'] > 0) {
@@ -779,7 +913,7 @@ class MediaModel extends OBFModel
 
             $media_keys = array_rand($media, $limit);
             if (!is_array($media_keys)) {
-                $media_keys = array($media_keys);
+                $media_keys = [$media_keys];
             }
             shuffle($media_keys); // array_rand does random selection, shuffle does random order.
 
@@ -794,10 +928,18 @@ class MediaModel extends OBFModel
 
             $items = $this->db->get('media');
             foreach ($items as &$item) {
-                $item['thumbnail'] = $this->models->media('media_thumbnail_exists', ['media' => $item]);
+                $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
+                $item['stream_thumbnail'] = $item['thumbnail'];
+                $item['stream'] = $this('stream_url', $item);
+                $item['captions'] = $this('captions_url', $item);
+
+                // get metadata objects to run the media through processRow
+                foreach ($metadata_fields as $metadata_field) {
+                    $metadata_field->processRow($item);
+                }
             }
 
-            return array($items,$total_media_found);
+            return [$items,$total_media_found];
         }
     }
 
@@ -815,6 +957,29 @@ class MediaModel extends OBFModel
         $filters = $args['filters'];
 
         $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner'];
+        $allowed_operators = [
+            // deprecated
+            'like',
+            'not_like',
+            'is',
+            'not',
+            'gte',
+            'lte',
+            'has',
+            'not_has',
+
+            // new (use these)
+            'eq',
+            'neq',
+            'contains',
+            'ncontains',
+            'gt',
+            'gte',
+            'lt',
+            'lte',
+            'has',
+            'nhas'
+        ];
 
         $metadata_fields = $this->models->mediametadata('get_all');
 
@@ -831,7 +996,7 @@ class MediaModel extends OBFModel
             if (array_search($filter['filter'], $allowed_filters) === false) {
                 return false;
             }
-            if (array_search($filter['op'], array('like','not_like','is','not','gte','lte','has','not_has')) === false) {
+            if (array_search($filter['op'], $allowed_operators) === false) {
                 return false;
             }
         }
@@ -866,7 +1031,7 @@ class MediaModel extends OBFModel
             $column_array['year'] = 'media.year';
             $column_array['type'] = 'media.type';
             $column_array['category'] = 'media.category_id';
-            $column_array['country'] = 'media.country_id';
+            $column_array['country'] = 'media.country';
             $column_array['language'] = 'media.language';
             $column_array['genre'] = 'media.genre_id';
             $column_array['duration'] = 'media.duration';
@@ -876,7 +1041,7 @@ class MediaModel extends OBFModel
             $metadata_fields = $this->models->mediametadata('get_all');
             $metadata_defaults = [];
             foreach ($metadata_fields as $metadata_field) {
-                $column_array['metadata_' . $metadata_field['name']] = 'media_metadata.' . $metadata_field['name'];
+                $column_array['metadata_' . $metadata_field['name']] = 'media.metadata_' . $metadata_field['name'];
                 if (isset($metadata_field['settings']->default)) {
                     $default = $metadata_field['settings']->default;
 
@@ -893,7 +1058,8 @@ class MediaModel extends OBFModel
             }
 
             // find_in_set works a bit differently
-            if ($filter['op'] == 'has' || $filter['op'] == 'not_has') {
+            // TODO note not_has deprecated
+            if (in_array($filter['op'], ['has','not_has','nhas'])) {
                 if (isset($metadata_defaults[$filter['filter']])) {
                     $default = $metadata_defaults[$filter['filter']];
                     if (is_array($default)) {
@@ -907,12 +1073,23 @@ class MediaModel extends OBFModel
                 }
 
                 $tmp_sql = 'FIND_IN_SET("' . $this->db->escape($filter['val']) . '",' . $set . ')';
-                if ($filter['op'] == 'not_has') {
+                // TODO note not_has deprecated
+                if ($filter['op'] == 'not_has' || $filter['op'] == 'nhas') {
                     $tmp_sql = 'NOT ' . $tmp_sql;
                 }
             } else {
-                // our possibile comparison operators
+                // new operators
                 $op_array = [];
+                $op_array['eq'] = '=';
+                $op_array['neq'] = '!=';
+                $op_array['contains'] = 'LIKE';
+                $op_array['ncontains'] = 'NOT LIKE';
+                $op_array['gt'] = '>';
+                $op_array['gte'] = '>=';
+                $op_array['lt'] = '<';
+                $op_array['lte'] = '<=';
+
+                // deprecated
                 $op_array['like'] = 'LIKE';
                 $op_array['not_like'] = 'NOT LIKE';
                 $op_array['is'] = '=';
@@ -935,11 +1112,13 @@ class MediaModel extends OBFModel
 
                 $tmp_sql .= ' ' . $op_array[$filter['op']] . ' "';
 
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                // TODO like, not_like deprecated
+                if (in_array($filter['op'], ['like', 'not_like', 'contains', 'ncontains'])) {
                     $tmp_sql .= '%';
                 }
                 $tmp_sql .= $this->db->escape($filter['val']);
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                // TODO like, not_like deprecated
+                if (in_array($filter['op'], ['like', 'not_like', 'contains', 'ncontains'])) {
                     $tmp_sql .= '%';
                 }
                 $tmp_sql .= '"';
@@ -966,9 +1145,9 @@ class MediaModel extends OBFModel
         $id = $args['id'];
         $include_dynamic = $args['include_dynamic'];
 
-        $info = array();
+        $info = [];
 
-        $info['used'] = array();
+        $info['used'] = [];
         $info['id'] = $id;
         $info['can_delete'] = true;
 
@@ -991,7 +1170,7 @@ class MediaModel extends OBFModel
 
         // is this potentially found in a dynamic selection?
         if ($include_dynamic) {
-      // see if media can actually be used in dynamic selections.
+            // see if media can actually be used in dynamic selections.
             $this->db->where('id', $id);
             $media = $this->db->get_one('media');
 
@@ -1006,14 +1185,14 @@ class MediaModel extends OBFModel
 
                 $dynamic_items = $this->db->get('playlists_items');
 
-                $found_in_playlists = array();
+                $found_in_playlists = [];
 
                 foreach ($dynamic_items as $item) {
                     if (array_search($item['id'], $found_in_playlists) !== false) {
                         continue;
                     } // don't search if we've already found it in this playlist.
 
-                    $media_search = $this('search', ['params' => array('limit' => 1,'query' => json_decode($item['properties'], true)['query'],'id' => $id)]);
+                    $media_search = $this('search', ['params' => ['limit' => 1,'query' => json_decode($item['properties'], true)['query'],'id' => $id]]);
 
                     if ($media_search && $media_search[1] > 0) {
                         $used_data = new stdClass();
@@ -1112,31 +1291,31 @@ class MediaModel extends OBFModel
         // check if id is valid (if editing)
         //T This media item no longer exists.
         if (!empty($item['id']) && !$this->db->id_exists('media', $item['id'])) {
-            return array(false,$item['local_id'],'This media item no longer exists.');
+            return [false,$item['local_id'],'This media item no longer exists.'];
         }
 
         // check if file exists (if uploading)
         //T The file upload is not valid.
         if (!empty($item['file_id']) && !$item['file_info']) {
-            return array(false,$item['local_id'],'The file upload is not valid.');
+            return [false,$item['local_id'],'The file upload is not valid.'];
         }
 
         // require uploading for new item.
         //T A file upload is required for new media.
         if (!$skip_upload_check && empty($item['id']) && empty($item['file_id'])) {
-            return array(false,$item['local_id'],'A file upload is required for new media.');
+            return [false,$item['local_id'],'A file upload is required for new media.'];
         }
 
         // check if format valid/allowed (if uploading)
         //T This file format is not supported.
         if (!empty($item['file_id']) && !$this('format_allowed', ['type' => $item['file_info']['type'], 'format' => $item['file_info']['format']])) {
-            return array(false,$item['local_id'],'This file format is not supported.');
+            return [false,$item['local_id'],'This file format is not supported.'];
         }
 
         // Make sure title field is set - this is the one field that's always required.
         if (empty($item['title'])) {
             //T One or more required fields were not filled.
-            return array(false, $item['local_id'],'One or more required fields were not filled.');
+            return [false, $item['local_id'],'One or more required fields were not filled.'];
         }
 
         // Get the required fields from media metadata settings and test them against
@@ -1144,51 +1323,55 @@ class MediaModel extends OBFModel
         $req_fields     = $this->models->mediametadata('get_fields');
 
         if (!$req_fields[0]) {
-            return array(false, $item['local_id'], 'Unable to load required fields from settings.');
+            return [false, $item['local_id'], 'Unable to load required fields from settings.'];
         }
 
         foreach ($req_fields[2] as $field => $req) {
             if (empty($item[$field]) && $req === 'required') {
-                return array(false, $item['local_id'], 'Field "' . $field . '" is required.');
+                return [false, $item['local_id'], 'Field "' . $field . '" is required.'];
             }
         }
 
         // make sure artist and title aren't too long.  letting the db do the truncating messes up the filename.
         //T One or more artist/title fields are too long.
         if (strlen($item['artist']) > 255 || strlen($item['title']) > 255) {
-            return array(false,$item['local_id'],'One or more artist/title fields are too long.');
+            return [false,$item['local_id'],'One or more artist/title fields are too long.'];
         }
 
         // check if year valid
         //T The year is not valid.
         if (!empty($item['year']) && (!preg_match('/^[0-9]+$/', $item['year']) || $item['year'] > 2100)) {
-            return array(false,$item['local_id'],'The year is not valid.');
+            return [false,$item['local_id'],'The year is not valid.'];
         }
 
         // validate select fields
 
         //T The category selected is no longer valid.
         if (!empty($item['category_id']) && !$this->db->id_exists('media_categories', $item['category_id'])) {
-            return array(false,$item['local_id'],'The category selected is no longer valid.');
+            return [false,$item['local_id'],'The category selected is no longer valid.'];
         }
         //T The country selected is no longer valid.
-        if (!empty($item['country_id']) && !$this->db->id_exists('media_countries', $item['country_id'])) {
-            return array(false,$item['local_id'],'The country selected is no longer valid.');
+        if (!empty($item['country'])) {
+            $this->db->where('country_id', $item['country']);
+            $exists = $this->db->get_one('countries');
+            if (!$exists) {
+                return [false,$item['local_id'],'The country selected is no longer valid.'];
+            }
         }
         //T The genre selected is no longer valid.
         if (!empty($item['genre_id']) && !$this->db->id_exists('media_genres', $item['genre_id'])) {
-            return array(false,$item['local_id'],'The genre selected is no longer valid.');
+            return [false,$item['local_id'],'The genre selected is no longer valid.'];
         }
         //T The language selected is no longer valid.
         $this->db->where('language_id', $item['language']);
         $exists = $this->db->get_one('languages');
         if (!empty($item['language']) && !$exists) {
-            return array(false,$item['local_id'],'The language selected is no longer valid.');
+            return [false,$item['local_id'],'The language selected is no longer valid.'];
         }
 
         //T The media status is not valid.
         if ($item['status'] != 'private' && $item['status'] != 'visible' && $item['status'] != 'public') {
-            return array(false,$item['local_id'],'The media status is not valid.');
+            return [false,$item['local_id'],'The media status is not valid.'];
         }
 
         // make sure genre belongs to the selected category.
@@ -1197,7 +1380,7 @@ class MediaModel extends OBFModel
             $genre = $this->db->get_one('media_genres');
             //T The selected genre is not available for the selected category.
             if ($genre['media_category_id'] != $item['category_id']) {
-                return array(false,$item['local_id'],'The selected genre is not available for the selected category.');
+                return [false,$item['local_id'],'The selected genre is not available for the selected category.'];
             }
         }
 
@@ -1212,25 +1395,69 @@ class MediaModel extends OBFModel
             $metadata_value = $item['metadata_' . $metadata_field['name']];
 
             // validate if select
-            if ($metadata_field['type'] == 'select' && $metadata_value != '' && array_search($metadata_value, $metadata_field['settings']->options) === false) {
-                return array(false,$item['local_id'],$metadata_field['description'] . ' value not valid.');
+            // note that value can be selected by index as well, so only invalidate if neither value nor valid index is used
+            if (
+                $metadata_field['type'] == 'select' && $metadata_value != ''
+                && array_search($metadata_value, $metadata_field['settings']->options) === false
+                && (! ctype_digit($metadata_value) || intval($metadata_value) < 0 || intval($metadata_value) > count($metadata_field['settings']->options) )
+            ) {
+                return [false,$item['local_id'],$metadata_field['description'] . ' value not valid.'];
             }
 
             // validate if bool
             if ($metadata_field['type'] == 'bool' && $metadata_value != '' && array_search($metadata_value, [0,1]) === false) {
-                return array(false,$item['local_id'],$metadata_field['description'] . ' value not valid.');
+                return [false,$item['local_id'],$metadata_field['description'] . ' value not valid.'];
             }
 
             // validate if tags
             if ($metadata_field['type'] == 'tags' && !is_array($metadata_value)) {
-                return array(false,$item['local_id'],$metadata_field['description'] . ' value not valid.');
+                return [false,$item['local_id'],$metadata_field['description'] . ' value not valid.'];
             }
         }
 
         // not bothering to validate yes/no... if not 1 (yes), assuming 0 (no).
 
-        return array(true,$item['local_id']);
+        return [true,$item['local_id']];
     }
+
+    /**
+     * Get or set a media property.
+     *
+     * @param item
+     *
+     * @return id
+     */
+    public function properties($args = [])
+    {
+        OBFHelpers::require_args($args, ['id']);
+        $media_id = $args['id'];
+        $properties = $args['properties'] ?? null;
+
+
+        $this->db->where('id', $media_id);
+        $media = $this->db->get_one('media');
+
+        if (!$media) {
+            return false;
+        }
+
+        if ($properties) {
+            $this->thumbnail_clear(['media' => $media_id]);
+            $this->db->where('id', $media_id);
+            return $this->db->update('media', ['properties' => json_encode($properties)]);
+        } else {
+            $properties = $media['properties'];
+
+            if ($properties) {
+                $properties = json_decode($properties, true);
+            } else {
+                $properties = [];
+            }
+
+            return $properties;
+        }
+    }
+
 
     /**
      * Insert or update a media item.
@@ -1327,8 +1554,8 @@ class MediaModel extends OBFModel
         if (empty($item['category_id'])) {
             $item['category_id'] = null;
         }
-        if (empty($item['country_id'])) {
-            $item['country_id'] = null;
+        if (empty($item['country'])) {
+            $item['country'] = null;
         }
         if (empty($item['language'])) {
             $item['language'] = null;
@@ -1373,6 +1600,7 @@ class MediaModel extends OBFModel
         $metadata_tags = [];
 
         foreach ($metadata_fields as $metadata_field) {
+            // TODO proper abstraction using metadata classes
             if ($metadata_field['type'] == 'tags') {
                 $tags = [];
                 if (!empty($item['metadata_' . $metadata_field['name']])) {
@@ -1384,9 +1612,11 @@ class MediaModel extends OBFModel
                         }
                     }
                 }
-                $metadata[$metadata_field['name']] = implode(',', $tags);
+                $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
+            } elseif ($metadata_field['type'] == 'coordinates') {
+                $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
             } else {
-                $metadata[$metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
+                $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
             }
 
             unset($item['metadata_' . $metadata_field['name']]);
@@ -1412,21 +1642,15 @@ class MediaModel extends OBFModel
         }
 
         // update or insert custom metadata
-        $this->db->where('media_id', $id);
-        if ($this->db->get_one('media_metadata')) {
-            $this->db->where('media_id', $id);
-            $this->db->update('media_metadata', $metadata);
-        } else {
-            $metadata['media_id'] = $id;
-            $this->db->insert('media_metadata', $metadata);
-        }
+        $this->db->where('id', $id);
+        $this->db->update('media', $metadata);
 
         // update custom metadata tags
         $this->db->where('media_id', $id);
-        $this->db->delete('media_metadata_tags');
+        $this->db->delete('media_tags');
         foreach ($metadata_tags as $row) {
             $row['media_id'] = $id;
-            $this->db->insert('media_metadata_tags', $row);
+            $this->db->insert('media_tags', $row);
         }
 
         // determine our file's name (may be used if we have a new file, or file requires renaming)
@@ -1436,7 +1660,7 @@ class MediaModel extends OBFModel
 
         // handle file if we have it.
         if (!empty($file_id)) {
-      // determine our (random) file location
+        // determine our (random) file location
 
             if ($original_media) {
                 $file_location = $original_media['file_location'];
@@ -1504,7 +1728,7 @@ class MediaModel extends OBFModel
 
             // update db with new filename
             $this->db->where('id', $id);
-            $this->db->update('media', array('filename' => $filename));
+            $this->db->update('media', ['filename' => $filename]);
         }
 
         // handle advanced permissions if we have them
@@ -1915,7 +2139,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
-        $original_media = array();
+        $original_media = [];
 
         // make sure all our media exists. media must not be unapproved or already archived.
         foreach ($ids as $id) {
@@ -1939,7 +2163,7 @@ class MediaModel extends OBFModel
             }
 
             $this->db->where('id', $id);
-            $update = $this->db->update('media', array('is_archived' => 1));
+            $update = $this->db->update('media', ['is_archived' => 1]);
 
             if ($update) {
                 $src_file = OB_MEDIA . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
@@ -1966,7 +2190,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
-        $original_media = array();
+        $original_media = [];
 
         // make sure all our media exists. media must already be archived. unarchived media moves back to approved.
         foreach ($ids as $id) {
@@ -1985,7 +2209,7 @@ class MediaModel extends OBFModel
         foreach ($ids as $id) {
             $this->db->where('id', $id);
             // unarchived media must go to approved.
-            $update = $this->db->update('media', array('is_archived' => 0, 'is_approved' => 1));
+            $update = $this->db->update('media', ['is_archived' => 0, 'is_approved' => 1]);
 
             if ($update) {
                 $src_file = OB_MEDIA_ARCHIVE . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
@@ -2012,7 +2236,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
-        $original_media = array();
+        $original_media = [];
 
         // make sure we have all our media and it's already archived or still unapproved.
         foreach ($ids as $id) {
@@ -2032,10 +2256,6 @@ class MediaModel extends OBFModel
             // main delete
             $this->db->where('id', $id);
             $this->db->delete('media');
-
-            // metadata delete
-            $this->db->where('media_id', $id);
-            $this->db->delete('media_metadata');
 
             if ($original_media[$id]['is_archived'] == 1) {
                 $media_file = OB_MEDIA_ARCHIVE . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
@@ -2104,34 +2324,41 @@ class MediaModel extends OBFModel
         }
 
         // list of valid formats...
-        $valid_video_formats = array('avi','mpg','ogg','wmv','mov');
-        $valid_image_formats = array('jpg','png','svg');
-        $valid_audio_formats = array('flac','mp3','ogg','webm','mp4','wav');
+        $valid_video_formats = ['avi','mpg','ogg','wmv','mov'];
+        $valid_image_formats = ['jpg','png','tif','svg'];
+        $valid_audio_formats = ['flac','mp3','ogg','webm','mp4','wav'];
+        $valid_document_formats = ['pdf'];
 
         // verify image formats
         if (!is_array($video_formats) || !is_array($image_formats) || !is_array($audio_formats)) {
-            return array(false,'There was a problem saving the format settings.');
+            return [false,'There was a problem saving the format settings.'];
         }
 
         foreach ($video_formats as $format) {
             if (array_search($format, $valid_video_formats) === false) {
-                return array(false,'There was a problem saving the format settings. One of the formats does not appear to be valid.');
+                return [false,'There was a problem saving the format settings. One of the formats does not appear to be valid.'];
             }
         }
 
         foreach ($audio_formats as $format) {
             if (array_search($format, $valid_audio_formats) === false) {
-                return array(false,'There was a problem saving the format settings. One of the formats does not appear to be valid.');
+                return [false,'There was a problem saving the format settings. One of the formats does not appear to be valid.'];
             }
         }
 
         foreach ($image_formats as $format) {
             if (array_search($format, $valid_image_formats) === false) {
-                return array(false,'There was a problem saving the format settings. One of the formats does not appear to be valid.');
+                return [false,'There was a problem saving the format settings. One of the formats does not appear to be valid.'];
             }
         }
 
-        return array(true,'');
+        foreach ($document_formats as $format) {
+            if (array_search($format, $valid_document_formats) === false) {
+                return [false,'There was a problem saving the format settings. One of the formats does not appear to be valid.'];
+            }
+        }
+
+        return [true,''];
     }
 
     /**
@@ -2148,14 +2375,39 @@ class MediaModel extends OBFModel
             $$name = $value;
         }
 
+        // add empty settings if they don't exist
         $this->db->where('name', 'audio_formats');
-        $this->db->update('settings', array('value' => implode(',', $audio_formats)));
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'audio_formats', 'value' => '']);
+        }
 
         $this->db->where('name', 'image_formats');
-        $this->db->update('settings', array('value' => implode(',', $image_formats)));
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'image_formats', 'value' => '']);
+        }
 
         $this->db->where('name', 'video_formats');
-        $this->db->update('settings', array('value' => implode(',', $video_formats)));
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'video_formats', 'value' => '']);
+        }
+
+        $this->db->where('name', 'document_formats');
+        if (!$this->db->get_one('settings')) {
+            $this->db->insert('settings', ['name' => 'document_formats', 'value' => '']);
+        }
+
+        // update settings
+        $this->db->where('name', 'audio_formats');
+        $this->db->update('settings', ['value' => implode(',', $audio_formats)]);
+
+        $this->db->where('name', 'image_formats');
+        $this->db->update('settings', ['value' => implode(',', $image_formats)]);
+
+        $this->db->where('name', 'video_formats');
+        $this->db->update('settings', ['value' => implode(',', $video_formats)]);
+
+        $this->db->where('name', 'document_formats');
+        $this->db->update('settings', ['value' => implode(',', $document_formats)]);
     }
 
     /**
@@ -2165,7 +2417,7 @@ class MediaModel extends OBFModel
      */
     public function formats_get_all($args = [])
     {
-        $return = array();
+        $return = [];
 
         $this->db->where('name', 'audio_formats');
         $audio = $this->db->get_one('settings');
@@ -2176,9 +2428,14 @@ class MediaModel extends OBFModel
         $this->db->where('name', 'image_formats');
         $image = $this->db->get_one('settings');
 
-        $return['audio_formats'] = $audio['value'] ? explode(',', $audio['value']) : [];
-        $return['video_formats'] = $video['value'] ? explode(',', $video['value']) : [];
-        $return['image_formats'] = $image['value'] ? explode(',', $image['value']) : [];
+        $this->db->where('name', 'document_formats');
+        $document = $this->db->get_one('settings');
+
+        // TODO need for "trim" check here indicates a problem somewhere (db value had single space rather than empty string)
+        $return['audio_formats'] = $audio && trim($audio['value']) ? explode(',', $audio['value']) : [];
+        $return['video_formats'] = $video && trim($video['value']) ? explode(',', $video['value']) : [];
+        $return['image_formats'] = $image && trim($image['value']) ? explode(',', $image['value']) : [];
+        $return['document_formats'] = $document && trim($document['value']) ? explode(',', $document['value']) : [];
 
         return $return;
     }
@@ -2246,6 +2503,9 @@ class MediaModel extends OBFModel
         } elseif ($type == 'video') {
             $this->db->where('name', 'video_formats');
             $allowed_formats = $this->db->get_one('settings');
+        } elseif ($type == 'document') {
+            $this->db->where('name', 'document_formats');
+            $allowed_formats = $this->db->get_one('settings');
         }
 
         $allowed_formats = explode(',', $allowed_formats['value']);
@@ -2271,7 +2531,7 @@ class MediaModel extends OBFModel
         $charA = $charSelect[$randValA];
         $charB = $charSelect[$randValB];
 
-        $requiredDirs = array();
+        $requiredDirs = [];
         $requiredDirs[] = OB_MEDIA . '/' . $charA;
         $requiredDirs[] = OB_MEDIA_ARCHIVE . '/' . $charA;
         $requiredDirs[] = OB_MEDIA_UPLOADS . '/' . $charA;
@@ -2298,14 +2558,14 @@ class MediaModel extends OBFModel
      *
      * @param filename
      *
-     * [artist, album, title, comments]
+     * @return id3_data
      */
     public function getid3($args = [])
     {
         OBFHelpers::require_args($args, ['filename']);
         $filename = $args['filename'];
 
-        require_once('extras/getid3/getid3/getid3.php');
+        require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
         $getID3 = new getID3();
 
         $info = $getID3->analyze($filename);
@@ -2313,21 +2573,14 @@ class MediaModel extends OBFModel
 
         $id3 = $this->id3makesafe($info);
 
-        $id3_data = array();
-        if (isset($id3['comments']['artist'])) {
-            $id3_data['artist'] = $id3['comments']['artist'];
-        }
-        if (isset($id3['comments']['album'])) {
-            $id3_data['album'] = $id3['comments']['album'];
-        }
-        if (isset($id3['comments']['title'])) {
-            $id3_data['title'] = $id3['comments']['title'];
-        }
-        if (isset($id3['comments']['comments'])) {
-            $id3_data['comments'] = $id3['comments']['comments'];
+        // Unset picture data provided since this breaks the JS somehow.
+        if (isset($id3['comments']['picture'])) {
+            foreach ($id3['comments']['picture'] as $key => $value) {
+                unset($id3['comments']['picture'][$key]['data']);
+            }
         }
 
-        return $id3_data;
+        return $id3['comments'] ?? [];
     }
 
     /**

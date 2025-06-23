@@ -51,11 +51,11 @@ class Account extends OBFController
         $login = $this->user->login($username, $password);
 
         if ($login == false) {
-            return array(false,'Login Failed');
+            return [false,'Login Failed'];
         } elseif (is_array($login) && $login[0] === false) {
-            return array(false,$login[1]);
+            return [false,$login[1]];
         } else {
-            return array(true,'Login Successful',$login[2]);
+            return [true,'Login Successful',$login[2]];
         }
     }
 
@@ -71,7 +71,7 @@ class Account extends OBFController
         $data['id'] = $this->user->param('id');
         $data['username'] = $this->user->param('username');
 
-        return array(true,'UID/Username',$data);
+        return [true,'UID/Username',$data];
     }
 
     /**
@@ -87,7 +87,7 @@ class Account extends OBFController
 
         $permissions = $this->models->permissions('get_user_permissions', $this->user->param('id'));
         //T Permissions
-        return array(true,'Permissions',$permissions);
+        return [true,'Permissions',$permissions];
 
         /*
         $permissions = array();
@@ -112,7 +112,7 @@ class Account extends OBFController
 
         $groups = $this->models->permissions('get_user_groups', $this->user->param('id'));
         //T Groups
-        return array(true,'Groups',$groups);
+        return [true,'Groups',$groups];
     }
 
     /**
@@ -129,9 +129,9 @@ class Account extends OBFController
 
         //T Logged Out
         if ($logout) {
-            return array(true,'Logged Out');
+            return [true,'Logged Out'];
         } else {
-            return array(false,'Unable to log out, an unknown error occurred.');
+            return [false,'Unable to log out, an unknown error occurred.'];
         }
     }
 
@@ -153,7 +153,7 @@ class Account extends OBFController
         unset($userdata['key_expiry']);
         unset($userdata['enabled']);
 
-        return array(true,null,$userdata);
+        return [true,null,$userdata];
     }
 
     /**
@@ -177,7 +177,7 @@ class Account extends OBFController
 
         $user_id = $this->user->param('id');
 
-        $data = array();
+        $data = [];
         $data['name'] = trim($this->data('name'));
         $data['password'] = trim($this->data('password'));
         $data['password_again'] = trim($this->data('password_again'));
@@ -187,6 +187,7 @@ class Account extends OBFController
         $data['theme'] = trim($this->data('theme'));
         $data['dyslexia_friendly_font'] = trim($this->data('dyslexia_friendly_font'));
         $data['sidebar_display_left'] = trim($this->data('sidebar_display_left'));
+        $data['input_audio'] = trim($this->data('input_audio'));
         $data['appkeys'] = $this->data('appkeys');
 
         $validation = $this->models->users('settings_validate', $user_id, $data);
@@ -221,7 +222,7 @@ class Account extends OBFController
 
         $this->models->users('forgotpass_process', $email);
 
-        return array(true,'A new password has been emailed to you.');
+        return [true,'A new password has been emailed to you.'];
     }
 
     /**
@@ -237,10 +238,10 @@ class Account extends OBFController
     public function newaccount()
     {
         if (!$this->models->users('user_registration_get')) {
-            return array(false,'New account registration is currently disabled.');
+            return [false,'New account registration is currently disabled.'];
         }
 
-        $data = array();
+        $data = [];
         $data['name'] = trim($this->data('name'));
         $data['email'] = trim($this->data('email'));
         $data['username'] = trim($this->data('username'));
@@ -252,7 +253,7 @@ class Account extends OBFController
 
         $this->models->users('newaccount_process', $data);
 
-        return array(true,'A new account has been created.  A randomly generated password has been emailed to you.');
+        return [true,'A new account has been created.  A randomly generated password has been emailed to you.'];
     }
 
     /**
@@ -269,15 +270,15 @@ class Account extends OBFController
 
         $id = $this->user->param('id');
         if (empty($id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_new', $id);
         if ($result) {
-            return array(true, 'Created new user App Key.', $result);
+            return [true, 'Created new user App Key.', $result];
         }
 
-        return array(false, 'Failed to create new user App Key.');
+        return [false, 'Failed to create new user App Key.'];
     }
 
     /**
@@ -298,18 +299,18 @@ class Account extends OBFController
         $user_id = $this->user->param('id');
 
         if (empty($id)) {
-            return array(false, 'Invalid key ID.');
+            return [false, 'Invalid key ID.'];
         }
         if (empty($user_id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_delete', $id, $user_id);
         if ($result) {
-            return array(true, 'Successfully deleted App Key.');
+            return [true, 'Successfully deleted App Key.'];
         }
 
-        return array(false, 'Failed to delete App Key.');
+        return [false, 'Failed to delete App Key.'];
     }
 
     /**
@@ -351,12 +352,12 @@ class Account extends OBFController
 
         $id = $this->user->param('id');
         if (empty($id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_load', $id);
 
-        return array(true, 'Successfully loaded App Keys.', $result);
+        return [true, 'Successfully loaded App Keys.', $result];
     }
 
     /**
@@ -398,5 +399,19 @@ class Account extends OBFController
         $data['user_id'] = $this->user->param('id');
 
         return $this->models->userstorage('get_all', $data);
+    }
+
+    /**
+     * Create a nonce for a one-time GET requests.
+     *
+     * @route GET /v2/account/nonce/
+     *
+     * @return nonce
+     */
+    public function nonce()
+    {
+        $this->user->require_authenticated();
+        $nonce = $this->user->create_nonce();
+        return [true, 'Nonce created.', ['nonce' => $nonce]];
     }
 }

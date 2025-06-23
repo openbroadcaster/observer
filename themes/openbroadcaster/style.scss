@@ -4,120 +4,112 @@
 
 @import "../../scss/all";
 
-body
-{
-  background: linear-gradient(to top left,  #262226, #424163, #1d1b14);
+body {
+    background: linear-gradient(to top left, #262226, #424163, #1d1b14);
+
+    scrollbar-color: #9797a6 rgba(0, 0, 0, 0);
 }
 
 a {
-  color: #e09529;
+    color: #e09529;
 }
 
-#main_container
-{
-  background-color: transparent;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-image: url('svg/logo4e.svg');
-  background-size: auto 150%
+#main_container {
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url("svg/logo4e.svg");
+    background-size: auto 150%;
 }
 
-#layout_footer
-{
-  border-top: 2px solid #e09529;
-  background-color: #000;
+#layout_footer {
+    border-top: 2px solid #e09529;
+    background-color: #000;
 }
 
-button, input[type=submit], input[type=reset], input[type=button], a.button
-{
-  border: 1px solid #e09529;
-  background-color: rgba(0,0,0,0.3) !important;
-  color: #ccc !important;
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+a.button {
+    border: 1px solid #e09529;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    color: #ccc !important;
 }
 
-.message
-{
-  border: 1px solid #999;
-  background-color: rgba(0,0,0,0.3) !important;
-  color: #ccc !important;
+.message {
+    border: 1px solid #999;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    color: #ccc !important;
 }
 
-.message.error
-{
-  border-color: #f33;
-  /* color: #f33 !important; */
+.message.error {
+    border-color: #f33;
+    /* color: #f33 !important; */
 }
 
 #obmenu li ul {
-  background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0, 0, 0, 0.9);
+    border: none;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-#sidebar_player_draghere
-{
-  color: #7f7d8b;
+#sidebar_player_draghere {
+    color: #7f7d8b;
 }
 
-#sidebar_search_playlist_container
-{
-  background: rgba(227,229,237,0.3);
+#sidebar_search_playlist_container {
+    background: rgba(227, 229, 237, 0.3);
 }
 
-.sidebar_search_media_container_basic
-{
-  background: rgba(227,229,237,0.3);
+.sidebar_search_media_container_basic {
+    background: rgba(227, 229, 237, 0.3);
 }
 
-.sidebar_search_media_container_detailed
-{
-  background: rgba(100,100,110,1.0);
+.sidebar_search_media_container_detailed {
+    background: rgba(100, 100, 110, 1);
 }
 
-.sidebar_search_tab
-{
-  background-color: #bbb;
+.sidebar_search_tab {
+    background-color: #bbb;
 }
 
-.sidebar_search_tab.selected
-{
-  background-color: #e3e5ed;
+.sidebar_search_tab.selected {
+    background-color: #e3e5ed;
 }
 
-#sidebar_search_tabs a
-{
-  color: #9e691d;
-  /* color: #333; */
+#sidebar_search_tabs a {
+    color: #9e691d;
+    /* color: #333; */
 }
 
-#sidebar_search_playlist_input, #sidebar_search_media_input
-{
-  background-color: rgba(0,0,0,0.3);
-  color: #fff;
+#sidebar_search_playlist_input,
+#sidebar_search_media_input {
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
-.context-menu, .my_searches_context_menu
-{
-  background: rgba(0,0,0,0.9);
-  border: none;
+.context-menu,
+.my_searches_context_menu {
+    background: rgba(0, 0, 0, 0.9);
+    border: none;
 }
 
-#layout_modal_window
-{
-  color: #eeeeec;
-  background: rgba(64, 64, 68, 0.7);
-  border-color: #eeeeec;
+#layout_modal_window {
+    color: #eeeeec;
+    background: rgba(64, 64, 68, 0.7);
+    border-color: #eeeeec;
 }
 
-ob-tag-suggestions
-{
-  background-color: rgba(0,0,0,0.9);
+ob-tag-suggestions {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
-ob-tab-select button
-{  
-  color: #eeeeec !important;
+ob-tab-select button {
+    color: #eeeeec !important;
 
-  &.active
-  {
-    border: 1px solid #e09529;
-  }
+    &.active {
+        border: 1px solid #e09529;
+    }
 }

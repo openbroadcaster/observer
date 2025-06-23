@@ -19,13 +19,11 @@
 
 OB.Admin = new Object();
 
-OB.Admin.init = function()
-{
-  OB.Callbacks.add('ready',-5,OB.Admin.initMenu);
-}
+OB.Admin.init = function () {
+    OB.Callbacks.add("ready", -5, OB.Admin.initMenu);
+};
 
-OB.Admin.initMenu = function()
-{
-  //T Admin
-  OB.UI.addMenuItem('Admin', 'admin', 50);
-}
+OB.Admin.initMenu = function () {
+    //T Admin
+    OB.UI.addMenuItem("Admin", "admin", 50);
+};

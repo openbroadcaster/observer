@@ -1,105 +1,172 @@
 <div id="sidebar_search_tabs">
-  <div class="sidebar_search_tab selected" id="sidebar_search_tab_media" onclick="OB.Sidebar.showMediaSearch();"><a data-t>Media</a></div>
-  <div class="sidebar_search_tab" id="sidebar_search_tab_playlist" onclick="OB.Sidebar.showPlaylistSearch();"><a data-t>Playlists</a></div>
+    <div class="sidebar_search_tab selected" id="sidebar_search_tab_media" onclick="OB.Sidebar.showMediaSearch();">
+        <a data-t>Media</a>
+    </div>
+    <div class="sidebar_search_tab" id="sidebar_search_tab_playlist" onclick="OB.Sidebar.showPlaylistSearch();">
+        <a data-t>Playlists</a>
+    </div>
 </div>
 
 <div id="sidebar_search_media_container" class="sidebar_search_media_container_basic">
-
-  <div id="sidebar_search_media_form">
-    <span id="sidebar_search_media_filters">
-      <a title="View My Media Uploads" id="sidebar_search_media_my" href="javascript:OB.Sidebar.mediaSearchFilter('my');" data-t>my</a>
-      &bull;
-      <a title="View Approved Media" id="sidebar_search_media_approved" href="javascript:OB.Sidebar.mediaSearchFilter('approved');" data-t>ap</a>
-      <a title="View New (Unapproved) Media" id="sidebar_search_media_unapproved" href="javascript:OB.Sidebar.mediaSearchFilter('unapproved');" data-t>un</a>
-      <a data-permissions="manage_media" title="View Archived Media" id="sidebar_search_media_archived" href="javascript:OB.Sidebar.mediaSearchFilter('archived');" data-t>ar</a>
-    </span>
-    <input type="text" id="sidebar_search_media_input" name="sidebar_search_media_input" placeholder="Enter Search Query" data-t>
-    <div id="sidebar_search_media_mode"><a href="javascript:OB.Sidebar.mediaSearchMode('advanced');" data-t>advanced</a>
-            &bull; <a href="javascript:OB.Sidebar.mediaSearchMode('simple');" data-t>simple</a>
-            &bull; <a href="javascript:OB.Sidebar.mySearchesWindow();" data-t>my searches</a>
-            &bull; <a href="javascript:OB.Sidebar.mediaDetails();" data-t>de</a>
-            &bull; <a href="javascript:OB.Sidebar.mediaThumbnails();" data-t>th</a>
+    <div class="sidebar_search_media_form" style="margin-bottom: 10px">
+        <ob-element-search-media style="position: relative; z-index: 1"></ob-element-search-media>
     </div>
-  </div>
 
-  <table id="sidebar_search_media_headings">
+    <table id="sidebar_search_media_headings">
         <thead>
-        <tr>
-          <th class="sidebar_search_media_type" data-column="type">&nbsp;</th>
-          <th class="sidebar_search_media_artist" data-column="artist"><a href="javascript:OB.Sidebar.mediaSearchSort('artist');" data-t>Artist</a></th>
-          <th class="sidebar_search_media_detailed_column hidden" data-column="album"><a href="javascript:OB.Sidebar.mediaSearchSort('album');" data-t>Album/Series</a></th>
-          <th class="sidebar_search_media_title" data-column="title"><a href="javascript:OB.Sidebar.mediaSearchSort('title');" data-t>Title</a></th>
-          <th class="sidebar_search_media_detailed_column sidebar_search_media_year hidden" data-column="year"><a href="javascript:OB.Sidebar.mediaSearchSort('year');" data-t>Year</a></th>
-          <th class="sidebar_search_media_detailed_column hidden" data-column="category"><a href="javascript:OB.Sidebar.mediaSearchSort('category_name');" data-t>Category</a></th>
-          <th class="sidebar_search_media_detailed_column hidden" data-column="genre"><a href="javascript:OB.Sidebar.mediaSearchSort('genre_name');" data-t>Genre</a></th>
-          <th class="sidebar_search_media_detailed_column hidden" data-column="country"><a href="javascript:OB.Sidebar.mediaSearchSort('country_name');" data-t>Country</a></th>
-          <th class="sidebar_search_media_detailed_column hidden" data-column="language"><a href="javascript:OB.Sidebar.mediaSearchSort('language_name');" data-t>Language</a></th>
-          <th class="sidebar_search_media_time" data-column="time"><a href="javascript:OB.Sidebar.mediaSearchSort('duration');" data-t>Time</a></th>
-        </tr>
-      </thead>
-  </table>
-
-  <div id="sidebar_search_media_results_container">
-    <table id="sidebar_search_media_results">
-      <tbody>
-      </tbody>
+            <tr>
+                <th class="sidebar_search_media_type" data-column="type">&nbsp;</th>
+                <th class="sidebar_search_media_artist" data-column="artist">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('artist');" data-t>Artist</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column hidden" data-column="album">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('album');" data-t>Album/Series</a>
+                </th>
+                <th class="sidebar_search_media_title" data-column="title">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('title');" data-t>Title</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column sidebar_search_media_year hidden" data-column="year">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('year');" data-t>Year</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column hidden" data-column="category">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('category_name');" data-t>Category</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column hidden" data-column="genre">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('genre_name');" data-t>Genre</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column hidden" data-column="country">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('country_name');" data-t>Country</a>
+                </th>
+                <th class="sidebar_search_media_detailed_column hidden" data-column="language">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('language_name');" data-t>Language</a>
+                </th>
+                <th class="sidebar_search_media_time" data-column="time">
+                    <a href="javascript:OB.Sidebar.mediaSearchSort('duration');" data-t>Time</a>
+                </th>
+            </tr>
+        </thead>
     </table>
-    <div id="sidebar_search_media_loadmore" hidden><a href="javascript: OB.Sidebar.mediaSearchMore();" data-t>Load More Results</a></div>
-    <div id="sidebar_search_media_loading" hidden><span data-t>Loading</span>...</div>
-  </div>
 
-  <div id="sidebar_search_media_footer">
-    <div class="details"><a id="media_detailed_toggle" title="Toggle Details" href="javascript: OB.Sidebar.mediaDetailedToggle();"><span id="media_detailed_toggle_left"><i class="fas fa-angle-double-left"></i></span><span id="media_detailed_toggle_right"><i class="fas fa-angle-double-right"></i></span></a></div>
-    <div class="results">
-      <div class="num_results">&nbsp;</div>
+    <div id="sidebar_search_media_results_container">
+        <table id="sidebar_search_media_results">
+            <tbody></tbody>
+        </table>
+        <div id="sidebar_search_media_loadmore" hidden>
+            <a href="javascript: OB.Sidebar.mediaSearchMore();" data-t>Load More Results</a>
+        </div>
+        <div id="sidebar_search_media_loading" hidden><span data-t>Loading</span>...</div>
     </div>
-  </div>
 
-  <div id="sidebar_search_media_buttons">
-    <button id="sidebar_media_upload_button" data-permissions="create_own_media" class="add" onclick="OB.Media.uploadPage();" data-t>New</button>
-    <button class="edit hidden" id="sidebar_media_edit_button" onclick="OB.Media.editPage();" data-t>Edit</button>
-    <button class="hidden" id="sidebar_media_unarchive_button" onclick="OB.Media.unarchivePage();" data-t>Restore</button>
-    <button class="delete hidden" id="sidebar_media_delete_button" onclick="OB.Media.deletePage();" data-t>Delete</button>
-  </div>
+    <div id="sidebar_search_media_footer">
+        <div class="details">
+            <a id="media_detailed_toggle" title="Toggle Details" href="javascript: OB.Sidebar.mediaDetailedToggle();"
+                ><span id="media_detailed_toggle_left"><i class="fas fa-angle-double-left"></i></span
+                ><span id="media_detailed_toggle_right"><i class="fas fa-angle-double-right"></i></span
+            ></a>
+        </div>
+        <div class="results">
+            <div class="num_results">&nbsp;</div>
+        </div>
+    </div>
 
+    <div id="sidebar_search_media_buttons" class="button-container -centered">
+        <ob-element-button
+            id="sidebar_media_upload_button"
+            data-permissions="create_own_media"
+            onclick="OB.Media.uploadPage();"
+            data-style="add"
+            data-text="New"
+            data-icon-name="plus"
+        ></ob-element-button>
+
+        <ob-element-button
+            hidden
+            id="sidebar_media_edit_button"
+            onclick="OB.Media.editPage();"
+            data-style="edit"
+            data-text="Edit"
+            data-icon-name="pen"
+        ></ob-element-button>
+
+        <ob-element-button
+            hidden
+            id="sidebar_media_unarchive_button"
+            onclick="OB.Media.unarchivePage();"
+            data-text="Restore"
+            data-icon-name="trash-can-arrow-up"
+        ></ob-element-button>
+
+        <ob-element-button
+            hidden
+            id="sidebar_media_delete_button"
+            onclick="OB.Media.deletePage();"
+            data-style="delete"
+            data-text="Delete"
+            data-icon-name="trash"
+        ></ob-element-button>
+    </div>
 </div>
 
 <div id="sidebar_search_playlist_container" class="hidden">
+    <div class="sidebar_search_playlist_form" style="margin-bottom: 10px">
+        <ob-element-search-playlist style="position: relative; z-index: 1"></ob-element-search-playlist>
+    </div>
 
-  <div id="sidebar_search_playlist_form">
-    <span id="sidebar_search_media_filters"><a title="View My Playlists" id="sidebar_search_playlist_my" href="javascript:OB.Sidebar.playlistSearchFilter('my');" data-t>my</a></span>
-    <input type="text" id="sidebar_search_playlist_input" name="sidebar_search_playlist_input" placeholder="Enter Search Query" data-t>
-    <div>&nbsp;</div>
-  </div>
-
-  <table id="sidebar_search_playlist_headings">
-    <thead>
-      <tr>
-        <th class="sidebar_search_playlist_name" data-column="name"><a href="javascript:OB.Sidebar.playlistSearchSort('name');" data-t>Name</a></th>
-        <th class="sidebar_search_playlist_description" data-column="description"><a href="javascript:OB.Sidebar.playlistSearchSort('description');" data-t>Description</a></th>
-      </tr>
-    </thead>
-  </table>
-
-  <div id="sidebar_search_playlist_results_container">
-    <table id="sidebar_search_playlist_results">
-      <tbody>
-      </tbody>
+    <table id="sidebar_search_playlist_headings">
+        <thead>
+            <tr>
+                <th class="sidebar_search_playlist_name" data-column="name">
+                    <a href="javascript:OB.Sidebar.playlistSearchSort('name');" data-t>Name</a>
+                </th>
+                <th class="sidebar_search_playlist_description" data-column="description">
+                    <a href="javascript:OB.Sidebar.playlistSearchSort('description');" data-t>Description</a>
+                </th>
+            </tr>
+        </thead>
     </table>
-    <div id="sidebar_search_playlist_loadmore" hidden><a href="javascript: OB.Sidebar.playlistSearchMore();" data-t>Load More Results</a></div>
-    <div id="sidebar_search_playlist_loading" hidden><span data-t>Loading</span>...</div>
-  </div>
 
-  <div id="sidebar_search_playlist_footer">
-    <div class="results">
-      <div class="num_results">&nbsp;</div></div>
-  </div>
+    <div id="sidebar_search_playlist_results_container">
+        <table id="sidebar_search_playlist_results">
+            <tbody></tbody>
+        </table>
+        <div id="sidebar_search_playlist_loadmore" hidden>
+            <a href="javascript: OB.Sidebar.playlistSearchMore();" data-t>Load More Results</a>
+        </div>
+        <div id="sidebar_search_playlist_loading" hidden><span data-t>Loading</span>...</div>
+    </div>
 
+    <div id="sidebar_search_playlist_footer">
+        <div class="results">
+            <div class="num_results">&nbsp;</div>
+        </div>
+    </div>
 
-  <div id="sidebar_search_playlist_buttons">
-    <button data-permissions="create_own_playlists" class="add" onclick="OB.Playlist.newPage();" data-t>New</button>
-    <button class="edit" id="sidebar_playlist_edit_button" onclick="OB.Playlist.editPage();" data-t>Edit</button>
-    <button class="delete" id="sidebar_playlist_delete_button" onclick="OB.Playlist.deletePage();" data-t>Delete</button>
-  </div>
-
+    <div id="sidebar_search_playlist_buttons" class="button-container -centered">
+        <ob-element-button
+            data-permissions="create_own_playlists"
+            onclick="OB.Playlist.newPage();"
+            data-style="add"
+            data-text="New"
+            data-icon-name="plus"
+            data-icon-style="solid"
+        ></ob-element-button>
+        <ob-element-button
+            hidden
+            id="sidebar_playlist_edit_button"
+            onclick="OB.Playlist.editPage();"
+            data-style="edit"
+            data-text="Edit"
+            data-icon-name="pen"
+            data-icon-style="solid"
+        ></ob-element-button>
+        <ob-element-button
+            hidden
+            id="sidebar_playlist_delete_button"
+            onclick="OB.Playlist.deletePage();"
+            data-style="delete"
+            data-text="Delete"
+            data-icon-name="trash"
+            data-icon-style="solid"
+        ></ob-element-button>
+    </div>
 </div>

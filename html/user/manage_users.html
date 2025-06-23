@@ -1,34 +1,38 @@
 <div>
+    <h1 data-t>User Management</h1>
 
-<h1 data-t>User Management</h1>
+    <fieldset>
+        <legend data-t>New Users</legend>
+        <div class="fieldrow">
+            <input value="1" type="checkbox" id="users_allow_registration_checkbox" />
+            <span data-t>Allow new user registration from the welcome screen.</span>
+        </div>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Add a User"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.User.manageUsersNew();"
+                data-t
+                id="users_new_user_button"
+                >Add a User</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-<fieldset>
-<legend data-t>New Users</legend>
-<div class="fieldrow">
-  <input value="1" type="checkbox" id="users_allow_registration_checkbox">
-  <span data-t>Allow new user registration from the welcome screen.</span>
-</div>
-<div class="fieldrow">
-  <button onclick="OB.User.manageUsersNew();" data-t id="users_new_user_button">Add a User</button>
-</div>
-</fieldset>
+    <fieldset>
+        <legend data-t>Existing Users</legend>
 
-<fieldset>
-<legend data-t>Existing Users</legend>
-
-<table class="table" id="user_list_table">
-<thead>
-  <th><a href="javascript:OB.User.manageUsersSort('display_name');" data-t>Display Name</a></th>
-  <th><a href="javascript:OB.User.manageUsersSort('email');" data-t>Email</a></th>
-  <th><a href="javascript:OB.User.manageUsersSort('created');" data-t>Created</a></th>
-  <th><a href="javascript:OB.User.manageUsersSort('last_access');" data-t>Last Access</a></th>
-  <th><span data-t>Groups</span></th>
-  <th>&nbsp;</th>
-</thead>
-<tbody>
-</tbody>
-</table>
-
-</fieldset>
-
+        <table class="table" id="user_list_table">
+            <thead>
+                <th><a href="javascript:OB.User.manageUsersSort('display_name');" data-t>Display Name</a></th>
+                <th><a href="javascript:OB.User.manageUsersSort('email');" data-t>Email</a></th>
+                <th><a href="javascript:OB.User.manageUsersSort('created');" data-t>Created</a></th>
+                <th><a href="javascript:OB.User.manageUsersSort('last_access');" data-t>Last Access</a></th>
+                <th><span data-t>Groups</span></th>
+                <th>&nbsp;</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </fieldset>
 </div>

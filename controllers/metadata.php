@@ -26,7 +26,7 @@
  */
 class Metadata extends OBFController
 {
-    public $media_types = array('audio','image','video');
+    public $media_types = ['audio','image','video'];
 
     public function __construct()
     {
@@ -57,6 +57,7 @@ class Metadata extends OBFController
      * @param description
      * @param type Text (single or multiple lines), boolean, dropdown, tags.
      * @param select_options Options in dropdown when selected as type.
+     * @param mode Whether metadata field is required, optional, or hidden (usable via API).
      * @param default
      * @param tag_suggestions
      *
@@ -80,8 +81,11 @@ class Metadata extends OBFController
         $data['description'] = trim($this->data('description'));
         $data['type'] = trim($this->data('type'));
         $data['select_options'] = trim($this->data('select_options'));
-
+        $data['mode'] = trim($this->data('mode'));
+        $data['id3_key'] = trim($this->data('id3_key'));
+        $data['visibility'] = $this->data('visibility');
         $data['default'] = $this->data('default');
+
         if (is_array($data['default'])) {
             $data['default'] = array_map('trim', $data['default']);
         } else {
@@ -162,7 +166,7 @@ class Metadata extends OBFController
     public function media_metadata_fields()
     {
         $fields = $this->models->mediametadata('get_all');
-        return array(true,'Media metadata fields.',$fields);
+        return [true,'Media metadata fields.',$fields];
     }
 
     /**
@@ -185,7 +189,7 @@ class Metadata extends OBFController
      * @param album
      * @param year
      * @param category_id
-     * @param country_id
+     * @param country
      * @param language
      * @param comments
      * @param dynamic_content_default
@@ -203,21 +207,112 @@ class Metadata extends OBFController
             return $result;
         }
 
-        $data = array(
+        $data = [
         'artist'                  => $this->data['artist'],
         'album'                   => $this->data['album'],
         'year'                    => $this->data['year'],
         'category_id'             => $this->data['category_id'],
-        'country_id'              => $this->data['country_id'],
+        'country'                 => $this->data['country'],
         'language'                => $this->data['language'],
         'comments'                => $this->data['comments'],
         'dynamic_content_default' => $this->data['dynamic_content_default'],
         'dynamic_content_hidden'  => $this->data['dynamic_content_hidden']
-        );
+        ];
 
         $result = $this->models->mediametadata('required_fields', $data);
 
         return $result;
+    }
+
+    /**
+     * Set the default values for metadata when saving a recording.
+     *
+     * @param fields An array with the keys responding to metadata fields, and the values to their default values.
+     *
+     * @route POST /v2/metadata/recording
+     */
+    public function recording_default_values_save()
+    {
+        $this->user->require_permission('manage_media_settings');
+
+        $coreFields = $this->models->mediametadata('get_fields')[2];
+        $customFields = $this->models->mediametadata('get_all');
+
+        if ($coreFields['album'] === 'required' && empty($this->data['album'])) {
+            //T No default album provided.
+            return [false, 'No default album provided.'];
+        }
+
+        if ($coreFields['year'] === 'required' && ! ctype_digit($this->data['year'])) {
+            //T No default year provided.
+            return [false, 'No default year provided.'];
+        }
+
+        $genre = $this->models->mediagenres('get_by_id', $this->data['genre'] ?? 0);
+        $category = $genre['media_category_id'] === $this->data['category'];
+        if ($coreFields['category_id'] === 'required' && (! $genre || ! $category)) {
+            //T No default category provided.
+            return [false, 'No default category provided.'];
+        }
+
+        $country = $this->models->mediacountries('get_by_id', $this->data['country'] ?? 0);
+        if ($coreFields['country'] === 'required' && ! $country) {
+            //T No default country provided.
+            return [false, 'No default country provided.'];
+        }
+
+        $language = $this->models->medialanguages('get_by_id', $this->data['language'] ?? 0);
+        if ($coreFields['language'] === 'required' && ! $language) {
+            //T No default language provided.
+            return [false, 'No default language provided.'];
+        }
+
+        if ($coreFields['comments'] === 'required' && empty($this->data['comments'])) {
+            //T No default comments provided.
+            return [false, 'No default comments provided.'];
+        }
+
+        foreach ($customFields as $field) {
+            if (isset($field['settings']->mode) && $field['settings']->mode === 'required') {
+                $value = $this->data['custom_metadata'][$field['name']] ?? null;
+
+                if ($value === '' || $value === null) {
+                    return [false, 'No default value provided for required custom field `' . $field['name'] . '`'];
+                }
+
+                if (
+                    $field['type'] === 'select' &&
+                    (! in_array($value, $field['settings']->options) &&
+                    (! ctype_digit($value) || count($field['settings']->options) < intval($value) || intval($value) < 0))
+                ) {
+                    return [false, 'Selected value not in allowed options for custom field `' . $field['name'] . '`'];
+                }
+
+                if ($field['type'] === 'integer' && ! ctype_digit($value)) {
+                    return [false, 'Value for custom field `' . $field['name'] . '` must be an integer'];
+                }
+            }
+        }
+
+        $this->models->settings('setting_set', 'recording_defaults', json_encode($this->data));
+        return [true, 'Successfully saved default recording metadata values.'];
+    }
+
+    /**
+     * Get the default values for metadata when saving a recording.
+     *
+     * @return metadata_values
+     *
+     * @route GET /v2/metadata/recording
+     */
+    public function recording_default_values()
+    {
+        $defaults = $this->models->settings('setting_get', 'recording_defaults');
+        if (! $defaults[0]) {
+            return [false, 'No recording defaults found'];
+        } else {
+            return [true, 'Recording defaults', json_decode($defaults[2], true)];
+        }
     }
 
     public function playlist_item_types()
@@ -254,9 +349,9 @@ class Metadata extends OBFController
         $categories = $this->models->mediacategories('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
         if ($categories === false) {
-            return array(false,'An unknown error occurred while fetching categories.');
+            return [false,'An unknown error occurred while fetching categories.'];
         } else {
-            return array(true,'Category list.',$categories);
+            return [true,'Category list.',$categories];
         }
     }
 
@@ -282,7 +377,7 @@ class Metadata extends OBFController
             }
         }
 
-        $data = array();
+        $data = [];
         $data['name'] = trim($this->data('name'));
         $data['is_default'] = $this->data('default');
 
@@ -294,9 +389,9 @@ class Metadata extends OBFController
         $save = $this->models->mediacategories('save', $data, $id);
 
         if (!$save) {
-            return array(false,'An unknown error occurred while trying to save this category.');
+            return [false,'An unknown error occurred while trying to save this category.'];
         } else {
-            return array(true,'Category saved.');
+            return [true,'Category saved.'];
         }
     }
 
@@ -321,9 +416,9 @@ class Metadata extends OBFController
         $delete = $this->models->mediacategories('delete', $id);
 
         if ($delete) {
-            return array(true,'Category deleted.');
+            return [true,'Category deleted.'];
         } else {
-            return array(false,'An unknown error occured while trying to delete the category.');
+            return [false,'An unknown error occured while trying to delete the category.'];
         }
     }
 
@@ -343,9 +438,9 @@ class Metadata extends OBFController
         $category = $this->models->mediacategories('get_by_id', $id);
 
         if ($category) {
-            return array(true,'Category information.',$category);
+            return [true,'Category information.',$category];
         } else {
-            return array(false,'Category not found.');
+            return [false,'Category not found.'];
         }
     }
 
@@ -377,9 +472,9 @@ class Metadata extends OBFController
         $genres = $this->models->mediagenres('search', $filters, $orderby, $orderdesc, $limit, $offset);
 
         if ($genres === false) {
-            return array(false,'An unknown error occurred while fetching genres.');
+            return [false,'An unknown error occurred while fetching genres.'];
         } else {
-            return array(true,'Genre list.',$genres);
+            return [true,'Genre list.',$genres];
         }
     }
 
@@ -399,7 +494,7 @@ class Metadata extends OBFController
     {
         $this->user->require_permission('manage_media_settings');
 
-        $data = array();
+        $data = [];
         $id = trim($this->data['id']);
 
         if ($this->api_version() === 2) {
@@ -419,9 +514,9 @@ class Metadata extends OBFController
         }
 
         if ($this->models->mediagenres('save', $data, $id)) {
-            return array(true,'Genre saved.');
+            return [true,'Genre saved.'];
         } else {
-            return array(false,'An unknown error occurred while trying to save this genre.');
+            return [false,'An unknown error occurred while trying to save this genre.'];
         }
     }
 
@@ -441,9 +536,9 @@ class Metadata extends OBFController
         $delete = $this->models->mediagenres('delete', $id);
 
         if ($delete) {
-            return array(true,'Genre deleted.');
+            return [true,'Genre deleted.'];
         } else {
-            return array(false,'An unknown error occured while trying to delete the genre.');
+            return [false,'An unknown error occured while trying to delete the genre.'];
         }
     }
 
@@ -463,9 +558,9 @@ class Metadata extends OBFController
         $genre = $this->models->mediagenres('get_by_id', $id);
 
         if ($genre) {
-            return array(true,'Genre information.',$genre);
+            return [true,'Genre information.',$genre];
         } else {
-            return array(false,'Genre not found.');
+            return [false,'Genre not found.'];
         }
     }
 
@@ -485,9 +580,9 @@ class Metadata extends OBFController
         $types = $this->models->mediacountries('get_all');
 
         if ($types === false) {
-            return array(false,'An unknown error occured while fetching countries.');
+            return [false,'An unknown error occured while fetching countries.'];
         } else {
-            return array(true,'Country list.',$types);
+            return [true,'Country list.',$types];
         }
     }
 
@@ -500,31 +595,62 @@ class Metadata extends OBFController
      */
     public function language_list()
     {
-        // limited to individual living languages
-        if(!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+        if (!defined('OB_SHOW_ALL_LANGUAGES') || OB_SHOW_ALL_LANGUAGES !== true) {
+            // limited to individual living languages
             $languages = $this->models->medialanguages('get_main');
-        }
-
-        // all languages
-        else {
+        } else {
+            // all languages
             $languages = $this->models->medialanguages('get_all');
         }
 
         if ($languages === false) {
-            return array(false,'An unknown error occured while fetching languages.');
+            return [false,'An unknown error occured while fetching languages.'];
         }
 
         // get top languages, add popularity to the languages
         $top_languages = $this->models->medialanguages('get_top');
         $language_popularities = [];
-        foreach($top_languages as $index=>$top_language) {
+        foreach ($top_languages as $index => $top_language) {
             $language_popularities[$top_language] = $index;
         }
 
-        foreach($languages as &$language) {
+        foreach ($languages as &$language) {
             $language['popularity'] = $language_popularities[$language['language_id']] ?? null;
         }
 
-        return array(true,'Language list.',$languages);
+        return [true,'Language list.',$languages];
+    }
+
+    /**
+     * Get coordinates for address using Google Maps API.
+     *
+     * @param address
+     *
+     * @return [lat, lon]
+     */
+    public function address_coordinates()
+    {
+        $address = $this->data('address');
+
+        $ch = curl_init();
+
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?';
+        $params = [
+            'address' => urlencode($address),
+            'key' => OB_GOOGLE_API_KEY
+        ];
+        curl_setopt($ch, CURLOPT_URL, $url . http_build_query($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $coordinates = json_decode($response, true);
+
+        $result = $coordinates['results'][0]['geometry']['location'] ?? null;
+
+        if (! $result) {
+            return [false, 'No coordinates found for address.'];
+        }
+
+        return [true, 'Coordinates', $result];
     }
 }

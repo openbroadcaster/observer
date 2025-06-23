@@ -390,7 +390,7 @@ function itemLoad()
 function itemDownload()
 {
   var media_id = $(this).parent().attr('data-id');
-  window.location.href = obstream.url+'download.php?media_id='+media_id;
+  window.location.href = obstream.url+'api/v2/downloads/media/'+media_id;
 }
 
 function itemMetadata()

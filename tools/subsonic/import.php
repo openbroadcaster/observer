@@ -80,7 +80,7 @@ $subsonic_meta_fields = ['id', 'parent', 'track', 'genre', 'coverart', 'size', '
   'duration', 'bitrate', 'path', 'playcount', 'discnumber', 'created', 'albumid', 'type'];
 foreach ($subsonic_meta_fields as $meta_field) {
     $db->where('name', 'subsonic_' . $meta_field);
-    if (!$db->get_one('media_metadata_columns')) {
+    if (!$db->get_one('media_metadata')) {
         $models->mediametadata('save', [
       'name' => 'subsonic_' . $meta_field,
       'description' => 'Subsonic ' . $meta_field,
@@ -181,8 +181,8 @@ foreach ($artists as $key => $artist) {
 
         /* Check the media table for the Subsonic ID. If it's already in there, it means
         we already imported the media file a previous time, so we can skip this one. */
-        $db->where('subsonic_id', $media_item['id']);
-        $exists = $db->get('media_metadata');
+        $db->where('metadata_subsonic_id', $media_item['id']);
+        $exists = $db->get('media');
         if ($exists) {
             echo "Subsonic ID found in table. Media file already imported. Skipping.\n";
             $skipped[] = $media_item;

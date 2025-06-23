@@ -27,6 +27,39 @@
 class MediaMetadataModel extends OBFModel
 {
     /**
+     * Get all metadata columns as metadata objects.
+     */
+    public function get_all_objects()
+    {
+        $columns = $this->get_all();
+
+        $objects = [];
+        foreach ($columns as $column) {
+            // adjust to "boolean" ("bool" reserved; can't use for class name).
+            $column_type = $column['type'];
+            if ($column_type == 'bool') {
+                $column_type = 'boolean';
+            }
+
+            $class = 'OB\Classes\Metadata\\' . ucfirst($column_type);
+
+            // no class? use base class.
+            if (!class_exists($class)) {
+                $class = 'OB\Classes\Base\Metadata';
+            }
+
+            // exclude this field if not public and not authenticated
+            if ($column['visibility'] != 'public' && !$this->user->check_authenticated()) {
+                continue;
+            }
+
+            $objects[] = new $class($column['name'], $column['description'], $column['type'], $column['settings']);
+        }
+
+        return $objects;
+    }
+
+    /**
      * Get all metadata columns.
      *
      * @return metadata_columns
@@ -34,7 +67,11 @@ class MediaMetadataModel extends OBFModel
     public function get_all()
     {
         $this->db->orderby('order_id');
-        $fields = $this->db->get('media_metadata_columns');
+        $fields = $this->db->get('media_metadata');
+        if (!$fields) {
+            return [];
+        }
+
         foreach ($fields as &$field) {
             if (!$field['settings']) {
                 $field['settings'] = '{}';
@@ -46,6 +83,7 @@ class MediaMetadataModel extends OBFModel
                 $field['settings']->all = $this('tag_search', ['id' => $field['id'],'search' => '']);
             }
         }
+
         return $fields;
     }
 
@@ -59,7 +97,7 @@ class MediaMetadataModel extends OBFModel
     public function get_one($id)
     {
         $this->db->where('id', $id);
-        $field = $this->db->get_one('media_metadata_columns');
+        $field = $this->db->get_one('media_metadata');
         if ($field['settings']) {
             $field['settings'] = json_decode($field['settings']);
         }
@@ -76,7 +114,7 @@ class MediaMetadataModel extends OBFModel
     public function get_by_name($name)
     {
         $this->db->where('name', $name);
-        $field = $this->db->get_one('media_metadata_columns');
+        $field = $this->db->get_one('media_metadata');
         if ($field['settings']) {
             $field['settings'] = json_decode($field['settings']);
         }
@@ -108,7 +146,7 @@ class MediaMetadataModel extends OBFModel
         // save
         foreach ($order as $order_id => $field_id) {
             $this->db->where('id', $field_id);
-            $this->db->update('media_metadata_columns', ['order_id' => $order_id]);
+            $this->db->update('media_metadata', ['order_id' => $order_id]);
         }
 
         return true;
@@ -132,7 +170,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T All fields are required.
-        if (!$data['name'] || !$data['description'] || !$data['type'] || ($data['type'] == 'select' && !$data['select_options'])) {
+        if (!$data['name'] || !$data['description'] || !$data['type'] || !$data['mode'] || ($data['type'] == 'select' && !$data['select_options'])) {
             return [false,'All fields are required.'];
         }
         //T Field name must contain only letters, numbers, and underscores.
@@ -157,8 +195,13 @@ class MediaMetadataModel extends OBFModel
         }
 
         //T The field type is not valid.
-        if (array_search($data['type'], ['select','bool','text','textarea','integer','tags','hidden']) === false) {
+        if (array_search($data['type'], ['select','bool','text','textarea','formatted','integer','date','time','datetime','tags','hidden','media','playlist','coordinates','license']) === false) {
             return [false,'The field type is not valid.'];
+        }
+
+        //T The visibility setting is not valid.
+        if (array_search($data['visibility'], ['visible','public']) === false) {
+            return [false,'The visibility setting is not valid.'];
         }
 
         return [true,'Valid.'];
@@ -177,6 +220,7 @@ class MediaMetadataModel extends OBFModel
         $save = [];
         $save['settings'] = [];
         $save['description'] = $data['description'];
+        $save['visibility'] = $data['visibility'];
 
         // if editing, use name/type from existing field.
         if ($id) {
@@ -198,8 +242,10 @@ class MediaMetadataModel extends OBFModel
             $save['settings']['options'] = $save_options;
         }
 
-        // default
+        // mode, default, and id3 key
+        $save['settings']['mode'] = $data['mode'];
         $save['settings']['default'] = $data['default'];
+        $save['settings']['id3_key'] = $data['id3_key'];
 
         // tag suggestions
         if ($data['type'] == 'tags') {
@@ -219,23 +265,39 @@ class MediaMetadataModel extends OBFModel
 
         if ($id) {
             $this->db->where('id', $id);
-            return $this->db->update('media_metadata_columns', $save);
+            return $this->db->update('media_metadata', $save);
         } else {
             $save['name'] = $data['name'];
             $save['type'] = $data['type'];
 
-            $id = $this->db->insert('media_metadata_columns', $save);
+            $id = $this->db->insert('media_metadata', $save);
 
             if ($save['type'] == 'bool') {
-                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' ADD ' . $this->db->format_backticks($data['name']) . ' BOOLEAN NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'select' || $save['type'] == 'text') {
-                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' ADD ' . $this->db->format_backticks($data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'textarea' || $save['type'] == 'tags') {
-                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' ADD ' . $this->db->format_backticks($data['name']) . ' TEXT NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'integer') {
-                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' ADD ' . $this->db->format_backticks($data['name']) . ' BIGINT NULL DEFAULT NULL');
-            } elseif ($save['type'] == 'hidden') {
-                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' ADD ' . $this->db->format_backticks($data['name']) . ' LONGTEXT NULL DEFAULT NULL');
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BOOLEAN NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'select' || $save['type'] === 'text') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'textarea' || $save['type'] == 'tags' || $save['type'] == 'formatted') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TEXT NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'integer') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' BIGINT NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'hidden') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' LONGTEXT NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'date') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' DATE NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'time') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' TIME NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'datetime') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' DATETIME NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'media') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' INT UNSIGNED NULL DEFAULT NULL');
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD CONSTRAINT ' . $this->db->format_backticks('fk_media_metadata_' . $data['name']) . ' FOREIGN KEY (' . $this->db->format_backticks('metadata_' . $data['name']) . ') REFERENCES ' . $this->db->format_backticks('media') . ' (' . $this->db->format_backticks('id') . ') ON UPDATE CASCADE ON DELETE SET NULL');
+            } elseif ($save['type'] === 'playlist') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' INT UNSIGNED NULL DEFAULT NULL');
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD CONSTRAINT ' . $this->db->format_backticks('fk_media_metadata_' . $data['name']) . ' FOREIGN KEY (' . $this->db->format_backticks('metadata_' . $data['name']) . ') REFERENCES ' . $this->db->format_backticks('playlists') . ' (' . $this->db->format_backticks('id') . ') ON UPDATE CASCADE ON DELETE SET NULL');
+            } elseif ($save['type'] === 'coordinates') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' POINT NULL DEFAULT NULL');
+            } elseif ($save['type'] === 'license') {
+                $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' ADD ' . $this->db->format_backticks('metadata_' . $data['name']) . ' VARCHAR(255) NULL DEFAULT NULL');
             }
 
             return $id;
@@ -257,8 +319,17 @@ class MediaMetadataModel extends OBFModel
         }
 
         $this->db->where('id', $id);
-        $this->db->delete('media_metadata_columns');
-        $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media_metadata') . ' DROP COLUMN ' . $this->db->format_backticks($field['name']));
+        $this->db->delete('media_metadata');
+
+        if ($field['type'] === 'media' || $field['type'] === 'playlist') {
+            $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP FOREIGN KEY ' . $this->db->format_backticks('fk_media_metadata_' . $field['name']));
+        }
+
+        /*if ($field['type'] === 'coordinates') {
+            $this->db->query('DROP TRIGGER before_insert_metadata_' . $field['name']);
+        }*/
+
+        $this->db->query('ALTER TABLE ' . $this->db->format_backticks('media') . ' DROP COLUMN ' . $this->db->format_backticks('metadata_' . $field['name']));
 
         return true;
     }
@@ -276,7 +347,7 @@ class MediaMetadataModel extends OBFModel
             !array_key_exists('album', $data) ||
             !array_key_exists('year', $data) ||
             !array_key_exists('category_id', $data) ||
-            !array_key_exists('country_id', $data) ||
+            !array_key_exists('country', $data) ||
             !array_key_exists('language', $data) ||
             !array_key_exists('comments', $data) ||
             !array_key_exists('dynamic_content_default', $data) ||
@@ -373,7 +444,7 @@ class MediaMetadataModel extends OBFModel
         $this->db->where('id', $data['id'] ?? 0);
         $this->db->where('type', 'tags');
         $this->db->what('settings');
-        $tag = $this->db->get_one('media_metadata_columns');
+        $tag = $this->db->get_one('media_metadata');
 
         if ($tag) {
             $settings = json_decode($tag['settings'], true);
@@ -386,7 +457,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         // query is weird without search ("%%") but fine.
-        $this->db->query('SELECT DISTINCT(tag) AS `tag` FROM `media_metadata_tags` WHERE `media_metadata_column_id`="' . $this->db->escape($data['id']) . '" AND `tag` LIKE "%' . $this->db->escape($data['search']) . '%"');
+        $this->db->query('SELECT DISTINCT(tag) AS `tag` FROM `media_tags` WHERE `media_metadata_column_id`="' . $this->db->escape($data['id']) . '" AND `tag` LIKE "%' . $this->db->escape($data['search']) . '%"');
         $rows = $this->db->assoc_list();
 
         foreach ($rows as $row) {

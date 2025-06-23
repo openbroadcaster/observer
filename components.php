@@ -32,12 +32,23 @@ if (!defined('OB_ERROR_BAD_DATA')) {
 if (!defined('OB_ERROR_DENIED')) {
     define('OB_ERROR_DENIED', 4);
 }
+if (!defined('OB_ERROR_NOTFOUND')) {
+    define('OB_ERROR_NOTFOUND', 5);
+}
+if (!defined('OB_ERROR_SERVER')) {
+    define('OB_ERROR_SERVER', 6);
+}
 if (!defined('OB_LOCAL')) {
     define('OB_LOCAL', __DIR__);
 }
 
 // use same working directory regardless of where our script is.
 chdir(OB_LOCAL);
+
+// set appropriate SENDFILE header based on server
+if (!defined('OB_SENDFILE_HEADER')) {
+    define('OB_SENDFILE_HEADER', false);
+}
 
 // load config
 if (!file_exists('config.php')) {
@@ -88,17 +99,20 @@ if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.
 date_default_timezone_set('Etc/UTC');
 
-// load core components
-require_once('classes/obfdb.php');
-require_once('classes/obfload.php');
-require_once('classes/obfio.php');
-require_once('classes/obfcontroller.php');
-require_once('classes/obfcallbacks.php');
-require_once('classes/obfhelpers.php');
-require_once('classes/obfmodel.php');
-require_once('classes/obfmodels.php');
-require_once('classes/obfuser.php');
-require_once('classes/obfmodule.php');
+// require class files
+$require_from = [
+    'classes/core',
+    'classes/base',
+    'classes/metadata'
+];
+foreach ($require_from as $dir) {
+    $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+    foreach ($classes_iterator as $file) {
+        if ($file->isFile() && $file->getExtension() == 'php') {
+            require_once($file->getPathname());
+        }
+    }
+}
 
 // load third party components
 require_once('vendor/autoload.php');

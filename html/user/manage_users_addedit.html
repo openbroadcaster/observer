@@ -1,93 +1,127 @@
 <obwidget id="user_addedit_message" type="message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>User</legend>
 
-  <fieldset>
-    <legend data-t>User</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <input type="text" id="user_name_input" />
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Name</label>
-      <input type="text" id="user_name_input">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Username</label>
+            <input type="text" id="user_username_input" />
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Username</label>
-      <input type="text" id="user_username_input">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Display Name</label>
+            <input type="text" id="user_display_name_input" />
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Display Name</label>
-      <input type="text" id="user_display_name_input">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Email</label>
+            <input type="text" id="user_email_input" />
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Email</label>
-      <input type="text" id="user_email_input">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Password</label>
+            <input type="password" id="user_password_input" autocomplete="new-password" />
+            <span class="edit_only">* </span>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Password</label>
-      <input type="password" id="user_password_input" autocomplete="new-password">
-      <span class="edit_only">* </span>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Password (confirm)</label>
+            <input type="password" id="user_password_confirm_input" autocomplete="new-password" />
+            <span class="edit_only">* </span>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Password (confirm)</label>
-      <input type="password" id="user_password_confirm_input" autocomplete="new-password">
-      <span class="edit_only">* </span>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Status</label>
+            <select id="user_enabled_input">
+                <option value="1" data-t>Enabled</option>
+                <option value="0" data-t>Disabled</option>
+            </select>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Status</label>
-      <select id="user_enabled_input">
-        <option value="1" data-t>Enabled</option>
-        <option value="0" data-t>Disabled</option>
-      </select>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Groups</label>
+            <div id="user_addedit_group_list"></div>
+        </div>
+    </fieldset>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Groups</label>
-      <div id="user_addedit_group_list"></div>
-    </div>
-  </fieldset>
+    <fieldset class="edit_only">
+        <legend data-t>App Keys</legend>
 
-  <fieldset class="edit_only">
-    <legend data-t>App Keys</legend>
+        <div class="fieldrow" hidden id="user_appkey_newkeyinfo"></div>
 
-    <div class="fieldrow" hidden id="user_appkey_newkeyinfo">
-    </div>
+        <div class="fieldrow">
+            <table class="table" id="user_appkey_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created</th>
+                        <th>Last Accessed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-    <div class="fieldrow">
-      <table class="table" id="user_appkey_table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Created</th>
-            <th>Last Accessed</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Add Key"
+                data-style="add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                class="add"
+                id="user_appkey_add"
+                onclick="OB.User.manageUsersKeyAdd();"
+                data-t
+                >Add Key</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-    <div class="fieldrow">
-      <button class="add" id="user_appkey_add" onclick="OB.User.manageUsersKeyAdd();" data-t>Add Key</button>
-    </div>
-  </fieldset>
+    <p class="edit_only">* <span data-t>Enter password only if you wish to change the password.</span></p>
 
-  <p class="edit_only">* <span data-t>Enter password only if you wish to change the password.</span></p>
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="item_properties_save"
+                onclick="OB.User.manageUsersSave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                class="edit_only delete"
+                id="item_properties_delete"
+                onclick="OB.User.manageUsersDelete();"
+                data-t
+            >
+                Delete
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-  <fieldset>
-    <div class="fieldrow">
-      <button class="add" id="item_properties_save" onclick="OB.User.manageUsersSave();" data-t>Save</button>
-      <button class="edit_only delete" id="item_properties_delete" onclick="OB.User.manageUsersDelete();"
-        data-t>Delete</button>
-      <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-    </div>
-  </fieldset>
-
-
-  <input type="hidden" id="user_addedit_id">
+    <input type="hidden" id="user_addedit_id" />
 </div>

@@ -4,7 +4,7 @@ class OBUpdate20180821 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Copyright and public download permissions.';
         return $updates;
     }

@@ -47,7 +47,7 @@ class Users extends OBFController
         $this->user->require_permission('manage_users');
 
         $this->models->users('user_registration_set', $this->data('user_registration'));
-        return array(true,'User registration set.');
+        return [true,'User registration set.'];
     }
 
     /**
@@ -59,7 +59,7 @@ class Users extends OBFController
      */
     public function user_registration_get()
     {
-        return array(true,'User registration.',$this->models->users('user_registration_get'));
+        return [true,'User registration.',$this->models->users('user_registration_get')];
     }
 
     /**
@@ -72,7 +72,7 @@ class Users extends OBFController
     public function user_list()
     {
         $users = $this->models->users('user_list');
-        return array(true,'User list.',$users);
+        return [true,'User list.',$users];
     }
 
     /**
@@ -104,7 +104,7 @@ class Users extends OBFController
         $sort_desc = $sort[1];
 
         $users = $this->models->users('user_manage_list', $sort_col, ($sort_desc ? 'desc' : 'asc'));
-        return array(true,'User list.',[$users,$sort_col,$sort_desc]);
+        return [true,'User list.',[$users,$sort_col,$sort_desc]];
     }
 
     /**
@@ -128,7 +128,7 @@ class Users extends OBFController
     {
         $this->user->require_permission('manage_users');
 
-        $data = array();
+        $data = [];
 
         $data['name'] = trim($this->data('name'));
         $data['username'] = trim($this->data('username'));
@@ -158,7 +158,7 @@ class Users extends OBFController
 
         $this->models->users('user_save', $data, $id);
 
-        return array(true,'User has been saved.');
+        return [true,'User has been saved.'];
     }
 
     /**
@@ -175,12 +175,12 @@ class Users extends OBFController
         $id = $this->data('id');
 
         if (empty($id)) {
-            return array(false,'Invalid User ID.');
+            return [false,'Invalid User ID.'];
         }
 
         $this->models->users('user_delete', $id);
 
-        return array(true,'User deleted.');
+        return [true,'User deleted.'];
     }
 
     /**
@@ -199,15 +199,15 @@ class Users extends OBFController
 
         $id = $this->data('id');
         if (empty($id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_new', $id);
         if ($result) {
-            return array(true, 'Created new user App Key.', $result);
+            return [true, 'Created new user App Key.', $result];
         }
 
-        return array(false, 'Failed to create new user App Key.');
+        return [false, 'Failed to create new user App Key.'];
     }
 
     /**
@@ -229,18 +229,18 @@ class Users extends OBFController
         $user_id = $this->data('user_id');
 
         if (empty($id)) {
-            return array(false, 'Invalid key ID.');
+            return [false, 'Invalid key ID.'];
         }
         if (empty($user_id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_delete', $id, $user_id);
         if ($result) {
-            return array(true, 'Successfully deleted App Key.');
+            return [true, 'Successfully deleted App Key.'];
         }
 
-        return array(false, 'Failed to delete App Key.');
+        return [false, 'Failed to delete App Key.'];
     }
 
     /**
@@ -259,11 +259,11 @@ class Users extends OBFController
 
         $id = $this->data('id');
         if (empty($id)) {
-            return array(false, 'Invalid user ID.');
+            return [false, 'Invalid user ID.'];
         }
 
         $result = $this->models->users('user_manage_key_load', $id);
-        return array(true, 'Successfully loaded App Keys', $result);
+        return [true, 'Successfully loaded App Keys', $result];
     }
 
     /**
@@ -278,7 +278,7 @@ class Users extends OBFController
     {
         $hide_permissions = !$this->user->check_permission('manage_users or manage_permissions');
         $groups = $this->models->users('group_list', $hide_permissions);
-        return array(true,'Group list.',$groups);
+        return [true,'Group list.',$groups];
     }
 
 
@@ -299,7 +299,7 @@ class Users extends OBFController
             $this->models->users('group_delete', $id);
         }
 
-        return array(true,'Group deleted.');
+        return [true,'Group deleted.'];
     }
 
     /**
@@ -334,7 +334,7 @@ class Users extends OBFController
         // proceed with add/edit.
         $this->models->users('group_save', $data, $id);
 
-        return array(true,'Group saved.');
+        return [true,'Group saved.'];
     }
 
     /**
@@ -349,6 +349,6 @@ class Users extends OBFController
     {
         $this->user->require_permission('manage_permissions');
         $permissions = $this->models->users('permissions_list');
-        return array(true,'Permisisons list.',$permissions);
+        return [true,'Permisisons list.',$permissions];
     }
 }

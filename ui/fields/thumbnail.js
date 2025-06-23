@@ -1,23 +1,23 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldThumbnail extends OBField {
-
     #imageData;
     #imageWidth;
     #imageHeight;
     #readOnly;
 
-    connectedCallback() {
+    async connected() {
         this.#imageData = null;
-        this.#imageWidth = this.getAttribute('width') ? this.getAttribute('width') : 128;
-        this.#imageHeight = this.getAttribute('height') ? this.getAttribute('height') : 128;
-        this.#readOnly = ((this.getAttribute('readonly') !== null) && (this.getAttribute('readonly') !== "false")) ? true : false;
-        this.renderComponent();
+        this.#imageWidth = this.getAttribute("width") ? this.getAttribute("width") : 128;
+        this.#imageHeight = this.getAttribute("height") ? this.getAttribute("height") : 128;
+        this.#readOnly =
+            this.getAttribute("readonly") !== null && this.getAttribute("readonly") !== "false" ? true : false;
     }
 
     renderEdit() {
-        render(html`
+        render(
+            html`
             <style>
                 :host { display: inline-block; }
                 .hide {
@@ -57,47 +57,62 @@ class OBFieldThumbnail extends OBField {
                     </div>
                 </div>
             </div>
-        `, this.root);
+        `,
+            this.root,
+        );
 
         this.#toggleDisplay();
     }
 
     renderView() {
-        render(html`<div>thumbnail view todo</div>`, this.root);
+        render(
+            html`
+                <div class="wrapper">
+                    <div class="image-wrapper">
+                        ${this.#imageData
+                            ? html`
+                        <img src="${this.#imageData}" class="thumbnail" width=${this.#imageWidth} height=${this.#imageHeight}></img>
+                    `
+                            : html``}
+                    </div>
+                </div>
+            `,
+            this.root,
+        );
     }
 
     onChange(event) {
         const reader = new FileReader();
-        const imgElem = this.root.querySelector('.image-wrapper');
+        const imgElem = this.root.querySelector(".image-wrapper");
 
         reader.onload = (e) => {
             this.#imageData = e.target.result;
             this.refresh();
-        }
+        };
         reader.readAsDataURL(event.target.files[0]);
     }
 
     onMouseOver(event) {
         if (!this.#imageData || this.#readOnly) return;
 
-        this.root.querySelector('.image-wrapper .button-wrapper').classList.remove('hide');
+        this.root.querySelector(".image-wrapper .button-wrapper").classList.remove("hide");
     }
 
     onMouseLeave(event) {
         if (!this.#imageData || this.#readOnly) return;
 
-        this.root.querySelector('.image-wrapper .button-wrapper').classList.add('hide');
+        this.root.querySelector(".image-wrapper .button-wrapper").classList.add("hide");
     }
 
     deleteImage(event) {
         this.#imageData = null;
-        this.root.querySelector('input').value = '';
+        this.root.querySelector("input").value = "";
 
         this.refresh();
     }
 
     replaceImage(event) {
-        this.root.querySelector('input').click();
+        this.root.querySelector("input").click();
     }
 
     get value() {
@@ -111,19 +126,19 @@ class OBFieldThumbnail extends OBField {
 
     #toggleDisplay() {
         if (this.#imageData == null) {
-            this.root.querySelector('.image-wrapper').classList.add('hide');
-            this.root.querySelector('input').classList.remove('hide');
+            this.root.querySelector(".image-wrapper").classList.add("hide");
+            this.root.querySelector("input").classList.remove("hide");
         } else {
-            this.root.querySelector('.image-wrapper').classList.remove('hide');
-            this.root.querySelector('input').classList.add('hide');
+            this.root.querySelector(".image-wrapper").classList.remove("hide");
+            this.root.querySelector("input").classList.add("hide");
         }
 
         if (this.#readOnly) {
-            this.root.querySelector('input').disabled = true;
+            this.root.querySelector("input").disabled = true;
         } else {
-            this.root.querySelector('input').disabled = false;
+            this.root.querySelector("input").disabled = false;
         }
     }
 }
 
-customElements.define('ob-field-thumbnail', OBFieldThumbnail);
+customElements.define("ob-field-thumbnail", OBFieldThumbnail);

@@ -4,7 +4,7 @@ class OBUpdate20200814 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "CASCADE updates to playlists. Allow NULLS in owner_id when a user gets deleted. Clean up table first.";
         $updates[] = "CASCADE updates to playlists_items. Note that media items will NOT cascade since item_id can refer to other types as well. Clean up table first.";
         $updates[] = "CASCADE updates to playlist_liveassist_buttons. Clean up table first.";

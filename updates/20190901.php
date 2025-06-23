@@ -4,7 +4,7 @@ class OBUpdate20190901 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Translation tables.';
 
         return $updates;

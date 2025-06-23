@@ -4,7 +4,7 @@ class OBUpdate20201113 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Add AppKey permissions.";
         return $updates;
     }

@@ -16,9 +16,12 @@ class OBUpdate20230613 extends OBUpdate
     public function run()
     {
         // Add a file location column to playlists to use when storing thumbnails.
-        $this->db->query('ALTER TABLE `playlists` ADD COLUMN IF NOT EXISTS `file_location` VARCHAR(2) NOT NULL AFTER `name`;');
-        if ($this->db->error()) {
-            return false;
+        if (! $this->db->column_exists('playlists', 'file_location')) {
+            $this->db->query('ALTER TABLE `playlists` ADD COLUMN `file_location` VARCHAR(2) NOT NULL AFTER `name`;');
+            if ($this->db->error()) {
+                echo $this->db->error(); //Debug output
+                return false;
+            }
         }
 
         // Add a random location to all previously existing playlists and create their directories.
@@ -82,7 +85,7 @@ class OBUpdate20230613 extends OBUpdate
         $charA = $charSelect[$randValA];
         $charB = $charSelect[$randValB];
 
-        $requiredDirs = array();
+        $requiredDirs = [];
         $requiredDirs[] = OB_THUMBNAILS . '/playlist';
         $requiredDirs[] = OB_THUMBNAILS . '/playlist/' . $charA;
         $requiredDirs[] = OB_THUMBNAILS . '/playlist/' . $charA . '/' . $charB;

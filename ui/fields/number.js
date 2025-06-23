@@ -1,0 +1,66 @@
+import { OBField } from "../base/field.js";
+import { html, render } from "../vendor.js";
+
+class OBFieldNumber extends OBField {
+    static comparisonOperators = {
+        eq: "is",
+        neq: "is not",
+        gt: "greater than",
+        gte: "greater than or equal to",
+        lt: "less than",
+        lte: "less than or equal to",
+    };
+
+    renderEdit() {
+        render(
+            html` <input id="input" type="number" value=${this._value} onchange=${this.inputChange.bind(this)} /> `,
+            this.root,
+        );
+    }
+
+    renderView() {
+        render(html` <div id="view">${this._value}</div> `, this.root);
+    }
+
+    inputChange(event) {
+        this._value = parseInt(event.target.value);
+    }
+
+    set value(value) {
+        this._value = parseInt(value);
+        this.refresh();
+    }
+
+    get value() {
+        return this._value;
+    }
+
+    scss() {
+        return `
+            :host {
+                display: inline-block; 
+                
+                input {
+                    color: var(--field-color);
+                    background-color: var(--field-background);
+                    border-radius: var(--field-radius);
+                    border: var(--field-border);
+                    font-size: 13px;
+                    padding: 5px;
+                    width: 250px;
+                    vertical-align: middle;
+                }
+
+                input:focus {
+                    outline: 2px solid var(--color-accent);
+                    outline-offset: 2px;
+                }
+            }
+        `;
+    }
+}
+
+customElements.define("ob-field-number", OBFieldNumber);
+
+class OBFieldInteger extends OBFieldNumber {}
+customElements.define("ob-field-integer", OBFieldInteger);

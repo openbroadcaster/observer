@@ -1,38 +1,60 @@
 <div>
+    <obwidget type="message" id="category_addedit_message"></obwidget>
 
-<obwidget type="message" id="category_addedit_message" ></obwidget>
+    <fieldset>
+        <legend id="category_addedit_heading"></legend>
 
-<fieldset>
-<legend id="category_addedit_heading"></legend>
+        <div class="fieldrow edit_only">
+            <label class="required" data-t>ID</label>
+            <span id="category_id"></span>
+        </div>
 
-<div class="fieldrow edit_only">
-  <label class="required" data-t>ID</label>
-  <span id="category_id"></span>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <input type="text" id="category_name_input" />
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Name</label>
-  <input type="text" id="category_name_input">
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Default for New Media</label>
+            <select id="category_default">
+                <option value="1" data-t>Yes</option>
+                <option value="0" data-t>No</option>
+            </select>
+        </div>
+    </fieldset>
 
-<div class="fieldrow">
-  <label class="required" data-t>Default for New Media</label>
-  <select id="category_default">
-    <option value="1" data-t>Yes</option>
-    <option value="0" data-t>No</option>
-  </select>
-</div>
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-style="add"
+                class="add"
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                onclick="OB.Media.categorySave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-style="delete"
+                class="delete edit_only"
+                data-text="Delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                onclick="OB.Media.categoryDelete();"
+                data-t
+                >Delete</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-</fieldset>
-
-<fieldset>
-<div class="fieldrow">
-  <button class="add" onclick="OB.Media.categorySave();" data-t>Save</button>
-  <button class="delete edit_only" onclick="OB.Media.categoryDelete();" data-t>Delete</button>
-  <button onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-</fieldset>
-
-<input type="hidden" id="category_addedit_id">
-
+    <input type="hidden" id="category_addedit_id" />
 </div>

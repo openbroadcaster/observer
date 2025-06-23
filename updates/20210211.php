@@ -4,7 +4,7 @@ class OBUpdate20210211 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Drop foreign keys for schedules_media_cache, then re-add the constraint to player_id. (Quickest way to make sure there is no constraint to schedule_id, which can actually reference multiple tables)";
         return $updates;
     }

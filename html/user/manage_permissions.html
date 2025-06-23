@@ -1,15 +1,19 @@
-
 <div>
+    <h1 data-t>Permissions</h1>
 
-  <h1 data-t>Permissions</h1>
+    <p>
+        <ob-element-button
+            data-text="New Group"
+            data-icon-name="plus"
+            data-icon-style="solid"
+            onclick="OB.User.managePermissionsNew();"
+            data-t
+            id="permissions_new_group_button"
+            >New Group</ob-element-button
+        >
+    </p>
 
-  <p>
-    <button onclick="OB.User.managePermissionsNew();" data-t id="permissions_new_group_button">New Group</button>
-  </p>
-
-  <table class="table" id="permissions_table">
-  <tbody>
-  </tbody>
-  </table>
-
+    <table class="table" id="permissions_table">
+        <tbody></tbody>
+    </table>
 </div>

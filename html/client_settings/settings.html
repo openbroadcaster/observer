@@ -1,27 +1,38 @@
 <div>
+    <h1 data-t>Client Settings</h1>
 
-  <h1 data-t>Client Settings</h1>
+    <obwidget type="message" id="client_settings_message"></obwidget>
 
-  <obwidget type="message" id="client_settings_message"></obwidget>
+    <fieldset>
+        <legend data-t>Login Message</legend>
+        <div class="fieldrow">
+            <textarea
+                id="client_settings_login_message"
+                placeholder="Set a custom login message"
+                style="width: 100%; max-width: 600px; min-height: 100px; box-sizing: border-box"
+            ></textarea>
+        </div>
+    </fieldset>
 
-  <fieldset>
-    <legend data-t>Login Message</legend>
-    <div class="fieldrow">
-      <textarea id="client_settings_login_message" placeholder="Set a custom login message"></textarea>
-    </div>
-  </fieldset>
+    <fieldset>
+        <legend data-t>Welcome Page</legend>
+        <div class="fieldrow">
+            <ob-html-input id="client_settings_welcome_page" style="width: 100%; max-width: 600px"></ob-html-input>
+        </div>
+    </fieldset>
 
-  <fieldset>
-    <legend data-t>Welcome Page</legend>
-    <div class="fieldrow">
-      <ob-html-input id="client_settings_welcome_page"></ob-html-input>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <div class="fieldrow">
-      <button class="add" onclick="OB.ClientSettings.save();" data-t>Save</button>
-    </div>
-  </fieldset>
-
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.ClientSettings.save();"
+                data-t
+                >Save</ob-element-button
+            >
+        </div>
+    </fieldset>
 </div>

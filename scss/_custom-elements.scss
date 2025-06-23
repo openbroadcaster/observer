@@ -1,0 +1,16 @@
+ob-field-media,
+ob-field-playlist,
+ob-field-range,
+ob-field-password,
+ob-field-checkbox,
+ob-field-bool,
+ob-field-genre,
+ob-field-language,
+ob-field-country {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#sidebar_player.closed ob-element-preview {
+    display: none;
+}

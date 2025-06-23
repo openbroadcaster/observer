@@ -1,56 +1,75 @@
-import { html, render } from '../vendor.js'
-import { OBField } from '../base/field.js';
+import { html, render } from "../vendor.js";
+import { OBField } from "../base/field.js";
 
 class OBFieldPlaylist extends OBField {
-
     #playlistItems;
     #playlistContent;
-    #init;
+    _value = [];
 
-    connectedCallback() {
+    static comparisonOperators = {
+        eq: "is",
+        neq: "is not",
+    };
+
+    async connected() {
         this.#playlistItems = [];
         this.#playlistContent = {};
 
-        this.renderComponent();
-
-        if (!this.#init) {
-            this.#init = true;
-
+        this.renderComponent().then(() => {
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
-        }
+        });
     }
 
-    renderEdit() {
-        render(html`
-            <div id="playlist" class="playlist-editable"
-            data-single="${this.dataset.hasOwnProperty('single')}"
-            onmouseup=${this.onMouseUp.bind(this)}>
-                ${this.#playlistItems.map((playlistItem) => html`
-                    <div class="playlist-item" data-id=${playlistItem}>
-                        ${this.#playlistContent[playlistItem]}
-                        <span class="playlist-item-remove" onclick=${this.playlistRemove.bind(this)}></span>
-                    </div>
-                `)}
-            </div>
-        `, this.root);
+    async renderEdit() {
+        await this.playlistContent();
+
+        render(
+            html`
+                <div
+                    id="playlist"
+                    class="playlist-editable"
+                    data-single="${this.dataset.hasOwnProperty("single")}"
+                    onmouseup=${this.onMouseUp.bind(this)}
+                >
+                    ${this._value?.map(
+                        (playlistItem) => html`
+                            <div class="playlist-item" data-id=${playlistItem}>
+                                ${this.#playlistContent[playlistItem]}
+                                <span class="playlist-item-remove" onclick=${this.playlistRemove.bind(this)}></span>
+                            </div>
+                        `,
+                    )}
+                </div>
+            `,
+            this.root,
+        );
     }
 
-    renderView() {
-        render(html`
-            <div id="playlist" class="playlist-viewable">
-                ${this.#playlistItems.map((playlistItem) => html`
-                    <div class="media-item" data-id=${playlistItem}>${this.#playlistContent[playlistItem]}</div>
-                `)}
-            </div>
-        `, this.root);
+    async renderView() {
+        await this.playlistContent();
+
+        render(
+            html`
+                <div id="playlist" class="playlist-viewable" data-single="${this.dataset.hasOwnProperty("single")}">
+                    ${this._value?.map(
+                        (playlistItem) => html`
+                            <div class="playlist-item" data-id=${playlistItem}>
+                                ${this.#playlistContent[playlistItem]}
+                            </div>
+                        `,
+                    )}
+                </div>
+            `,
+            this.root,
+        );
     }
 
     scss() {
         return `
             :host {
-                #playlist:empty {
-                    border: 2px dashed #eeeeec;
+                .playlist-editable#playlist:empty {
+                    border: 2px dashed var(--field-color);
                 }
 
                 .playlist-editable:empty::after {
@@ -65,17 +84,19 @@ class OBFieldPlaylist extends OBField {
                 }
 
                 #playlist.playlist-editable.dragging {
-                    border: 2px dashed #e09529;
+                    border: 2px dashed var(--message-warning-color);
                 }
 
+                /*
                 .playlist-viewable:empty::after {
                     content: "No Playlists";
                     display: block;
                     text-align: center;
                     line-height: 96px;
                 }
+                */
 
-                #playlist {
+                .playlist-editable#playlist {
                     box-sizing: border-box;
                     width: 350px;
                     max-width: 350px;
@@ -84,11 +105,11 @@ class OBFieldPlaylist extends OBField {
                 }
 
                 #playlist[data-single="true"] {
-                    min-height: 38px;
+                    min-height: auto;
                 }
 
-                .playlist-item {
-                    background-color: #eeeeec;
+                .playlist-editable .playlist-item {
+                    background-color: var(--field-background);
                     color: #000;
                     padding: 5px;
                     border-radius: 2px;
@@ -119,7 +140,7 @@ class OBFieldPlaylist extends OBField {
     onDragStart(event) {
         let editable = this.root.querySelector("#playlist.playlist-editable");
 
-        if  (! editable) {
+        if (!this._editable) {
             return false;
         }
 
@@ -129,26 +150,26 @@ class OBFieldPlaylist extends OBField {
     onDragEnd(event) {
         let editable = this.root.querySelector("#playlist.playlist-editable");
 
-        if (! editable) {
+        if (!this._editable) {
             return false;
         }
-        
+
         editable.classList.remove("dragging");
     }
 
     onMouseUp(event) {
-        if (! window.dragHelperData || ! window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
+        if (!window.dragHelperData || !window.dragHelperData[0].classList.contains("sidebar_search_playlist_result")) {
             return false;
         }
-        
-        var selectedPlaylist = this.#playlistItems;
+
+        var selectedPlaylist = this._value;
 
         Object.keys(window.dragHelperData).forEach((key) => {
-            if (! window.dragHelperData[key].dataset) {
+            if (!window.dragHelperData[key].dataset) {
                 return false;
             }
 
-            if (selectedPlaylist.includes(parseInt(window.dragHelperData[key].dataset.id))) {
+            if (selectedPlaylist?.includes(parseInt(window.dragHelperData[key].dataset.id))) {
                 return false;
             }
 
@@ -159,36 +180,48 @@ class OBFieldPlaylist extends OBField {
     }
 
     async playlistContent() {
-        return Promise.all(this.#playlistItems.map(async (playlistItem) => {
-            if (this.#playlistContent[playlistItem]) {
-                return;
-            }
+        if (!this._value || !this.#playlistContent) return;
 
-            const result = await OB.API.postPromise('playlists', 'get', { id: playlistItem });
-            if (!result.status) {
-                return;
-            }
+        let playlistItemPromises = this._value.map((playlistItem) => {
+            return new Promise((resolve) => {
+                if (this.#playlistContent[playlistItem]) {
+                    resolve();
+                    return;
+                }
 
-            const data = result.data;
-            this.#playlistContent[playlistItem] = data.name;
-            this.refresh();
-        }));
+                OB.API.postPromise("playlists", "get", {
+                    id: playlistItem,
+                }).then((result) => {
+                    if (!result.status) {
+                        resolve();
+                        return;
+                    }
+
+                    const data = result.data;
+                    this.#playlistContent[playlistItem] = data.name;
+                    resolve();
+                });
+            });
+        });
+        return Promise.all(playlistItemPromises);
     }
 
     playlistRemove(event) {
-        const newItems = this.#playlistItems.filter((item) => {
+        const newItems = this._value.filter((item) => {
             return item !== parseInt(event.target.parentElement.dataset.id);
         });
         this.value = newItems;
     }
 
     get value() {
-        return this.#playlistItems;
+        return this._value;
     }
 
     set value(value) {
+        // this.initialized.then(() => {
+
         if (!Array.isArray(value)) {
-            return false;
+            value = [value];
         }
 
         value = value.map((x) => parseInt(x));
@@ -197,20 +230,27 @@ class OBFieldPlaylist extends OBField {
             return false;
         }
 
-        if (this.dataset.hasOwnProperty('single')) {
+        if (this.dataset.hasOwnProperty("single")) {
             value = value.slice(-1);
         }
 
-        this.#playlistItems = value;
-        this.playlistContent().then(() => {
-            this.#playlistItems = this.#playlistItems.filter((item) => {
-                return Object.keys(this.#playlistContent).includes(item.toString());
-            });
-            this.refresh();
+        this._value = value;
 
-            this.dispatchEvent(new Event('change'));
+        this.refresh();
+
+        /*
+            this.#playlistItems = value;
+            this.playlistContent().then(() => {
+                this.#playlistItems = this.#playlistItems.filter((item) => {
+                    return Object.keys(this.#playlistContent).includes(item.toString());
+                });
+                this.renderComponent();
+
+                this.dispatchEvent(new Event("change"));
+            });
         });
+        */
     }
 }
 
-customElements.define('ob-field-playlist', OBFieldPlaylist);
+customElements.define("ob-field-playlist", OBFieldPlaylist);

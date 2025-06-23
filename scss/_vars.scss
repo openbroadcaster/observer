@@ -1,8 +1,71 @@
-html
-{
-    --field-background: #eeeeec;
-    --field-color: #2e3436;
+html {
+    --color-red: #bf2121; // error, delete
+    --color-green: #9de259; // success, add
+    --color-yellow: #fcef88; // warning, edit
+    --color-orange: #e09529; // highlight droppable area
+    // --color-blue: #204a87;
+    --color-blue: hsl(216, 62%, 66%);
+
+    --color-default: #eeeeec; // body text, general foreground
+    --color-inverted: #333336; // general background
+    --color-accent: hsl(216, 62%, 66%);
+    --color-accent-inverted: hsl(216, 62%, 33%);
+
+    --radius-default: 3px; // possible addition of small/large radius later for smaller/larger elements
+
+    --link-color: var(--color-blue);
+
+    --message-default-color: var(--color-inverted);
+    --message-default-background: var(--color-default);
+    --message-default-radius: var(--radius-default);
+    --message-default-border: 0;
+    --message-success-color: var(--color-inverted);
+    --message-success-background: var(--color-green);
+    --message-success-radius: var(--radius-default);
+    --message-success-border: 0;
+    --message-warning-color: var(--color-inverted);
+    --message-warning-background: var(--color-yellow);
+    --message-warning-radius: var(--radius-default);
+    --message-warning-border: 0;
+    --message-error-color: var(--color-default);
+    --message-error-background: var(--color-red);
+    --message-error-radius: var(--radius-default);
+    --message-error-border: 0;
+
+    --button-default-color: var(--color-inverted);
+    --button-default-background: var(--color-default);
+    --button-default-radius: var(--radius-default);
+    --button-default-border: 0;
+    --button-add-color: var(--color-inverted);
+    --button-add-background: var(--color-green);
+    --button-add-radius: var(--radius-default);
+    --button-add-border: 0;
+    --button-edit-color: var(--color-inverted);
+    --button-edit-background: var(--color-yellow);
+    --button-edit-radius: var(--radius-default);
+    --button-edit-border: 0;
+    --button-delete-color: var(--color-default);
+    --button-delete-background: var(--color-red);
+    --button-delete-radius: var(--radius-default);
+    --button-delete-border: 0;
+
+    --buttongroup-active-color: var(--color-inverted);
+    --buttongroup-active-background: var(--color-default);
+    --buttongroup-inactive-color: var(--color-default);
+    --buttongroup-inactive-background: transparent;
+
+    --field-background: var(--color-default);
+    --field-color: var(--color-inverted);
     --field-border: 0;
-    --field-radius: 2px;
+    --field-radius: var(--radius-default);
     --field-width: 250px;
+
+    --modal-radius: var(--radius-default);
+    --modal-background: var(--color-inverted);
+    --modal-color: var(--color-default);
+    --modal-border: 1px solid var(--color-default);
+
+    --menu-color: var(--color-inverted);
+    --menu-background: var(--color-default);
+    --menu-divider: 1px solid var(--color-inverted);
 }

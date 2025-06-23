@@ -4,7 +4,7 @@ class OBUpdate20190929 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Set default media settings if not already set.';
 
         return $updates;

@@ -31,6 +31,18 @@ class OBFAPI
 
     public function __construct()
     {
+        // merge in our apache headers with $_SERVER (if not already set)
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            foreach ($headers as $header => $value) {
+                $value = trim($value);
+                $index = 'HTTP_' . strtoupper(str_replace('-', '_', trim($header)));
+                if (!isset($_SERVER[$index])) {
+                    $_SERVER[$index] = $value;
+                }
+            }
+        }
+
         if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
             // we have routes for this request method? find the regex pattern to match with, and variables to extract.
             $routes = json_decode(file_get_contents('routes.json'));
@@ -144,7 +156,7 @@ class OBFAPI
         if (isset($_POST['m']) && is_array($_POST['m'])) {
             $requests = $_POST['m'];
         } elseif (isset($_POST['c']) && isset($_POST['a']) && isset($_POST['d'])) {
-            $requests = array( array($_POST['c'],$_POST['a'],$_POST['d']) );
+            $requests = [ [$_POST['c'],$_POST['a'],$_POST['d']] ];
         } else {
             $this->io->error(OB_ERROR_BAD_POSTDATA);
             return;
@@ -158,13 +170,23 @@ class OBFAPI
             }
         }
 
-        // try to get an ID/key pair for user authorization.
-        if (!empty($_POST['i']) && !empty($_POST['k'])) {
+        if (!empty($_SERVER['HTTP_X_AUTH_ID']) && !empty($_SERVER['HTTP_X_AUTH_KEY'])) {
+            // first check X-Auth-ID and X-Auth-Key headers for user authorization.
+            $auth_id = $_SERVER['HTTP_X_AUTH_ID'];
+            $auth_key = $_SERVER['HTTP_X_AUTH_KEY'];
+        } elseif (!empty($_POST['i']) && !empty($_POST['k'])) {
+            // next try i and k post data for user authorization.
             $auth_id = $_POST['i'];
             $auth_key = $_POST['k'];
         }
 
-        if (empty($_SERVER['HTTP_AUTHORIZATION']) && !isset($_POST['appkey'])) {
+        if ($_GET['nonce'] ?? null) {
+            $valid = $this->user->auth_nonce($_GET['nonce'], $_SERVER['REQUEST_URI']);
+            if (! $valid) {
+                $this->io->error(OB_ERROR_DENIED);
+                return;
+            }
+        } elseif (empty($_SERVER['HTTP_AUTHORIZATION']) && !isset($_POST['appkey'])) {
             // authorize our user (from post data, cookie data, whatever.)
             $this->user->auth($auth_id, $auth_key);
         } else {
@@ -189,7 +211,7 @@ class OBFAPI
             }
         }
 
-        $responses = array();
+        $responses = [];
 
         foreach ($requests as $request) {
             $null = null; // for passing by reference.
@@ -231,7 +253,7 @@ class OBFAPI
                 $output[2] = null;
             }
             // $this->io->output(array('status'=>$output[0],'msg'=>$output[1],'data'=>$output[2]));
-            $responses[] = array('status' => $output[0],'msg' => $output[1],'data' => $output[2]);
+            $responses[] = ['status' => $output[0],'msg' => $output[1],'data' => $output[2]];
         }
 
         // return first responce if we just had a single request. if multi-request, we return array of responses.

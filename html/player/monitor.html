@@ -1,99 +1,125 @@
 <div>
+    <h1 data-t>Player Monitoring</h1>
 
-<h1 data-t>Player Monitoring</h1>
+    <p data-t>Results are limited to 2500 rows.</p>
 
-<p data-t>Results are limited to 2500 rows.</p>
+    <obwidget type="message" id="monitor_message"></obwidget>
 
-<obwidget type="message" id="monitor_message"></obwidget>
+    <fieldset>
+        <legend data-t>Options</legend>
 
-<fieldset>
-<legend data-t>Options</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Player</label>
+            <select id="monitor_player_select"></select>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Player</label>
-  <select id="monitor_player_select"></select>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Start</label>
+            <ob-datetime-input id="monitor_date_start"></ob-datetime-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Start</label>
-  <ob-datetime-input id="monitor_date_start"></ob-datetime-input>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>End</label>
+            <ob-datetime-input id="monitor_date_end"></ob-datetime-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>End</label>
-  <ob-datetime-input id="monitor_date_end"></ob-datetime-input>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Sort</label>
+            <div style="display: flex; gap: 10px">
+                <div>
+                    <select id="monitor_orderby">
+                        <option value="media_id" data-t>Media ID</option>
+                        <option value="artist" data-t>Artist</option>
+                        <option value="title" data-t>Title</option>
+                        <option value="timestamp" selected="selected" data-t>Date/Time</option>
+                        <option value="context" data-t>Context</option>
+                        <option value="notes" data-t>Notes</option>
+                    </select>
+                </div>
+                <div style="margin: 0">
+                    <select id="monitor_orderdesc">
+                        <option value="0" data-t>Ascending</option>
+                        <option value="1" selected="selected" data-t>Descending</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </fieldset>
 
-<div class="fieldrow">
-  <label class="required" data-t>Sort</label>
-  <div>
-    <div><select id="monitor_orderby">
-            <option value="media_id" data-t>Media ID</option>
-            <option value="artist" data-t >Artist</option>
-            <option value="title" data-t>Title</option>
-            <option value="timestamp" selected="selected" data-t>Date/Time</option>
-            <option value="context" data-t>Context</option>
-            <option value="notes" data-t>Notes</option>
-        </select>
-    </div>
-    <div>
-      <select id="monitor_orderdesc">
-         <option value="0" data-t>Ascending</option>
-        <option value="1" selected="selected" data-t>Descending</option>
-      </select>
-    </div>
-  </div>
-</div>
-</fieldset>
+    <fieldset>
+        <legend data-t>Filters</legend>
 
-<fieldset>
-<legend data-t>Filters</legend>
+        <div class="fieldset" style="display: flex; gap: 10px">
+            <select onchange="OB.Player.monitorFilterFieldChange();" id="monitor_filter_field">
+                <option value="media_id" data-t>Media ID</option>
+                <option value="artist" data-t>Artist</option>
+                <option value="title" data-t>Title</option>
+            </select>
+            <select id="monitor_filter_operator">
+                <option value="is" data-t>is exactly</option>
+                <option value="not" data-t>is not</option>
+                <option value="like" class="hidden" data-t>contains</option>
+                <option value="not_like" class="hidden" data-t>does not contain</option>
+            </select>
+            <input type="text" id="monitor_filter_value" />
+            <ob-element-button
+                data-text="Add Filter"
+                data-style="add"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.monitorFilterAdd();"
+                data-t
+                >Add Filter</ob-element-button
+            >
+        </div>
 
-<div class="fieldset">
-  <select onchange="OB.Player.monitorFilterFieldChange();" id="monitor_filter_field">
-    <option value="media_id" data-t>Media ID</option>
-    <option value="artist" data-t>Artist</option>
-    <option value="title" data-t>Title</option>
-  </select>
-  <select id="monitor_filter_operator">
-    <option value="is" data-t>is exactly</option>
-    <option value="not" data-t>is not</option>
-    <option value="like" class="hidden" data-t>contains</option>
-    <option value="not_like" class="hidden" data-t>does not contain</option>
-  </select>
-  <input type="text" id="monitor_filter_value">
-  <button class="add" onclick="OB.Player.monitorFilterAdd();" data-t>Add Filter</button>
-</div>
+        <div id="monitor_filter_list"></div>
+    </fieldset>
 
-<div id="monitor_filter_list"></div>
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Load Data"
+                data-style="new"
+                data-icon-name="file-import"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.monitorSearch();"
+                data-t
+                >Load Data</ob-element-button
+            >
+            <ob-element-button
+                data-text="Download CSV"
+                data-style="default"
+                data-icon-name="download"
+                data-icon-style="solid"
+                class="add"
+                id="monitor_download_csv"
+                onclick="OB.Player.monitorSearch('csv');"
+                data-t
+            >
+                Download CSV
+            </ob-element-button>
+            <a style="display: none" id="csv_result_link"></a>
+        </div>
+    </fieldset>
 
-</fieldset>
+    <fieldset id="monitor_results_container" class="hidden">
+        <legend data-t>Results</legend>
 
-<fieldset>
-<div class="fieldrow">
-  <button class="add" onclick="OB.Player.monitorSearch();" data-t>Load Data</button>
-  <button class="add" id="monitor_download_csv" onclick="OB.Player.monitorSearch('csv');" data-t>Download CSV</button>
-  <a style="display: none;" id="csv_result_link"></a>
-</div>
-</fieldset>
+        <p id="monitor_no_results" class="hidden" data-t>No search results.</p>
 
-<fieldset id="monitor_results_container" class="hidden">
-<legend data-t>Results</legend>
-
-<p id="monitor_no_results" class="hidden" data-t>No search results.</p>
-
-<table class="table" id="monitor_results_table">
-  <thead>
-    <th data-t>Media ID</th>
-    <th data-t>Artist</th>
-    <th data-t>Title</th>
-    <th data-t>Date/Time</th>
-    <th data-t>Context</th>
-    <th data-t>Notes</th>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-</fieldset>
-
+        <table class="table" id="monitor_results_table">
+            <thead>
+                <th data-t>Media ID</th>
+                <th data-t>Artist</th>
+                <th data-t>Title</th>
+                <th data-t>Date/Time</th>
+                <th data-t>Context</th>
+                <th data-t>Notes</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </fieldset>
 </div>

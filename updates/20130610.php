@@ -4,7 +4,7 @@ class OBUpdate20130610 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Update media_searches table, should be using MyISAM rather than InnoDB.';
         return $updates;
     }

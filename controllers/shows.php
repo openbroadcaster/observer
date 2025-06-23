@@ -50,10 +50,10 @@ class Shows extends OBFController
 
         //T Show not found.
         if (!$show) {
-            return array(false, 'Show not found.');
+            return [false, 'Show not found.'];
         }
         //T Scheduled show.
-        return array(true, 'Scheduled show.', $show);
+        return [true, 'Scheduled show.', $show];
     }
 
     /**
@@ -71,7 +71,7 @@ class Shows extends OBFController
 
         $show = $this->models->shows('get_show_by_id', $id);
 
-        if (!$show || array_search($show['item_type'], array('playlist')) === false) {
+        if (!$show || array_search($show['item_type'], ['playlist']) === false) {
             http_response_code(404);
             exit();
         }
@@ -122,14 +122,14 @@ class Shows extends OBFController
 
         //T Player ID is invalid.
         if (!preg_match('/^[0-9]+$/', $player)) {
-            return array(false, 'Player ID is invalid.');
+            return [false, 'Player ID is invalid.'];
         }
         //T Start or end date invalid.
         if (!preg_match('/^[0-9]+$/', $start) || !preg_match('/^[0-9]+$/', $end)) {
-            return array(false, 'Start or end date invalid.');
+            return [false, 'Start or end date invalid.'];
         }
         if ($start >= $end) {
-            return array(false, 'Start or end date invalid.');
+            return [false, 'Start or end date invalid.'];
         }
 
         // check if player is valid.
@@ -138,13 +138,13 @@ class Shows extends OBFController
 
         //T Player ID is invalid.
         if (!$player_data) {
-            return array(false, 'Player ID is invalid.');
+            return [false, 'Player ID is invalid.'];
         }
 
         $data = $this->models->shows('get_shows', $start, $end, $player);
 
         //T Shows data.
-        return array(true, 'Shows data.', $data);
+        return [true, 'Shows data.', $data];
     }
 
     /**
@@ -165,10 +165,10 @@ class Shows extends OBFController
         if ($player_data) {
             $this->user->set_setting('last_schedule_player', $player_id);
             //T Set last schedule player.
-            return array(true, 'Set last schedule player.');
+            return [true, 'Set last schedule player.'];
         }
         //T Player not found.
-        return array(false,'Player not found.');
+        return [false,'Player not found.'];
     }
 
     /**
@@ -181,10 +181,10 @@ class Shows extends OBFController
         $player_id = $this->user->get_setting('last_schedule_player');
         //T Last schedule player.
         if ($player_id) {
-            return array(true, 'Last schedule player.', $player_id);
+            return [true, 'Last schedule player.', $player_id];
         }
         //T Last schedule player not found.
-        return array(false, 'Last schedule player not found.');
+        return [false, 'Last schedule player not found.'];
     }
 
     /**
@@ -210,7 +210,7 @@ class Shows extends OBFController
         $this->models->shows('delete_show', $id);
 
         //T Show deleted.
-        return array(true,'Show deleted.');
+        return [true,'Show deleted.'];
     }
 
     /**
@@ -257,7 +257,7 @@ class Shows extends OBFController
             $original_show_data = $this->models->shows('get_show_by_id', $id);
             //T Show not found.
             if (!$original_show_data) {
-                return array(false, 'Show not found.');
+                return [false, 'Show not found.'];
             }
 
             // if we're editing someone elses show, we need to be a schedule admin.
@@ -269,7 +269,7 @@ class Shows extends OBFController
         // validate show
         $validate = $this->models->shows('validate_show', $data, $id);
         if ($validate[0] == false) {
-            return array(false, $validate[1]);
+            return [false, $validate[1]];
         }
 
         // generate our duration in seconds.
@@ -277,20 +277,20 @@ class Shows extends OBFController
 
         //T The duration is not valid.
         if (empty($duration)) {
-            return array(false, 'The duration is not valid.');
+            return [false, 'The duration is not valid.'];
         }
         $data['duration'] = $duration;
 
         // collision check!
         $collision_timeslot_check = $this->models->shows('collision_timeslot_check', $data, $id);
         if ($collision_timeslot_check[0] == false) {
-            return array(false, $collision_timeslot_check[1]);
+            return [false, $collision_timeslot_check[1]];
         }
 
         // FINALLY CREATE/EDIT SHOW
         $this->models->shows('save_show', $data, $id);
 
         //T Show added.
-        return array(true,'Show added.');
+        return [true,'Show added.'];
     }
 }

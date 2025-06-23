@@ -121,10 +121,10 @@ class Playlists extends OBFController
                 $playlist['properties'] = json_decode($playlist['properties'], true);
             }
 
-            return array(true,'Playlist found.',$playlist);
+            return [true,'Playlist found.',$playlist];
         }
 
-        return array(false,'Playlist not found.');
+        return [false,'Playlist not found.'];
     }
 
     /**
@@ -159,7 +159,7 @@ class Playlists extends OBFController
         }
 
         //T Playlists
-        return array(true,'Playlists',$search_result);
+        return [true,'Playlists',$search_result];
     }
 
     /**
@@ -187,6 +187,7 @@ class Playlists extends OBFController
         $thumbnail = trim($this->data('thumbnail'));
         $description = trim($this->data('description'));
         $status = trim($this->data('status'));
+        $last_fadeout = trim($this->data('last_fadeout'));
         $type = trim($this->data('type'));
         $properties = $this->data('properties');
         $items = $this->data('items');
@@ -201,7 +202,7 @@ class Playlists extends OBFController
             }
 
             if ($this->api_request_method() === 'PUT' && empty($id)) {
-                return array(false, 'Playlist id required when updating a playlist.');
+                return [false, 'Playlist id required when updating a playlist.'];
             }
         }
 
@@ -212,7 +213,7 @@ class Playlists extends OBFController
             $original_playlist = $this->models->playlists('get_by_id', $id);
             //T Unable to edit this playlist.
             if (!$original_playlist) {
-                return array(false,'Unable to edit this playlist.');
+                return [false,'Unable to edit this playlist.'];
             }
 
             // if user can't edit, this will trigger a permission failure in via require_permission.
@@ -225,9 +226,9 @@ class Playlists extends OBFController
         }
 
         // validate data.
-        $validate_playlist = $this->models->playlists('validate_playlist', array('name' => $name, 'status' => $status, 'type' => $type));
+        $validate_playlist = $this->models->playlists('validate_playlist', ['name' => $name, 'status' => $status, 'type' => $type]);
         if ($validate_playlist[0] == false) {
-            return array(false,$validate_playlist[1]);
+            return [false,$validate_playlist[1]];
         }
 
         // check each playlist item.
@@ -237,8 +238,14 @@ class Playlists extends OBFController
         foreach ($items as $item) {
             $validate_item = $this->models->playlists('validate_playlist_item', $item, $id);
             if ($validate_item[0] == false) {
-                return array(false,$validate_item[1]);
+                return [false,$validate_item[1]];
             }
+        }
+
+        // check if voicetracks are always followed by another media item
+        $validateVoidtracks = $this->models->playlists('validate_playlist_voicetracks', $items);
+        if ($validateVoidtracks[0] == false) {
+            return [false, $validateVoidtracks[1]];
         }
 
         // check each liveassist button item
@@ -246,7 +253,7 @@ class Playlists extends OBFController
             foreach ($liveassist_button_items as $liveassist_button_item) {
                 $validate_item = $this->models->playlists('validate_liveassist_button_item', $liveassist_button_item);
                 if ($validate_item[0] == false) {
-                    return array(false,$validate_item[1]);
+                    return [false,$validate_item[1]];
                 }
             }
         }
@@ -312,7 +319,7 @@ class Playlists extends OBFController
         // at this point, we should have an ID.
         //T An error occurred while saving this playlist.
         if (!$id) {
-            return array(false,'An error occurred while saving this playlist.');
+            return [false,'An error occurred while saving this playlist.'];
         }
 
         // update our playlist items. first delete all items, then re-add them.
@@ -320,7 +327,7 @@ class Playlists extends OBFController
 
         foreach ($items as $index => $item) {
             unset($data);
-            $data = array();
+            $data = [];
 
             $data['playlist_id'] = $id;
             $data['item_type'] = $item['type'];
@@ -332,9 +339,9 @@ class Playlists extends OBFController
                 // track properties
                 $properties = [];
 
-                // image properties
+                // image properties (also applies to documents)
                 $media = $this->models->media('get_by_id', ['id' => $data['item_id']]);
-                if ($media && $media['type'] == 'image') {
+                if ($media && ($media['type'] == 'image' || $media['type'] == 'document')) {
                     $properties['duration'] = (int) $item['duration'];
                     if ($properties['duration'] <= 0) {
                         $properties['duration'] = 15;
@@ -345,26 +352,6 @@ class Playlists extends OBFController
                 if ($media['type'] == 'audio') {
                     if ($item['crossfade'] ?? false) {
                         $properties['crossfade'] = (float) $item['crossfade'];
-                    }
-
-                    if ($item['voicetrack'] ?? false) {
-                        $properties['voicetrack'] = (int) $item['voicetrack'];
-                    }
-
-                    if ($item['voicetrack_volume'] ?? false) {
-                        $properties['voicetrack_volume'] = (float) $item['voicetrack_volume'];
-                    }
-
-                    if ($item['voicetrack_offset'] ?? false) {
-                        $properties['voicetrack_offset'] = (float) $item['voicetrack_offset'];
-                    }
-
-                    if ($item['voicetrack_fadeout_before'] ?? false) {
-                        $properties['voicetrack_fadeout_before'] = (float) $item['voicetrack_fadeout_before'];
-                    }
-
-                    if ($item['voicetrack_fadein_after'] ?? false) {
-                        $properties['voicetrack_fadein_after'] = (float) $item['voicetrack_fadein_after'];
                     }
                 }
 
@@ -387,6 +374,17 @@ class Playlists extends OBFController
                 // nothing special to set here.
             } elseif ($item['type'] == 'custom') {
                 $data['properties'] = json_encode(['name' => $item['query']['name']]);
+            } elseif ($item['type'] === 'voicetrack') {
+                $data['item_id'] = $item['id'];
+
+                $properties = [];
+
+                $properties['voicetrack_volume'] = isset($item['voicetrack_volume']) ? (float) $item['voicetrack_volume'] : 0.1;
+                $properties['voicetrack_offset'] = isset($item['voicetrack_offset']) ? (float) $item['voicetrack_offset'] : 0.0;
+                $properties['voicetrack_fadeout_before'] = isset($item['voicetrack_fadeout_before']) ? (float) $item['voicetrack_fadeout_before'] : 0.0;
+                $properties['voicetrack_fadein_after'] = isset($item['voicetrack_fadein_after']) ? (float) $item['voicetrack_fadein_after'] : 0.0;
+
+                $data['properties'] = json_encode($properties);
             }
 
             $this->db->insert('playlists_items', $data);
@@ -403,7 +401,7 @@ class Playlists extends OBFController
         }
 
         // Save playlist thumbnail.
-        if($thumbnail) {
+        if ($thumbnail) {
             $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
             if (!$thmb_result[0]) {
                 if ($new_playlist === true) {
@@ -414,7 +412,7 @@ class Playlists extends OBFController
             }
         }
 
-        return array(true,'Playlist saved.',$id);
+        return [true,'Playlist saved.',$id];
     }
 
     /**
@@ -442,7 +440,7 @@ class Playlists extends OBFController
         $validation = $this->models->playlists('validate_dynamic_properties', $search_query, $num_items, $num_items_all, $image_duration);
 
         if ($validation[0] == false) {
-            return array(false,array('Playlist Dynamic Item Properties',$validation[1]));
+            return [false,['Playlist Dynamic Item Properties',$validation[1]]];
         }
 
         if ($num_items_all) {
@@ -450,7 +448,7 @@ class Playlists extends OBFController
         } // duration function uses empty num_items indicate 'all items' mode.
 
         // valid, also return some additional information.
-        $validation[2] = array('duration' => $this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration));
+        $validation[2] = ['duration' => $this->models->playlists('dynamic_selection_duration', $search_query, $num_items, $image_duration)];
         return $validation;
     }
 
@@ -467,7 +465,7 @@ class Playlists extends OBFController
 
         // if we just have a single ID, make it into an array so we can proceed on that assumption.
         if (!is_array($ids)) {
-            $ids = array($ids);
+            $ids = [$ids];
         }
 
         // make sure we have all our playlists. check permission.
@@ -475,7 +473,7 @@ class Playlists extends OBFController
             $playlist = $this->models->playlists('get_by_id', $id);
 
             if (!$playlist) {
-                return array(false,'One or more playlists were not found.');
+                return [false,'One or more playlists were not found.'];
             }
 
             // if user can't edit, this will trigger a permission failure in via require_permission.
@@ -486,7 +484,7 @@ class Playlists extends OBFController
             // check where used, see if we have permission to remove from those.
             $where_used = $this->models->playlists('where_used', $id);
             if ($where_used['can_delete'] == false) {
-                return array(false,'Cannot delete one or more playlists as you do not have adequate permissions.');
+                return [false,'Cannot delete one or more playlists as you do not have adequate permissions.'];
             }
         }
 
@@ -495,6 +493,33 @@ class Playlists extends OBFController
             $this->models->playlists('delete', $id);
         }
 
-        return array(true,'Playlists have been deleted.');
+        return [true,'Playlists have been deleted.'];
+    }
+
+    /**
+     * Resolve a playlist. Turns a playlist into a collection of media items that can
+     * then be further processed if necessary.
+     *
+     * @param id
+     * @param player_id Optional. If provided, will resolve the playlist as if it were being played on this player. If not provided will set to 0.
+     *
+     * @return [items]
+     *
+     * @route GET /v2/playlists/resolve/(:id:)
+     */
+    public function resolve()
+    {
+        $id = $this->data('id');
+        $player_id = $this->data('player_id') ?? 0;
+
+        $playlist = $this->models->playlists('get_by_id', $id);
+
+        if (! $playlist) {
+            return [false, 'Playlist not found.'];
+        }
+
+        $items = $this->models->playlists('resolve', $id, $player_id);
+
+        return [true, 'Playlist resolved.', $items];
     }
 }

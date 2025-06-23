@@ -4,7 +4,7 @@ class OBUpdate20210104 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Add playlist item properties column for crossfade and other properties.";
         $updates[] = "Database structure cleanup.";
         $updates[] = "Note: This update will clear schedule cache (causing shows with dynamic playlists to be regenerated).";

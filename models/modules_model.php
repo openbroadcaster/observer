@@ -60,12 +60,13 @@ class ModulesModel extends OBFModel
      */
     public function get_all($installed = true, $object = false)
     {
+        // TODO ignore any module name "core" as this is a reserved name used as a prefix for core functionality.
         $modules = scandir('modules');
 
-        $modules_list = array();
+        $modules_list = [];
 
         $installed_rows = $this->db->get('modules');
-        $installed_modules = array();
+        $installed_modules = [];
 
         foreach ($installed_rows as $row) {
             $installed_modules[] = $row['directory'];
@@ -88,7 +89,7 @@ class ModulesModel extends OBFModel
                 $module_instance = new $module_class_name();
 
                 if (($installed && array_search($module, $installed_modules) !== false) || (!$installed && array_search($module, $installed_modules) === false)) {
-                    $modules_list[$module] = ($object ? $module_instance : array('name' => $module_instance->name, 'description' => $module_instance->description, 'dir' => $module));
+                    $modules_list[$module] = ($object ? $module_instance : ['name' => $module_instance->name, 'description' => $module_instance->description, 'dir' => $module]);
                 }
             }
         }
@@ -121,7 +122,7 @@ class ModulesModel extends OBFModel
         }
 
         // add the module to our installed module list.
-        $this->db->insert('modules', array('directory' => $module_name));
+        $this->db->insert('modules', ['directory' => $module_name]);
 
         return true;
     }
@@ -150,9 +151,54 @@ class ModulesModel extends OBFModel
             return false;
         }
 
-        // add the module to our installed module list.
+        // remove module from installed module list in db
         $this->db->where('directory', $module_name);
         $this->db->delete('modules');
+
+        return true;
+    }
+
+    /**
+     * Purge the data from a module. Note that this method will first attempt to
+     * uninstall the module.
+     *
+     * @param module_name
+     *
+     * @return status
+     */
+    public function purge($module_name)
+    {
+        $modulesAvailable = $this->get_all(false, true);
+        $modulesInstalled = $this->get_all(true, true);
+
+        // Check if module exists in either available or installed modules.
+        if (isset($modulesAvailable[$module_name])) {
+            $module = $modulesAvailable[$module_name];
+        } elseif (isset($modulesInstalled[$module_name])) {
+            $module = $modulesInstalled[$module_name];
+
+            $uninstall = $module->uninstall();
+            if (! $uninstall) {
+                return false;
+            }
+
+            // Remove module from installed module list in db.
+            $this->db->where('directory', $module_name);
+            $this->db->delete('modules');
+        } else {
+            return false;
+        }
+
+        // Remove dbver for module from settings if it exists, to ensure updates
+        // are re-run on next install.
+        $this->db->where('name', 'dbver-' . $module_name);
+        $this->db->delete('settings');
+
+        // Purge the module as per the modules instructions.
+        $purge = $module->purge();
+        if (! $purge) {
+            return false;
+        }
 
         return true;
     }

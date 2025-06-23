@@ -31,7 +31,7 @@ class UI extends OBFController
     {
         parent::__construct();
         $this->user->require_authenticated();
-        $this->html_data = array();
+        $this->html_data = [];
         $this->theme = !empty($this->user->userdata['theme']) && $this->user->userdata['theme'] != 'default' ? $this->user->userdata['theme'] : false;
     }
 
@@ -44,7 +44,7 @@ class UI extends OBFController
      */
     public function get_themes()
     {
-        return array(true,'Themes',$this->models->ui('get_themes'));
+        return [true,'Themes',$this->models->ui('get_themes')];
     }
 
     /**
@@ -56,7 +56,7 @@ class UI extends OBFController
      */
     public function get_languages()
     {
-        return array(true, 'Languages', $this->models->ui('get_languages'));
+        return [true, 'Languages', $this->models->ui('get_languages')];
     }
 
     /**
@@ -71,13 +71,13 @@ class UI extends OBFController
     {
         $modules = $this->models->modules('get_installed');
 
-        $this->html_data = array();
+        $this->html_data = [];
         $this->find_core_html_files($this->theme);
         foreach ($modules as $module) {
             $this->find_module_html_files('modules/' . $module['dir'] . '/html');
         }
 
-        return array(true,'HTML Data',$this->html_data);
+        return [true,'HTML Data',$this->html_data];
     }
 
     // TODO this should be in UI model? then we don't need to check theme in this file?

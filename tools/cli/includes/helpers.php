@@ -62,4 +62,9 @@ class Helpers
             echo PHP_EOL;
         }
     }
+
+    public static function bold(string $text)
+    {
+        return "\033[1m{$text}\033[0m";
+    }
 }

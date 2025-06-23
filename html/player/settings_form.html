@@ -1,98 +1,154 @@
 <div>
-  <obwidget id="player_edit_message" type="message"></obwidget>
+    <obwidget id="player_edit_message" type="message"></obwidget>
 
-  <fieldset>
-    <legend data-t>Player Settings</legend>
+    <fieldset>
+        <legend data-t>Player Settings</legend>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Name</label>
-      <input type="text" id="player_settings_name">
-    </div>
-
-    <div class="fieldrow">
-      <label data-t>Description</label>
-      <input type="text" id="player_settings_description">
-    </div>
-
-    <div class="fieldrow">
-      <label data-t>Parent Player</label>
-      <select id="player_settings_parent_id" onchange="OB.Player.dynamicFormOptions();">
-        <option value="" data-t>None</option>
-      </select>
-    </div>
-
-    <div class="fieldrow" id="player_settings_parent_options" hidden>
-      <label class="empty"></label>
-      <div>
-        <div>
-          <input id="player_settings_parent_schedule" type="checkbox" onchange="OB.Player.dynamicFormOptions();">
-          <span data-t>Use parent schedule</span>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <input type="text" id="player_settings_name" />
         </div>
-        <div hidden>
-          <input id="player_settings_parent_dynamic"  type="checkbox" onchange="OB.Player.dynamicFormOptions();">
-          <span data-t>Use parent dynamic selections</span>
+
+        <div class="fieldrow">
+            <label data-t>Description</label>
+            <input type="text" id="player_settings_description" />
         </div>
-        <div>
-          <input id="player_settings_parent_stations" type="checkbox" onchange="OB.Player.dynamicFormOptions();">
-          <span data-t>Use parent station IDs</span>
+
+        <div class="fieldrow">
+            <label data-t>Parent Player</label>
+            <select id="player_settings_parent_id" onchange="OB.Player.dynamicFormOptions();">
+                <option value="" data-t>None</option>
+            </select>
         </div>
-        <div>
-          <input id="player_settings_parent_playlist" type="checkbox" onchange="OB.Player.dynamicFormOptions();">
-          <span data-t>Use parent default playlist</span>
+
+        <div class="fieldrow" id="player_settings_parent_options" hidden>
+            <label class="empty"></label>
+            <div>
+                <div>
+                    <input
+                        id="player_settings_parent_schedule"
+                        type="checkbox"
+                        onchange="OB.Player.dynamicFormOptions();"
+                    />
+                    <span data-t>Use parent schedule</span>
+                </div>
+                <div hidden>
+                    <input
+                        id="player_settings_parent_dynamic"
+                        type="checkbox"
+                        onchange="OB.Player.dynamicFormOptions();"
+                    />
+                    <span data-t>Use parent dynamic selections</span>
+                </div>
+                <div>
+                    <input
+                        id="player_settings_parent_stations"
+                        type="checkbox"
+                        onchange="OB.Player.dynamicFormOptions();"
+                    />
+                    <span data-t>Use parent station IDs</span>
+                </div>
+                <div>
+                    <input
+                        id="player_settings_parent_playlist"
+                        type="checkbox"
+                        onchange="OB.Player.dynamicFormOptions();"
+                    />
+                    <span data-t>Use parent default playlist</span>
+                </div>
+                <div>
+                    <input
+                        id="player_settings_parent_priority"
+                        type="checkbox"
+                        onchange="OB.Player.dynamicFormOptions();"
+                    />
+                    <span data-t>Use parent priority broadcasts</span>
+                </div>
+            </div>
         </div>
-        <div>
-          <input id="player_settings_parent_priority" type="checkbox" onchange="OB.Player.dynamicFormOptions();">
-          <span data-t>Use parent priority broadcasts</span>
+
+        <div class="fieldrow">
+            <label data-t>IP Address</label>
+            <input type="text" id="player_settings_ip" />
         </div>
-      </div>
-    </div>
 
-    <div class="fieldrow">
-      <label data-t>IP Address</label>
-      <input type="text" id="player_settings_ip">
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Password</label>
+            <ob-field-password
+                data-edit
+                placeholder="Enter New Password"
+                id="player_settings_password"
+            ></ob-field-password>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Password</label>
-      <ob-field-password data-edit placeholder="Enter New Password" id="player_settings_password"></ob-field-password>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Media Types</label>
+            <div>
+                <div class="no_parent_dynamic">
+                    <input id="player_settings_support_audio" type="checkbox" /><span data-t>Audio</span>*
+                </div>
+                <div class="no_parent_dynamic">
+                    <input id="player_settings_support_image" type="checkbox" /><span data-t>Images</span>*
+                </div>
+                <div class="no_parent_dynamic">
+                    <input id="player_settings_support_video" type="checkbox" /><span data-t>Video</span>*
+                </div>
+                <div><input id="player_settings_support_linein" type="checkbox" /><span data-t>Line-In</span></div>
+                <div id="player_settings_support_dynamic">* <span data-t>affects dynamic selections only</span></div>
+            </div>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Media Types</label>
-      <div>
-        <div class="no_parent_dynamic"><input id="player_settings_support_audio" type="checkbox"><span data-t>Audio</span>*</div>
-        <div class="no_parent_dynamic"><input id="player_settings_support_image" type="checkbox"><span data-t>Images</span>*</div>
-        <div class="no_parent_dynamic"><input id="player_settings_support_video" type="checkbox"><span data-t>Video</span>*</div>
-        <div><input id="player_settings_support_linein" type="checkbox"><span data-t>Line-In</span></div>
-        <div id="player_settings_support_dynamic">* <span data-t>affects dynamic selections only</span></div>
-      </div>
-    </div>
+        <div class="fieldrow">
+            <label class="required" data-t>Timezone</label>
+            <select id="player_settings_timezone"></select>
+        </div>
 
-    <div class="fieldrow">
-      <label class="required" data-t>Timezone</label>
-      <select id="player_settings_timezone"></select>
-    </div>
+        <div class="no_parent_playlist fieldrow">
+            <label data-t>Default Playlist</label>
+            <ob-field-playlist data-edit data-single id="player_settings_playlist"></ob-field-playlist>
+        </div>
 
-    <div class="no_parent_playlist fieldrow">
-      <label data-t>Default Playlist</label>
-      <ob-field-playlist data-edit data-single id="player_settings_playlist"></ob-field-playlist>
-    </div>
+        <div class="no_parent_stations fieldrow">
+            <label data-t>Station IDs</label>
+            <ob-field-media data-edit id="player_settings_station_ids"></ob-field-media>
+        </div>
 
-    <div class="no_parent_stations fieldrow">
-      <label data-t>Station IDs</label>
-      <ob-field-media data-edit id="player_settings_station_ids"></ob-field-media>
-    </div>
+        <div class="no_parent_stations fieldrow">
+            <label data-t>Station ID Image Duration</label>
+            <input type="text" id="player_settings_image_duration" value="15" size="4" /><span>seconds</span>
+        </div>
 
-    <div class="no_parent_stations fieldrow">
-      <label data-t>Station ID Image Duration</label>
-      <input type="text" id="player_settings_image_duration" value="15" size="4"><span>seconds</span>
-    </div>
-
-    <div class="fieldrow">
-      <button class="add" onclick="OB.Player.savePlayer();" data-t>Save</button>
-      <button onclick="OB.UI.closeModalWindow();" data-t>Close</button>
-      <button class="delete player_existing" onclick="OB.Player.deletePlayer();" hidden data-t>Delete</button>
-      <input type="hidden" id="player_settings_id">
-    </div>
-  </fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Player.savePlayer();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Close"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Close</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                class="delete player_existing"
+                onclick="OB.Player.deletePlayer();"
+                hidden
+                data-t
+                >Delete</ob-element-button
+            >
+            <input type="hidden" id="player_settings_id" />
+        </div>
+    </fieldset>
 </div>

@@ -1,177 +1,151 @@
-#schedule_for span
-{
-  display: inline-block;
-  padding-right: 15px;
+#schedule_for span {
+    display: inline-block;
+    padding-right: 15px;
 }
 
-#schedule_container
-{
-  background-color: rgba(0,0,0,0.3);
-  border-radius: 5px;
-  padding: 10px;
+#schedule_container {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-default);
+    padding: 10px;
 }
 
-#schedule
-{
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
+#schedule {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
 }
 
-#schedule_details
-{
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  width: 0;
-  height: 0;
-  
-  > div
-  {
+#schedule_details {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 0;
+    height: 0;
+
+    > div {
+        position: absolute;
+        background-color: rgba(32, 32, 32, 0.9);
+        border: 1.5px solid #eeeeec;
+        border-radius: var(--radius-default);
+        z-index: 10000;
+        width: 300px;
+        padding: 5px;
+    }
+
+    &.left > div {
+        right: auto;
+        left: 15px;
+    }
+
+    &.right > div {
+        right: 10px;
+        left: auto;
+    }
+
+    &.top > div {
+        top: 25px;
+        bottom: auto;
+    }
+
+    &.bottom > div {
+        top: auto;
+        bottom: 5px;
+    }
+}
+
+#schedule_details td {
+    font-size: 0.9em;
+}
+
+#schedule_details td:first-child {
+    text-align: right;
+    padding-right: 5px;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+#schedule_details td:first-child:after {
+    content: ":";
+}
+
+#schedule_days > th {
+    text-align: center;
+    font-weight: normal;
+    padding-bottom: 10px;
+}
+
+#schedule td:first-child,
+#schedule th:first-child {
+    width: 100px;
+}
+
+#schedule tbody td:not(:first-child) {
+    vertical-align: top;
+    text-align: center;
+    /* border: 1px dotted rgba(127,127,127,0.3); */
+    /* TODO: border causes formatting problems due to block height calculation. */
+}
+
+.schedule_time_interval {
+    font-size: 0.8em;
+    height: 30px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.schedule_time_hour a:first-child {
+    font-weight: bold;
+}
+
+.schedule_data {
+    position: relative;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.schedule_data > div {
     position: absolute;
-    background-color: rgba(32,32,32,0.9);
-    border: 1.5px solid #eeeeec;
-    border-radius: 5px;
-    z-index: 10000;
-    width: 300px;
-    padding: 5px;
-  }
-  
-  &.left > div
-  {
-    right: auto;
-    left: 15px;
-  }
-  
-  &.right > div
-  {
-    right: 10px;
-    left: auto;
-  }
-  
-  &.top > div
-  {
-    top: 25px;
-    bottom: auto;
-  }
-  
-  &.bottom > div
-  { 
-    top: auto;
-    bottom: 5px;
-  }
+    background-color: #666;
+    border-top: 1px solid #777;
+    width: 100%;
 }
 
-#schedule_details td
-{
-  font-size: 0.9em;
+.schedule_dst_info {
+    font-size: 0.8em;
+    text-align: center;
 }
 
-#schedule_details td:first-child
-{
-  text-align: right;
-  padding-right: 5px;
-  white-space: nowrap;
-  vertical-align: top;
+#schedule_date_select {
+    width: 100%;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
-#schedule_details td:first-child:after
-{
-  content: ':';
+#schedule_date_select td:first-child {
+    width: 150px;
 }
 
-#schedule_days > th
-{
-  text-align: center;
-  font-weight: normal;
-  padding-bottom: 10px;
+#schedule_date_select td:last-child {
+    width: 150px;
 }
 
-#schedule td:first-child, #schedule th:first-child
-{
-  width: 100px;
+#schedule_date_select td {
+    white-space: nowrap;
 }
 
-#schedule tbody td:not(:first-child)
-{
-  vertical-align: top;
-  text-align: center;
-  /* border: 1px dotted rgba(127,127,127,0.3); */ /* TODO: border causes formatting problems due to block height calculation. */
+#schedule_date_range {
+    text-align: center;
 }
 
-.schedule_time_interval
-{
-  font-size: 0.8em;
-  height: 30px;
-  padding-right: 10px;
-  text-align: right;
+#schedule_date_select td:first-child {
+    text-align: left;
 }
 
-.schedule_time_hour a:first-child
-{
-  font-weight: bold;
+#schedule_date_select td:last-child {
+    text-align: right;
 }
 
-.schedule_data
-{
-  position: relative;
-  font-size: 0.8em;
-  cursor: pointer;
-}
-
-.schedule_data > div
-{
-  position: absolute;
-  background-color: #666;
-  border-top: 1px solid #777;
-  width: 100%;
-}
-
-.schedule_dst_info
-{
-  font-size: 0.8em;
-  text-align: center;
-}
-
-#schedule_date_select
-{
-  width: 100%;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-#schedule_date_select td:first-child
-{
-  width: 150px;
-}
-
-#schedule_date_select td:last-child
-{
-  width: 150px;
-}
-
-#schedule_date_select td
-{
-  white-space: nowrap;
-}
-
-#schedule_date_range
-{
-  text-align: center;
-} 
-
-#schedule_date_select td:first-child
-{
-  text-align: left;
-}
-
-#schedule_date_select td:last-child
-{
-  text-align: right;
-}
-
-#permissions_addedit_form
-{
-  line-height: 1.2em;
+#permissions_addedit_form {
+    line-height: 1.2em;
 }

@@ -1,210 +1,352 @@
 <ob-tabs>
+    <ob-tab data-name="Categories">
+        <h1 data-t>Media Categories &amp; Genres</h1>
 
-<ob-tab data-name="Categories">
-  <h1 data-t>Media Categories &amp; Genres</h1>
+        <p data-t>Click on a category name to show the genres within that category.</p>
 
-  <p data-t>Click on a category name to show the genres within that category.</p>
+        <obwidget type="message" id="media_categories_message"></obwidget>
 
-  <obwidget type="message" id="media_categories_message"></obwidget>
+        <p style="display: flex; gap: 10px">
+            <ob-element-button
+                data-text="Add a Category"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Media.categoryAddeditWindow();"
+                data-t
+                >Add a Category</ob-element-button
+            >
+            <ob-element-button
+                data-text="Add a Genre"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Media.genreAddeditWindow();"
+                data-t
+                >Add a Genre</ob-element-button
+            >
+        </p>
 
-  <p><button onclick="OB.Media.categoryAddeditWindow();" data-t>Add a Category</button> <button onclick="OB.Media.genreAddeditWindow();" data-t>Add a Genre</button></p>
+        <table class="table">
+            <tbody id="media_categories"></tbody>
+        </table>
+    </ob-tab>
 
-  <table class="table">
-  <tbody id="media_categories">
-  </tbody>
-  </table>
-</ob-tab>
+    <ob-tab data-name="Formats">
+        <div id="media_settings_formats">
+            <h1 data-t>Supported File Formats</h1>
 
-<ob-tab data-name="Formats">
-  <div id="media_settings_formats">
+            <p data-t>
+                Select which file formats you wish to accept for media uploads. Changing this setting will not affect
+                existing media.
+            </p>
 
-  <h1 data-t>Supported File Formats</h1>
+            <obwidget type="message" id="formats_message"></obwidget>
 
-  <p data-t>Select which file formats you wish to accept for media uploads.  Changing this setting will not affect existing media.</p>
+            <fieldset>
+                <legend data-t>Audio Formats</legend>
 
-  <obwidget type="message" id="formats_message"></obwidget>
+                <div class="fieldrow">
+                    <input type="checkbox" value="flac" data-edit class="audio_formats" name="audio_formats" /> FLAC
+                    (<span data-t>Free Lossless Audio Codec</span>)
+                </div>
 
-  <fieldset>
-  <legend data-t>Audio Formats</legend>
+                <div class="fieldrow">
+                    <input type="checkbox" value="mp3" data-edit class="audio_formats" name="audio_formats" /> MP3
+                    (<span data-t>MPEG-1 Layer-3 Audio</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="flac" type="checkbox" class="audio_formats" name="audio_formats"> FLAC (<span data-t>Free Lossless Audio Codec</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="mp4" data-edit class="audio_formats" name="audio_formats" /> MP4
+                    (<span data-t>MPEG-4 Audio</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="mp3" type="checkbox" class="audio_formats" name="audio_formats"> MP3 (<span data-t>MPEG-1 Layer-3 Audio</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="ogg" data-edit class="audio_formats" name="audio_formats" /> OGG
+                    (<span data-t>Ogg Container Format</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="mp4" type="checkbox" class="audio_formats" name="audio_formats"> MP4 (<span data-t>MPEG-4 Audio</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="webm" data-edit class="audio_formats" name="audio_formats" /> WebM
+                    (<span data-t>WebM Format</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="ogg" type="checkbox" class="audio_formats" name="audio_formats"> OGG (<span data-t>Ogg Container Format</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="wav" data-edit class="audio_formats" name="audio_formats" /> WAV
+                    (<span data-t>Waveform Audio</span>)
+                </div>
+            </fieldset>
 
-  <div class="fieldrow">
-    <input value="webm" type="checkbox" class="audio_formats" name="audio_formats"> WebM (<span data-t>WebM Format</span>)
-  </div>
+            <fieldset>
+                <legend data-t>Video Formats</legend>
 
-  <div class="fieldrow">
-    <input value="wav" type="checkbox" class="audio_formats" name="audio_formats"> WAV (<span data-t>Waveform Audio</span>)
-  </div>
-  </fieldset>
+                <div class="fieldrow">
+                    <input type="checkbox" value="avi" data-edit class="video_formats" name="video_formats" /> AVI
+                    (<span data-t>Audio Video Interleave, container format</span>)
+                </div>
 
-  <fieldset>
-  <legend data-t>Video Formats</legend>
+                <div class="fieldrow">
+                    <input type="checkbox" value="mpg" data-edit class="video_formats" name="video_formats" /> MPEG
+                    (<span data-t>Moving Picture Experts Group</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="avi" type="checkbox" class="video_formats" name="video_formats"> AVI (<span data-t>Audio Video Interleave, container format</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="ogg" data-edit class="video_formats" name="video_formats" /> OGG
+                    (<span data-t>Ogg Container Format</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="mpg" type="checkbox" class="video_formats" name="video_formats"> MPEG (<span data-t>Moving Picture Experts Group</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="wmv" data-edit class="video_formats" name="video_formats" /> WMV
+                    (<span data-t>Windows Media Video</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="ogg" type="checkbox" class="video_formats" name="video_formats"> OGG (<span data-t>Ogg Container Format</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="mov" data-edit class="video_formats" name="video_formats" /> MOV
+                    (<span data-t>Apple Quicktime</span>)
+                </div>
+            </fieldset>
 
-  <div class="fieldrow">
-    <input value="wmv" type="checkbox" class="video_formats" name="video_formats"> WMV (<span data-t>Windows Media Video</span>)
-  </div>
+            <fieldset>
+                <legend>Image Formats</legend>
 
-  <div class="fieldrow">
-    <input value="mov" type="checkbox" class="video_formats" name="video_formats"> MOV (<span data-t>Apple Quicktime</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="jpg" data-edit class="image_formats" name="image_formats" /> JPEG
+                    (<span data-t>Joint Photographic Experts Group</span>)
+                </div>
 
-  </fieldset>
+                <div class="fieldrow">
+                    <input type="checkbox" value="png" data-edit class="image_formats" name="image_formats" /> PNG
+                    (<span data-t>Portable Network Graphics</span>)
+                </div>
 
-  <fieldset>
-  <legend>Image Formats</legend>
+                <div class="fieldrow">
+                    <input type="checkbox" value="tif" data-edit class="image_formats" name="image_formats" /> TIFF
+                    (<span data-t>Tagged Image File Format</span>)
+                </div>
 
-  <div class="fieldrow">
-    <input value="jpg" type="checkbox" class="image_formats" name="image_formats"> JPEG (<span data-t>Joint Photographic Experts Group</span>)
-  </div>
+                <div class="fieldrow">
+                    <input type="checkbox" value="svg" data-edit class="image_formats" name="image_formats" /> SVG
+                    (<span data-t>Scalable Vector Graphics</span>)
+                </div>
+            </fieldset>
 
-  <div class="fieldrow">
-    <input value="png" type="checkbox" class="image_formats" name="image_formats"> PNG (<span data-t>Portable Network Graphics</span>)
-  </div>
+            <fieldset>
+                <legend>Document Formats</legend>
 
-  <div class="fieldrow">
-    <input value="svg" type="checkbox" class="image_formats" name="image_formats"> SVG (<span data-t>Scalable Vector Graphics</span>)
-  </div>
-  </fieldset>
+                <div class="fieldrow">
+                    <input type="checkbox" value="pdf" data-edit class="document_formats" name="document_formats" /> PDF
+                    (<span data-t>Portable Document Format</span>)
+                </div>
+            </fieldset>
 
-  <fieldset>
-  <div class="fieldrow">
-    <button class="add" id="media_settings_formats_save" onclick="OB.Media.formatsSave();" data-t>Save</button>
-  </div>
-  </fieldset>
+            <fieldset>
+                <div class="fieldrow">
+                    <ob-element-button
+                        data-style="add"
+                        data-text="Save"
+                        data-icon-name="floppy-disk"
+                        data-icon-style="solid"
+                        class="add"
+                        id="media_settings_formats_save"
+                        onclick="OB.Media.formatsSave();"
+                        data-t
+                    >
+                        Save
+                    </ob-element-button>
+                </div>
+            </fieldset>
+        </div>
+    </ob-tab>
 
-  </div>
-</ob-tab>
+    <ob-tab data-name="Core Metadata">
+        <h1 data-t>Media Field Settings</h1>
 
-<ob-tab data-name="Core Metadata">
-  <h1 data-t>Media Field Settings</h1>
+        <obwidget type="message" id="media_settings_fields_message"></obwidget>
 
-  <obwidget type="message" id="media_settings_fields_message"></obwidget>
+        <fieldset>
+            <div class="fieldrow" id="media_fields_artist">
+                <label data-t>Artist</label>
+                <input type="radio" value="required" name="media_fields_artist" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_artist" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_artist" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_album">
+                <label data-t>Album</label>
+                <input type="radio" value="required" name="media_fields_album" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_album" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_album" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_year">
+                <label data-t>Year</label>
+                <input type="radio" value="required" name="media_fields_year" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_year" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_year" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_category_id">
+                <label data-t>Category/Genre</label>
+                <input type="radio" value="required" name="media_fields_category_id" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_category_id" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_category_id" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_country">
+                <label data-t>Country</label>
+                <input type="radio" value="required" name="media_fields_country" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_country" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_country" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_language">
+                <label data-t>Language</label>
+                <input type="radio" value="required" name="media_fields_language" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_language" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_language" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_comments">
+                <label data-t>Comments</label>
+                <input type="radio" value="required" name="media_fields_comments" /> <span data-t>Required</span>
+                <input type="radio" value="enabled" name="media_fields_comments" /> <span data-t>Enabled</span>
+                <input type="radio" value="disabled" name="media_fields_comments" /> <span data-t>Disabled</span>
+            </div>
+            <div class="fieldrow" id="media_fields_dynamic">
+                <label data-t>Dynamic Selections</label>
+                <input type="radio" value="enabled" name="media_fields_dynamic" /> <span data-t>Yes (Default)</span>
+                <input type="radio" value="disabled" name="media_fields_dynamic" /> <span data-t>No (Default)</span>
+                <ob-field-checkbox data-edit value="hidden" name="media_fields_dynamic_hidden"></ob-field-checkbox>
+                <span data-t>Hidden</span>
+            </div>
 
-  <fieldset>
-    <div class="fieldrow" id="media_fields_artist">
-      <label data-t>Artist</label>
-      <input type="radio" value="required" name="media_fields_artist"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_artist"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_artist"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_album">
-      <label data-t>Album</label>
-      <input type="radio" value="required" name="media_fields_album"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_album"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_album"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_year">
-      <label data-t>Year</label>
-      <input type="radio" value="required" name="media_fields_year"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_year"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_year"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_category_id">
-      <label data-t>Category/Genre</label>
-      <input type="radio" value="required" name="media_fields_category_id"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_category_id"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_category_id"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_country_id">
-      <label data-t>Country</label>
-      <input type="radio" value="required" name="media_fields_country_id"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_country_id"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_country_id"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_language">
-      <label data-t>Language</label>
-      <input type="radio" value="required" name="media_fields_language"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_language"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_language"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_comments">
-      <label data-t>Comments</label>
-      <input type="radio" value="required" name="media_fields_comments"> <span data-t>Required</span>
-      <input type="radio" value="enabled"  name="media_fields_comments"> <span data-t>Enabled</span>
-      <input type="radio" value="disabled" name="media_fields_comments"> <span data-t>Disabled</span>
-    </div>
-    <div class="fieldrow" id="media_fields_dynamic">
-      <label data-t>Dynamic Selections</label>
-      <input type="radio" value="enabled" name="media_fields_dynamic"> <span data-t>Yes (Default)</span>
-      <input type="radio" value="disabled"  name="media_fields_dynamic"> <span data-t>No (Default)</span>
-      <input type="checkbox" value="hidden" name="media_fields_dynamic_hidden"> <span data-t>Hidden</span>
-    </div>
+            <div class="fieldrow">
+                <ob-element-button
+                    data-style="add"
+                    data-text="Save"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    id="media_settings_fields_save"
+                    onclick="OB.Media.fieldsSave();"
+                    data-t
+                    >Save</ob-element-button
+                >
+            </div>
+        </fieldset>
+    </ob-tab>
 
-    <div class="fieldrow">
-      <button id="media_settings_fields_save" onclick="OB.Media.fieldsSave();" data-t>Save</button>
-    </div>
-  </fieldset>
-</ob-tab>
+    <ob-tab data-name="Custom Metadata">
+        <h1 data-t>Custom Media Metadata Fields</h1>
 
-<ob-tab data-name="Custom Metadata">
-  <h1 data-t>Custom Media Metadata Fields</h1>
+        <obwidget type="message" id="media_settings_metadata_message"></obwidget>
 
-  <obwidget type="message" id="media_settings_metadata_message"></obwidget>
+        <p>
+            <ob-element-button
+                data-text="New Field"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Media.metadataAddEditWindow();"
+                data-t
+                >New Field</ob-element-button
+            >
+        </p>
 
-  <p>
-    <button onclick="OB.Media.metadataAddEditWindow();" data-t>New Field</button>
-  </p>
+        <table class="table" id="media_settings_metadata">
+            <thead>
+                <th data-t>Description</th>
+                <th data-t>Name</th>
+                <th data-t>Type</th>
+                <th>&nbsp;</th>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-  <table class="table" id="media_settings_metadata">
-    <thead>
-      <th data-t>Description</th>
-      <th data-t>Name</th>
-      <th data-t>Type</th>
-      <th>&nbsp;</th>
-    </thead>
-    <tbody></tbody>
-  </table>
+        <div class="fieldrow">
+            <ob-element-button
+                data-style="add"
+                data-text="Save Order"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                onclick="OB.Media.metadataSaveOrder();"
+                data-t
+                >Save Order</ob-element-button
+            >
+        </div>
+    </ob-tab>
 
-  <div class="fieldrow">
-    <button class="add" onclick="OB.Media.metadataSaveOrder();" data-t>Save Order</button>
-  </div>
-</ob-tab>
+    <ob-tab data-name="Dayparting">
+        <h1 data-t>Dayparting</h1>
 
-<ob-tab data-name="Dayparting">
-  <h1 data-t>Dayparting</h1>
+        <p data-t>
+            Dayparting settings exclude media from dynamic selections and station IDs based on show start time. Shows
+            should be organized to reflect this. Dates and times use the player's timezone settings.
+        </p>
 
-  <p data-t>Dayparting settings exclude media from dynamic selections and station IDs based on show start time. Shows should be organized to reflect this. Dates and times use the player's timezone settings.</p>
+        <p>
+            <ob-element-button
+                data-text="New From Current Search"
+                data-icon-name="plus"
+                data-icon-style="solid"
+                onclick="OB.Dayparting.new();"
+                data-t
+                >New From Current Search</ob-element-button
+            >
+        </p>
 
-  <p>
-    <button onclick="OB.Dayparting.new();" data-t>New From Current Search</button>
-  </p>
+        <table class="table" id="dayparting_table">
+            <thead>
+                <th data-t>Description</th>
+                <th data-t>Dates/Times</th>
+                <th data-t>Query</th>
+                <th>&nbsp;</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </ob-tab>
 
-  <table class="table" id="dayparting_table">
-    <thead>
-      <th data-t>Description</th>
-      <th data-t>Dates/Times</th>
-      <th data-t>Query</th>
-      <th>&nbsp;</th>
-    </thead>
-    <tbody></tbody>
-  </table>
-</ob-tab>
+    <ob-tab data-name="Recording Defaults">
+        <h1 data-t>Recording Default Values</h1>
 
+        <obwidget type="message" id="media_settings_recording_message"></obwidget>
+
+        <fieldset>
+            <div class="fieldrow">
+                <label data-t>Album</label>
+                <ob-field-text id="recording_defaults_album" data-edit></ob-field-text>
+            </div>
+
+            <div class="fieldrow">
+                <label data-t>Year</label>
+                <ob-field-number id="recording_defaults_year" data-edit></ob-field-number>
+            </div>
+
+            <div class="fieldrow">
+                <label data-t>Category/Genre</label>
+                <ob-field-genre id="recording_defaults_genre" data-edit></ob-field-genre>
+            </div>
+
+            <div class="fieldrow">
+                <label data-t>Country</label>
+                <ob-field-country id="recording_defaults_country" data-edit></ob-field-country>
+            </div>
+
+            <div class="fieldrow">
+                <label data-t>Language</label>
+                <ob-field-language id="recording_defaults_language" data-edit></ob-field-language>
+            </div>
+
+            <div class="fieldrow">
+                <label data-t>Comments</label>
+                <ob-field-textarea id="recording_defaults_comments" data-edit></ob-field-textarea>
+            </div>
+
+            <div id="recording_custom_metadata"></div>
+
+            <div class="fieldrow">
+                <ob-element-button
+                    data-style="add"
+                    data-text="Save Defaults"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    class="add"
+                    onclick="OB.Media.recordingDefaultsSave();"
+                    data-t
+                    >Save Defaults</ob-element-button
+                >
+            </div>
+        </fieldset>
+    </ob-tab>
 </ob-tabs>

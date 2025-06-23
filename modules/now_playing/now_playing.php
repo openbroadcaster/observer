@@ -44,7 +44,11 @@ $db->what('file_location');
 $db->where('id', $data['media']['id']);
 $row = $db->get_one('media');
 $file_location = $row['file_location'];
-$thumbnail = OB_CACHE.'/thumbnails/'.$file_location[0].'/'.$file_location[1].'/'.$data['media']['id'].'.jpg';
+
+// media model needed
+$media_model = $load->model('Media');
+// get thumbnail file
+$thumbnail = $media_model('thumbnail_file',['media' => $data['media']['id']]);
 $data['media']['thumbnail'] = file_exists($thumbnail);
 
 // output thumbnail if requested

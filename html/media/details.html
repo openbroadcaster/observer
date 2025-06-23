@@ -1,121 +1,135 @@
 <ob-tabs>
-<ob-tab data-name="Details">
+    <ob-tab data-name="Details">
+        <div style="display: flex; justify-content: space-between">
+            <div>
+                <h1 id="media_heading" data-t>Media Details</h1>
+                <p>
+                    <ob-element-button
+                        data-text="Download"
+                        data-style="add"
+                        data-icon-name="floppy-disk"
+                        data-icon-style="solid"
+                        id="media_details_download"
+                        class="hidden add"
+                        >Download</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Edit"
+                        data-style="edit"
+                        data-icon-name="pen"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_edit"
+                        class="hidden edit"
+                        >Edit</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Restore"
+                        data-icon-name="clock-rotate-left"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_restore"
+                        class="hidden"
+                        >Restore</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Delete"
+                        data-style="delete"
+                        data-icon-name="trash"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_delete"
+                        class="hidden delete"
+                        >Delete</ob-element-button
+                    >
+                    <ob-element-button
+                        data-text="Versions"
+                        data-icon-name="code-compare"
+                        data-icon-style="solid"
+                        data-t
+                        id="media_details_versions"
+                        class="hidden"
+                        >Versions</ob-element-button
+                    >
+                </p>
+            </div>
+            <ob-element-thumbnail
+                id="media_details_thumbnail"
+                style="position: relative; top: -25px; margin-bottom: -25px; width: 128px; height: 128px"
+            ></ob-element-thumbnail>
+        </div>
 
-  <h1 id="media_heading" data-t>Media Details</h1>
+        <fieldset id="media_details_fieldset" style="margin-top: 7px">
+            <div class="hidden" id="media_details_table">
+                <div class="fieldrow"><label data-t>ID</label><span id="media_details_id"></span></div>
 
-  <p>
-    <button data-t id="media_details_download" class="hidden add">Download</button>
-    <button data-t id="media_details_edit" class="hidden edit">Edit</button>
-    <button data-t id="media_details_restore" class="hidden">Restore</button>
-    <button data-t id="media_details_delete" class="hidden delete">Delete</button>
-    <button data-t id="media_details_versions" class="hidden">Versions</button>
-  </p>
+                <div class="fieldrow"><label data-t>Artist</label><span id="media_details_artist"></span></div>
 
-  <fieldset id="media_details_fieldset">
+                <div class="fieldrow"><label data-t>Title</label><span id="media_details_title"></span></div>
 
-  <div class="hidden" id="media_details_table">
+                <div class="fieldrow"><label data-t>Album</label><span id="media_details_album"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>ID</label>
-    <span id="media_details_id"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Year</label><span id="media_details_year"></span></div>
 
-  <div class="fieldrow" style="display: none;">
-    <label data-t>Thumbnail</label>
-    <ob-field-thumbnail readonly id="media_details_thumbnail"></ob-field-thumbnail>
-  </div>
+                <div class="fieldrow"><label data-t>Category</label><span id="media_details_category"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Artist</label>
-    <span id="media_details_artist"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Country</label><span id="media_details_country"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Title</label>
-    <span id="media_details_title"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Language</label><span id="media_details_language"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Album</label>
-    <span id="media_details_album"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Genre</label><span id="media_details_genre"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Year</label>
-    <span id="media_details_year"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Comments</label><span id="media_details_comments"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Category</label>
-    <span id="media_details_category"></span>
-  </div>
+                <div id="media_details_metadata"></div>
 
-  <div class="fieldrow">
-    <label data-t>Country</label>
-    <span id="media_details_country"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Uploader</label><span id="media_details_uploader"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Language</label>
-    <span id="media_details_language"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Created</label><span id="media_details_created"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Genre</label>
-    <span id="media_details_genre"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Last Updated</label><span id="media_details_updated"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Comments</label>
-    <span id="media_details_comments"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Copyright</label><span id="media_details_copyright"></span></div>
 
-  <div id="media_details_metadata"></div>
+                <div class="fieldrow"><label data-t>Approval</label><span id="media_details_approval"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Uploader</label>
-    <span id="media_details_uploader"></span>
-  </div>
+                <div class="fieldrow"><label data-t>Status</label><span id="media_details_visibility"></span></div>
 
-  <div class="fieldrow">
-    <label data-t>Created</label>
-    <span id="media_details_created"></span>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Last Updated</label>
-    <span id="media_details_updated"></span>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Copyright</label>
-    <span id="media_details_copyright"></span>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Approval</label>
-    <span id="media_details_approval"></span>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Status</label>
-    <span id="media_details_visibility"></span>
-  </div>
-
-  <div class="fieldrow">
-    <label data-t>Dynamic Selections</label>
-    <span id="media_details_dynamic"></span>
-  </div>
-
-  </div>
-
-  </fieldset>
-</ob-tab>
-<ob-tab data-name="Where Used">
-  <h1>Where is this media used?</h1>
-  <div class="hidden" id="media_details_used">
-  <ul>
-  </ul>
-  </div>
-</ob-tab>
+                <div class="fieldrow">
+                    <label data-t>Dynamic Selections</label><span id="media_details_dynamic"></span>
+                </div>
+            </div>
+        </fieldset>
+    </ob-tab>
+    <ob-tab data-name="Where Used">
+        <h1>Where is this media used?</h1>
+        <div class="hidden" id="media_details_used">
+            <ul></ul>
+        </div>
+    </ob-tab>
+    <ob-tab data-name="Settings">
+        <h1>Media Settings</h1>
+        <div id="media_details_settings_saved" class="obwidget message hidden success" data-type="message">
+            Settings saved.
+        </div>
+        <div class="media_details_settings" hidden data-type="image">
+            <h2>Image Rotate</h2>
+        </div>
+        <div class="media_details_settings" hidden data-type="none">
+            <p>There are currently no settings available for this media type.</p>
+        </div>
+        <fieldset class="media_details_settings_save" hidden>
+            <div class="fieldrow">
+                <ob-element-button
+                    data-style="add"
+                    data-text="Save"
+                    data-icon-name="floppy-disk"
+                    data-icon-style="solid"
+                    class="add"
+                    onclick="OB.MediaDetails.saveSettings()"
+                    >Save</ob-element-button
+                >
+            </div>
+        </fieldset>
+    </ob-tab>
 </ob-tabs>

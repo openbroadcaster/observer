@@ -4,7 +4,7 @@ class OBUpdate20201124 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = "Update users_permissions with renamed devices (now players).";
         $updates[] = "Rename devices tables to players.";
         $updates[] = "Update device columns to player in all tables.";

@@ -4,7 +4,7 @@ class OBUpdate20150309 extends OBUpdate
 {
     public function items()
     {
-        $updates = array();
+        $updates = [];
         $updates[] = 'Support line-in scheduling.';
         return $updates;
     }

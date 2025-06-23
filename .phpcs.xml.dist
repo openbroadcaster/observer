@@ -10,18 +10,17 @@
 	<file>api.php</file>
 	<file>components.php</file>
 	<file>config.sample.php</file>
-	<file>cron.php</file>
-	<file>download.php</file>
 	<file>index.php</file>
-	<file>preview.php</file>
 	<file>remote.php</file>
 	<file>strings.php</file>
-	<file>thumbnail.php</file>
 	<file>tts.php</file>
 	<file>upload.php</file>
 	<file>tools/cli</file>
 
-	<arg value="np"/>
+	<arg value="nps"/>
+
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
 	<rule ref="PSR12">
 		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
 		<exclude name="PSR1.Methods.CamelCapsMethodName" />
@@ -29,6 +28,10 @@
 
 	<rule ref="PSR1.Classes.ClassDeclaration">
 		<exclude-pattern>*/updates/updates\.php$</exclude-pattern>
-		<exclude-pattern>*/classes/obfcallbacks\.php$</exclude-pattern>
+		<exclude-pattern>*/classes/core/obfcallbacks\.php$</exclude-pattern>
+	</rule>
+
+	<rule ref=".phpcs/NoModelCallSniff.php">
+		<exclude-pattern>*/updates/*.php$</exclude-pattern>
 	</rule>
 </ruleset>

@@ -1,55 +1,104 @@
-import { html, render } from '../vendor.js';
-import { OBElement } from '../base/element.js';
+import { html, render } from "../vendor.js";
+import { OBElement } from "../base/element.js";
 
 export class OBField extends OBElement {
-  async connectedCallback(renderComponent) {
-    if (renderComponent !== false) await this.renderComponent();
-  }
+    _value;
+    _editable;
+    _settings;
 
-  renderView() {
-    render(html`
-            ${this.value}
-        `, this.root);
-  }
+    /*
+    what operators are available for this field? available as follows:
+    {
+        eq: 'is',
+        neq: 'is not',
+        contains: 'contains',
+        ncontains: 'does not contain',
+        gt: 'greater than',
+        gte: 'greater than or equal to',
+        lt: 'less than',
+        lte: 'less than or equal to',
+        has: 'has',
+        nhas: 'does not have'
+    };
+    */
+    static comparisonOperators;
 
-  renderEdit() {
-    render(html`<input id="input" type="text" />`, this.root);
-  }
+    // which field element should we use to provide the comparison value?
+    static comparisonField;
 
-  scss() {
-    return `
+    async connectedCallback() {
+        if (this.connected) {
+            await this.connected();
+        }
+
+        if (this.getAttribute("value") && this._value === undefined) {
+            this._value = this.getAttribute("value");
+        }
+
+        if (this.constructor.name == "OBFieldRange" && this.hasAttribute("data-edit")) {
+            this._editable = true; // TODO (remove temporary fix for range field)
+        }
+
+        this.resolveInitialized();
+
+        this.renderComponent();
+    }
+
+    // Bind this to events inside the shadowroot to propagate them to outside
+    // the custom element for other event handlers to catch.
+    propagateEvent(event) {
+        this.dispatchEvent(new Event(event.type));
+    }
+
+    scss() {
+        return `
         :host {
             display: inline-block;
         }
     `;
-  }
-
-  get value() {
-    return this.root.querySelector('input').value;
-  }
-
-  set value(value) {
-    this.root.querySelector('input').value = value;
-    this.renderComponent();
-  }
-
-  get editable() {
-    return this.hasAttribute('data-edit');
-  }
-
-  set editable(value) {
-    if (value) {
-      this.setAttribute('data-edit', '');
-    } else {
-      this.removeAttribute('data-edit');
     }
-    
-    this.renderComponent();
-  }
 
-  async renderComponent() {
-    const edit = this.hasAttribute('data-edit');
-    if (edit) this.renderEdit();
-    else this.renderView();
-  }
+    get value() {
+        return this._value;
+    }
+
+    set value(value) {
+        this._value = value;
+        this.refresh();
+    }
+
+    get editable() {
+        return this._editable;
+    }
+
+    set editable(editable) {
+        this._editable = !!editable;
+        this.refresh();
+    }
+
+    get settings() {
+        return this._settings;
+    }
+
+    set settings(settings) {
+        this._settings = settings;
+        this.refresh();
+    }
+
+    async renderComponent() {
+        if (this.hasAttribute("data-edit") && this._editable === undefined) {
+            this._editable = true;
+        }
+
+        if (this._editable) await this.renderEdit();
+        else await this.renderView();
+    }
+
+    async renderView() {
+        render(html`<div>${this._value}</div>`, this.root);
+    }
+
+    async renderEdit() {
+        render(html`<input id="input" type="text" value="${this._value}" />`, this.root);
+    }
 }

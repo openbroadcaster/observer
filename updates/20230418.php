@@ -109,7 +109,7 @@ class OBUpdate20230418 extends OBUpdate
             $matches = array_values(array_filter($new_langs, fn($new) => $new['ref_name'] == $old['name']));
 
             if (empty($matches)) {
-              continue;
+                continue;
             }
 
             // Find all media items using the old language item, adding the new
@@ -139,7 +139,9 @@ class OBUpdate20230418 extends OBUpdate
             $this->db->where('name', $remain_lang['name']);
             $old_langs = $this->db->get('media_languages') ?? [];
 
-            if (empty($old_langs)) continue;
+            if (empty($old_langs)) {
+                continue;
+            }
 
             // We have an ISO-639-3 code: get the new ID from the languages table, then
             // iterate over all the media items with old language IDs and set the language
@@ -148,7 +150,9 @@ class OBUpdate20230418 extends OBUpdate
             $this->db->where('id', $remain_lang['iso639-3']);
             $iso_lang = $this->db->get('languages')[0]['language_id'] ?? null;
 
-            if (! $iso_lang) die('Failed to find language for ISO 639-3 code ' . $remain_lang['iso639-3']);
+            if (! $iso_lang) {
+                die('Failed to find language for ISO 639-3 code ' . $remain_lang['iso639-3']);
+            }
 
             // Add comment if available even for pre-existing language codes.
             if (isset($remain_lang['comment'])) {
@@ -181,7 +185,9 @@ class OBUpdate20230418 extends OBUpdate
                 'ref_name'      => $old['name']
             ]);
 
-            if (! $iso_lang) die('Failed to create new language with ISO 639-3 code '. $iso_new_code);
+            if (! $iso_lang) {
+                die('Failed to create new language with ISO 639-3 code ' . $iso_new_code);
+            }
 
             $this->db->where('language_id', $old['id']);
             $this->db->update('media', [
@@ -214,56 +220,48 @@ class OBUpdate20230418 extends OBUpdate
         }
 
         // update serialize data to new language IDs
-        foreach(['dayparting', 'media_searches', 'playlists_items'] as $table) {
-
+        foreach (['dayparting', 'media_searches', 'playlists_items'] as $table) {
             $rows = $this->db->get($table);
 
             // foreach row, json decode filters
             foreach ($rows as $row) {
-
-                if($table=='dayparting') {
+                if ($table == 'dayparting') {
                     $column = 'filters';
                     $settings = json_decode($row[$column], true);
-                }
-
-                elseif($table=='media_searches') {
+                } elseif ($table == 'media_searches') {
                     $column = 'query';
                     $settings = unserialize($row[$column]);
-                }
-
-                elseif($table=='playlists_items') {
+                } elseif ($table == 'playlists_items') {
                     $column = 'properties';
                     $properties = json_decode($row[$column], true);
                     $settings = &$properties['query'] ?? null;
-                }
-
-                else {
+                } else {
                     break;
                 }
 
                 // query must come from advanced search
-                if(!isset($settings['mode']) || $settings['mode']!='advanced') {
+                if (!isset($settings['mode']) || $settings['mode'] != 'advanced') {
                     continue;
                 }
-                
+
                 // query must have filters
-                if(!isset($settings['filters']) || !is_array($settings['filters'])) {
+                if (! isset($settings['filters']) || ! is_array($settings['filters'])) {
                     continue;
                 }
 
                 $has_update = false;
-                foreach($settings['filters'] as &$filter) {
-                    if($filter['filter'] == 'language') {
+                foreach ($settings['filters'] as &$filter) {
+                    if ($filter['filter'] == 'language') {
                         $filter['val'] = $old_to_new_lang_id[$filter['val']] ?? $filter['val'];
                         $has_update = true;
                     }
                 }
 
-                if(!$has_update) {
+                if (! $has_update) {
                     continue;
                 }
 
-                $settings_encoded = $table=='media_searches' ? serialize($settings) : json_encode($settings);
+                $settings_encoded = ($table == 'media_searches') ? serialize($settings) : json_encode($settings);
 
                 /*
                 echo 'Updating '.$table.' '.$row['id'].' '.$column."\n";
@@ -284,31 +282,31 @@ class OBUpdate20230418 extends OBUpdate
     // Function created by ChatGPT
     private function increment_string($str)
     {
-      $str = strrev($str); // Reverse the string for easier iteration
-      $len = strlen($str);
-      $carry = 1; // Start with a carry to increment the first character
+        $str = strrev($str); // Reverse the string for easier iteration
+        $len = strlen($str);
+        $carry = 1; // Start with a carry to increment the first character
 
-      for ($i = 0; $i < $len; $i++) {
-          $char = ord($str[$i]) - ord('a') + $carry; // Get the base-26 value of the character
+        for ($i = 0; $i < $len; $i++) {
+            $char = ord($str[$i]) - ord('a') + $carry; // Get the base-26 value of the character
 
-          if ($char >= 26) { // If there is a carry
-              $char %= 26;
-              $carry = 1;
-          } else {
-              $carry = 0;
-          }
+            if ($char >= 26) { // If there is a carry
+                $char %= 26;
+                $carry = 1;
+            } else {
+                $carry = 0;
+            }
 
-          $str[$i] = chr(ord('a') + $char); // Update the character in the string
+            $str[$i] = chr(ord('a') + $char); // Update the character in the string
 
-          if ($carry == 0) { // No further carry, break the loop
-              break;
-          }
-      }
+            if ($carry == 0) { // No further carry, break the loop
+                break;
+            }
+        }
 
-      if ($carry) { // If there's still a carry after the loop
-          $str .= 'a'; // Append an 'a' to the string
-      }
+        if ($carry) { // If there's still a carry after the loop
+            $str .= 'a'; // Append an 'a' to the string
+        }
 
-      return strrev($str); // Reverse the string back to its original order
+        return strrev($str); // Reverse the string back to its original order
     }
 }

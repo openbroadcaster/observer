@@ -4,7 +4,7 @@ class OBUpdate20221026 extends OBUpdate
 {
     public function items()
     {
-        $updates   = array();
+        $updates   = [];
         $updates[] = 'Add table for user data storage.';
         return $updates;
     }

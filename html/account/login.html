@@ -1,28 +1,46 @@
 <obwidget type="message" id="account_login_message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>Account Login</legend>
 
-<fieldset>
-<legend data-t>Account Login</legend>
+        <p data-t>
+            You were automatically logged out after a certain period of inactivity. Please log in again before
+            continuing.
+        </p>
 
-	<p data-t>You were automatically logged out after a certain period of inactivity.  Please log in again before continuing.</p>
+        <div class="fieldrow">
+            <label class="required" data-t>Username</label>
+            <span id="account_login_username"></span>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Username</label>
-  <span id="account_login_username"></span>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Password</label>
+            <input id="account_login_password" type="password" name="account_login_password" />
+        </div>
+    </fieldset>
 
-<div class="fieldrow">
-  <label class="required" data-t>Password</label>
-  <input id="account_login_password" type="password" name="account_login_password">
-</div>
-</fieldset>
-
-<fieldset>
-<div class="fieldrow">
-  <button class="add" id="account_login_submit" onclick="OB.Account.login();" data-t>Log In</button>
-  <button onclick="window.location.href = window.location.href;" data-t>Log In as Different User</button>
-</div>
-</fieldset>
-
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Log In"
+                data-icon-name="check"
+                data-icon-style="solid"
+                data-style="add"
+                class="add"
+                id="account_login_submit"
+                onclick="OB.Account.login();"
+                data-t
+                >Log In</ob-element-button
+            >
+            <ob-element-button
+                data-text="Log In as Different User"
+                data-icon-name="check"
+                data-icon-style="solid"
+                onclick="window.location.href = window.location.href;"
+                data-t
+                >Log In as Different User</ob-element-button
+            >
+        </div>
+    </fieldset>
 </div>

@@ -41,11 +41,11 @@ class Modules extends OBFController
      */
     public function search()
     {
-        $modules = array();
+        $modules = [];
         $modules['installed'] = $this->models->modules('get_installed');
         $modules['available'] = $this->models->modules('get_not_installed');
 
-        return array(true,'Modules',$modules);
+        return [true,'Modules',$modules];
     }
 
     /**
@@ -62,9 +62,9 @@ class Modules extends OBFController
         $install = $this->models->modules('install', $module);
 
         if ($install) {
-            return array(true,'Module installed. Refreshing the page may be required to update the user interface.');
+            return [true,'Module installed. Refreshing the page may be required to update the user interface.'];
         } else {
-            return array(false,'An error occurred while attempting to install this module.');
+            return [false,'An error occurred while attempting to install this module.'];
         }
     }
 
@@ -82,9 +82,40 @@ class Modules extends OBFController
         $uninstall = $this->models->modules('uninstall', $module);
 
         if ($uninstall) {
-            return array(true,'Module uninstalled. Refreshing the page may be required to update the user interface.');
+            return [true,'Module uninstalled. Refreshing the page may be required to update the user interface.'];
         } else {
-            return array(false,'An error occurred while attempting to uninstall this module.');
+            return [false,'An error occurred while attempting to uninstall this module.'];
+        }
+    }
+
+    /**
+     * Purge the data from a module. Requires a page refresh after purging.
+     * Note that this method will first attempt to uninstall the module.
+     *
+     * @param name
+     *
+     * @route DELETE /v2/modules/purge/(:name:)
+     */
+    public function purge()
+    {
+        $module = $this->data('name');
+
+        $this->db->where('directory', $module);
+        $installed = $this->db->get('modules');
+
+        if ($installed) {
+            $uninstall = $this->models->modules('uninstall', $module);
+            if (! $uninstall) {
+                return [false,'An error occurred while attempting to uninstall this module.'];
+            }
+        }
+
+        $purge = $this->models->modules('purge', $module);
+
+        if ($purge) {
+            return [true,'Module data purged. Refreshing the page may be required to update the user interface.'];
+        } else {
+            return [false,'An error occurred while attempting to purge this module.'];
         }
     }
 }

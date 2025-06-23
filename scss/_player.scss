@@ -1,50 +1,44 @@
-.player_settings_station_ids
-{
-  position: relative;
-  top: -5px;
-  margin-bottom: -5px;
-  padding: 5px;
+.player_settings_station_ids {
+    position: relative;
+    top: -5px;
+    margin-bottom: -5px;
+    padding: 5px;
 }
 
-.player_settings_default_playlist
-{
-  padding: 5px;
+.player_settings_default_playlist {
+    padding: 5px;
 }
 
-.player_settings_supports_linein_container
-{
-  margin-top: 0 !important; /* needed for consistent spacing when items above are hidden */
+.player_settings_supports_linein_container {
+    margin-top: 0 !important; /* needed for consistent spacing when items above are hidden */
 }
 
-#player_list .last_connect_error div
-{
-  height: 20px;
-  text-align: right;
-  font-weight: bold;
+#player_list .last_connect_error div {
+    height: 20px;
+    text-align: right;
+    font-weight: bold;
 }
 
-#player_list .last_connect_time div
-{
-  height: 20px;
-  white-space: nowrap;
+#player_list .last_connect_time div {
+    height: 20px;
+    white-space: nowrap;
 }
 
-#monitor_filter_list div
-{
-  margin: 7px 0;
+#monitor_filter_list div {
+    margin: 7px 0;
 }
 
-select{
-  width:auto;
+select {
+    width: auto;
 }
 
 #player_list td div div {
-  position: relative;
+    position: relative;
 }
 
 .player_list_alert {
-  position: absolute;
-  left: -22px;
-  top: 4px;
-  font-size: 12px;
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    font-size: 12px;
 }

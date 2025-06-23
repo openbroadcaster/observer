@@ -1,266 +1,288 @@
-body
-{
-  font-size: 15px;
-  color: #eeeeec;
-  background-color: #000;
+body {
+    font-size: 15px;
+    color: #eeeeec;
+    background-color: #000;
+
+    scrollbar-color: #919191 rgba(0, 0, 0, 0);
 }
 
-body.font-default
-{
-  font-family: 'Open Sans', sans-serif;
+body.font-default {
+    font-family: "Open Sans", sans-serif;
 }
 
-body.font-opendyslexic
-{
-  font-family: 'opendyslexic';
+body.font-opendyslexic {
+    font-family: "opendyslexic";
 }
 
-a
-{
-  color: #729fcf;
-  text-decoration: none;
+a {
+    color: #729fcf;
+    text-decoration: none;
 }
 
-a:hover
-{
-  text-decoration: underline;
+a:hover {
+    text-decoration: underline;
 }
 
-p
-{
-  max-width: 800px;
+p {
+    max-width: 800px;
 }
 
-.message
-{
-  max-width: 800px;
-  margin: 15px 0;
-  padding: 4px 6px;
-  background-color: #eeeeec;
-  color: #2e3436;
-  border-radius: 5px;
+.message {
+    max-width: 800px;
+    margin: 15px 0;
+    padding: 4px 6px;
+    background-color: var(--message-default-background);
+    color: var(--message-default-color);
+    border-radius: var(--message-default-radius);
+    border: var(--message-default-border);
 }
 
-.message.success
-{
-  background-color: #9de259;
+.message.success {
+    color: var(--message-success-color);
+    background-color: var(--message-success-background);
+    border-radius: var(--message-success-radius);
+    border: var(--message-success-border);
 }
 
-.message.warning
-{
-  background-color: #fcef88;
+.message.warning {
+    color: var(--message-warning-color);
+    background-color: var(--message-warning-background);
+    border-radius: var(--message-warning-radius);
+    border: var(--message-warning-border);
 }
 
-.message.error
-{
-  background-color: #bf2121;
-  color: #eeeeec;
+.message.error {
+    color: var(--message-error-color);
+    background-color: var(--message-error-background);
+    border-radius: var(--message-error-radius);
+    border: var(--message-error-border);
 }
 
-.simplebar-scrollbar:before
-{
-  background-color: #eeeeec;
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+a.button {
+    padding: 4px 6px;
+    background-color: var(--button-default-background);
+    color: var(--button-default-color);
+    font-size: 13px;
+    border: var(--button-default-border);
+    border-radius: var(--button-default-radius);
+    font-weight: 600;
+    margin-left: 12px;
 }
 
-button, input[type=submit], input[type=reset], input[type=button], a.button
-{
-  padding: 4px 6px;
-  background-color: #eeeeec;
-  color: #2e3436;
-  font-size: 13px;
-  border: 0;
-  border-radius: 5px;
-  font-weight: 600;
-  margin-left: 12px;
+a.button,
+a.button:hover {
+    text-decoration: none;
+    cursor: pointer;
 }
 
-a.button, a.button:hover
-{
-  text-decoration: none;
-  cursor: pointer;
+button:first-child,
+input[type="submit"]:first-child,
+input[type="reset"]:first-child,
+input[type="button"]:first-child,
+a.button:first-child {
+    margin-left: 0;
 }
 
-button:first-child, input[type=submit]:first-child, input[type=reset]:first-child, input[type=button]:first-child, a.button:first-child
-{
-  margin-left: 0;
+input::placeholder {
+    text-align: left;
+    opacity: 1;
+    font-weight: 300;
 }
 
-input::placeholder
-{
-  text-align: left;
-  opacity: 1;
-  font-weight: 300;
+button.add,
+a.button.add {
+    border: var(--button-add-border);
+    border-radius: var(--button-add-radius);
+    background-color: var(--button-add-background);
+    color: var(--button-add-color);
 }
 
-button.add, a.button.add
-{
-  background-color: #9de259;
+button.edit,
+a.button.edit {
+    border: var(--button-edit-border);
+    border-radius: var(--button-edit-radius);
+    background-color: var(--button-edit-background);
+    color: var(--button-edit-color);
 }
 
-button.edit, a.button.edit
-{
-  background-color: #fcef88;
+button.delete,
+a.button.delete {
+    border: var(--button-delete-border);
+    border-radius: var(--button-delete-radius);
+    background-color: var(--button-delete-background);
+    color: var(--button-delete-color);
 }
 
-button.delete, a.button.delete
-{
-  background-color: #bf2121;
-  color: #eeeeec;
+fieldset {
+    border: 0;
+    border-top: 1px solid #eeeeec;
+    margin-top: 22px;
 }
 
-fieldset
-{
-  border: 0;
-  border-top: 1px solid #eeeeec;
-  margin-top: 22px;
+legend {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0px 5px 2px 5px;
 }
 
-legend
-{
-  font-size: 16px;
-  font-weight: 600;
-  padding: 0px 5px 2px 5px;
+.fieldrow {
+    font-size: 14px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.fieldrow
-{
-  font-size: 14px;
-  margin: 15px 0;
-  vertical-align: middle;
+.fieldrow > span {
 }
 
-.fieldrow > span
-{
-  display: inline-block;
+.fieldrow > div {
 }
 
-.fieldrow > div
-{
-  vertical-align: top;
-  display: inline-block;
+.fieldrow > * > *:first-child {
+    margin-top: 0;
 }
 
-.fieldrow > * > *:first-child
-{
-  margin-top: 0;
+.fieldrow > div > div + div {
+    margin: 7px 0;
 }
 
-.fieldrow > div > div + div
-{
-  margin: 7px 0;
+.fieldrow > label {
+    width: 200px;
+    text-align: right;
+    font-weight: 600;
+    /* vertical-align: middle; */
 }
 
-.fieldrow > label
-{
-  display: inline-block;
-  width: 200px;
-  text-align: right;
-  padding-right: 8px;
-  font-weight: 600;
-  /* vertical-align: middle; */
+.fieldrow > label.required {
+    font-weight: 800;
 }
 
-.fieldrow > label.required
-{
-  font-weight: 800;
+.fieldrow > label:after {
+    content: ":";
 }
 
-.fieldrow > label:after
-{
-  content: ':';
+.fieldrow > label.empty:after {
+    content: "";
 }
 
-.fieldrow > label.empty:after
-{
-  content: '';
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="date"],
+input[type="time"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+select,
+textarea {
+    display: inline-block;
+    color: var(--field-color);
+    background-color: var(--field-background);
+    font-size: 13px;
+    border-radius: var(--field-radius);
+    border: var(--field-border);
+    padding: 5px;
+    width: 250px;
+    vertical-align: middle;
 }
 
-input[type=text], input[type=password],
-input[type=datetime], input[type=datetime-local], input[type=month], input[type=week], input[type=date], input[type=time],
-input[type=email], input[type=number], input[type=tel], input[type=url],
-select, textarea
-{
-  display: inline-block;
-  color: #2e3436;
-  font-size: 13px;
-  border-radius: 2px;
-  border: 0;
-  padding: 5px;
-  width: 250px;
-  vertical-align: middle;
+#media_details_table .fieldrow > label {
+    padding-right: 10px;
 }
 
-textarea, ob-tag-input, ob-user-input, ob-group-input, ob-media-input, ob-playlist-input
-{
-  vertical-align: top;
+#media_details_table .fieldrow > label + * {
+    position: relative;
+    top: 3px;
 }
 
-textarea::placeholder
-{
-  text-align: left;
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    &:focus {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
 }
 
-input[type=checkbox], input[type=radio]
-{
-  vertical-align: middle;
-  position: relative;
-  top: -1px;
+textarea,
+ob-tag-input,
+ob-user-input,
+ob-group-input,
+ob-media-input,
+ob-playlist-input {
+    vertical-align: top;
 }
 
-input[type=range], input[type=color]
-{
-  vertical-align: middle;
+textarea::placeholder {
+    text-align: left;
 }
 
-.hidden
-{
-  display: none;
+input[type="checkbox"],
+input[type="radio"] {
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
 }
 
-.table
-{
-  width: 100%;
-  max-width: 800px;
+input[type="range"],
+input[type="color"] {
+    vertical-align: middle;
 }
 
-.table th
-{
-  font-weight: bold;
-  padding: 5px 10px;
-  border-bottom: 1px solid #fff;
-  white-space: nowrap;
-  text-align: left;
+.hidden {
+    display: none;
 }
 
-.table td
-{
-  padding: 5px 10px;
-  border-bottom: 1px solid #777;
+.table {
+    width: 100%;
+    max-width: 800px;
 }
 
-.table tr:last-child td
-{
-  border-bottom: 0;
+.table th {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-bottom: 1px solid #fff;
+    white-space: nowrap;
+    text-align: left;
 }
 
-.table th:first-child, .table td:first-child
-{
-  padding-left: 0px;
+.table td {
+    padding: 5px 10px;
+    border-bottom: 1px solid #777;
 }
 
-.table th:last-child, .table td:last-child
-{
-  padding-right: 0px;
+.table tr:last-child td {
+    border-bottom: 0;
 }
 
-.droppable_target_media, .droppable_target_playlist
-{
-  border: 2px solid rgba(0,0,0,0);
+.table th:first-child,
+.table td:first-child {
+    padding-left: 0px;
 }
 
-.droppable_target_highlighted
-{
-  border: 2px dashed #e09529 !important;
+.table th:last-child,
+.table td:last-child {
+    padding-right: 0px;
+}
+
+.droppable_target_media,
+.droppable_target_playlist {
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+
+.droppable_target_highlighted {
+    border: 2px dashed #e09529 !important;
 }
 
 /*
@@ -271,40 +293,34 @@ input[type=range], input[type=color]
 }
 */
 
-#ui-datepicker-div
-{
-  font-size: 0.8em;
+#ui-datepicker-div {
+    font-size: 0.8em;
 }
 
-.ui-datepicker-calendar
-{
-  table-layout: fixed;
+.ui-datepicker-calendar {
+    table-layout: fixed;
 }
 
-ob-tab-select
-{
-  display: block;
-  
-  button
-  {
-    background-color: transparent !important;
-    color: #eeeeec;
-    border: 0;
+ob-tab-select {
+    display: block;
 
-    &.active
-    {
-      border: 1px solid #eeeeec;
+    button {
+        background-color: transparent !important;
+        color: #eeeeec;
+        border: 0;
+
+        &.active {
+            border: 1px solid #eeeeec;
+        }
     }
-  }
 }
 
 ob-user-input,
 ob-group-input,
 ob-media-input,
 ob-playlist-input,
-ob-tag-input
-{
-  display: inline-block;
+ob-tag-input {
+    display: inline-block;
 }
 
 ob-user-input select,
@@ -312,190 +328,171 @@ ob-user-input ob-user,
 ob-group-input select,
 ob-group-input ob-group,
 ob-media-input ob-media,
-ob-playlist-input ob-playlist
-{
-  display: block;
+ob-playlist-input ob-playlist {
+    display: block;
 }
 
 ob-user-input select,
 ob-group-input select,
 ob-media-input,
-ob-playlist-input
-{
-  width: 100%;
-  max-width: 350px;
+ob-playlist-input {
+    width: 100%;
+    max-width: 350px;
 }
 
 ob-user-input ob-user,
 ob-group-input ob-group,
 ob-media-input ob-media,
-ob-playlist-input ob-playlist
-{
-  background-color: #eeeeec;
-  color: #000;
-  padding: 5px;
-  border-radius: 2px;
-  margin: 5px 0;
-  position: relative;
-  font-size: 0.9em;
-  box-sizing: border-box;
-  max-width: 350px;
+ob-playlist-input ob-playlist {
+    background-color: #eeeeec;
+    color: #000;
+    padding: 5px;
+    border-radius: var(--field-radius);
+    margin: 5px 0;
+    position: relative;
+    font-size: 0.9em;
+    box-sizing: border-box;
+    max-width: 350px;
 }
 
 ob-user-input ob-user span,
 ob-group-input ob-group span,
 ob-media-input ob-media span,
-ob-playlist-input ob-playlist span
-{
-  cursor: pointer;
-  padding-left: 10px;
-  padding-right: 10px;
-  color: #bf2121;
-  font-weight: bold;
-  font-size: 0.9em;
-  position: absolute;
-  right: 0;
+ob-playlist-input ob-playlist span {
+    cursor: pointer;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #bf2121;
+    font-weight: bold;
+    font-size: 0.9em;
+    position: absolute;
+    right: 0;
 }
 
 ob-user-input ob-user span::after,
 ob-group-input ob-group span::after,
 ob-media-input ob-media span::after,
-ob-playlist-input ob-playlist span::after
-{
-  content: 'x';
+ob-playlist-input ob-playlist span::after {
+    content: "x";
 }
 
 ob-media-input:empty,
-ob-playlist-input:empty
-{
-  border: 2px dashed #eeeeec;
+ob-playlist-input:empty {
+    border: 2px dashed #eeeeec;
 }
 
-ob-playlist-input:empty::after
-{
-  content: 'Drop Playlists Here';
-  display: block;
-  text-align: center;
-  line-height: 96px;
+ob-playlist-input:empty::after {
+    content: "Drop Playlists Here";
+    display: block;
+    text-align: center;
+    line-height: 96px;
 }
 
-ob-playlist-input[data-single]:empty::after
-{
-  content: 'Drop Playlist Here';
+ob-playlist-input[data-single]:empty::after {
+    content: "Drop Playlist Here";
 }
 
-ob-media-input:empty::after
-{
-  content: 'Drop Media Here';
-  display: block;
-  text-align: center;
-  line-height: 96px;
+ob-media-input:empty::after {
+    content: "Drop Media Here";
+    display: block;
+    text-align: center;
+    line-height: 96px;
 }
 
 ob-playlist-input[data-loading]:empty::after,
-ob-media-input[data-loading]:empty::after
-{
-  content: 'Loading...';
+ob-media-input[data-loading]:empty::after {
+    content: "Loading...";
 }
 
-ob-tag-suggestions
-{
-  width: 250px;
-  padding: 4px;
-  background-color: #333336;
-  border: 1px solid #fff;
-  border-radius: 2px;
-  display: none;
-  margin-top: 5px;
-  height: 130px;
+ob-tag-suggestions {
+    width: 250px;
+    padding: 4px;
+    background-color: #333336;
+    border: 1px solid #fff;
+    border-radius: var(--field-radius);
+    display: none;
+    margin-top: 5px;
+    height: 130px;
 }
 
-ob-tag-input:not([data-suggestions=false]):focus 
-{
-  margin-bottom: 145px;
+ob-tag-input:not([data-suggestions="false"]):focus {
+    margin-bottom: 145px;
 }
 
-ob-tag-input:focus ob-tag-suggestions
-{
-  display: block;
-  position: absolute;
-  top: calc(100% + 5px);
-  left: -1px;
-  height: 130px;
+ob-tag-input:focus ob-tag-suggestions {
+    display: block;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: -1px;
+    height: 130px;
 }
 
-ob-tag-suggestions ob-tag
-{
-  cursor: pointer;
+ob-tag-suggestions ob-tag {
+    cursor: pointer;
 }
 
-ob-tag-input
-{
-  display: inline-block;
-  width: 250px;
-  min-height: 1.5em;
-  border: 1px solid #fff;
-  padding: 4px;
-  border-radius: 2px;
-  position: relative;
+ob-tag-input {
+    display: inline-block;
+    width: 250px;
+    min-height: 1.5em;
+    border: 1px solid #fff;
+    padding: 4px;
+    border-radius: var(--field-radius);
+    position: relative;
 }
 
-ob-tag-input ob-tag
-{
-  display: inline-block;
-  background-color: #eeeeec;
-  color: #000;
-  padding: 5px;
-  border-radius: 2px;
-  margin: 5px;
+ob-tag-input ob-tag {
+    display: inline-block;
+    background-color: #eeeeec;
+    color: #000;
+    padding: 5px;
+    border-radius: var(--field-radius);
+    margin: 5px;
 }
 
-ob-tag-input ob-tag span
-{
-  cursor: pointer;
-  padding-left: 5px;
-  padding-right: 2px;
-  color: #bf2121;
-  font-weight: bold;
-  font-size: 0.9em;
+ob-tag-input ob-tag span {
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 2px;
+    color: #bf2121;
+    font-weight: bold;
+    font-size: 0.9em;
 }
 
-ob-tag-input ob-tag span::after
-{
-  content: 'x';
+ob-tag-input ob-tag span::after {
+    content: "x";
 }
 
 ob-media-input,
 ob-playlist-input {
-  box-sizing: border-box;
-  width: 350px;
-  min-height: 100px;
+    box-sizing: border-box;
+    width: 350px;
+    min-height: 100px;
 }
 
 ob-user-input.readonly span,
 ob-media-input.readonly span,
 ob-playlist-input.readonly span {
-  display: none;
+    display: none;
 }
 
 ob-user-input.readonly select {
-  display: none;
+    display: none;
 }
 
-#drag_helper
-{
-  z-index: 100000;
-  left: -1000px;
-  top: -1000px;
-  position: fixed;
-  cursor: pointer;
-  padding: 3px;
-  font-weight: 600;
-  background-color: rgba(255,255,255,0.8);
-  color: #000;
-  width: 250px;
-  text-align: center;
-  border-radius: 5px;
-  font-size: 13px;
-  pointer-events: none;
+#drag_helper {
+    z-index: 100000;
+    left: -1000px;
+    top: -1000px;
+    position: fixed;
+    cursor: pointer;
+    padding: 3px;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
+    width: 250px;
+    text-align: center;
+    border-radius: var(--radius-default);
+    font-size: 13px;
+    pointer-events: none;
 }

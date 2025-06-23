@@ -32,7 +32,6 @@ if (php_sapi_name()!='cli') {
 
 // some settings
 define('OB_STREAM_VERSION', 1); // update this to re-transcode, etc.
-define('OB_THUMBNAIL_VERSION', 1); // update this to regenerate thumbnails
 
 // db init
 require(__DIR__.'/../../components.php');
@@ -43,19 +42,23 @@ if (!defined('OB_MEDIA') || !defined('OB_CACHE') || !is_dir(OB_MEDIA) || !is_dir
     die('Configuration invalid; please complete OB setup.'.PHP_EOL);
 }
 
+if(!defined('OB_STREAM_TRANSCODE_ALL') || !OB_STREAM_TRANSCODE_ALL) {
+    $public_only = 'status = "public" AND ';
+} else {
+    $public_only = '';
+}
+
 // get media without stream information
 $db->query('
   SELECT stream_version, thumbnail_version, file_location, filename, id, type, duration
   FROM media 
   WHERE
-    status="public" 
-    AND is_approved=1 
+    '.$public_only.'
+    is_approved=1 
     AND is_archived=0 
     AND (
       stream_version IS NULL 
       OR stream_version < '.OB_STREAM_VERSION.'
-      OR thumbnail_version IS NULL
-      OR thumbnail_version < '.OB_THUMBNAIL_VERSION.'
     )
 ');
 
@@ -211,112 +214,5 @@ foreach ($media as $item) {
         // javascript will ask for stream info and get m3u8 file and text tracks and generate html from that.
         $db->where('id', $item['id']);
         $db->update('media', ['stream_version'=>OB_STREAM_VERSION]);
-    }
-}
-
-// handle thumbnail creation next
-// handle stream/transcode first
-foreach ($media as $item) {
-    // skip item if up to date
-    if ($item['thumbnail_version']>=OB_THUMBNAIL_VERSION) {
-        continue;
-    }
-
-    $input_file = OB_MEDIA.'/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['filename'];
-    $output_file = OB_CACHE.'/streams/'.$item['file_location'][0].'/'.$item['file_location'][1].'/'.$item['id'].'/thumb.jpg';
-
-    $success = false;
-
-    if ($item['type']=='video') {
-        $duration = $item['duration'];
-        if ($duration) {
-            // for short videos, start at the beginning.
-            // for long videos, start at 25%
-            if ($duration<60) {
-                $start = 0.00;
-            } else {
-                $start = $duration/4;
-            }
-
-            $start_hours = floor($start/3600);
-            $start -= $start_hours*3600;
-            $start_minutes = floor($start/60);
-            $start -= $start_minutes*60;
-            $start_seconds = $start;
-
-            if ($start_hours<10) {
-                $start_hours = '0'.$start_hours;
-            }
-            if ($start_minutes<10) {
-                $start_minutes = '0'.$start_minutes;
-            }
-            if ($start_seconds<10) {
-                $start_seconds= '0'.$start_seconds;
-            }
-
-            $start = $start_hours.':'.$start_minutes.':'.round($start_seconds, 2);
-
-            // get unique dir name
-            $tmp_dir = tempnam(sys_get_temp_dir(), 'ob_');
-
-            // tempnam creates a file, unlink and make it a directory
-            unlink($tmp_dir);
-            mkdir($tmp_dir);
-
-            // get 5 keyframes starting at 25% into the video.
-            $command = 'ffmpeg -ss '.escapeshellarg($start).' -i '.escapeshellarg($input_file).' -vf "select=eq(pict_type\,I), scale=w=300:h=300:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 '.escapeshellarg($tmp_dir.'/thumb%04d.jpg').' -hide_banner';
-            passthru($command);
-
-            // pick thumbnail with largest filesize
-            $thumbs = scandir($tmp_dir);
-
-            $thumb_size = 0;
-            $thumb_selected = false;
-
-            foreach ($thumbs as $thumb) {
-                if (!preg_match('/^thumb/', $thumb)) {
-                    continue;
-                }
-                if (filesize($tmp_dir.'/'.$thumb)>$thumb_size) {
-                    $thumb_selected = $tmp_dir.'/'.$thumb;
-                    $thumb_size = filesize($thumb_selected);
-                }
-            }
-
-            if ($thumb_selected) {
-                copy($thumb_selected, $output_file);
-                $success = true;
-            }
-
-            // clean up
-            $thumbs = scandir($tmp_dir);
-            foreach ($thumbs as $thumb) {
-                if (!preg_match('/^thumb/', $thumb)) {
-                    continue;
-                }
-                unlink($tmp_dir.'/'.$thumb);
-            }
-            rmdir($tmp_dir);
-        }
-    } elseif ($item['type']=='audio') {
-        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
-        echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
-        passthru($command);
-        $success = true; // assume success, because will fail if no album art, but that's okay.
-    } elseif ($item['type']=='image') {
-        $command = 'ffmpeg -y -i '.escapeshellarg($input_file).' -vf "scale=w=300:h=300:force_original_aspect_ratio=decrease" '.escapeshellarg($output_file).' -hide_banner';
-        echo PHP_EOL.$command.PHP_EOL.PHP_EOL;
-        $return = null;
-        passthru($command, $return);
-        if ($return===0) {
-            $success = true;
-        }
-    } else {
-        $success = true;
-    }
-
-    if ($success) {
-        $db->where('id', $item['id']);
-        $db->update('media', ['thumbnail_version'=>OB_THUMBNAIL_VERSION]);
     }
 }

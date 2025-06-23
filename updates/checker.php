@@ -31,22 +31,22 @@ class OBFChecker
     public function php_version()
     {
         if (version_compare(phpversion(), '5.4', '<')) {
-            return array('PHP Version','PHP v5.4 or higher is required (v' . phpversion() . ' detected).',2);
+            return ['PHP Version','PHP v5.4 or higher is required (v' . phpversion() . ' detected).',2];
         }
-        return array('PHP Version','PHP v' . phpversion() . ' detected.',0);
+        return ['PHP Version','PHP v' . phpversion() . ' detected.',0];
     }
 
     public function php_mysql_extension()
     {
         if (!extension_loaded('mysqli')) {
-            return array('PHP MySQL extension', 'PHP MySQL extension not found.',2);
+            return ['PHP MySQL extension', 'PHP MySQL extension not found.',2];
         }
-        return array('PHP MySQL extension', 'PHP MySQL extension detected.',0);
+        return ['PHP MySQL extension', 'PHP MySQL extension detected.',0];
     }
 
     public function php_extensions()
     {
-        $errors = array();
+        $errors = [];
 
         if (!extension_loaded('gd')) {
             $errors[] = 'GD extension not found.';
@@ -58,32 +58,34 @@ class OBFChecker
             $errors[] = 'Fileinfo extension not found.';
         }
 
-        if (!empty($errors)) {
-            return array('PHP Extensions',$errors,2);
+        if (!extension_loaded('imagick')) {
+            $errors[] = 'ImageMagick (imagick) extension not found.';
         }
-        return array('PHP Extensions','Required PHP extensions found.',0);
+
+        if (!empty($errors)) {
+            return ['PHP Extensions',$errors,2];
+        }
+        return ['PHP Extensions','Required PHP extensions found.',0];
     }
 
+
+    // there are currently no optional extensions, but this is kept as a placeholder.
     public function php_extensions_warning()
     {
-        $errors = array();
-
-        if (!extension_loaded('imagick')) {
-            $errors[] = 'ImageMagick (imagick) extension not found (SVG preview will not function).';
-        }
+        $errors = [];
 
         if (!empty($errors)) {
-            return array('PHP Extensions',$errors,1);
+            return ['PHP Extensions',$errors,1];
         }
-        return array('PHP Extensions','Optional PHP extensions found.',0);
+        return ['PHP Extensions','Optional PHP extensions found.',0];
     }
 
     public function which()
     {
         if (!exec('which which')) {
-            return array('Program detection','Tool to detect dependencies (which) is not available.  Program detection will fail below.',1);
+            return ['Program detection','Tool to detect dependencies (which) is not available.  Program detection will fail below.',1];
         }
-        return array('Program detection','Tool to detect dependencies (which) is available.',0);
+        return ['Program detection','Tool to detect dependencies (which) is available.',0];
     }
 
     public function tts()
@@ -92,31 +94,31 @@ class OBFChecker
         $text2wave = !!exec('which text2wave');
 
         if (!$oggenc && !$text2wave) {
-            return array('Text-to-Speech','Text-to-speech support requires programs oggenc and text2wave.  Install vorbis-tools and festival packages on Debian/Ubuntu.',1);
+            return ['Text-to-Speech','Text-to-speech support requires programs oggenc and text2wave.  Install vorbis-tools and festival packages on Debian/Ubuntu.',1];
         } elseif (!$oggenc) {
-            return array('Text-to-Speech','Text-to-speech support requires program oggenc.  Install vorbis-tools package on Debian/Ubuntu.',1);
+            return ['Text-to-Speech','Text-to-speech support requires program oggenc.  Install vorbis-tools package on Debian/Ubuntu.',1];
         } elseif (!$text2wave) {
-            return array('Text-to-Speech','Text-to-speech support requires program text2wave.  Install festival package on Debian/Ubinti.',1);
+            return ['Text-to-Speech','Text-to-speech support requires program text2wave.  Install festival package on Debian/Ubinti.',1];
         } else {
-            return array('Text-to-Speech','Required components for text-to-speech found.',0);
+            return ['Text-to-Speech','Required components for text-to-speech found.',0];
         }
     }
 
     public function avconv()
     {
         if (!exec('which ffmpeg')) {
-            return array('Audio & Video Support','Audio and video support requires program ffmpeg. Install ffmpeg package on Debian/Ubuntu.',1);
+            return ['Audio & Video Support','Audio and video support requires program ffmpeg. Install ffmpeg package on Debian/Ubuntu.',1];
         } else {
-            return array('Audio & Video Support','FFmpeg found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0);
+            return ['Audio & Video Support','FFmpeg found.  Audio and video formats should be supported.' . "\n\n" . 'Make sure the supporting libraries are installed (libavcodec-extra-53, libavdevice-extra-53, libavfilter-extra-2, libavutil-extra-51, libpostproc-extra-52, libswscale-extra-2 or similar packages on Debian/Ubuntu).',0];
         }
     }
 
     public function config_file_exists()
     {
         if (!file_exists(__DIR__ . '/../config.php')) {
-            return array('Settings file', 'Settings file (config.php) not found.',2);
+            return ['Settings file', 'Settings file (config.php) not found.',2];
         }
-        return array('Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0);
+        return ['Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0];
     }
 
     public function config_file_valid()
@@ -124,7 +126,7 @@ class OBFChecker
         require_once(__DIR__ . '/../components.php');
 
         $fatal_error = false;
-        $errors = array();
+        $errors = [];
 
         // make sure everything is defined
         if (!defined('OB_DB_USER')) {
@@ -182,22 +184,23 @@ class OBFChecker
 
             if (stripos(OB_SITE, 'http://') !== 0 && stripos(OB_SITE, 'https://') !== 0) {
                 $errors[] = 'OB_SITE (installation web address) is not valid.';
-            } else {
-                $curl = curl_init(OB_SITE);
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
-                curl_setopt($curl, CURLOPT_HEADER, true);
-                curl_setopt($curl, CURLOPT_NOBODY, true);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-                $response = curl_exec($curl);
-                curl_close($curl);
-
-                if (!$response) {
-                    $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
-                } elseif (stripos($response, 'OpenBroadcaster-Application: index') === false) {
-                    $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
-                }
             }
+        // else {
+            //     $curl = curl_init(OB_SITE);
+            //     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
+            //     curl_setopt($curl, CURLOPT_HEADER, true);
+            //     curl_setopt($curl, CURLOPT_NOBODY, true);
+            //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            //     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            //     $response = curl_exec($curl);
+            //     curl_close($curl);
+            //
+            //     if (!$response) {
+            //         $errors[] = 'OB_SITE (installation web address) is not valid or server did not reply.';
+            //     } elseif (stripos($response, 'OpenBroadcaster-Application: index') === false) {
+            //         $errors[] = 'OB_SITE (installation web address) does not appear to point to a valid OpenBroadcaster installation.';
+            //     }
+            // }
 
             if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) {
                 $errors[] = 'OB_EMAIL_REPLY (email address used to send emails) is not valid.';
@@ -239,9 +242,9 @@ class OBFChecker
         }
 
         if (!empty($errors)) {
-            return array('Settings file',$errors,2);
+            return ['Settings file',$errors,2];
         } else {
-            return array('Settings file','Settings file (config.php) is valid.',0);
+            return ['Settings file','Settings file (config.php) is valid.',0];
         }
     }
 
@@ -289,6 +292,16 @@ class OBFChecker
             $errors[] = 'The assets/uploads directory is not writable by the server.';
         }
 
+        if (count($errors) == 0) {
+            // make sure there are no directories specified within the OB_CACHE directory
+            $cache = realpath(OB_CACHE);
+            foreach ([OB_MEDIA, OB_MEDIA_UPLOADS, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_ASSETS] as $dir) {
+                if (strpos(realpath($dir), $cache) === 0) {
+                    $errors[] = 'Directory ' . $dir . ' is within the cache directory.';
+                }
+            }
+        }
+
         if ($errors) {
             return ['Directories', implode('. ', $errors), 2];
         } else {
@@ -299,29 +312,32 @@ class OBFChecker
     public function composer()
     {
         if (!is_dir(__DIR__ . '/../vendor')) {
-            return array('Composer', 'Missing vendor directory. Install composer then run "composer install" to get required dependencies.', 2);
+            return ['Composer', 'Missing vendor directory. Install composer then run "composer install" to get required dependencies.', 2];
         }
 
-        return array('Composer', 'Vendor directory found. Run "composer install" to ensure all required packages are installed.',0);
+        return ['Composer', 'Vendor directory found. Run "composer install" to ensure all required packages are installed.',0];
     }
 
     public function npm()
     {
         if (!is_dir(__DIR__ . '/../node_modules')) {
-            return array('Node Package Manager (NPM)', 'Missing node_modules directory. Install npm then run "npm install" to get required dependencies.', 1);
+            return ['Node Package Manager (NPM)', 'Missing node_modules directory. Install npm then run "npm install" to get required dependencies.', 1];
         }
 
-        return array('Node Package Manager (NPM)', 'Node package directory found. Run "npm install" to ensure all required packages are installed.',0);
+        return ['Node Package Manager (NPM)', 'Node package directory found. Run "npm install" to ensure all required packages are installed.',0];
     }
 
     public function database_privileges()
     {
         $db = new OBFDB();
+
+        // compares the db name against TABLE_SCHEMA column which may use a wildcard %.
         $db->query('SELECT * FROM information_schema.schema_privileges WHERE
-            TABLE_SCHEMA = "' . $db->escape(OB_DB_NAME) . '" AND
+            "' . $db->escape(OB_DB_NAME) . '" LIKE TABLE_SCHEMA AND
             GRANTEE LIKE "\'' . $db->escape(OB_DB_USER) . '%"
         ');
         $privileges = [];
+
         foreach ($db->assoc_list() as $row) {
             $privileges[] = $row['PRIVILEGE_TYPE'];
         }
@@ -356,10 +372,10 @@ class OBFChecker
         }
 
         if (!empty($missing)) {
-            return array('Database Privileges', 'Database user may not have all the required privileges necessary. Missing: ' . implode(', ', $missing),1);
+            return ['Database Privileges', 'Database user may not have all the required privileges necessary. Missing: ' . implode(', ', $missing),1];
         }
 
-        return array('Database Privileges', 'Found all necessary privileges.',0);
+        return ['Database Privileges', 'Found all necessary privileges.',0];
     }
 
     public function database_version()
@@ -376,13 +392,13 @@ class OBFChecker
         }
 
         if (!$dbver && $this->module === null) {
-            return array('Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2);
+            return ['Database Version', 'Unable to determine present database version.  If this release is 2013-04-01 or older, please add the following to the settings table: name="dbver", value="20130401".',2];
         } elseif (!$dbver) {
             $db->insert('settings', [
                 'name'  => 'dbver-' . $this->module,
                 'value' => '20230101'
             ]);
-            return array('Database Version', 'Version for module not yet set. Setting to 20230101 (no module updates possible before this year).', 0);
+            return ['Database Version', 'Version for module not yet set. Setting to 20230101 (no module updates possible before this year).', 0];
         }
 
         if ($this->module === null) {
@@ -410,6 +426,6 @@ class OBFChecker
             return ['Database Version', 'Database version ' . $dbver['value'] . ' greater than latest version ' . $latest . '.', 1];
         }
 
-        return array('Database Version', 'Database version found: ' . $dbver['value'] . '.',0);
+        return ['Database Version', 'Database version found: ' . $dbver['value'] . '.',0];
     }
 }

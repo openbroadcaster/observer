@@ -1,180 +1,250 @@
 <obwidget id="alert_addedit_message" type="message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>Alert</legend>
 
-<fieldset>
-<legend data-t>Alert</legend>
+        <div class="fieldrow">
+            <label class="required" data-t>Media Item</label>
+            <ob-field-media data-edit data-single data-record id="alert_item_id"></ob-field-media>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Media Item</label>
-  <span id="alert_item_info"></span>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Name</label>
+            <input type="text" id="alert_name" />
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Name</label>
-  <input type="text" id="alert_name">
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Play Every</label>
+            <input type="text" id="alert_frequency" /> <span data-t>seconds</span>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Play Every</label>
-  <input type="text" id="alert_frequency"> <span data-t>seconds</span>
-</div>
+        <div id="alert_duration" class="hidden">
+            <div class="fieldrow">
+                <label class="required" data-t>Image Duration</label>
+                <select name="alert_duration_minutes" id="alert_duration_minutes">
+                    <option value="0">00</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                    <option>26</option>
+                    <option>27</option>
+                    <option>28</option>
+                    <option>29</option>
+                    <option>30</option>
+                    <option>31</option>
+                    <option>32</option>
+                    <option>33</option>
+                    <option>34</option>
+                    <option>35</option>
+                    <option>36</option>
+                    <option>37</option>
+                    <option>38</option>
+                    <option>39</option>
+                    <option>40</option>
+                    <option>41</option>
+                    <option>42</option>
+                    <option>43</option>
+                    <option>44</option>
+                    <option>45</option>
+                    <option>46</option>
+                    <option>47</option>
+                    <option>48</option>
+                    <option>49</option>
+                    <option>50</option>
+                    <option>51</option>
+                    <option>52</option>
+                    <option>53</option>
+                    <option>54</option>
+                    <option>55</option>
+                    <option>56</option>
+                    <option>57</option>
+                    <option>58</option>
+                    <option>59</option>
+                </select>
+                <span data-t>minutes</span>
+            </div>
+            <div class="fieldrow">
+                <label class="empty"></label>
+                <select name="alert_duration_seconds" id="alert_duration_seconds">
+                    <option value="0">00</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                    <option>26</option>
+                    <option>27</option>
+                    <option>28</option>
+                    <option>29</option>
+                    <option>30</option>
+                    <option>31</option>
+                    <option>32</option>
+                    <option>33</option>
+                    <option>34</option>
+                    <option>35</option>
+                    <option>36</option>
+                    <option>37</option>
+                    <option>38</option>
+                    <option>39</option>
+                    <option>40</option>
+                    <option>41</option>
+                    <option>42</option>
+                    <option>43</option>
+                    <option>44</option>
+                    <option>45</option>
+                    <option>46</option>
+                    <option>47</option>
+                    <option>48</option>
+                    <option>49</option>
+                    <option>50</option>
+                    <option>51</option>
+                    <option>52</option>
+                    <option>53</option>
+                    <option>54</option>
+                    <option>55</option>
+                    <option>56</option>
+                    <option>57</option>
+                    <option>58</option>
+                    <option>59</option>
+                </select>
+                <span data-t>seconds</span>
+            </div>
+        </div>
 
-<div id="alert_duration" class="hidden">
-<div class="fieldrow">
-  <label class="required" data-t>Image Duration</label>
-  <select name="alert_duration_minutes" id="alert_duration_minutes">
-    <option value="0">00</option>
-    <option value="1">01</option>
-    <option value="2">02</option>
-    <option value="3">03</option>
-    <option value="4">04</option>
-    <option value="5">05</option>
-    <option value="6">06</option>
-    <option value="7">07</option>
-    <option value="8">08</option>
-    <option value="9">09</option>
-    <option>10</option>
-    <option>11</option>
-    <option>12</option>
-    <option>13</option>
-    <option>14</option>
-    <option>15</option>
-    <option>16</option>
-    <option>17</option>
-    <option>18</option>
-    <option>19</option>
-    <option>20</option>
-    <option>21</option>
-    <option>22</option>
-    <option>23</option>
-    <option>24</option>
-    <option>25</option>
-    <option>26</option>
-    <option>27</option>
-    <option>28</option>
-    <option>29</option>
-    <option>30</option>
-    <option>31</option>
-    <option>32</option>
-    <option>33</option>
-    <option>34</option>
-    <option>35</option>
-    <option>36</option>
-    <option>37</option>
-    <option>38</option>
-    <option>39</option>
-    <option>40</option>
-    <option>41</option>
-    <option>42</option>
-    <option>43</option>
-    <option>44</option>
-    <option>45</option>
-    <option>46</option>
-    <option>47</option>
-    <option>48</option>
-    <option>49</option>
-    <option>50</option>
-    <option>51</option>
-    <option>52</option>
-    <option>53</option>
-    <option>54</option>
-    <option>55</option>
-    <option>56</option>
-    <option>57</option>
-    <option>58</option>
-    <option>59</option>
-  </select> <span data-t>minutes</span>
-</div>
-<div class="fieldrow">
-  <label class="empty"></label>
-  <select name="alert_duration_seconds" id="alert_duration_seconds">
-    <option value="0">00</option>
-    <option value="1">01</option>
-    <option value="2">02</option>
-    <option value="3">03</option>
-    <option value="4">04</option>
-    <option value="5">05</option>
-    <option value="6">06</option>
-    <option value="7">07</option>
-    <option value="8">08</option>
-    <option value="9">09</option>
-    <option>10</option>
-    <option>11</option>
-    <option>12</option>
-    <option>13</option>
-    <option>14</option>
-    <option>15</option>
-    <option>16</option>
-    <option>17</option>
-    <option>18</option>
-    <option>19</option>
-    <option>20</option>
-    <option>21</option>
-    <option>22</option>
-    <option>23</option>
-    <option>24</option>
-    <option>25</option>
-    <option>26</option>
-    <option>27</option>
-    <option>28</option>
-    <option>29</option>
-    <option>30</option>
-    <option>31</option>
-    <option>32</option>
-    <option>33</option>
-    <option>34</option>
-    <option>35</option>
-    <option>36</option>
-    <option>37</option>
-    <option>38</option>
-    <option>39</option>
-    <option>40</option>
-    <option>41</option>
-    <option>42</option>
-    <option>43</option>
-    <option>44</option>
-    <option>45</option>
-    <option>46</option>
-    <option>47</option>
-    <option>48</option>
-    <option>49</option>
-    <option>50</option>
-    <option>51</option>
-    <option>52</option>
-    <option>53</option>
-    <option>54</option>
-    <option>55</option>
-    <option>56</option>
-    <option>57</option>
-    <option>58</option>
-    <option>59</option>
-  </select> <span data-t>seconds</span>
-</div>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Start</label>
+            <ob-datetime-input id="alert_start_datetime"></ob-datetime-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Start</label>
-  <ob-datetime-input id="alert_start_datetime"></ob-datetime-input>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Stop</label>
+            <ob-datetime-input id="alert_stop_datetime"></ob-datetime-input>
+        </div>
 
-<div class="fieldrow">
-  <label class="required" data-t>Stop</label>
-  <ob-datetime-input id="alert_stop_datetime"></ob-datetime-input>
-</div>
+        <div class="fieldrow">
+            <label class="required" data-t>Mode</label>
+            <ob-field-select data-edit id="alert_mode" onchange="OB.Alert.changeMode()">
+                <ob-option selected value="interrupt">Interrupt</ob-option>
+                <ob-option value="voicetrack">Voicetrack</ob-option>
+            </ob-field-select>
+        </div>
 
-</fieldset>
+        <div class="fieldrow alert_mode_voicetrack" style="display: none">
+            <label data-t>Background Audio Track Volume</label>
+            <ob-field-range
+                id="alert_voicetrack_volume"
+                data-edit
+                data-step="0.05"
+                data-min="0.00"
+                data-max="1.00"
+                value="0.1"
+            ></ob-field-range>
+        </div>
 
-<fieldset>
-<div class="fieldrow">
-  <button class="add" id="item_properties_save" onclick="OB.Alert.saveAlert();" data-t>Save</button>
-  <button class="edit_only delete" id="item_properties_delete" onclick="OB.Alert.deleteAlert();" data-t>Delete</button>
-  <button id="item_properties_cancel" onclick="OB.UI.closeModalWindow();" data-t>Cancel</button>
-</div>
-</fieldset>
+        <div class="fieldrow alert_mode_voicetrack" style="display: none">
+            <label data-t>Fade-Out Before</label>
+            <ob-field-range
+                id="alert_voicetrack_fadeout_before"
+                data-edit
+                data-suffix="s"
+                data-step="0.1"
+                data-min="0"
+                data-max="10"
+            ></ob-field-range>
+        </div>
 
+        <div class="fieldrow alert_mode_voicetrack" style="display: none">
+            <label data-t>Fade-In After</label>
+            <ob-field-range
+                id="alert_voicetrack_fadein_after"
+                data-edit
+                data-suffix="s"
+                data-step="0.1"
+                data-min="0"
+                data-max="10"
+            ></ob-field-range>
+        </div>
+    </fieldset>
 
-<input type="hidden" id="alert_item_id" value="">
-<input type="hidden" id="alert_id" value="">
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Save"
+                data-style="add"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                class="add"
+                id="item_properties_save"
+                onclick="OB.Alert.saveAlert();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Delete"
+                data-style="delete"
+                data-icon-name="trash"
+                data-icon-style="solid"
+                class="edit_only delete"
+                id="item_properties_delete"
+                onclick="OB.Alert.deleteAlert();"
+                data-t
+            >
+                Delete
+            </ob-element-button>
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                id="item_properties_cancel"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
 
+    <input type="hidden" id="alert_id" value="" />
 </div>

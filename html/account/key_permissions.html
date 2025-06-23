@@ -1,35 +1,63 @@
 <obwidget id="appkey_permissions_message" type="message"></obwidget>
 
 <div>
+    <fieldset>
+        <legend data-t>AppKey Permissions</legend>
 
-<fieldset>
-<legend data-t>AppKey Permissions</legend>
+        <div
+            class="appkey-permissions-wrapper"
+            style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem"
+        >
+            <div class="appkey-api-wrapper">
+                <h4>API v1</h4>
+                <p style="max-width: 350px">Provide a list of allowed controller/methods, one per line.</p>
+                <textarea
+                    id="appkey_permissions"
+                    placeholder="media/search
+  media/get
+  media/get_details
+  schedule/shows"
+                    style="width: 350px; height: 250px"
+                ></textarea>
+            </div>
+            <div class="appkey-api-wrapper">
+                <h4>API v2</h4>
+                <p style="max-width: 350px">
+                    Provide a list of allowed routes in the format &quot;HTTP-METHOD /route/&quot;, one per line.
+                </p>
+                <textarea
+                    id="appkey_permissions_v2"
+                    placeholder="GET /media/(:id:)
+  POST /playlists
+  PUT /playlists/(:id:)"
+                    style="width: 350px; height: 250px"
+                ></textarea>
+            </div>
+        </div>
+    </fieldset>
 
-<div class="appkey-permissions-wrapper" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem;">
-  <div class="appkey-api-wrapper">
-    <h4>API v1</h4>
-    <p style="max-width: 350px;">Provide a list of allowed controller/methods, one per line.</p>
-    <textarea id="appkey_permissions" placeholder="media/search
-media/get
-media/get_details
-schedule/shows" style="width: 350px; height: 250px;"></textarea>
-  </div>
-  <div class="appkey-api-wrapper">
-    <h4>API v2</h4>
-    <p style="max-width: 350px;">Provide a list of allowed routes in the format &quot;HTTP-METHOD /route/&quot;, one per line.</p>
-    <textarea id="appkey_permissions_v2" placeholder="GET /media/(:id:)
-POST /playlists
-PUT /playlists/(:id:)" style="width: 350px; height: 250px;"></textarea>
-  </div>
-</div>
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Save"
+                data-icon-name="floppy-disk"
+                data-icon-style="solid"
+                data-style="add"
+                class="add"
+                onclick="OB.Account.keyPermissionsSave();"
+                data-t
+                >Save</ob-element-button
+            >
+            <ob-element-button
+                data-text="Close"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Close</ob-element-button
+            >
+        </div>
+    </fieldset>
 
-<fieldset>
-<div class="fieldrow">
-  <button class="add" onclick="OB.Account.keyPermissionsSave();" data-t>Save</button>
-  <button onclick="OB.UI.closeModalWindow();" data-t>Close</button>
-</div>
-</fieldset>
-
-<input type="hidden" id="appkey_permissions_id" value="">
-
+    <input type="hidden" id="appkey_permissions_id" value="" />
 </div>
