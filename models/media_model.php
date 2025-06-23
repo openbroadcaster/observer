@@ -712,7 +712,7 @@ class MediaModel extends OBFModel
                 return false;
             }
 
-            $url .= '?nonce=' . $this->user->create_nonce(86400, false, '/api/v2/downloads/media/');
+            $url .= '?nonce=' . $this->user->create_nonce(86400, false, $url);
         }
 
         return $url;

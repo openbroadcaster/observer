@@ -149,7 +149,8 @@ if ($subcommand === 'run') {
                 continue;
             }
 
-            echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
+            // disabled "running" message since we have things running every second (would be good to have a debug mode)
+            // echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
             exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
         }
 
