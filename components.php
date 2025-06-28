@@ -45,16 +45,16 @@ if (!defined('OB_LOCAL')) {
 // use same working directory regardless of where our script is.
 chdir(OB_LOCAL);
 
-// set appropriate SENDFILE header based on server
-if (!defined('OB_SENDFILE_HEADER')) {
-    define('OB_SENDFILE_HEADER', false);
-}
-
 // load config
 if (!file_exists('config.php')) {
     die('Settings file (config.php) not found.');
 }
 require_once('config.php');
+
+// set appropriate SENDFILE header based on server
+if (!defined('OB_SENDFILE_HEADER')) {
+    define('OB_SENDFILE_HEADER', false);
+}
 
 // set defaults if not set
 if (!defined('OB_ASSETS')) {
