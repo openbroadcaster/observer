@@ -137,7 +137,7 @@ foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
 if ($subcommand === 'run') {
     foreach ($jobs as $job) {
         echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
-        exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+        exec(OB_LOCAL . '/tools/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
     }
 } elseif ($subcommand === 'monitor') {
     while (true) {
@@ -151,7 +151,7 @@ if ($subcommand === 'run') {
 
             // disabled "running" message since we have things running every second (would be good to have a debug mode)
             // echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
-            exec($argv[0] . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+            exec(OB_LOCAL . '/tools/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
         }
 
         sleep(1);
