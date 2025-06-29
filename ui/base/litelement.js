@@ -11,7 +11,7 @@ export class OBLitElement extends LitElement {
         const attributes = this.attributes;
         for (let attr of attributes) {
             if (attr.name.startsWith("data-")) {
-                console.log(attr.name);
+                // console.log(attr.name);
                 const propName = this.dataAttrToProperty(attr.name);
                 this[propName] = attr.value;
             }
