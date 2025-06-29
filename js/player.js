@@ -133,7 +133,7 @@ OB.Player.newPlayer = function () {
     OB.UI.openModalWindow("player/settings_form.html");
 
     $("#player_settings_id").val("new");
-    $(".player_existing").hide();
+    $(".player_existing").attr("hidden", true);
 
     $("#player_settings_timezone").html(OB.UI.getHTML("player/tzoptions.html"));
     OB.Player.loadParentPlayers("new");
@@ -145,7 +145,7 @@ OB.Player.editPlayer = function (player_id) {
     OB.UI.openModalWindow("player/settings_form.html");
 
     $("#player_settings_id").val(player_id);
-    $(".player_existing").show();
+    $(".player_existing").attr("hidden", false);
 
     $("#player_settings_timezone").html(OB.UI.getHTML("player/tzoptions.html"));
     OB.Player.loadParentPlayers(player_id);
