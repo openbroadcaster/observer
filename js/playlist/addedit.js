@@ -235,11 +235,11 @@ OB.Playlist.addeditTypeChange = function () {
         $("#playlist_edit_" + change_to + "_container").show();
 
         if (change_to == "standard" && $("#playlist_type_input").val() == "live_assist") {
-            $("#playlist_insert_breakpoint_button").show();
+            $("#playlist_insert_breakpoint_button").attr("hidden", false);
             $("#playlist_liveassist_buttons").show();
             $("#playlist_insert_voicetrack_button").hide(); // no voicetrack for liveassist
         } else if (change_to == "standard") {
-            $("#playlist_insert_breakpoint_button").hide();
+            $("#playlist_insert_breakpoint_button").attr("hidden", true);
             $("#playlist_liveassist_buttons").hide();
             $("#playlist_insert_voicetrack_button").show(); // voicetrack for standard
         }

@@ -146,7 +146,8 @@
     text-align: center;
 
     .playlist_addedit_thumbnail:empty::after {
-        content: "\f28d";
+        content: "\f04c";
+        font-weight: 900;
     }
 }
 
