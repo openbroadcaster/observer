@@ -397,7 +397,7 @@ OB.Media.mediaUploaderComplete = function (xhr) {
 
         if (typeof res.info.comments != "undefined" && res.info.comments) {
             $form.find(".new_media_status").hide();
-            $form.find(".use_id3_button").show();
+            $form.find(".use_id3_button").attr("hidden", false);
         }
 
         //T ID3/EXIF Data Unavailable
