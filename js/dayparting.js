@@ -54,7 +54,9 @@ OB.Dayparting.load = function () {
             //T Edit
             $tr.append(
                 $("<td></td>").append(
-                    $("<button data-t>Edit</button>").click(function () {
+                    $(
+                        '<ob-element-button data-style="edit" data-text="Edit" data-icon-name="pen" data-icon-style="solid" data-t>Edit</ob-element-button>',
+                    ).click(function () {
                         OB.Dayparting.open(row["id"]);
                     }),
                 ),
