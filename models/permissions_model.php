@@ -54,7 +54,7 @@ class PermissionsModel extends OBFModel
         $this->db->what('users_permissions.name', 'name');
         $this->db->leftjoin('users_permissions', 'users_permissions_to_groups.permission_id', 'users_permissions.id');
         $this->db->where('users_permissions_to_groups.group_id', $id);
-        $this->db->where('users_permissions_to_groups.enabled', 1);
+        $this->db->where('users_permissions.enabled', 1);
 
         $permissions = $this->db->get('users_permissions_to_groups');
 
