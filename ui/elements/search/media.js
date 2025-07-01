@@ -263,7 +263,9 @@ class OBElementSearchMedia extends OBLitElement {
     _clickOutsideMenu(e) {
         if (e.target == this) {
             const composedPath = e.composedPath();
-            if (!this.renderRoot.querySelector(".settings").includes(e.target)) {
+            const settings = this.renderRoot.querySelector(".settings");
+            const settingsButton = this.renderRoot.querySelector("#settingsButton");
+            if (!composedPath.includes(settings) && !composedPath.includes(settingsButton)) {
                 this._closeSettings();
             }
         } else {
