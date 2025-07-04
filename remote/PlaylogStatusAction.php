@@ -23,13 +23,7 @@ class PlaylogStatusAction extends BaseAction
             $last_timestamp = $last_entry['timestamp'];
         }
 
-        $replyxml = $this->xml->addChild('playlog_status');
-
-        $replyxml->addChild('last_timestamp', $last_timestamp);
-
-        header('content-type: text/xml');
-        echo $this->xml->asXML();
-
-        return true;
+        $output = ['playlog_status' => ['last_timestamp' => $last_timestamp]];
+        return (object) $output;
     }
 }

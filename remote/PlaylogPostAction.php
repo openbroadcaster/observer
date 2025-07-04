@@ -14,11 +14,10 @@ class PlaylogPostAction extends BaseAction
     public function run(): bool|object
     {
         if (empty($this->request->data)) {
-            $this->send_xml_error('missing XML post data');
-            die();
+            return (object) ['error' => 'missing XML post data'];
         }
 
-        $data = new SimpleXMLElement($this->request->data);
+        $data = new \SimpleXMLElement($this->request->data);
         $playlog = $data->playlog;
 
         foreach ($playlog->entry as $entry) {
@@ -42,14 +41,8 @@ class PlaylogPostAction extends BaseAction
             $this->addedit_playlog($entryArray);
         }
 
-        $replyxml = $this->xml->addChild('playlog_post');
-
-        $replyxml->addChild('status', 'success');
-
-        header('content-type: text/xml');
-        echo $this->xml->asXML();
-
-        return true;
+        $output = ['playlog_post' => ['status' => 'success']];
+        return (object) $output;
     }
 
 
