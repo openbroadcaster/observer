@@ -159,6 +159,7 @@ class OBElementSearchMedia extends OBLitElement {
                 @click=${this._searchFiltersClick}
             ></ob-element-button>
             <input
+                autocomplete="search-media"
                 id="query"
                 ?hidden=${this.mode == "advanced"}
                 type="text"

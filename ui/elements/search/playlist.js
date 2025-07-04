@@ -152,6 +152,7 @@ class OBElementSearchPlaylist extends OBLitElement {
             <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
 
             <input
+                autocomplete="search-playlist"
                 id="query"
                 ?hidden=${this.mode == "advanced"}
                 type="text"
