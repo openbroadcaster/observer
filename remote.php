@@ -187,14 +187,17 @@ class Remote
             }
 
             foreach ($data as $key => $value) {
-                if (is_array($value) || is_object($value)) {
-                    if (!is_numeric($key)) {
+                if (is_array($value) && array_is_list($value)) {
+                    // indexed array handling
+                    foreach ($value as $item) {
                         $subnode = $xml->addChild("$key");
-                        objectToXmlHelper($value, $subnode);
-                    } else {
-                        objectToXmlHelper($value, $xml);
+                        objectToXmlHelper($item, $subnode);
                     }
+                } elseif (is_array($value) || is_object($value)) {
+                    // associative array or object handling
+                    objectToXmlHelper($value, $xml);
                 } else {
+                    // simple value handling
                     $xml->addChild("$key", htmlspecialchars("$value"));
                 }
             }

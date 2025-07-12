@@ -25,7 +25,7 @@ class EmergAction extends BaseAction
         }
 
         $output = [
-            'emergency_broadcasts' => []
+            'emergency_broadcasts' => ['broadcast' => []]
         ];
 
         if (!empty($broadcasts)) {
@@ -85,12 +85,11 @@ class EmergAction extends BaseAction
                     $properties = json_decode($broadcast['properties'], true);
 
                     $item->voicetrack_settings->volume = $properties['voicetrack_volume'];
-                    $item->voicetrack_settings->delay = $properties['voicetrack_offset'];
                     $item->voicetrack_settings->fadeout_before = $properties['voicetrack_fadeout_before'];
                     $item->voicetrack_settings->fadein_after = $properties['voicetrack_fadein_after'];
                 }
 
-                $output['emergency_broadcasts'][] = $item;
+                $output['emergency_broadcasts']['broadcast'][] = $item;
             }
         }
 
