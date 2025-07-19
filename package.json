@@ -22,12 +22,9 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "postinstall": "npm run build",
-    "format": "prettier --write \"{js,ui,html,scss}/**/*.{js,html,scss}\"",
-    "format:check": "prettier --check \"{js,ui,html,scss}/**/*.{js,html,scss}\" || (echo 'Format check failed.' && exit 1)",
-    "phpcs": "vendor/bin/phpcs --standard=.phpcs.xml.dist || (echo 'PHP CodeSniffer failed.' && exit 1)",
-    "pre-commit": "npm run format:check && npm run phpcs"
-  },
-  "pre-commit": [
-    "pre-commit"
-  ]
+    "prettier": "prettier --check \"{js,ui,html,scss}/**/*.{js,html,scss}\"",
+    "prettier:fix": "prettier --write \"{js,ui,html,scss}/**/*.{js,html,scss}\"",
+    "phpcs": "vendor/bin/phpcs --standard=.phpcs.xml.dist",
+    "phpcs:fix": "vendor/bin/phpcbf --standard=.phpcs.xml.dist"
+  }
 }
