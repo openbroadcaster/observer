@@ -646,6 +646,8 @@ class OBFieldMedia extends OBField {
                 this.root.querySelector("#validation-error").classList.add("hidden");
                 this.value = mediaResponse.data;
             }
+
+            OB.Sidebar.mediaSearch();
         } catch (error) {
             console.error(error);
         }
