@@ -2,3 +2,45 @@
     position: relative;
     top: 2px;
 }
+
+.playlist_details_item td:first-child::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    padding-right: 8px;
+    width: 1.3em;
+    text-align: center;
+    opacity: 0.5;
+    display: inline-block;
+}
+
+.playlist_details_item.-voicetrack td:first-child::before {
+    content: "\f2ce";
+}
+
+.playlist_details_item.-breakpoint td:first-child::before {
+    content: "\f04c";
+}
+
+.playlist_details_item.-audio td:first-child::before {
+    content: "\f001";
+}
+
+.playlist_details_item.-video td:first-child::before {
+    content: "\f03d";
+}
+
+.playlist_details_item.-image td:first-child::before {
+    content: "\f03e";
+}
+
+.playlist_details_item.-document td:first-child::before {
+    content: "\f15c";
+}
+
+.playlist_details_item.-dynamic td:first-child::before {
+    content: "\f6cf";
+}
+
+.playlist_details_item.-stationid td:first-child::before {
+    content: "\f519";
+}

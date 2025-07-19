@@ -144,7 +144,7 @@ OB.Playlist.editPage = function (id) {
                 } else
                     OB.Playlist.addeditInsertItem(
                         item["id"],
-                        item["artist"] + " - " + item["title"],
+                        OB.Playlist.artistTitleString(item.artist, item.title),
                         item["duration"],
                         item["type"],
                         item["properties"],

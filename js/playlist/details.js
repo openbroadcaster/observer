@@ -71,11 +71,13 @@ OB.Playlist.detailsPage = function (id) {
             var pl_item_time_total = 0;
 
             $.each(pldata.items, function (index, item) {
+                const itemArtistTitleStr = OB.Playlist.artistTitleString(item.artist, item.title);
+
                 if (item.type == "station_id") {
                     //T Station ID
                     //T estimated
                     $("#playlist_details_items_table").append(
-                        "<tr><td>" +
+                        "<tr class='playlist_details_item -stationid'><td>" +
                             htmlspecialchars(OB.t("Station ID")) +
                             "</td><td>" +
                             secsToTime(OB.Playlist.station_id_avg_duration) +
@@ -88,13 +90,15 @@ OB.Playlist.detailsPage = function (id) {
                 } else if (item.type == "breakpoint") {
                     //T Breakpoint
                     $("#playlist_details_items_table").append(
-                        "<tr><td>" + htmlspecialchars(OB.t("Breakpoint")) + "</td><td>00:00</td></tr>",
+                        "<tr class='playlist_details_item -breakpoint'><td>" +
+                            htmlspecialchars(OB.t("Breakpoint")) +
+                            "</td><td>00:00</td></tr>",
                     );
                 } else if (item.type == "dynamic") {
                     //T Dynamic Selection
                     //T estimated
                     $("#playlist_details_items_table").append(
-                        "<tr><td>" +
+                        "<tr class='playlist_details_item -dynamic'><td>" +
                             htmlspecialchars(OB.t("Dynamic Selection")) +
                             ": " +
                             htmlspecialchars(item.properties.name) +
@@ -106,10 +110,21 @@ OB.Playlist.detailsPage = function (id) {
                     );
                     pl_item_time_estimated = true;
                     pl_item_time_total += parseFloat(item.duration);
+                } else if (item.type == "voicetrack") {
+                    $("#playlist_details_items_table").append(
+                        "<tr class='playlist_details_item -voicetrack'><td>" +
+                            itemArtistTitleStr +
+                            "</td><td>" +
+                            secsToTime(item.duration) +
+                            "</td></tr>",
+                    );
+                    pl_item_time_total += parseFloat(item.duration);
                 } else {
                     $("#playlist_details_items_table").append(
-                        "<tr><td>" +
-                            htmlspecialchars(item.artist + " - " + item.title) +
+                        "<tr class='playlist_details_item -" +
+                            item.type +
+                            "'><td>" +
+                            itemArtistTitleStr +
                             "</td><td>" +
                             secsToTime(item.duration) +
                             "</td></tr>",

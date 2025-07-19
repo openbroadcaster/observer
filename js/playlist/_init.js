@@ -34,3 +34,14 @@ OB.Playlist.initMenu = function () {
 };
 
 OB.Playlist.station_id_avg_duration = null;
+
+OB.Playlist.artistTitleString = function (artist, title) {
+    const itemArtistTitle = [];
+    if (artist) {
+        itemArtistTitle.push(htmlspecialchars(artist));
+    }
+    if (title) {
+        itemArtistTitle.push(htmlspecialchars(title));
+    }
+    return itemArtistTitle.join(" - ");
+};

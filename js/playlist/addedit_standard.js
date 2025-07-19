@@ -41,7 +41,7 @@ OB.Playlist.addeditInit = function () {
 
                     OB.Playlist.addeditInsertItem(
                         $(element).attr("data-id"),
-                        $(element).attr("data-artist") + " - " + $(element).attr("data-title"),
+                        OB.Playlist.artistTitleString($(element).attr("data-artist"), $(element).attr("data-title")),
                         insert_duration,
                         $(element).attr("data-type"),
                     );
@@ -84,7 +84,7 @@ OB.Playlist.addeditInit = function () {
                             } else
                                 OB.Playlist.addeditInsertItem(
                                     item["id"],
-                                    item["artist"] + " - " + item["title"],
+                                    OB.Playlist.artistTitleString(item["artist"], item["title"]),
                                     item["duration"],
                                     item["type"],
                                 );
