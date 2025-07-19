@@ -1177,7 +1177,7 @@ class MediaModel extends OBFModel
 
         foreach ($playlists as $playlist) {
             $used_data = new stdClass();
-            $used_data->where = 'playlist (voicetrack)';
+            $used_data->where = 'playlist_voicetrack';
             $used_data->id = $playlist['playlist_id'];
             $used_data->name = $playlist['name'];
 

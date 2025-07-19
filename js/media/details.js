@@ -183,9 +183,18 @@ OB.MediaDetails.page = function (id) {
         //T Media is not in use.
         if (used.length == 0) $("#media_details_used").append(OB.t("Media is not in use"));
         else {
+            const used_playlists = [];
+
             $.each(used, function (index, used_detail) {
                 //T playlist
-                if (used_detail.where == "playlist")
+                if (used_detail.where == "playlist" || used_detail.where == "playlist_voicetrack") {
+                    // if already in used_playlists, skip
+                    if (used_playlists.includes(used_detail.id)) return true;
+
+                    // track as already outputted
+                    used_playlists.push(used_detail.id);
+
+                    // output
                     $("#media_details_used ul").append(
                         "<li>" +
                             htmlspecialchars(OB.t("playlist")) +
@@ -195,6 +204,7 @@ OB.MediaDetails.page = function (id) {
                             htmlspecialchars(used_detail.name) +
                             "</a></li>",
                     );
+                }
                 //T dynamic playlist
                 if (used_detail.where == "playlist_dynamic")
                     $("#media_details_used ul").append(

@@ -88,16 +88,39 @@ OB.Media.deletePage = function (ids) {
             if (used.can_delete && used.used.length > 0) {
                 append_html = "<ul>";
 
+                const used_playlists = [];
+
                 $.each(used.used, function (where_used_index, where_used) {
-                    //T Item will be removed from
-                    append_html +=
-                        "<li>" +
-                        htmlspecialchars(OB.t("Item will be removed from")) +
-                        " " +
-                        htmlspecialchars(OB.t(where_used.where)) +
-                        " <i>" +
-                        htmlspecialchars(where_used.name) +
-                        "</i></li>";
+                    //T playlist
+                    if (where_used.where == "playlist" || where_used.where == "playlist_voicetrack") {
+                        // if already in used_playlists, skip
+                        if (used_playlists.includes(where_used.id)) return true;
+
+                        // track as already outputted
+                        used_playlists.push(where_used.id);
+
+                        // output
+                        append_html +=
+                            "<li>" +
+                            htmlspecialchars(OB.t("Item will be removed from")) +
+                            " " +
+                            htmlspecialchars(OB.t("playlist")) +
+                            ': <a href="javascript: OB.Playlist.detailsPage(' +
+                            where_used.id +
+                            ');">' +
+                            htmlspecialchars(where_used.name) +
+                            "</a></li>";
+                    } else {
+                        //T Item will be removed from
+                        append_html +=
+                            "<li>" +
+                            htmlspecialchars(OB.t("Item will be removed from")) +
+                            " " +
+                            htmlspecialchars(OB.t(where_used.where)) +
+                            " <i>" +
+                            htmlspecialchars(where_used.name) +
+                            "</i></li>";
+                    }
                 });
 
                 append_html += "</ul>";
