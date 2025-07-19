@@ -1168,6 +1168,22 @@ class MediaModel extends OBFModel
             $info['used'][] = $used_data;
         }
 
+        $this->db->what('playlists.name', 'name');
+        $this->db->what('playlists.id', 'playlist_id');
+        $this->db->where('playlists_items.item_id', $id);
+        $this->db->where('playlists_items.item_type', 'voicetrack');
+        $this->db->leftjoin('playlists', 'playlists.id', 'playlists_items.playlist_id');
+        $playlists = $this->db->get('playlists_items');
+
+        foreach ($playlists as $playlist) {
+            $used_data = new stdClass();
+            $used_data->where = 'playlist (voicetrack)';
+            $used_data->id = $playlist['playlist_id'];
+            $used_data->name = $playlist['name'];
+
+            $info['used'][] = $used_data;
+        }
+
         // is this potentially found in a dynamic selection?
         if ($include_dynamic) {
             // see if media can actually be used in dynamic selections.
@@ -2459,6 +2475,11 @@ class MediaModel extends OBFModel
 
         // remove from playlists (items)
         $this->db->where('item_type', 'media');
+        $this->db->where('item_id', $id);
+        $this->db->delete('playlists_items');
+
+        // remove from playlists (voicetrack)
+        $this->db->where('item_type', 'voicetrack');
         $this->db->where('item_id', $id);
         $this->db->delete('playlists_items');
 
