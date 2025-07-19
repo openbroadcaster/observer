@@ -19,4 +19,4 @@ jobs:
         run: npm ci
 
       - name: Check code formatting with Prettier
-        run: npm run format:check
+        run: npm run prettier
