@@ -376,7 +376,7 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
         });
     }
 
-    $("#item_properties_save").click(function () {
+    $("#item_properties_save").click(async function () {
         OB.Playlist.voicetrackPreviewStop();
 
         // dynamic used only for standard playlist right now.
@@ -436,6 +436,11 @@ OB.Playlist.addeditItemProperties = function (id, type, required) {
         }
 
         if (type == "voicetrack") {
+            // if there's an unsaved media item, save it first
+            if ($("#audio_properties_voicetrack")[0].dataset.status == "cached") {
+                await $("#audio_properties_voicetrack")[0].mediaRecordSave();
+            }
+
             $("#playlist_addedit_item_" + id).attr("data-id", $("#audio_properties_voicetrack").val());
             $("#playlist_addedit_item_" + id).attr(
                 "data-voicetrack_volume",

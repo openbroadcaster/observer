@@ -576,81 +576,79 @@ class OBFieldMedia extends OBField {
         this.#mediaRecorder = null;
     }
 
-    mediaRecordSave(event) {
+    async mediaRecordSave(event) {
         if (this.dataset.status !== "cached") {
             return false;
         }
 
-        fetch("/upload.php", {
-            method: "POST",
-            body: this.#blob,
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                const fileKey = data.file_key;
-                const fileId = data.file_id;
-                const date = new Date();
-                const dateStr =
-                    date.getFullYear() +
-                    "-" +
-                    ("0" + (date.getMonth() + 1)).slice(-2) +
-                    "-" +
-                    ("0" + date.getDate()).slice(-2);
-
-                var mediaItem = {
-                    file_id: fileId,
-                    file_key: fileKey,
-                    artist: OB.Account.userdata.display_name,
-                    title: "Media Field Recording " + dateStr,
-                    local_id: 1,
-                    status: "private",
-                    language: 25571,
-                    is_copyright_owner: 1,
-                    is_approved: 1,
-                    dynamic_select: 0,
-                    trim_start: this.root.querySelector("#trim-start").value,
-                    trim_end: this.root.querySelector("#trim-end").value,
-
-                    album: OB.Settings.recording_metadata.album,
-                    year: OB.Settings.recording_metadata.year,
-                    category_id: OB.Settings.recording_metadata.category,
-                    genre_id: OB.Settings.recording_metadata.genre,
-                    comments: OB.Settings.recording_metadata.comments,
-                    country: OB.Settings.recording_metadata.country,
-                    language: OB.Settings.recording_metadata.language,
-                };
-
-                Object.entries(OB.Settings.recording_metadata.custom_metadata).forEach((meta) => {
-                    let key = "metadata_" + meta[0];
-                    let value = meta[1];
-
-                    mediaItem[key] = value;
-                });
-
-                const media = OB.API.postPromise("media", "save", {
-                    media: {
-                        0: mediaItem,
-                    },
-                });
-                media.then((data) => {
-                    if (!data.status) {
-                        let error = data.data.reduce((errMsg, elem) => {
-                            return errMsg + elem[2] + " ";
-                        }, "");
-
-                        this.root.querySelector("#validation-error").classList.remove("hidden");
-                        this.root.querySelector("#validation-error").innerText = error;
-                    } else {
-                        this.root.querySelector("#validation-error").classList.add("hidden");
-                        this.value = data.data;
-                    }
-                });
-            })
-            .catch((error) => {
-                console.error(error);
+        try {
+            const response = await fetch("/upload.php", {
+                method: "POST",
+                body: this.#blob,
             });
+
+            const data = await response.json();
+
+            const fileKey = data.file_key;
+            const fileId = data.file_id;
+            const date = new Date();
+            const dateStr =
+                date.getFullYear() +
+                "-" +
+                ("0" + (date.getMonth() + 1)).slice(-2) +
+                "-" +
+                ("0" + date.getDate()).slice(-2);
+
+            var mediaItem = {
+                file_id: fileId,
+                file_key: fileKey,
+                artist: OB.Account.userdata.display_name,
+                title: "Media Field Recording " + dateStr,
+                local_id: 1,
+                status: "private",
+                language: 25571,
+                is_copyright_owner: 1,
+                is_approved: 1,
+                dynamic_select: 0,
+                trim_start: this.root.querySelector("#trim-start").value,
+                trim_end: this.root.querySelector("#trim-end").value,
+
+                album: OB.Settings.recording_metadata.album,
+                year: OB.Settings.recording_metadata.year,
+                category_id: OB.Settings.recording_metadata.category,
+                genre_id: OB.Settings.recording_metadata.genre,
+                comments: OB.Settings.recording_metadata.comments,
+                country: OB.Settings.recording_metadata.country,
+                language: OB.Settings.recording_metadata.language,
+            };
+
+            Object.entries(OB.Settings.recording_metadata.custom_metadata).forEach((meta) => {
+                let key = "metadata_" + meta[0];
+                let value = meta[1];
+
+                mediaItem[key] = value;
+            });
+
+            const mediaResponse = await OB.API.postPromise("media", "save", {
+                media: {
+                    0: mediaItem,
+                },
+            });
+
+            if (!mediaResponse.status) {
+                let error = mediaResponse.data.reduce((errMsg, elem) => {
+                    return errMsg + elem[2] + " ";
+                }, "");
+
+                this.root.querySelector("#validation-error").classList.remove("hidden");
+                this.root.querySelector("#validation-error").innerText = error;
+            } else {
+                this.root.querySelector("#validation-error").classList.add("hidden");
+                this.value = mediaResponse.data;
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     drawTrimStart(event) {
