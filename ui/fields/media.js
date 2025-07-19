@@ -67,6 +67,7 @@ class OBFieldMedia extends OBField {
 
         render(
             html`
+                <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
                 <div
                     id="media"
                     class="media-editable"
@@ -106,7 +107,7 @@ class OBFieldMedia extends OBField {
                         data-status="${this.dataset.hasOwnProperty("status") ? this.dataset.status : "none"}"
                     >
                         <div class="trim-container">
-                            <span class="trim">Trim Start</span>
+                            <span class="trim">Start</span>
                             <input
                                 type="number"
                                 class="trim"
@@ -117,7 +118,7 @@ class OBFieldMedia extends OBField {
                                 max="100"
                                 onchange=${this.drawTrimStart.bind(this)}
                             />
-                            <span class="trim">Trim End</span>
+                            <span class="trim">End</span>
                             <input
                                 type="number"
                                 class="trim"
@@ -130,10 +131,18 @@ class OBFieldMedia extends OBField {
                             />
                         </div>
                         <div class="button-container">
-                            <span class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>▶️</span>
-                            <span class="button-save" onclick=${this.mediaRecordSave.bind(this)}>💾</span>
-                            <span class="button-record" onclick=${this.mediaRecordStart.bind(this)}>⏺️</span>
-                            <span class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>⏹️</span>
+                            <button title="Play" class="button-play" onclick=${this.mediaRecordPlay.bind(this)}>
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+                            <button title="Save" class="button-save" onclick=${this.mediaRecordSave.bind(this)}>
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                            <button title="Record" class="button-record" onclick=${this.mediaRecordStart.bind(this)}>
+                                <i class="fa-solid fa-record-vinyl"></i>
+                            </button>
+                            <button title="Stop" class="button-stop" onclick=${this.mediaRecordStop.bind(this)}>
+                                <i class="fa-solid fa-stop"></i>
+                            </button>
                         </div>
                     </span>
                 `}
@@ -162,6 +171,16 @@ class OBFieldMedia extends OBField {
     scss() {
         return `
             :host {
+                #root {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+
+                canvas { 
+                    display: block;
+                }
+
                 .media-editable:empty {
                     border: 2px dashed #eeeeec;
                 }
@@ -212,6 +231,21 @@ class OBFieldMedia extends OBField {
 
                     .button-container {
                         font-size: 20px;
+                        display: flex;
+                        gap: 5px;
+
+                        button {
+                            font-size: inherit;
+                            color: inherit;
+                            background-color: transparent;
+                            border: 0;
+                            padding: 0;
+                            cursor: pointer;
+                        }
+
+                        button:hover {
+                            color: var(--color-accent);
+                        }
                     }
                 }
 
@@ -223,12 +257,7 @@ class OBFieldMedia extends OBField {
                     }
 
                     .button-record {
-                        filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
-                        
-                        &:hover {
-                            filter: hue-rotate(180deg) brightness(2);
-                        }
                     }
                 }
 
@@ -240,12 +269,7 @@ class OBFieldMedia extends OBField {
                     }
 
                     .button-stop {
-                        filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
-
-                        &:hover {
-                            filter: hue-rotate(180deg) brightness(2);
-                        }
                     }
                 }
 
@@ -253,12 +277,7 @@ class OBFieldMedia extends OBField {
                     /*top: 26px;*/
 
                     .button-save, .button-record, .button-play {
-                        filter: hue-rotate(180deg) brightness(1);
                         cursor: pointer;
-                        
-                        &:hover {
-                            filter: hue-rotate(180deg) brightness(2);
-                        }
                     }
 
                     input.trim {
