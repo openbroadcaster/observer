@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Define color codes
+BOLD_PURPLE='\033[1;35m'
+RESET='\033[0m'
+
+# Get list of staged files
+staged_files=$(git diff --cached --name-only)
+
+# Check if any staged file has unstaged changes
+has_unstaged=false
+for file in $staged_files; do
+    if ! git diff --quiet -- "$file"; then
+        has_unstaged=true
+        break
+    fi
+done
+
+if [ "$has_unstaged" = true ]; then
+    echo "Error: Some staged files have been modified after staging. Unfortunately, pre-commit cannot handle this situation."
+    echo "Please fix this and try again."
+    exit 1
+fi
+
+# For prettier
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\\.(js|html|scss)$" | tr '\n' ' ')
+if [ -n "$files" ]; then
+    echo -e "${BOLD_PURPLE}npx prettier --write $files${RESET}"
+    npx prettier --write $files
+    exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "Prettier failed. Please fix the errors and try again."
+        exit 1
+    fi
+fi
+
+# For phpcbf  
+files=$(git diff --cached --name-only --diff-filter=ACM | grep "\\.php$" | tr '\n' ' ')
+if [ -n "$files" ]; then
+    echo -e "${BOLD_PURPLE}vendor/bin/phpcbf --standard=.phpcs.xml.dist $files${RESET}"
+    vendor/bin/phpcbf --standard=.phpcs.xml.dist $files
+    exit_code=$?
+    if [ $exit_code -ne 0 ] && [ $exit_code -ne 1 ]; then
+        echo "phpcbf failed. Please fix the errors and try again."
+        exit 1
+    fi
+fi
+
+# re-add files to staging area
+if [ -n "$files" ]; then
+    echo -e "${BOLD_PURPLE}git add $files${RESET}"
+    git add $files
+    exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "Failed to re-add files to staging area."
+        exit 1
+    fi
+fi
