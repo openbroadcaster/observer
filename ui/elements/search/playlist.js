@@ -163,7 +163,7 @@ class OBElementSearchPlaylist extends OBLitElement {
                 @blur=${this._inputQueryDispatch}
             />
 
-            <ob-element-button iconName="gear" .text="Settings" @click=${this._toggleSettings}></ob-element-button>
+            <ob-element-button id="settingsButton" iconName="gear" .text="Settings" @click=${this._toggleSettings}></ob-element-button>
 
             <div class="settings" ?hidden=${!this.settingsOpen}>
                 <label><input type="checkbox" ?checked=${this.my} @change=${this._changeMy} /> My Playlists</label>
@@ -186,7 +186,9 @@ class OBElementSearchPlaylist extends OBLitElement {
     _clickOutsideMenu(e) {
         if (e.target == this) {
             const composedPath = e.composedPath();
-            if (!this.renderRoot.querySelector(".settings").includes(e.target)) {
+            const settings = this.renderRoot.querySelector(".settings");
+            const settingsButton = this.renderRoot.querySelector("#settingsButton");
+            if (!composedPath.includes(settings) && !composedPath.includes(settingsButton)) {
                 this._closeSettings();
             }
         } else {
