@@ -776,6 +776,10 @@ OB.Playlist.save = function () {
                 $("#playlist_id").val(data.data);
                 OB.Sidebar.playlistSearch(); // update sidebar search entries.
             }
+            else if(data.data?.item_index)
+            {
+                $('.playlist_addedit_item').eq(data.data.item_index).click();
+            }
         },
     );
 };

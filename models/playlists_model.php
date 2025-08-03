@@ -443,11 +443,11 @@ class PlaylistsModel extends OBFModel
             // can't add private media to a playlist with a different owner.
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if (!$playlist_id && $media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
-                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
+                return [false,'The selected media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
             //T A media item is marked as private. It can only be used in playlists created by the same owner.
             if ($playlist_id && $media['status'] == 'private' && $media['owner_id'] != $original_playlist['owner_id']) {
-                return [false,'A media item is marked as private. It can only be used in playlists created by the same owner.'];
+                return [false,'The selected media item is marked as private. It can only be used in playlists created by the same owner.'];
             }
         } elseif ($item['type'] == 'dynamic') {
             $dynamic_validation = $this('validate_dynamic_properties', json_decode($item['query']), $item['num_items'], $item['num_items_all'], $item['image_duration']);
