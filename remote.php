@@ -74,9 +74,36 @@ class Remote
         } else {
             // set last connect time
             $playersModel = $this->load->model('Players');
-            $playersModel('set_last_connect', $this->player->id, $_SERVER['REMOTE_ADDR'], $_REQUEST['action'] ?? '');
+            $playersModel('set_last_connect', $this->player->id, $this->currentPlayerIpSpoofable(), $_REQUEST['action'] ?? '');
             return true;
         }
+    }
+
+    private function currentPlayerIpSpoofable() {
+        // this is spoofable so should only be used for reporting player IP last connect and not for IP authentication
+        $headers = [
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED_FOR',  // Most common proxy header
+            'HTTP_X_REAL_IP',        // Nginx proxy/FastCGI
+            'HTTP_CLIENT_IP',        // Some proxies
+            'HTTP_X_FORWARDED',      // General forward
+            'HTTP_FORWARDED_FOR',    // General forward
+            'HTTP_FORWARDED',        // General forward
+            'REMOTE_ADDR'            // Direct connection
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                // If X-Forwarded-For contains multiple IPs, get the first one
+                if ($header === 'HTTP_X_FORWARDED_FOR') {
+                    $ips = explode(',', $_SERVER[$header]);
+                    return trim($ips[0]);
+                }
+                return $_SERVER[$header];
+            }
+        }
+
+        return $_SERVER['REMOTE_ADDR']; // Fallback
     }
 
     private function loadPlayer($player_id)
@@ -112,6 +139,7 @@ class Remote
             $this->db->update('players', ['password' => $new_password_hash]);
         }
 
+        // note to use $_SERVER['REMOTE_ADDR'] for real IP ($this->currentPlayerIpSpoofable() accounts for reverse proxies, but is spoofable)
         if (!$password_match || ($_SERVER['REMOTE_ADDR'] != $this->player->ip_address && !empty($this->player->ip_address))) {
             return false;
         } else {
