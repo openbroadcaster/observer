@@ -235,7 +235,7 @@ class Playlists extends OBFController
         if (! $items) {
             $items = [];
         }
-        foreach ($items as $index=>$item) {
+        foreach ($items as $index => $item) {
             $validate_item = $this->models->playlists('validate_playlist_item', $item, $id);
             if ($validate_item[0] == false) {
                 return [false,$validate_item[1], ['item_index' => $index]];

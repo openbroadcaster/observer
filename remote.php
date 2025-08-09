@@ -79,7 +79,8 @@ class Remote
         }
     }
 
-    private function currentPlayerIpSpoofable() {
+    private function currentPlayerIpSpoofable()
+    {
         // this is spoofable so should only be used for reporting player IP last connect and not for IP authentication
         $headers = [
             'HTTP_CF_CONNECTING_IP', // Cloudflare
