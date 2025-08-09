@@ -163,7 +163,12 @@ class OBElementSearchPlaylist extends OBLitElement {
                 @blur=${this._inputQueryDispatch}
             />
 
-            <ob-element-button id="settingsButton" iconName="gear" .text="Settings" @click=${this._toggleSettings}></ob-element-button>
+            <ob-element-button
+                id="settingsButton"
+                iconName="gear"
+                .text="Settings"
+                @click=${this._toggleSettings}
+            ></ob-element-button>
 
             <div class="settings" ?hidden=${!this.settingsOpen}>
                 <label><input type="checkbox" ?checked=${this.my} @change=${this._changeMy} /> My Playlists</label>
