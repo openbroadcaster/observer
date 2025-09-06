@@ -110,10 +110,20 @@ class ScheduleAction extends BaseAction
 
                 // add any playlist properties to xml
                 $propertiesxml = $showxml->addChild('properties');
-                if ($playlist['properties']) {
-                    foreach (json_decode($playlist['properties'], true) as $propertyKey => $propertyValue) {
-                        $propertiesxml->addChild($propertyKey, $propertyValue);
-                    }
+
+                $playlist_properties = json_decode($playlist['properties'], true);
+
+                if(!$playlist_properties) {
+                    $playlist_properties = [];
+                }
+
+                if($show['type'] == 'live_assist') {
+                    // live assist shows don't have last track fadeout
+                    $playlist_properties['last_track_fadeout'] = 'never';
+                }
+
+                foreach ($playlist_properties as $propertyKey => $propertyValue) {
+                    $propertiesxml->addChild($propertyKey, $propertyValue);
                 }
 
                 // see if we have selected media in our cache.
