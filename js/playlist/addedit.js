@@ -1,21 +1,5 @@
-/*
-    Copyright 2012-2024 OpenBroadcaster, Inc.
-
-    This file is part of OpenBroadcaster Server.
-
-    OpenBroadcaster Server is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    OpenBroadcaster Server is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with OpenBroadcaster Server.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// Copyright 2012-2025 OpenBroadcaster, Inc.
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 OB.Playlist.newPage = function () {
     OB.Playlist.advanced_items = [];
@@ -791,10 +775,8 @@ OB.Playlist.save = function () {
             if (data.status == true) {
                 $("#playlist_id").val(data.data);
                 OB.Sidebar.playlistSearch(); // update sidebar search entries.
-            }
-            else if(data.data?.item_index)
-            {
-                $('.playlist_addedit_item').eq(data.data.item_index).click();
+            } else if (data.data?.item_index) {
+                $(".playlist_addedit_item").eq(data.data.item_index).click();
             }
         },
     );
