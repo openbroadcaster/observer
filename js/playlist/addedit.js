@@ -222,28 +222,44 @@ OB.Playlist.addedit_type = false;
 
 OB.Playlist.addeditTypeChange = function () {
     var change_to = $("#playlist_type_input").val();
-    if (change_to == "live_assist") change_to = "standard";
 
     if (OB.Playlist.addedit_type == "advanced") var has_items = OB.Playlist.advanced_items.length > 0;
     else var has_items = $(".playlist_addedit_item").length > 0;
 
-    if (!has_items || OB.Playlist.addeditTypeChangeConfirm()) {
-        OB.Playlist.addedit_type = $("#playlist_type_input").val();
+    // early return if we have items and the user doesn't want those to be cleared
+    if(has_items && !OB.Playlist.addeditTypeChangeConfirm()) {
+        $("#playlist_type_input").val(OB.Playlist.addedit_type);
+        return false;
+    }
 
+    if(has_items) {
         OB.Playlist.addeditRemoveAllFromAll();
-        $(".playlist_edit_container").hide();
-        $("#playlist_edit_" + change_to + "_container").show();
+    }
 
-        if (change_to == "standard" && $("#playlist_type_input").val() == "live_assist") {
-            $("#playlist_insert_breakpoint_button").attr("hidden", false);
-            $("#playlist_liveassist_buttons").show();
-            $("#playlist_insert_voicetrack_button").hide(); // no voicetrack for liveassist
-        } else if (change_to == "standard") {
-            $("#playlist_insert_breakpoint_button").attr("hidden", true);
-            $("#playlist_liveassist_buttons").hide();
-            $("#playlist_insert_voicetrack_button").show(); // voicetrack for standard
-        }
-    } else $("#playlist_type_input").val(OB.Playlist.addedit_type);
+    // set our current type
+    OB.Playlist.addedit_type = $("#playlist_type_input").val();
+
+    // update UI
+    $(".playlist_edit_container").hide();
+    $("#playlist_edit_" + (change_to == 'live_assist' ? 'standard' : change_to) + "_container").show();
+
+    // live assist features
+    if (change_to == 'live_assist') {
+        $("#playlist_insert_breakpoint_button").attr("hidden", false);
+        $("#playlist_liveassist_buttons").show();
+        $("#playlist_last_fadeout_container").hide(); // no last track fadeout for live assist
+    } else {
+        $("#playlist_insert_breakpoint_button").attr("hidden", true);
+        $("#playlist_liveassist_buttons").hide();
+        $("#playlist_last_fadeout_container").show(); // last track fadeout for standard/advanced
+    }
+
+    // standard playlist features
+    if (change_to == "standard") {
+        $("#playlist_insert_voicetrack_button").show();
+    } else {
+        $("#playlist_insert_voicetrack_button").hide();
+    }
 };
 
 OB.Playlist.addeditTypeChangeConfirm = function () {
