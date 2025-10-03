@@ -21,6 +21,7 @@
                 <option value="is_copyright_owner" data-compare="select" data-value="bool" data-t>
                     Is Copyright Owner
                 </option>
+                <option value="status" data-compare="select" data-value="status" data-t>Status</option>
             </select>
 
             <select id="advanced_search_text_compare" data-type="compare" data-name="text">
@@ -65,6 +66,12 @@
                 data-name="category"
                 class="hidden"
             ></select>
+
+            <select id="advanced_search_status_options" data-type="value" data-name="status" class="hidden">
+                <option value="public" data-t>Public</option>
+                <option value="visible" data-t>Visible</option>
+                <option value="private" data-t>Private</option>
+            </select>
 
             <ob-field-country
                 id="advanced_search_country_options"

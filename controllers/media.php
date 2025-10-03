@@ -235,6 +235,7 @@ class Media extends OBFController
         $params['sort_dir'] = $this->data('sort_dir');
         $params['status'] = $this->data('s');
         $params['my'] = $this->data('my');
+        $params['public'] = $this->data('public'); // if set, limit to public only
 
         // if we're doing a simple search, we might need to apply some 'default' filters. this is handled by the media model search method.
         if ($params['query']['mode'] == 'simple' && $default_filters = $this->models->media('search_get_default_filters', ['user_id' => $this->user->param('id')])) {

@@ -761,6 +761,10 @@ class MediaModel extends OBFModel
             $where_array[] = '(is_approved = 1 and is_archived = 0)';
         }
 
+        if(isset($params['public']) && $params['public']) {
+            $where_array[] = 'status = "public"';
+        }
+
         // only select media (if remote) where dynamic selection is allowed.
         if ($args['player_id']) {
             $where_array[] = 'dynamic_select = 1';
@@ -940,7 +944,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner'];
+        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1014,6 +1018,7 @@ class MediaModel extends OBFModel
             $column_array['album'] = 'media.album';
             $column_array['year'] = 'media.year';
             $column_array['type'] = 'media.type';
+            $column_array['status'] = 'media.status';
             $column_array['category'] = 'media.category_id';
             $column_array['country'] = 'media.country';
             $column_array['language'] = 'media.language';
