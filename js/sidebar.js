@@ -41,6 +41,9 @@ OB.Sidebar.sidebarInit = function () {
         OB.Sidebar.advancedSearchWindow();
     });
     OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-mode-changed", function (e) {
+        if (e.detail.mode == "simple") {
+            OB.Sidebar.advanced_search_filters = null;
+        }
         OB.Sidebar.mediaSearchFilter(e.detail.mode);
     });
     OB.Sidebar.mediaSearchForm.addEventListener("ob-search-media-history-clicked", function (e) {
