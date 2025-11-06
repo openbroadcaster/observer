@@ -1426,7 +1426,7 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         var filter = document.getElementById("advanced_search_filter").value;
         filter = filter.replace(/^metadata_/, "");
         var op = document.getElementById("advanced_search_metadata_operator").value;
-        var val = document.getElementById("advanced_search_metadata_value").value;
+        var val = document.getElementById("advanced_search_metadata_value").value?.trim();
 
         // get metadata/settings for this field
         const metadata = OB.Settings.media_metadata.find((metadata) => metadata.name === filter);
@@ -1458,6 +1458,9 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         if ($val.prop("nodeName") == "SELECT") var val_name = $val.find("option:selected").text();
         else if ($val.prop("nodeName") == "OB-FIELD-LANGUAGE") var val_name = $val[0].currentLanguageName();
         else if ($val.prop("nodeName") == "OB-FIELD-COUNTRY") var val_name = $val[0].currentCountryName();
+
+        // trim val
+        val = val.trim();
 
         // some basic validation
         if ((filter == "artist" || filter == "album" || filter == "title") && val == "") {
