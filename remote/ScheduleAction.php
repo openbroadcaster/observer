@@ -93,7 +93,7 @@ class ScheduleAction extends BaseAction
                     if (empty($timeslot)) {
                         $showxml->addChild('name', '');
                     }
-                    $showxml->addChild('description', $media['artist'] . ' - ' . $media['title']);
+                    $showxml->addChild('description', htmlspecialchars($media['artist'] . ' - ' . $media['title'], ENT_XML1, 'UTF-8'));
                     $showxml->addChild('last_updated', $media['updated']);
 
                     $media_items = [$media];
@@ -101,7 +101,7 @@ class ScheduleAction extends BaseAction
             } elseif ($show['item_type'] == 'playlist') {
                 $this->db->where('id', $show['item_id']);
                 $playlist = $this->db->get_one('playlists');
-                $showxml->addChild('description', $playlist['description']);
+                $showxml->addChild('description', htmlspecialchars($playlist['description'], ENT_XML1, 'UTF-8'));
 
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
                 if (empty($timeslot)) {
@@ -532,9 +532,9 @@ class ScheduleAction extends BaseAction
 
             $filesize = filesize($fullfilepath);
             $itemxml->addChild('id', $track['id']);
-            $itemxml->addChild('filename', htmlspecialchars($media['filename']));
-            $itemxml->addChild('title', htmlspecialchars($media['title']));
-            $itemxml->addChild('artist', htmlspecialchars($media['artist']));
+            $itemxml->addChild('filename', htmlspecialchars($media['filename'], ENT_XML1, 'UTF-8'));
+            $itemxml->addChild('title', htmlspecialchars($media['title'], ENT_XML1, 'UTF-8'));
+            $itemxml->addChild('artist', htmlspecialchars($media['artist'], ENT_XML1, 'UTF-8'));
             $itemxml->addChild('hash', $media['file_hash']);
             $itemxml->addChild('filesize', $filesize);
             $itemxml->addChild('location', $media['file_location']);
