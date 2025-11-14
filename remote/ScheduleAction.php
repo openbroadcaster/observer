@@ -72,7 +72,7 @@ class ScheduleAction extends BaseAction
             $timeslot = $this->TimeslotsModel('get_permissions', $show['start'], $show['start'] + 1, $this->schedule_player_id);
             // $timeslot = $timeslot[2];
             if (!empty($timeslot)) {
-                $showxml->addChild('name', $timeslot[0]['description']);
+                $showxml->addChild('name', htmlspecialchars($timeslot[0]['description'], ENT_XML1, 'UTF-8'));
             }
 
             $mediaxml = $showxml->addChild('media');
@@ -105,7 +105,7 @@ class ScheduleAction extends BaseAction
 
                 // if we didn't get our show name from the timeslot, then use the playlist name as the show name.
                 if (empty($timeslot)) {
-                    $showxml->addChild('name', $playlist['name']);
+                    $showxml->addChild('name', htmlspecialchars($playlist['name'], ENT_XML1, 'UTF-8'));
                 }
 
                 // add any playlist properties to xml
@@ -436,7 +436,7 @@ class ScheduleAction extends BaseAction
 
             $group_xml = $buttons_xml->addChild('group');
             $group_xml->addChild('last_updated', $cache_created);
-            $group_xml->addChild('name', $playlist['name']);
+            $group_xml->addChild('name', htmlspecialchars($playlist['name'], ENT_XML1, 'UTF-8'));
             $media_xml = $group_xml->addChild('media');
 
             foreach ($items as $item) {
@@ -691,7 +691,7 @@ class ScheduleAction extends BaseAction
         $showxml->addChild('id', 0);
         $showxml->addChild('date', gmdate('Y-m-d', $start));
         $showxml->addChild('time', gmdate('H:i:s', $start));
-        $showxml->addChild('name', $playlist['name']);
+        $showxml->addChild('name', htmlspecialchars($playlist['name'], ENT_XML1, 'UTF-8'));
         $showxml->addChild('type', $playlist['type']);
         $showxml->addChild('description', 'Default Playlist');
         // $showxml->addChild('last_updated',time());
