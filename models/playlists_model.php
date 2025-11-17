@@ -509,7 +509,7 @@ class PlaylistsModel extends OBFModel
                 }
 
                 //T Invalid search criteria.
-                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','not_has']) === false) {
+                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','nhas']) === false) {
                     return [false, 'Invalid search criteria.' . $filter['op']];
                 }
             }
@@ -623,7 +623,7 @@ class PlaylistsModel extends OBFModel
                     $tmp_sql = 'FIND_IN_SET("' . $this->db->escape($filter['val']) . '", ' . $this->db->format_table_column($filter['filter']) . ')';
 
                     if ($filter['op'] === 'nhas') {
-                        $tmp_sql = 'NOT ' . $tmp_sql;
+                        $tmp_sql = 'NOT ' . $tmp_sql . ' OR ' . $this->db->format_table_column($filter['filter']) . ' IS NULL';
                     }
                 }
 
