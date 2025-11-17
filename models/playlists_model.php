@@ -601,11 +601,22 @@ class PlaylistsModel extends OBFModel
                 $op_array['gte'] = '>=';
                 $op_array['lte'] = '<=';
 
-                // put together our query segment
-                $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
+                // put together our query segment; note that has and nhas have to be handled separately because they need
+                // to be wrapped into a mysql function
+                if ($filter['op'] !== 'has' && $filter['op'] !== 'nhas') {
+                    $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
+                }
 
                 if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
                     $tmp_sql .= '%';
+                }
+
+                if ($filter['op'] === 'has') {
+                    $tmp_sql = 'FIND_IN_SET("';
+                }
+
+                if ($filter['op'] === 'nhas') {
+                    $tmp_sql = 'NOT FIND_IN_SET("';
                 }
 
                 $tmp_sql .= $this->db->escape($filter['val']);
@@ -614,7 +625,13 @@ class PlaylistsModel extends OBFModel
                     $tmp_sql .= '%';
                 }
 
-                $tmp_sql .= '"';
+                if ($filter['op'] === 'has' || $filter['op'] === 'nhas') {
+                    $tmp_sql .= '",' . $this->db->format_table_column($filter['filter']) . ')';
+                }
+
+                if ($filter['op'] !== 'has' && $filter['op'] !== 'nhas') {
+                    $tmp_sql .= '"';
+                }
 
                 $where[] = $tmp_sql;
             }
