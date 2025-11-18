@@ -211,12 +211,12 @@ OB.Playlist.addeditTypeChange = function () {
     else var has_items = $(".playlist_addedit_item").length > 0;
 
     // early return if we have items and the user doesn't want those to be cleared
-    if(has_items && !OB.Playlist.addeditTypeChangeConfirm()) {
+    if (has_items && !OB.Playlist.addeditTypeChangeConfirm()) {
         $("#playlist_type_input").val(OB.Playlist.addedit_type);
         return false;
     }
 
-    if(has_items) {
+    if (has_items) {
         OB.Playlist.addeditRemoveAllFromAll();
     }
 
@@ -225,10 +225,10 @@ OB.Playlist.addeditTypeChange = function () {
 
     // update UI
     $(".playlist_edit_container").hide();
-    $("#playlist_edit_" + (change_to == 'live_assist' ? 'standard' : change_to) + "_container").show();
+    $("#playlist_edit_" + (change_to == "live_assist" ? "standard" : change_to) + "_container").show();
 
     // live assist features
-    if (change_to == 'live_assist') {
+    if (change_to == "live_assist") {
         $("#playlist_insert_breakpoint_button").attr("hidden", false);
         $("#playlist_liveassist_buttons").show();
         $("#playlist_last_fadeout_container").hide(); // no last track fadeout for live assist
