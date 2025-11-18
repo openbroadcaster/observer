@@ -761,7 +761,7 @@ class MediaModel extends OBFModel
             $where_array[] = '(is_approved = 1 and is_archived = 0)';
         }
 
-        if(isset($params['public']) && $params['public']) {
+        if (isset($params['public']) && $params['public']) {
             $where_array[] = 'status = "public"';
         }
 

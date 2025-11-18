@@ -73,7 +73,7 @@ class Stream extends OBFController
 
         if ($file) {
             // if this is an index file, we want to output that instead
-            if(preg_match('/^[a-zA-Z0-9]+\.m3u8$/', $file) === 1) {
+            if (preg_match('/^[a-zA-Z0-9]+\.m3u8$/', $file) === 1) {
                 // open $dir . $file and modify it to add ?file= to each ts file
                 if (!file_exists($dir . $file)) {
                     $this->error(OB_ERROR_NOTFOUND);
