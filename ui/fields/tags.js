@@ -14,9 +14,6 @@ class OBFieldTags extends OBField {
 
     static comparisonField = "text";
 
-    // TODO loading tags and suggestions via OB-OPTION and OB-TAGS temporarily disabled.
-    // fix needed as these are currently overwriting set value.
-    /*
     async connected() {
         if (this.#init) {
             return;
@@ -27,12 +24,13 @@ class OBFieldTags extends OBField {
         this.#suggestions = [];
         this.#currentTag = "";
 
-        this.#tags = this.#loadInnerTags();
-        this.#suggestions = this.#loadInnerSuggestions();
+        // TODO loading tags and suggestions via OB-OPTION and OB-TAGS temporarily disabled.
+        // fix needed as these are currently overwriting set value.
+        //this.#tags = this.#loadInnerTags();
+        //this.#suggestions = this.#loadInnerSuggestions();
 
         this.refresh();
     }
-    */
 
     renderEdit() {
         if (!this.#tags) {

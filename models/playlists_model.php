@@ -509,7 +509,7 @@ class PlaylistsModel extends OBFModel
                 }
 
                 //T Invalid search criteria.
-                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','not_has']) === false) {
+                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','nhas']) === false) {
                     return [false, 'Invalid search criteria.' . $filter['op']];
                 }
             }
@@ -592,7 +592,7 @@ class PlaylistsModel extends OBFModel
                     $column_array['metadata_' . $metadata_field['name']] = 'media_metadata.' . $metadata_field['name'];
                 }
 
-                // our possibile comparison operators
+                // Common possible comparison operators.
                 $op_array = [];
                 $op_array['like'] = 'LIKE';
                 $op_array['not_like'] = 'NOT LIKE';
@@ -601,20 +601,31 @@ class PlaylistsModel extends OBFModel
                 $op_array['gte'] = '>=';
                 $op_array['lte'] = '<=';
 
-                // put together our query segment
-                $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
+                // Put together query segment for common operators.
+                if (in_array($filter['op'], $op_array, true)) {
+                    $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
 
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
-                    $tmp_sql .= '%';
+                    if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                        $tmp_sql .= '%';
+                    }
+
+                    $tmp_sql .= $this->db->escape($filter['val']);
+
+                    if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
+                        $tmp_sql .= '%';
+                    }
+
+                    $tmp_sql .= '"';
                 }
 
-                $tmp_sql .= $this->db->escape($filter['val']);
+                // Put together query segment for tags with 'has' and 'nhas' operators.
+                if (in_array($filter['op'], ['has', 'nhas'], true)) {
+                    $tmp_sql = 'FIND_IN_SET("' . $this->db->escape($filter['val']) . '", ' . $this->db->format_table_column($filter['filter']) . ')';
 
-                if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
-                    $tmp_sql .= '%';
+                    if ($filter['op'] === 'nhas') {
+                        $tmp_sql = 'NOT ' . $tmp_sql . ' OR ' . $this->db->format_table_column($filter['filter']) . ' IS NULL';
+                    }
                 }
-
-                $tmp_sql .= '"';
 
                 $where[] = $tmp_sql;
             }

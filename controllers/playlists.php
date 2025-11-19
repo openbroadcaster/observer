@@ -424,7 +424,7 @@ class Playlists extends OBFController
         $validation = $this->models->playlists('validate_dynamic_properties', $search_query, $num_items, $num_items_all, $image_duration);
 
         if ($validation[0] == false) {
-            return [false,['Playlist Dynamic Item Properties',$validation[1]]];
+            return [false,$validation[1]];
         }
 
         if ($num_items_all) {
