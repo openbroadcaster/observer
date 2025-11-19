@@ -871,7 +871,10 @@ class MediaModel extends OBFModel
 
             $items = $this->db->get('media');
             foreach ($items as &$item) {
-                $item['thumbnail'] = (bool) $this->models->media('thumbnail_file', ['media' => $item]);
+                $thumbnail_file = $this->models->media('thumbnail_file', ['media' => $item]);
+                $item['thumbnail'] = (bool) $thumbnail_file;
+                $item['thumbnail_version'] = $thumbnail_file ? filemtime($thumbnail_file) : false;
+
                 $item['stream_thumbnail'] = $item['thumbnail'];
                 $item['stream'] = $this('stream_url', $item);
                 $item['captions'] = $this('captions_url', $item);
