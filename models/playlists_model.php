@@ -601,8 +601,10 @@ class PlaylistsModel extends OBFModel
                 $op_array['gte'] = '>=';
                 $op_array['lte'] = '<=';
 
+                $op_array_keys = array_keys($op_array);
+
                 // Put together query segment for common operators.
-                if (in_array($filter['op'], $op_array, true)) {
+                if (in_array($filter['op'], $op_array_keys, true)) {
                     $tmp_sql = $column_array[$filter['filter']] . ' ' . $op_array[$filter['op']] . ' "';
 
                     if ($filter['op'] == 'like' || $filter['op'] == 'not_like') {
@@ -616,6 +618,8 @@ class PlaylistsModel extends OBFModel
                     }
 
                     $tmp_sql .= '"';
+
+                    $where[] = $tmp_sql;
                 }
 
                 // Put together query segment for tags with 'has' and 'nhas' operators.
@@ -625,10 +629,15 @@ class PlaylistsModel extends OBFModel
                     if ($filter['op'] === 'nhas') {
                         $tmp_sql = 'NOT ' . $tmp_sql . ' OR ' . $this->db->format_table_column($filter['filter']) . ' IS NULL';
                     }
-                }
 
-                $where[] = $tmp_sql;
+                    $where[] = $tmp_sql;
+                }
             }
+        }
+
+        // nothing to search for? possible if no valid filters.
+        if(empty($where)) {
+            return 0;
         }
 
         // 'all items' selected.
