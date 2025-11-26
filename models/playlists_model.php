@@ -636,7 +636,7 @@ class PlaylistsModel extends OBFModel
         }
 
         // nothing to search for? possible if no valid filters.
-        if(empty($where)) {
+        if (empty($where)) {
             return 0;
         }
 
