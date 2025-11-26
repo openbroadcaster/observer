@@ -78,6 +78,8 @@ class PlaylogPostAction extends BaseAction
             $error = "Player ID is invalid.";
         } elseif (!preg_match('/^[0-9]+$/', $media_id)) {
             $error = "Media ID is invalid.";
+        } elseif (intval($timestamp) > time()) {
+            $error = "Timestamp is in the future.";
         } else {
             $sql = 'select id from playlog where ' . implode(' and ', $dbcheck);
 
