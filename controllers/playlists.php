@@ -384,14 +384,20 @@ class Playlists extends OBFController
             $this->models->playlists('update_permissions_groups', $id, $this->data('permissions_groups'));
         }
 
-        // Save playlist thumbnail.
         if ($thumbnail) {
+            // Save playlist thumbnail.
             $thmb_result = $this->models->uploads('thumbnail_save', $id, 'playlist', $thumbnail);
             if (!$thmb_result[0]) {
                 if ($new_playlist === true) {
                     $this->models->playlists('delete', $id);
                 }
 
+                return [false, $thmb_result[1], $id];
+            }
+        } elseif ($new_playlist !== true) {
+            // Delete thumbnail if none provided and one already exists for this playlist.
+            $thmb_result = $this->models->uploads('thumbnail_delete', $id, 'playlist');
+            if (! $thmb_result[0]) {
                 return [false, $thmb_result[1], $id];
             }
         }
