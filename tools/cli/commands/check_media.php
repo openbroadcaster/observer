@@ -74,5 +74,5 @@ foreach ($media as $nfo) {
 }
 
 echo
-    "\033[32m" . str_pad($media_total - $media_errors, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .
+    PHP_EOL . "\033[32m" . str_pad($media_total - $media_errors, 2, ' ', STR_PAD_LEFT) . " pass\033[0m    " .
     "\033[31m" . str_pad($media_errors, 2, ' ', STR_PAD_LEFT) . " errors\033[0m    " . PHP_EOL;
