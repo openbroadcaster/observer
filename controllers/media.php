@@ -359,8 +359,10 @@ class Media extends OBFController
                 $id = $this->models->media('save', ['item' => $item]);
                 $items[] = $id;
 
-                if (isset($item['thumbnail'])) {
+                if (isset($item['thumbnail']) && $item['thumbnail'] !== "") {
                     $this->models->uploads('thumbnail_save', $id, 'media', $item['thumbnail']);
+                } else {
+                    $this->models->uploads('thumbnail_delete', $id, 'media');
                 }
             }
             //T Media has been saved.
