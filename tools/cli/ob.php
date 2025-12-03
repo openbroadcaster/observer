@@ -47,7 +47,8 @@ Commands:
 ';
 
         echo Helpers::table(spacing: 5, rows: [
-            ['check', 'check installation for errors'],
+            ['check install', 'check installation for errors'],
+            ['check media', 'check media for errors'],
             ['cron run', 'run scheduled tasks once'],
             ['cron run <module> <task> [now]', 'run scheduled task for module'],
             ['cron monitor', 'monitor and run cron tasks as needed'],
@@ -67,7 +68,14 @@ Commands:
 
     public function check()
     {
-        require(__DIR__ . '/commands/check.php');
+        global $subcommand;
+        if ($subcommand === 'install') {
+            require(__DIR__ . '/commands/check_install.php');
+        } elseif ($subcommand === 'media') {
+            require(__DIR__ . '/commands/check_media.php');
+        } else {
+            $this->help();
+        }
     }
 
     public function cron()
