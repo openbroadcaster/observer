@@ -11,8 +11,7 @@ class OBFieldThumbnail extends OBField {
         this.#imageData = null;
         this.#imageWidth = this.getAttribute("width") ? this.getAttribute("width") : 128;
         this.#imageHeight = this.getAttribute("height") ? this.getAttribute("height") : 128;
-        this.#readOnly =
-            this.getAttribute("readonly") !== null && this.getAttribute("readonly") !== "false" ? true : false;
+        this.#readOnly = this.getAttribute("readonly") !== null && this.getAttribute("readonly") !== "false" ? true : false;
     }
 
     renderEdit() {
@@ -31,7 +30,7 @@ class OBFieldThumbnail extends OBField {
                 }
 
                 .image-wrapper .button-wrapper {
-                    position: absolute; 
+                    position: absolute;
                     display: flex;
                     bottom: 0px;
                     justify-content: space-between;
