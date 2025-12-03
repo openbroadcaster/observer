@@ -32,9 +32,9 @@ foreach ($media as $nfo) {
     $filename = $dir . '/' . $nfo['file_location'][0] . '/' . $nfo['file_location'][1] . '/' . $nfo['filename'];
 
     if (! file_exists($filename)) {
-        echo "\033[31mMissing file:\033[0m {$filename}" . PHP_EOL;
-
         $media_errors += 1;
+
+        echo "\033[31mMissing file:\033[0m {$filename}" . PHP_EOL;
 
         // Try to find the actual filename in that directory.
         $check_files = scandir($dir . '/' . $nfo['file_location'][0] . '/' . $nfo['file_location'][1]);
@@ -57,6 +57,12 @@ foreach ($media as $nfo) {
         }
 
         echo PHP_EOL;
+    } else {
+        if (filesize($filename) === 0) {
+            $media_errors += 1;
+
+            echo "\033[31mZero-byte file found:\033[0m {$filename}" . PHP_EOL;
+        }
     }
 
     // Show media processing update.
