@@ -1421,6 +1421,11 @@ class MediaModel extends OBFModel
             if ($metadata_field['type'] == 'tags' && !is_array($metadata_value)) {
                 return [false,$item['local_id'],$metadata_field['description'] . ' value not valid.'];
             }
+
+            // validate if coordinates
+            if ($metadata_field['type'] === 'coordinates' && $metadata_value !== "" && (! is_array($metadata_value) || count($metadata_value) !== 2 || ! is_numeric($metadata_value[0]) || ! is_numeric($metadata_value[1]))) {
+                return [false, $item['local_id'], $metadata_field['description'] . ' value not valid.'];
+            }
         }
 
         // not bothering to validate yes/no... if not 1 (yes), assuming 0 (no).
@@ -1622,7 +1627,11 @@ class MediaModel extends OBFModel
                 }
                 $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
             } elseif ($metadata_field['type'] == 'coordinates') {
-                $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
+                if ($item['metadata_' . $metadata_field['name']] === "") {
+                    $metadata['metadata_' . $metadata_field['name']] = null;
+                } else {
+                    $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
+                }
             } else {
                 $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
             }

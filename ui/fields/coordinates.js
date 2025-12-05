@@ -116,6 +116,10 @@ class OBFieldCoordinates extends OBField {
     }
 
     get value() {
+        if (this._lat === null || this._lng === null) {
+            return null;
+        }
+
         return [this._lat, this._lng];
     }
 
