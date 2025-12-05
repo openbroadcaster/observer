@@ -509,7 +509,7 @@ class PlaylistsModel extends OBFModel
                 }
 
                 //T Invalid search criteria.
-                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','nhas']) === false) {
+                if (array_search($filter['op'], ['like','not_like','is','not','gte','lte','has','nhas', 'not_has']) === false) {
                     return [false, 'Invalid search criteria.' . $filter['op']];
                 }
             }
@@ -623,10 +623,10 @@ class PlaylistsModel extends OBFModel
                 }
 
                 // Put together query segment for tags with 'has' and 'nhas' operators.
-                if (in_array($filter['op'], ['has', 'nhas'], true)) {
+                if (in_array($filter['op'], ['has', 'nhas', 'not_has'], true)) {
                     $tmp_sql = 'FIND_IN_SET("' . $this->db->escape($filter['val']) . '", ' . $this->db->format_table_column($filter['filter']) . ')';
 
-                    if ($filter['op'] === 'nhas') {
+                    if ($filter['op'] === 'nhas' || $filter['op'] === 'not_has') {
                         $tmp_sql = 'NOT ' . $tmp_sql . ' OR ' . $this->db->format_table_column($filter['filter']) . ' IS NULL';
                     }
 
