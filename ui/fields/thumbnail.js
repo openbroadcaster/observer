@@ -11,7 +11,8 @@ class OBFieldThumbnail extends OBField {
         this.#imageData = null;
         this.#imageWidth = this.getAttribute("width") ? this.getAttribute("width") : 128;
         this.#imageHeight = this.getAttribute("height") ? this.getAttribute("height") : 128;
-        this.#readOnly = this.getAttribute("readonly") !== null && this.getAttribute("readonly") !== "false" ? true : false;
+        this.#readOnly =
+            this.getAttribute("readonly") !== null && this.getAttribute("readonly") !== "false" ? true : false;
     }
 
     renderEdit() {

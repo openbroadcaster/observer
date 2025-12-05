@@ -49,11 +49,7 @@ foreach ($media as $nfo) {
         }
 
         if ($fix_filename) {
-            echo 'Probable file: ' . $nfo['filename'].' -> ' . $fix_filename . PHP_EOL;
-
-            // NOTE: Filename in database does not get changed automatically at this point.
-            // $db->where('id',$nfo['id']);
-            // $db->update('media',['filename'=>$fix_filename]);
+            echo 'Probable file: ' . $nfo['filename'] . ' -> ' . $fix_filename . PHP_EOL;
         }
 
         echo PHP_EOL;
