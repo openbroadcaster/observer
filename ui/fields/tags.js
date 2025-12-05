@@ -21,15 +21,15 @@ class OBFieldTags extends OBField {
 
         this.#init = true;
 
-        if (! this.#tags) {
+        if (!this.#tags) {
             this.#tags = [];
         }
 
-        if (! this.#suggestions) {
+        if (!this.#suggestions) {
             this.#suggestions = [];
         }
 
-        if (! this.#currentTag) {
+        if (!this.#currentTag) {
             this.#currentTag = "";
         }
 
