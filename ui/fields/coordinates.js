@@ -90,7 +90,7 @@ class OBFieldCoordinates extends OBField {
                     }
                 }
 
-                
+
             }
         `;
     }
@@ -106,7 +106,7 @@ class OBFieldCoordinates extends OBField {
     }
 
     _updateLng(event) {
-        const lng = event.target.value;
+        const lng = parseFloat(event.target.value);
         if (isNaN(lng)) {
             this._lng = null;
         } else if (lng >= -180 && lng <= 180) {
