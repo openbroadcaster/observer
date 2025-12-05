@@ -182,4 +182,35 @@ class UploadsModel extends OBFModel
 
         return [true, $data];
     }
+
+    /**
+     * Delete a thumbnail for media or a playlist if it exists.
+     */
+    public function thumbnail_delete($id, $type)
+    {
+        if (!$id) {
+            return [false, 'No ID provided for thumbnail.'];
+        }
+
+        if ($type === 'media') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('media')[0]['file_location'] ?? null;
+        } elseif ($type === 'playlist') {
+            $this->db->where('id', $id);
+            $file_location = $this->db->get('playlists')[0]['file_location'] ?? null;
+        } else {
+            return [false, 'Only media and playlists can have thumbnails.'];
+        }
+
+        $dir_path = OB_THUMBNAILS . '/' . $type . '/' . $file_location[0] . '/' . $file_location[1];
+        $path = glob($dir_path . '/' . $id . '.*')[0] ?? null;
+
+        if (! $path) {
+            return [true, 'No thumbnail found, so no need to delete.'];
+        }
+
+        unlink($path);
+
+        return [true, "Deleted thumbnail."];
+    }
 }
