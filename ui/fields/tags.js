@@ -20,9 +20,18 @@ class OBFieldTags extends OBField {
         }
 
         this.#init = true;
-        this.#tags = [];
-        this.#suggestions = [];
-        this.#currentTag = "";
+
+        if (! this.#tags) {
+            this.#tags = [];
+        }
+
+        if (! this.#suggestions) {
+            this.#suggestions = [];
+        }
+
+        if (! this.#currentTag) {
+            this.#currentTag = "";
+        }
 
         // TODO loading tags and suggestions via OB-OPTION and OB-TAGS temporarily disabled.
         // fix needed as these are currently overwriting set value.

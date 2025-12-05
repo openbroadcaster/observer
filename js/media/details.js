@@ -108,7 +108,14 @@ OB.MediaDetails.page = function (id) {
             // use custom html element if available
             if (customElements.get("ob-field-" + metadata.type)) {
                 const fieldElem = document.createElement("ob-field-" + metadata.type);
-                fieldElem.value = value;
+
+                if (metadata.type === "tags") {
+                    let newValue = value.split(",");
+                    fieldElem.value = newValue;
+                } else {
+                    fieldElem.value = value;
+                }
+
                 fieldElem.settings = metadata.settings;
                 metaElem.appendChild(fieldElem);
             }
