@@ -16,6 +16,7 @@ $media = $db->assoc_list();
 $media_total = count($media);
 $media_current = 0;
 $media_errors = 0;
+$messages = '';
 
 echo "Processing {$media_total} media items in database:" . PHP_EOL;
 
@@ -33,8 +34,7 @@ foreach ($media as $nfo) {
 
     if (! file_exists($filename)) {
         $media_errors += 1;
-
-        echo "\033[31mMissing file:\033[0m {$filename}" . PHP_EOL;
+        $messages .= "\033[31mMissing file:\033[0m {$filename}" . PHP_EOL;
 
         // Try to find the actual filename in that directory.
         $check_files = scandir($dir . '/' . $nfo['file_location'][0] . '/' . $nfo['file_location'][1]);
@@ -49,24 +49,27 @@ foreach ($media as $nfo) {
         }
 
         if ($fix_filename) {
-            echo 'Probable file: ' . $nfo['filename'] . ' -> ' . $fix_filename . PHP_EOL;
+            $messages .= 'Probable file: ' . $nfo['filename'] . ' -> ' . $fix_filename . PHP_EOL;
         }
 
         echo PHP_EOL;
     } else {
         if (filesize($filename) === 0) {
             $media_errors += 1;
-
-            echo "\033[31mZero-byte file found:\033[0m {$filename}" . PHP_EOL;
+            $messages .= "\033[31mZero-byte file found:\033[0m {$filename}" . PHP_EOL;
         }
     }
 
     // Show media processing update.
     $media_current += 1;
 
-    if (($media_current % 100) === 0) {
-        echo "Processed {$media_current} media files." . PHP_EOL;
+    if (($media_current % 1000) === 0) {
+        echo "Checked {$media_current} media files." . PHP_EOL;
     }
+}
+
+if ($messages) {
+    echo PHP_EOL . $messages;
 }
 
 echo
