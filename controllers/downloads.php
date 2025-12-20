@@ -183,6 +183,10 @@ class Downloads extends OBFController
         if (!$file || !file_exists($file)) {
             $this->error(OB_ERROR_NOTFOUND);
         } else {
+            // if version is specified, allow cache if version matches expected
+            if(($_GET['v'] ?? null) && $_GET['v'] == filemtime($file) && $media['status'] == 'public') {
+                header('Cache-Control: public, max-age='.(60*60*24*7)); // cache for 7 days
+            }
             OBFHelpers::sendfile($file);
         }
     }
