@@ -4,7 +4,7 @@ Documentation generator for OpenBroadcaster core code. Follows DocBlock conventi
 
 ## Usage
 
-Invocation: `./docgen target_dir source_dir [source_dirs]`
+Invocation: `./docgen docs target_dir source_dir [source_dirs]`
 
 Target directory comes first. One or more source directories can be specified. Note that DocGen will *not* go through source files recursively&mdash;if multiple subdirectories are required, they need to be specified separately.
 
@@ -34,10 +34,10 @@ DocGen is also responsible for generating a JSON file showing all the API routes
 }
 ```
 
-The routes script will also trim any trailing slashes, and check for duplicate routes across all methods that can cause ambiguity. 
+The routes script will also trim any trailing slashes, and check for duplicate routes across all methods that can cause ambiguity.
 
 ## Usage
 
-Invocation: `./docgen_routes target.json source_dir [source_dirs]`
+Invocation: `./docgen routes target.json source_dir [source_dirs]`
 
 Target JSON file comes first. One or more source directories can be specified. As with DocGen, this script will *not* go through source files recursively.
