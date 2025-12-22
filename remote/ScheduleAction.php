@@ -416,10 +416,9 @@ class ScheduleAction extends BaseAction
                 continue;
             } // playlist not available.
 
-            $this->db->where('player_id', $this->player->id);
-            $this->db->where('start', $show['start']);
-            $this->db->where('playlists_liveassist_button_id', $button['id']);
-
+            // $this->db->where('player_id', $this->player->id);
+            // $this->db->where('start', $show['start']);
+            // $this->db->where('playlists_liveassist_button_id', $button['id']);
             // $cache = $this->db->get_one('schedules_liveassist_buttons_cache');
 
             /*
