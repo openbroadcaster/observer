@@ -1,8 +1,8 @@
 <?php
 
-namespace OB\Classes\Cron;
+namespace OpenBroadcaster\Classes\Cron;
 
-use OB\Classes\Base\Cron;
+use OpenBroadcaster\Classes\Base\Cron;
 
 class ExtractThumbnails extends Cron
 {
@@ -16,7 +16,7 @@ class ExtractThumbnails extends Cron
         $db = \OBFDB::get_instance();
 
         // get all media that needs thumbnail to extract
-        $db->query('SELECT * FROM media WHERE 
+        $db->query('SELECT * FROM media WHERE
             (thumbnail_version IS NULL OR thumbnail_version < 2) AND
             type != "image"');
 

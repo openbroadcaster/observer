@@ -1,8 +1,8 @@
 <?php
 
-namespace OB\Classes\Cron;
+namespace OpenBroadcaster\Classes\Cron;
 
-use OB\Classes\Base\Cron;
+use OpenBroadcaster\Classes\Base\Cron;
 
 class CleanUploads extends Cron
 {

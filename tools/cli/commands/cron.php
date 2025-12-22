@@ -29,7 +29,7 @@ if (isset($argv[3]) && isset($argv[4])) {
         }
 
         require_once('classes/cron/' . $task . '.php');
-        $class = '\\OB\\Classes\\Cron\\' . $task;
+        $class = '\\OpenBroadcaster\\Classes\\Cron\\' . $task;
     } else {
         if (! file_exists('modules/' . $module . '/cron/' . $task . '.php')) {
             echo "Task '{$module}/{$task}' not found." . PHP_EOL;
@@ -38,7 +38,7 @@ if (isset($argv[3]) && isset($argv[4])) {
 
         require_once('modules/' . $module . '/cron/' . $task . '.php');
         $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
-        $class = '\\OB\\Modules\\' . $moduleNamespace . '\\Cron\\' . $task;
+        $class = '\\OpenBroadcaster\\Modules\\' . $moduleNamespace . '\\Cron\\' . $task;
     }
 
     $job = new $class();
@@ -109,7 +109,7 @@ $jobs = [];
 
 foreach (glob('classes/cron/*.php') as $file) {
     require_once($file);
-    $class = '\\OB\\Classes\Cron\\' . basename($file, '.php');
+    $class = '\\OpenBroadcaster\\Classes\Cron\\' . basename($file, '.php');
     $instance = new $class();
 
     $jobs[] = [
@@ -123,7 +123,7 @@ foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
     foreach (glob($module . '/cron/*.php') as $file) {
         require_once($file);
         $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', basename($module))));
-        $class = '\\OB\\Modules\\' . $moduleNamespace . '\\Cron\\' . basename($file, '.php');
+        $class = '\\OpenBroadcaster\\Modules\\' . $moduleNamespace . '\\Cron\\' . basename($file, '.php');
         $instance = new $class();
 
         $jobs[] = [

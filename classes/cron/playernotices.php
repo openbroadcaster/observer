@@ -1,8 +1,8 @@
 <?php
 
-namespace OB\Classes\Cron;
+namespace OpenBroadcaster\Classes\Cron;
 
-use OB\Classes\Base\Cron;
+use OpenBroadcaster\Classes\Base\Cron;
 
 // TODO add player monitoring emails to player settings, etc.
 class PlayerNotices extends Cron
@@ -35,7 +35,7 @@ class PlayerNotices extends Cron
                 foreach ($notices as $notice) {
                     $mailer = new \PHPMailer\PHPMailer\PHPMailer();
                     $mailer->Body = 'This is a warning that player "' . $player['name'] . '" has not connected for "' . $type . '" in the last hour.
-        
+
 Please take steps to ensure this player is functioning properly.';
                     $mailer->From = OB_EMAIL_REPLY;
                     $mailer->FromName = OB_EMAIL_FROM;
