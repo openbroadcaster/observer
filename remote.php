@@ -21,8 +21,8 @@ class Remote
         date_default_timezone_set('Etc/UTC');
 
         // require_once all files in 'remote', starting with BaseAction
-        require_once(__DIR__ . '/remote/BaseAction.php');
-        $dir = new DirectoryIterator(__DIR__ . '/remote');
+        require_once(__DIR__ . '/classes/base/remote.php');
+        $dir = new DirectoryIterator(__DIR__ . '/classes/remote');
         foreach ($dir as $fileinfo) {
             if ($fileinfo->isFile() && $fileinfo->getExtension() == 'php') {
                 require_once($fileinfo->getPathname());
@@ -150,7 +150,7 @@ class Remote
         $actionPascal = str_replace('_', '', ucwords($action, '_'));
 
         // handle action (overrides any code that follows this block)
-        $actionClass = 'OpenBroadcaster\\Remote\\' . $actionPascal . 'Action';
+        $actionClass = 'OB\\Classes\\Remote\\' . $actionPascal . 'Action';
         if (class_exists($actionClass)) {
             // instantiate and handle request
             $this->action = new $actionClass($this->player, (object) $_REQUEST);

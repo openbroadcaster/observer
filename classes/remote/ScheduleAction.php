@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Remote;
+namespace OB\Classes\Remote;
 
-class ScheduleAction extends BaseAction
+class ScheduleAction extends \OB\Classes\Base\Remote
 {
     private $PlayersModel;
 

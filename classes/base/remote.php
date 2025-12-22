@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Remote;
+namespace OB\Classes\Base;
 
-abstract class BaseAction
+abstract class Remote
 {
     protected $player;
     protected $request;

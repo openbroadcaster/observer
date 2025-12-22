@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Remote;
+namespace OB\Classes\Remote;
 
-class EmergAction extends BaseAction
+class EmergAction extends \OB\Classes\Base\Remote
 {
     public function run(): bool|object
     {
