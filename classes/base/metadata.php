@@ -1,6 +1,6 @@
 <?php
 
-namespace OB\Classes\Base;
+namespace OpenBroadcaster\Classes\Base;
 
 class Metadata
 {
