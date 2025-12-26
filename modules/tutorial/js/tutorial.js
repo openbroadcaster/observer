@@ -90,7 +90,7 @@ OBModules.Tutorial = new function()
 		{
 			OBModules.Tutorial.giveInstructions('Your media has been saved. Let\'s move on to creating a playlist. \
 				<br><br>Under the playlists menu, select "new playlist".  You can also use the "new" button under the playlists sidebar on the right.');
-		}		
+		}
 
 		this.nextCondition = function()
 		{
@@ -172,7 +172,7 @@ OBModules.Tutorial = new function()
 
 		this.nextCondition = function()
 		{
-			
+
 			if(OB.Sidebar.media_search_filters.my) return true;
 			if(OB.Sidebar.playlist_search_filters.my) return true;
 
@@ -306,7 +306,7 @@ OBModules.Tutorial = new function()
 		this.steps[this.currentStep].init();
 	}
 
-	this.restart = function()	
+	this.restart = function()
 	{
 		this.exit();
 		this.go();
@@ -332,13 +332,31 @@ OBModules.Tutorial = new function()
 	// TODO - build this into the core!
 	this.tts = function(text)
 	{
-		this.audio.pause();
-		this.audio.setAttribute('src','/tts.php?t='+escape(text));
-		if(!this.audioMuted) this.audio.play();
+		OB.API.post('ui', 'tts', {text: text}, (response) => {
+			if (response.status) {
+				const binData = atob(response.data);
+				const bytes = new Uint8Array(binData.length);
+				for (let i = 0; i < binData.length; i++) {
+					bytes[i] = binData.charCodeAt(i);
+				}
+
+				const blob = new Blob([bytes], {type: 'audio/ogg'});
+				const audioUrl = URL.createObjectURL(blob);
+
+				this.audio.pause();
+				this.audio.src = audioUrl;
+				this.audio.addEventListener('ended', () => {
+					URL.revokeObjectURL(audioUrl);
+				});
+
+				if (! this.audioMuted) {
+					this.audio.play();
+				}
+			}
+		});
 	}
 
 	this.audio = document.createElement('audio');
-
 	this.audioMuted = false;
 
 }

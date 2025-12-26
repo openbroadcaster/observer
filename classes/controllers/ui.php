@@ -44,7 +44,7 @@ class UI extends OBFController
     }
 
     /**
-     * TTS output.
+     * TTS output in OGG format, base64 encoded.
      *
      * @param text Text to convert into speech.
      * @return ogg_audio
@@ -54,8 +54,6 @@ class UI extends OBFController
     public function tts()
     {
         $text = $this->data('text');
-
-        header('Content-type: audio/ogg');
 
         if (! $text) {
             die();
@@ -72,10 +70,10 @@ class UI extends OBFController
         fwrite($pipes[0], $text);
         fclose($pipes[0]);
 
-        echo stream_get_contents($pipes[1]);
+        $output = base64_encode(stream_get_contents($pipes[1]));
         fclose($pipes[1]);
 
-        exit();
+        return [true, 'OGG data (base64 encoded)', $output];
     }
 
     /**
