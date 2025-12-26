@@ -316,6 +316,11 @@
             "get_languages"
         ],
         [
+            "/api/v2/ui/strings",
+            "ui",
+            "strings"
+        ],
+        [
             "/api/v2/ui/tts",
             "ui",
             "tts"

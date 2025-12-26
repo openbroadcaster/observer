@@ -44,6 +44,20 @@ class UI extends OBFController
     }
 
     /**
+     * Return translation strings for the user's language.
+     *
+     * @return strings
+     *
+     * @route GET /v2/ui/strings
+     */
+    public function strings()
+    {
+        $strings = $this->models->ui('strings');
+
+        return [true, 'Translation strings', $strings];
+    }
+
+    /**
      * TTS output in OGG format, base64 encoded.
      *
      * @param text Text to convert into speech.

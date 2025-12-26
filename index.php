@@ -115,9 +115,6 @@ foreach ($jsModuleIterator as $file) {
     <script type="text/javascript" src="<?=$file?>?v=<?=filemtime($file)?>"></script>
   <?php } ?>
 
-  <?php /* TODO should have a "last updated" time for strings */ ?>
-  <script type="text/javascript" src="strings.php?v=<?=time()?>"></script>
-
   <?php foreach ($css_files as $file) { ?>
     <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=filemtime($file)?>">
   <?php } ?>
