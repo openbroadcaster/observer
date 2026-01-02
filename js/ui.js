@@ -21,17 +21,6 @@ OB.UI.init = function () {
     // add drag helper html
     $("body").append('<div id="drag_helper"></div>');
     $("body").on("mousemove", OB.UI.dragHelperMove);
-
-    // Load translation strings.
-    OB.API.post("ui", "strings", {}, (response) => {
-        if (response.status) {
-            OB.UI.strings = response.data;
-
-            document.addEventListener("DOMContentLoaded", (event) => {
-                document.querySelector('html').setAttribute('lang', OB.Account.userdata.language);
-            });
-        }
-    }, "sync");
 };
 
 OB.UI.initLayout = function () {
@@ -1306,6 +1295,9 @@ OB.UI.translate = function (input, ...data) {
     } else if (typeof input == "string") {
         var name = input;
     } else return "";
+
+    /* if(typeof(OB.UI.strings[namespace])=='undefined') return name;
+  if(typeof(OB.UI.strings[namespace][name])=='undefined') return name; */
 
     var string = name;
     if (OB.UI.strings[name] !== undefined) {

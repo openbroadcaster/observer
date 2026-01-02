@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Cron;
+namespace OB\Classes\Cron;
 
-use OpenBroadcaster\Classes\Base\Cron;
+use OB\Classes\Base\Cron;
 
 class CleanShowsCache extends Cron
 {

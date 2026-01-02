@@ -65,9 +65,9 @@ OB.Modules.modulesGet = function () {
                     "</td>" +
                     '<td><ob-element-button data-style="delete" data-text="' +
                     htmlspecialchars(OB.t("Uninstall")) +
-                    '" data-icon-name="trash" onclick="OB.Modules.moduleUninstall(false, \'' +
+                    '" data-icon-name="trash" onclick="OB.Modules.moduleUninstall(false, "' +
                     module.dir +
-                    '\');"></ob-element-button>' +
+                    '");"></ob-element-button>' +
                     "</td>" +
                     "</tr>",
             );
@@ -84,9 +84,9 @@ OB.Modules.modulesGet = function () {
                     "</td>" +
                     '<td><ob-element-button data-icon-name="download" data-style="add" data-text="' +
                     htmlspecialchars(OB.t("Install")) +
-                    '" onclick="OB.Modules.moduleInstall(false, \'' +
+                    '" onclick="OB.Modules.moduleInstall(false, "' +
                     module.dir +
-                    '\');">' +
+                    ');">' +
                     "</td></tr>",
             );
         });

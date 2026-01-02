@@ -11,14 +11,19 @@
             "media"
         ],
         [
-            "/api/v2/downloads/media/(:id:)/preview",
+            "/api/v2/downloads/media/(:id:)/preview/",
             "downloads",
             "preview"
         ],
         [
-            "/api/v2/downloads/media/(:id:)/thumbnail",
+            "/api/v2/downloads/media/(:id:)/thumbnail/",
             "downloads",
             "thumbnail"
+        ],
+        [
+            "/api/v2/stream/(:id:)",
+            "stream",
+            "stream"
         ],
         [
             "/api/v2/clientsettings/login-message",
@@ -81,11 +86,6 @@
             "get_properties"
         ],
         [
-            "/api/v2/media/versions/(:media_id:)",
-            "media",
-            "versions"
-        ],
-        [
             "/api/v2/media/(:media_id:)/versions",
             "media",
             "versions"
@@ -94,11 +94,6 @@
             "/api/v2/media/(:id:)",
             "media",
             "get"
-        ],
-        [
-            "/api/v2/media/(:id:)/thumbnail",
-            "media",
-            "thumbnail"
         ],
         [
             "/api/v2/media/thumbnail/(:id:)",
@@ -196,11 +191,6 @@
             "get"
         ],
         [
-            "/api/v2/stream/(:id:)",
-            "stream",
-            "stream"
-        ],
-        [
             "/api/v2/account/uid",
             "account",
             "uid"
@@ -226,7 +216,7 @@
             "key_load"
         ],
         [
-            "/api/v2/account/nonce",
+            "/api/v2/account/nonce/",
             "account",
             "nonce"
         ],
@@ -244,11 +234,6 @@
             "/api/v2/shows",
             "shows",
             "search"
-        ],
-        [
-            "/api/v2/playlog/(:id:)/(:start:)/(:end:)",
-            "playlog",
-            "get"
         ],
         [
             "/api/v2/playlog/(:id:)/(:start:)",
@@ -316,16 +301,6 @@
             "get_languages"
         ],
         [
-            "/api/v2/ui/strings",
-            "ui",
-            "strings"
-        ],
-        [
-            "/api/v2/ui/tts",
-            "ui",
-            "tts"
-        ],
-        [
             "/api/v2/ui/html",
             "ui",
             "html"
@@ -343,19 +318,9 @@
             "set_welcome_page"
         ],
         [
-            "/api/v2/users",
-            "users",
-            "user_manage_addedit"
-        ],
-        [
             "/api/v2/users/appkeys",
             "users",
             "user_manage_key_new"
-        ],
-        [
-            "/api/v2/users/permissions",
-            "users",
-            "permissions_manage_addedit"
         ],
         [
             "/api/v2/media/formats",
@@ -371,11 +336,6 @@
             "/api/v2/media/searches/default",
             "media",
             "media_my_searches_default"
-        ],
-        [
-            "/api/v2/media",
-            "media",
-            "save"
         ],
         [
             "/api/v2/media/properties/(:id:)",
@@ -396,26 +356,6 @@
             "/api/v2/media/archive/undo",
             "media",
             "unarchive"
-        ],
-        [
-            "/api/v2/playlists",
-            "playlists",
-            "save"
-        ],
-        [
-            "/api/v2/players",
-            "players",
-            "save"
-        ],
-        [
-            "/api/v2/alerts",
-            "alerts",
-            "save"
-        ],
-        [
-            "/api/v2/timeslots",
-            "timeslots",
-            "save"
         ],
         [
             "/api/v2/account/login",
@@ -443,29 +383,9 @@
             "key_new"
         ],
         [
-            "/api/v2/shows",
-            "shows",
-            "save"
-        ],
-        [
-            "/api/v2/metadata",
-            "metadata",
-            "metadata_save"
-        ],
-        [
             "/api/v2/metadata/recording",
             "metadata",
             "recording_default_values_save"
-        ],
-        [
-            "/api/v2/metadata/categories",
-            "metadata",
-            "category_save"
-        ],
-        [
-            "/api/v2/metadata/genres",
-            "metadata",
-            "genre_save"
         ]
     ],
     "PUT": [
@@ -615,11 +535,6 @@
             "/api/v2/modules/(:name:)",
             "modules",
             "uninstall"
-        ],
-        [
-            "/api/v2/modules/purge/(:name:)",
-            "modules",
-            "purge"
         ],
         [
             "/api/v2/players/(:id:)",

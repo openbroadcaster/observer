@@ -44,60 +44,13 @@ class UI extends OBFController
     }
 
     /**
-     * Return translation strings for the user's language.
-     *
-     * @return strings
-     *
-     * @route GET /v2/ui/strings
-     */
-    public function strings()
-    {
-        $strings = $this->models->ui('strings');
-
-        return [true, 'Translation strings', $strings];
-    }
-
-    /**
-     * TTS output in OGG format, base64 encoded.
-     *
-     * @param text Text to convert into speech.
-     * @return ogg_audio
-     *
-     * @route GET /v2/ui/tts
-     */
-    public function tts()
-    {
-        $text = $this->data('text');
-
-        if (! $text) {
-            die();
-        }
-
-        $festival = [
-        ['pipe','r'],
-        ['pipe','w'],
-        ['file','/dev/null','a']
-        ];
-
-        $process = proc_open('text2wave | oggenc - -o -', $festival, $pipes);
-
-        fwrite($pipes[0], $text);
-        fclose($pipes[0]);
-
-        $output = base64_encode(stream_get_contents($pipes[1]));
-        fclose($pipes[1]);
-
-        return [true, 'OGG data (base64 encoded)', $output];
-    }
-
-    /**
-     * Returns all HTML files in the framework as a single JSON object, including
-     * the views for all installed modules.
-     *
-     * @return [html_file => html]
-     *
-     * @route GET /v2/ui/html
-     */
+   * Returns all HTML files in the framework as a single JSON object, including
+   * the views for all installed modules.
+   *
+   * @return [html_file => html]
+   *
+   * @route GET /v2/ui/html
+   */
     public function html()
     {
         $modules = $this->models->modules('get_installed');

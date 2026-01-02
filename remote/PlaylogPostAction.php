@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Remote;
+namespace OpenBroadcaster\Remote;
 
-class PlaylogPost extends \OpenBroadcaster\Classes\Base\Remote
+class PlaylogPostAction extends BaseAction
 {
     private $PlayersModel;
 
