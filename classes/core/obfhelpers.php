@@ -329,7 +329,7 @@ class OBFHelpers
         if ($media['is_archived'] == 1) {
             $filedir = OB_MEDIA_ARCHIVE;
         } elseif ($media['is_approved'] == 0) {
-            $filedir = OB_MEDIA_UPLOADS;
+            $filedir = OB_MEDIA_UNAPPROVED;
         } else {
             $filedir = OB_MEDIA;
         }

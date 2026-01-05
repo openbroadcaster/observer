@@ -1690,17 +1690,17 @@ class MediaModel extends OBFModel
             if ($original_media) {
                 // if($original_media['is_archived']==1) unlink(OB_MEDIA_ARCHIVE.$media_location); // should not be archived, can not edit archived media.
                 if ($original_media['is_approved'] == 0) {
-                    unlink(OB_MEDIA_UPLOADS . $media_location . $original_media['filename']);
+                    unlink(OB_MEDIA_UNAPPROVED . $media_location . $original_media['filename']);
                 } else {
                     unlink(OB_MEDIA . $media_location . $original_media['filename']);
                 }
             }
 
             // move our file to its home
-            $file_src = OB_ASSETS . '/uploads/' . $file_id;
+            $file_src = OB_UPLOADS . '/' . $file_id;
 
             if ($item['is_approved'] == 0) {
-                $file_dest = OB_MEDIA_UPLOADS . $media_location . $filename;
+                $file_dest = OB_MEDIA_UNAPPROVED . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA . $media_location . $filename;
             }
@@ -1732,13 +1732,13 @@ class MediaModel extends OBFModel
             if ($original_media['is_approved'] == 1) {
                 $file_src = OB_MEDIA . $media_location . $original_media['filename'];
             } else {
-                $file_src = OB_MEDIA_UPLOADS . $media_location . $original_media['filename'];
+                $file_src = OB_MEDIA_UNAPPROVED . $media_location . $original_media['filename'];
             }
 
             if ($item['is_approved'] == 1) {
                 $file_dest = OB_MEDIA . $media_location . $filename;
             } else {
-                $file_dest = OB_MEDIA_UPLOADS . $media_location . $filename;
+                $file_dest = OB_MEDIA_UNAPPROVED . $media_location . $filename;
             }
 
             rename($file_src, $file_dest);
@@ -1858,7 +1858,7 @@ class MediaModel extends OBFModel
                 if ($media['is_archived'] == 1) {
                     $src_dir = OB_MEDIA_ARCHIVE;
                 } elseif ($media['is_approved'] == 0) {
-                    $src_dir = OB_MEDIA_UPLOADS;
+                    $src_dir = OB_MEDIA_UNAPPROVED;
                 } else {
                     $src_dir = OB_MEDIA;
                 }
@@ -1940,7 +1940,7 @@ class MediaModel extends OBFModel
         }
 
         // move file
-        if (!rename(OB_ASSETS . '/uploads/' . $file_id, $dst_file)) {
+        if (!rename(OB_UPLOADS . '/' . $file_id, $dst_file)) {
             return [false, 'Error adding new version.'];
         }
 
@@ -2069,7 +2069,7 @@ class MediaModel extends OBFModel
         if ($media['is_archived'] == 1) {
             $media_dir = OB_MEDIA_ARCHIVE;
         } elseif ($media['is_approved'] == 0) {
-            $media_dir = OB_MEDIA_UPLOADS;
+            $media_dir = OB_MEDIA_UNAPPROVED;
         } else {
             $media_dir = OB_MEDIA;
         }
@@ -2277,7 +2277,7 @@ class MediaModel extends OBFModel
             if ($original_media[$id]['is_archived'] == 1) {
                 $media_file = OB_MEDIA_ARCHIVE . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
             } else {
-                $media_file = OB_MEDIA_UPLOADS . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
+                $media_file = OB_MEDIA_UNAPPROVED . '/' . $original_media[$id]['file_location'][0] . '/' . $original_media[$id]['file_location'][1] . '/' . $original_media[$id]['filename'];
             }
 
             if (file_exists($media_file)) {
@@ -2556,11 +2556,11 @@ class MediaModel extends OBFModel
         $requiredDirs = [];
         $requiredDirs[] = OB_MEDIA . '/' . $charA;
         $requiredDirs[] = OB_MEDIA_ARCHIVE . '/' . $charA;
-        $requiredDirs[] = OB_MEDIA_UPLOADS . '/' . $charA;
+        $requiredDirs[] = OB_MEDIA_UNAPPROVED . '/' . $charA;
 
         $requiredDirs[] = OB_MEDIA . '/' . $charA . '/' . $charB;
         $requiredDirs[] = OB_MEDIA_ARCHIVE . '/' . $charA . '/' . $charB;
-        $requiredDirs[] = OB_MEDIA_UPLOADS . '/' . $charA . '/' . $charB;
+        $requiredDirs[] = OB_MEDIA_UNAPPROVED . '/' . $charA . '/' . $charB;
 
         $requiredDirs[] = OB_THUMBNAILS . '/media';
         $requiredDirs[] = OB_THUMBNAILS . '/media/' . $charA;

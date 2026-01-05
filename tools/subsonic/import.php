@@ -24,7 +24,7 @@ See http://www.subsonic.org/pages/api.jsp for more information regarding authent
     die();
 }
 
-if (!is_writable(OB_ASSETS .'/uploads')) {
+if (!is_writable(OB_UPLOADS)) {
     exit("Uploads directory isn't writable.");
 }
 
@@ -182,9 +182,9 @@ foreach ($artists as $key => $artist) {
     ]);
 
         $file = subsonic_request('download', ['id' => $media_item['id']], false);
-        file_put_contents(OB_ASSETS . '/uploads/' . $file_id, $file);
+        file_put_contents(OB_UPLOADS . '/' . $file_id, $file);
 
-        $info = $models->media('media_info', ['filename' => OB_ASSETS . '/uploads/' . $file_id]);
+        $info = $models->media('media_info', ['filename' => OB_UPLOADS . '/' . $file_id]);
         $db->where('id', $file_id);
         $db->update('uploads', [
       'type' => $info['type'] ?? null,

@@ -521,7 +521,7 @@ class Schedule extends \OpenBroadcaster\Classes\Base\Remote
             } elseif (!empty($media['is_approved'])) {
                 $filerootdir = OB_MEDIA;
             } else {
-                $filerootdir = OB_MEDIA_UPLOADS;
+                $filerootdir = OB_MEDIA_UNAPPROVED;
             }
             $fullfilepath = $filerootdir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
 

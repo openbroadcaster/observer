@@ -13,11 +13,11 @@ class CleanUploads extends Cron
 
     public function run(): bool
     {
-        if (!defined('OB_ASSETS') || !is_dir(OB_ASSETS . '/uploads')) {
+        if (!defined('OB_UPLOADS') || !is_dir(OB_UPLOADS)) {
             return false;
         }
 
-        $uploadsDir = OB_ASSETS . '/uploads/';
+        $uploadsDir = OB_UPLOADS . '/';
 
         $db = \OBFDB::get_instance();
         $db->where('expiry', time(), '<');

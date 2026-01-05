@@ -57,14 +57,14 @@ class Upload extends OBFController
         $id = $this->db->insert('uploads', ['key' => $key, 'expiry' => strtotime('+24 hours')]);
 
         $input = fopen("php://input", "r");
-        $target = fopen(OB_ASSETS . '/uploads/' . $id, "w");
+        $target = fopen(OB_UPLOADS . '/' . $id, "w");
         $realSize = stream_copy_to_stream($input, $target);
         fclose($input);
         fclose($target);
 
         if ($realSize != (int) $_SERVER["CONTENT_LENGTH"]) {
             echo json_encode(['error' => 'File upload was not successful.  Please try again.']);
-            unlink(OB_ASSETS . '/uploads/' . $id);
+            unlink(OB_UPLOADS . '/' . $id);
             return;
         }
 
@@ -75,7 +75,7 @@ class Upload extends OBFController
             } else {
                 echo json_encode(['error' => 'File too large (max size ' . OB_MEDIA_FILESIZE_LIMIT . 'MB).']);
             }
-            unlink(OB_ASSETS . '/uploads/' . $id);
+            unlink(OB_UPLOADS . '/' . $id);
             return;
         }
 
@@ -83,7 +83,7 @@ class Upload extends OBFController
         $result['file_key'] = $key;
 
         // get ID3 data.
-        $id3_data = $models->media('getid3', ['filename' => OB_ASSETS . '/uploads/' . $id]);
+        $id3_data = $models->media('getid3', ['filename' => OB_UPLOADS . '/' . $id]);
         if (count($id3_data) > 0) {
             $result['info'] = ['comments' => $id3_data];
         } else {
@@ -91,7 +91,7 @@ class Upload extends OBFController
         }
 
         // get some useful media information, insert it into the db with our file id/key.
-        $media_info = $this->media_info(OB_ASSETS . '/uploads/' . $id);
+        $media_info = $this->media_info(OB_UPLOADS . '/' . $id);
         $this->db->where('id', $id);
         $this->db->update('uploads', ['format' => $media_info['format'], 'type' => $media_info['type'], 'duration' => $media_info['duration']]);
 

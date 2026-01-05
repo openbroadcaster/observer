@@ -44,7 +44,7 @@ class Emerg extends \OpenBroadcaster\Classes\Base\Remote
                 } elseif (!empty($mediaInfo['is_approved'])) {
                     $filerootdir = OB_MEDIA;
                 } else {
-                    $filerootdir = OB_MEDIA_UPLOADS;
+                    $filerootdir = OB_MEDIA_UNAPPROVED;
                 }
                 $fullfilepath = $filerootdir . '/' . $mediaInfo['file_location'][0] . '/' . $mediaInfo['file_location'][1] . '/' . $mediaInfo['filename'];
                 $filesize = filesize($fullfilepath);

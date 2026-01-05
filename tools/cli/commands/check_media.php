@@ -25,7 +25,7 @@ foreach ($media as $nfo) {
     if ($nfo['is_archived'] == 1) {
         $dir = OB_MEDIA_ARCHIVE;
     } elseif ($nfo['is_approved'] == 0) {
-        $dir = OB_MEDIA_UPLOADS;
+        $dir = OB_MEDIA_UNAPPROVED;
     } else {
         $dir = OB_MEDIA;
     }

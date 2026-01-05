@@ -289,12 +289,12 @@ foreach ($files as $file) {
     'key'    => bin2hex(openssl_random_pseudo_bytes(16)),
     'expiry' => time() + 86400
   ]);
-    copy($file, OB_ASSETS.'/uploads/'.$file_id);
+    copy($file, OB_UPLOADS.'/'.$file_id);
 
     $processing_times['copy file'] = microtime(true) - $timetmp;
     $timetmp = microtime(true);
 
-    $info = $models->media('media_info', ['filename' => OB_ASSETS . '/uploads/' . $file_id]);
+    $info = $models->media('media_info', ['filename' => OB_UPLOADS . '/' . $file_id]);
 
     $processing_times['get media info'] = microtime(true) - $timetmp;
     $timetmp = microtime(true);

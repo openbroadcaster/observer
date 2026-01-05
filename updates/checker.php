@@ -131,8 +131,8 @@ class OBFChecker
         if (!defined('OB_MEDIA')) {
             $errors[] = 'OB_MEDIA (media directory) not set.';
         }
-        if (!defined('OB_MEDIA_UPLOADS')) {
-            $errors[] = 'OB_MEDIA_UPLOADS (media unapproved/uploads directory) not set.';
+        if (!defined('OB_MEDIA_UNAPPROVED')) {
+            $errors[] = 'OB_MEDIA_UNAPPROVED (media unapproved/uploads directory) not set.';
         }
         if (!defined('OB_MEDIA_ARCHIVE')) {
             $errors[] = 'OB_MEDIA_ARCHIVE (media archive directory) not set.';
@@ -242,10 +242,10 @@ class OBFChecker
             $errors[] = 'OB_MEDIA (media directory) is not writable by the server.';
         }
 
-        if (!is_dir(OB_MEDIA_UPLOADS)) {
-            $errors[] = 'OB_MEDIA_UPLOADS (media unapproved/uploads directory) is not a valid directory.';
-        } elseif (!is_writable(OB_MEDIA_UPLOADS)) {
-            $errors[] = 'OB_MEDIA_UPLOADS (media upapproved/uploads directory) is not writable by the server.';
+        if (!is_dir(OB_MEDIA_UNAPPROVED)) {
+            $errors[] = 'OB_MEDIA_UNAPPROVED (media unapproved/uploads directory) is not a valid directory.';
+        } elseif (!is_writable(OB_MEDIA_UNAPPROVED)) {
+            $errors[] = 'OB_MEDIA_UNAPPROVED (media upapproved/uploads directory) is not writable by the server.';
         }
 
         if (!is_dir(OB_MEDIA_ARCHIVE)) {
@@ -266,20 +266,16 @@ class OBFChecker
             $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
         }
 
-        if (!is_dir(OB_ASSETS)) {
-            $errors[] = 'The assets directory does not exist.';
-        } elseif (!is_writable(OB_ASSETS)) {
-            $errors[] = 'The assets directory is not writable by the server.';
-        } elseif (!is_dir(OB_ASSETS . '/uploads')) {
-            $errors[] = 'The assets/uploads directory does not exist.';
-        } elseif (!is_writable(OB_ASSETS . '/uploads')) {
-            $errors[] = 'The assets/uploads directory is not writable by the server.';
+        if (!is_dir(OB_UPLOADS)) {
+            $errors[] = 'The uploads directory does not exist.';
+        } elseif (!is_writable(OB_UPLOADS)) {
+            $errors[] = 'The uploads directory is not writable by the server.';
         }
 
         if (count($errors) == 0) {
             // make sure there are no directories specified within the OB_CACHE directory
             $cache = realpath(OB_CACHE);
-            foreach ([OB_MEDIA, OB_MEDIA_UPLOADS, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_ASSETS] as $dir) {
+            foreach ([OB_MEDIA, OB_MEDIA_UNAPPROVED, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_UPLOADS] as $dir) {
                 if (strpos(realpath($dir), $cache) === 0) {
                     $errors[] = 'Directory ' . $dir . ' is within the cache directory.';
                 }

@@ -44,8 +44,8 @@ if (!defined('OB_SENDFILE_HEADER')) {
 }
 
 // set defaults if not set
-if (!defined('OB_ASSETS')) {
-    define('OB_ASSETS', OB_LOCAL . '/assets');
+if (!defined('OB_UPLOADS')) {
+    define('OB_UPLOADS', OB_LOCAL . '/uploads');
 }
 if (!defined('OB_MEDIA_FILESIZE_LIMIT')) {
     define('OB_MEDIA_FILESIZE_LIMIT', 1024);
