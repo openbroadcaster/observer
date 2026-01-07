@@ -8,6 +8,22 @@ header('OpenBroadcaster-Application: index');
 
 require_once(__DIR__ . '/../components.php');
 
+$req = $_SERVER['REQUEST_URI'];
+if ($req !== '/') {
+  $req = strtok($req, '?');
+
+  // check if module, and serve appropriate module file if so
+  if (strpos(ltrim($req, '/'), 'modules/') === 0 && file_exists(__DIR__ . '/../' . $req)) {
+    $helpers = OBFHelpers::get_instance();
+    OBFHelpers::sendfile(__DIR__ . '/../' . $req);
+  }
+  // no module file? return 404
+  else {
+    http_response_code(404);
+    exit();
+  }
+}
+
 if (is_file('VERSION')) {
     $version = trim(file_get_contents('VERSION'));
 } else {
@@ -118,7 +134,6 @@ foreach ($jsModuleIterator as $file) {
   <?php foreach ($js_files as $file) {
     // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
     $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
-    if (strpos($file, 'modules/') === 0) continue; // TODO: include module files; breaks with nginx config right now since not in public/
   ?>
     <script type="text/javascript" src="<?=$file?>?v=<?=$mtime?>"></script>
   <?php } ?>
@@ -126,7 +141,6 @@ foreach ($jsModuleIterator as $file) {
   <?php foreach ($css_files as $file) {
     // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
     $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
-    if (strpos($file, 'modules/') === 0) continue; // TODO: include module files; breaks with nginx config right now since not in public/
   ?>
     <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=$mtime?>">
   <?php } ?>

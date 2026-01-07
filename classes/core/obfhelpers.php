@@ -295,6 +295,19 @@ class OBFHelpers
 
         if (!$type) {
             $type = mime_content_type($file);
+
+            if ($type === 'text/plain') {
+                $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+                switch($ext) {
+                    case 'css':
+                        $type = 'text/css';
+                        break;
+                    case 'js':
+                        $type = 'text/javascript';
+                        break;
+                }
+            }
         }
 
         header('Content-Type: ' . $type);
