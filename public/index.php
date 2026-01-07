@@ -6,7 +6,7 @@
 // might be used by other things as well.
 header('OpenBroadcaster-Application: index');
 
-require_once('components.php');
+require_once(__DIR__ . '/../components.php');
 
 if (is_file('VERSION')) {
     $version = trim(file_get_contents('VERSION'));
@@ -68,10 +68,14 @@ $js_dependencies = [
   </script>
 <?php
 foreach ($js_dependencies as $file) {
-    echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime($file) . '"></script>' . PHP_EOL;
+    echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime(__DIR__ . '/' . $file) . '"></script>' . PHP_EOL;
 }
 
-// get a recursive list of files in "ui" and add them as js modules
+// get a recursive list of files in "ui" and add them as js modules, change active directory first to be in /public,
+// then back at the very end of this file (we're expected to be in /public for filemtime() to work, but the src attributes
+// need to not include it)
+$activeDir = getcwd();
+chdir(__DIR__);
 $jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('ui'));
 foreach ($jsModuleIterator as $file) {
     if ($file->getExtension() !== 'js') {
@@ -111,12 +115,20 @@ foreach ($jsModuleIterator as $file) {
   });
   </script>
 
-  <?php foreach ($js_files as $file) { ?>
-    <script type="text/javascript" src="<?=$file?>?v=<?=filemtime($file)?>"></script>
+  <?php foreach ($js_files as $file) {
+    // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
+    $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
+    if (strpos($file, 'modules/') === 0) continue; // TODO: include module files; breaks with nginx config right now since not in public/
+  ?>
+    <script type="text/javascript" src="<?=$file?>?v=<?=$mtime?>"></script>
   <?php } ?>
 
-  <?php foreach ($css_files as $file) { ?>
-    <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=filemtime($file)?>">
+  <?php foreach ($css_files as $file) {
+    // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
+    $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
+    if (strpos($file, 'modules/') === 0) continue; // TODO: include module files; breaks with nginx config right now since not in public/
+  ?>
+    <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=$mtime?>">
   <?php } ?>
 
   <?php if (!empty($user->userdata['dyslexia_friendly_font'])) { ?>
@@ -139,3 +151,10 @@ foreach ($jsModuleIterator as $file) {
 
 </body>
 </html>
+
+<?php
+
+// change back to active directory now that filemtime and file loading no longer expects us to be in /public
+chdir($activeDir);
+
+?>

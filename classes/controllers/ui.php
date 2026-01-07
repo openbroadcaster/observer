@@ -114,18 +114,18 @@ class UI extends OBFController
     // TODO this should be in UI model? then we don't need to check theme in this file?
     private function find_core_html_files($theme = false, $dir = '')
     {
-        $files = scandir('html/' . $dir);
+        $files = scandir('public/html/' . $dir);
 
         foreach ($files as $file) {
             $dirfile = ($dir != '' ? $dir . '/' : '') . $file;
-            $fullpath = 'html/' . $dirfile;
+            $fullpath = 'public/html/' . $dirfile;
 
             if (is_dir($fullpath) && $file[0] != '.') {
                 $this->find_core_html_files($theme, $dirfile);
             } elseif (is_file($fullpath) && substr($fullpath, -5) == '.html') {
                 // use theme override?
-                if ($theme && is_file('themes/' . $theme . '/' . $fullpath)) {
-                    $fullpath = 'themes/' . $theme . '/' . $fullpath;
+                if ($theme && is_file('public/themes/' . $theme . '/' . $fullpath)) {
+                    $fullpath = 'public/themes/' . $theme . '/' . $fullpath;
                 }
                 // echo "OB.UI.htmlCache['$dirfile'] = $.ajax({'url': '$fullpath', 'async': false}).responseText;\n";
                 $this->html_data[$dirfile] = file_get_contents($fullpath);

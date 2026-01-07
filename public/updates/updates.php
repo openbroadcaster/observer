@@ -72,7 +72,7 @@ class OBFUpdates
     public function updates()
     {
         if ($this->module === null) {
-            $scandir = scandir('./updates', SCANDIR_SORT_ASCENDING);
+            $scandir = scandir('./public/updates', SCANDIR_SORT_ASCENDING);
         } else {
             $dir = "./modules/{$this->module}/updates/";
             if (file_exists($dir)) {

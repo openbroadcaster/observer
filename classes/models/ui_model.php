@@ -25,9 +25,9 @@ class UIModel extends OBFModel
      */
     public function image_files($args = [])
     {
-        $image_files = $this->find_files('images');
+        $image_files = $this->find_files('public/images');
         if ($this->theme) {
-            $image_files = array_merge($image_files, $this->find_files('themes/' . $this->theme . '/images'));
+            $image_files = array_merge($image_files, $this->find_files('public/themes/' . $this->theme . '/images'));
         } // add our custom theme images.
         foreach ($this->modules as $module) {
             $image_files = array_merge($image_files, $this->find_files('modules/' . $module['dir'] . '/images'));
@@ -42,14 +42,14 @@ class UIModel extends OBFModel
      */
     public function css_files($args = [])
     {
-        if ($this->theme && file_exists('themes/' . $this->theme . '/style.css')) {
+        if ($this->theme && file_exists('public/themes/' . $this->theme . '/style.css')) {
             $css_files[] = 'themes/' . $this->theme . '/style.css';
         } else {
             $css_files[] = 'themes/default/style.css';
         }
 
         if ($this->theme) {
-            $css_files = array_merge($css_files, $this->find_files('themes/' . $this->theme . '/css_theme', 'css'));
+            $css_files = array_merge($css_files, $this->find_files('public/themes/' . $this->theme . '/css_theme', 'css'));
         }
         foreach ($this->modules as $module) {
             $css_files = array_merge($css_files, $this->find_files('modules/' . $module['dir'] . '/css', 'css'));
@@ -64,7 +64,7 @@ class UIModel extends OBFModel
      */
     public function js_files($args = [])
     {
-        $js_files = $this->find_files('js', 'js');
+        $js_files = $this->find_files('public/js', 'js');
         foreach ($this->modules as $module) {
             $js_files = array_merge($js_files, $this->find_files('modules/' . $module['dir'] . '/js', 'js'));
         }
@@ -229,7 +229,12 @@ class UIModel extends OBFModel
             if (is_dir($dirfile) && $file[0] != '.') {
                 $this->find_files($dirfile, $ext, $array);
             } elseif (is_file($dirfile)) {
-                // or add file if file
+                // or add file if file; remove initial public/ if existing since
+                // server will automatically serve from that directory
+                if (strpos($dirfile, 'public/') === 0) {
+                    $dirfile = substr($dirfile, 7);
+                }
+
                 $array[] = $dirfile;
             }
         }

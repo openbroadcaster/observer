@@ -3,8 +3,8 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config.php';
 
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\SolarizedTheme;
@@ -36,7 +36,7 @@ $validCommands = ['check', 'cron run', 'updates list all', 'updates run all'];
 if (in_array($json->command, $validCommands)) {
     $output = [];
     $resultCode = 0;
-    exec(__DIR__ . "/../tools/cli/ob {$json->command}", $output);
+    exec(__DIR__ . "/../../tools/cli/ob {$json->command}", $output);
 
     $output = $converter->convert(implode(PHP_EOL, $output));
     if ($output === "" && $resultCode === 0) {

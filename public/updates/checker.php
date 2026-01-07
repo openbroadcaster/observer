@@ -99,7 +99,7 @@ class OBFChecker
 
     public function config_file_exists()
     {
-        if (!file_exists(__DIR__ . '/../config.php')) {
+        if (!file_exists(__DIR__ . '/../../config.php')) {
             return ['Settings file', 'Settings file (config.php) not found.',2];
         }
         return ['Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0];
@@ -107,7 +107,7 @@ class OBFChecker
 
     public function config_file_valid()
     {
-        require_once(__DIR__ . '/../components.php');
+        require_once(__DIR__ . '/../../components.php');
 
         $fatal_error = false;
         $errors = [];
@@ -291,7 +291,7 @@ class OBFChecker
 
     public function composer()
     {
-        if (!is_dir(__DIR__ . '/../vendor')) {
+        if (!is_dir(__DIR__ . '/../../vendor')) {
             return ['Composer', 'Missing vendor directory. Install composer then run "composer install" to get required dependencies.', 2];
         }
 
@@ -384,7 +384,7 @@ class OBFChecker
         if ($this->module === null) {
             $files = scandir(__DIR__);
         } else {
-            $dir = __DIR__ . "/../modules/{$this->module}/updates/";
+            $dir = __DIR__ . "/../../modules/{$this->module}/updates/";
             if (file_exists($dir)) {
                 $files = scandir($dir);
             } else {

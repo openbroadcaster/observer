@@ -3,7 +3,7 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../config.php';
 
 if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== OB_UPDATES_USER || (! password_verify($_SERVER['PHP_AUTH_PW'], OB_UPDATES_PW))) {
     header('WWW-Authenticate: Basic realm="OpenBroadcaster Updates"');

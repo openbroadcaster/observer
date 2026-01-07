@@ -3,7 +3,7 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_once('components.php');
+require_once(__DIR__ . '/../components.php');
 
 class Remote
 {
@@ -21,8 +21,8 @@ class Remote
         date_default_timezone_set('Etc/UTC');
 
         // require_once all files in 'remote', starting with BaseAction
-        require_once(__DIR__ . '/classes/base/remote.php');
-        $dir = new DirectoryIterator(__DIR__ . '/classes/remote');
+        require_once(__DIR__ . '/../classes/base/remote.php');
+        $dir = new DirectoryIterator(__DIR__ . '/../classes/remote');
         foreach ($dir as $fileinfo) {
             if ($fileinfo->isFile() && $fileinfo->getExtension() == 'php') {
                 require_once($fileinfo->getPathname());
@@ -242,7 +242,7 @@ $remote = new Remote();
 function remoteDebug($data)
 {
     return; // TODO disabled
-    $file = __DIR__ . '/debug.txt';
+    $file = __DIR__ . '/../debug.txt';
     $fh = fopen($file, 'a');
     // add date to data
     $string = '[' . $_REQUEST['id'] . '][' . gmdate('Y-m-d H:i:s') . '] ' . $data . "\n";
