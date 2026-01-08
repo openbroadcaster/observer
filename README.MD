@@ -10,7 +10,7 @@ One OBServer may manage one or more OBPlayers in a synchronized network configur
 
 To install OBServer, you should have a basic understanding of the Linux shell terminal. Once installed, every aspect of your station is managed via OBServer's web interface.
 
-Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/v5.3.2/INSTALL.md) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-observer-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
+Follow our [Install instructions](https://github.com/openbroadcaster/observer/blob/v5.3.6/INSTALL.md) and Post Installation [Troubleshooting guide](https://support.openbroadcaster.com/troubleshooting#post-installation-observer-troubleshooting) for instructions on how to install OpenBroadcaster on your own server.
 
 ## Support
 
@@ -18,7 +18,7 @@ If you need help with OpenBroadcaster, the first place you should visit is our [
 
 ## FAQ
 
-Users have sent us [Frequently Asked Questions](https://openbroadcaster.com/knowledge/frequently-asked-questions) and asked common technical questions.
+Users have sent us [Frequently Asked Questions](https://www.openbroadcaster.com/knowledge/frequently-asked-questions) and asked common technical questions.
 
 ## Documentation
 
@@ -26,7 +26,7 @@ Documentation and user guides can be found in the project's [Support](https://su
 
 ## Change Log
 
-Visit our [Change Log](https://openbroadcaster.com/resource/change-log) and project history.
+Visit our [Change Log](https://www.openbroadcaster.com/resource/change-log) and project history.
 
 ## API Access
 
@@ -62,7 +62,7 @@ We abide by our [Code of Conduct](https://github.com/openbroadcaster/.github/blo
 
 OpenBroadcaster will always be available free of charge. OpenBroadcaster is built and maintained by passionate volunteers and broadcasters, so there may be some delays in getting back to you. We make the best effort possible to resolve issues and answer questions. If you find the software support the project. Your support is greatly appreciated.
 
-Copyright 2012-2024 OpenBroadcaster Inc.
+Copyright 2012-2026 OpenBroadcaster Inc.
 
 Licensed under GNU AGPLv3.  See COPYING.
 
