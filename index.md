@@ -304,6 +304,8 @@ Using the `playlist->new playlist` menu option:
 
 To Edit, Select Playlist and click `Edit` or right click, `Edit`
 
+<a name="dynamic-segment"></a>
+
 ### Dynamic Segment
 
 ![Dynamic Playlist Segments](/observer/img/Dynamic_Segments.png ){: .screenshot}
