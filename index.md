@@ -6,7 +6,7 @@ title: Server
 
 ![image](https://user-images.githubusercontent.com/4603894/210110071-e9890d95-46ec-4c3b-9101-b15335c791ec.png)
 
-# Media and Management Server 
+# Observer Media and Management 
 {:.no_toc}
 
  * TOC
@@ -39,7 +39,7 @@ Here you are able to custom tailor your session. Using the `account` menu to acc
 1. Set `Email`
 1. Set the number of search results to display in media sidebar
 1. Select a `Theme`
-1. Enable Dyslexic Font making it easier to read and comprehend for some users
+1. Enable Dyslexic Font making it easier to read andprehend for some users
 1. `Sidebar Display`to appear from Left or Right
 
 ### Language
@@ -93,7 +93,7 @@ Compatible media codecs and containers are listed below:
 
 ☼ Non-Free Proprietary - Licence Required
 
-The System Administrator may choose to restrict uploads to a subset of the compatible formats. 
+The System Administrator may choose to restrict uploads to a subset of thepatible formats. 
 
 ![Supported Media](/observer/img/media-supported.png ){: .screenshot} 
 
@@ -136,11 +136,11 @@ Complete list of Codecs and Containers
 
 ![Upload Details Screen](/observer/img/uploadDetails.jpg ){: .lowres} 
 
-If available, ID3 data are automatically entered into the upload form, otherwise, enter the __Artist__ , __Title__ , along with other known metadata for each file. For metadata common to all items, the `Copy to All` button may be used to facilitate data entry. Use the __Category__ item to facilitate use of Station ID or Priority Broadcasts messages in [Playlists](#playlist).
+If available, ID3 data are automatically entered into the upload form, otherwise, enter the __Artist__ , __Title__ , along with other known metadata for each file. For metadatamon to all items, the `Copy to All` button may be used to facilitate data entry. Use the __Category__ item to facilitate use of Station ID or Priority Broadcasts messages in [Playlists](#playlist).
 
 Depending on permissions, user may or may not be able to set the *is media approved* flag. If not then the media will remain in an 'awaiting approval' queue until the Moderator approves it for inclusion in the music library. A *Status* of 'Public' will allow others to include the selection in their own Playlists. Private media will not be available for other users to browse. *Dynamic Selection* should be enabled for media such as music and station IDs, so that these items are accessible as Dynamic Playlist selections.
 
-Once metadata have been entered, `Save` the items in the queue to add them the library. Incompatible file formats are flagged, and will not be processed in the upload queue.
+Once metadata have been entered, `Save` the items in the queue to add them the library. Ipatible file formats are flagged, and will not be processed in the upload queue.
 
 ### Uploading
 
@@ -226,7 +226,7 @@ __Simple search mode__, users enter terms (i.e. a word or phrase) in the query w
 
 ![Advanced Search Screen](/observer/img/advancedSearch.jpg ){: .square_redux} 
 
-__Advanced search mode__, users combine search criteria to query and filter large libraries. Query fields and search terms may be specified and added to a list of search criteria.
+__Advanced search mode__, usersbine search criteria to query and filter large libraries. Query fields and search terms may be specified and added to a list of search criteria.
 
 <br/>
 
@@ -254,7 +254,7 @@ __Pro Tip__ Remembers the last search result queries to be modified or save
 
 ## Playlists
 
-A __Playlist__ groups selections from the media library for scheduled or recurring broadcast and may contain individual media selections or combinations of media may be combined in PlayLists.  Buttons along bottom `Add Dynamic Selection` and `Station ID` add functionality.
+A __Playlist__ groups selections from the media library for scheduled or recurring broadcast and may contain individual media selections orbinations of media may bebined in PlayLists.  Buttons along bottom `Add Dynamic Selection` and `Station ID` add functionality.
 
 The `MY` button when selected filters to only show Play Lists created and managed by user.
 
@@ -274,7 +274,7 @@ A basic Playlist that you can add `media`,`dynamic segments`and`station IDs` Pla
 
 ![Advanced Playlist](/observer/img/adv_playlist.jpg ){: .screenshot} 
 
-Mixes Image slide show with accompanying Audio.  Cuts into Video section. Audio and image data may be played simultaneously. Image media will be added to the list on the right of the Playlist items, audio tracks on the left. `zoom in/zoom out` on the schedule of Playlist items to increase the resolution of the time scale.  To create an Advanced Playlist containing `Dynamic Selections`, first create a __Standard__ Playlist containing Dynamic Selections, then add that Playlist to the Advanced Playlist.
+Mixes Image slide show with apanying Audio.  Cuts into Video section. Audio and image data may be played simultaneously. Image media will be added to the list on the right of the Playlist items, audio tracks on the left. `zoom in/zoom out` on the schedule of Playlist items to increase the resolution of the time scale.  To create an Advanced Playlist containing `Dynamic Selections`, first create a __Standard__ Playlist containing Dynamic Selections, then add that Playlist to the Advanced Playlist.
 
 <br/>
 
