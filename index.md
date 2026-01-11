@@ -6,7 +6,7 @@ title: Server
 
 ![image](https://user-images.githubusercontent.com/4603894/210110071-e9890d95-46ec-4c3b-9101-b15335c791ec.png)
 
-# Observer Media and Management 
+# Observer Media and Management #
 {:.no_toc}
 
  * TOC
