@@ -11,11 +11,25 @@ require_once(__DIR__ . '/../components.php');
 $req = $_SERVER['REQUEST_URI'];
 if ($req !== '/') {
   $req = strtok($req, '?');
+  $req = ltrim($req, '/');
 
-  // check if module, and serve appropriate module file if so
-  if (strpos(ltrim($req, '/'), 'modules/') === 0 && file_exists(__DIR__ . '/../' . $req)) {
-    $helpers = OBFHelpers::get_instance();
-    OBFHelpers::sendfile(__DIR__ . '/../' . $req);
+  // check if module, and serve appropriate module file if so; resolve full path first
+  // to prevent directory traversal attacks
+  if (str_starts_with($req, 'modules/')) {
+    $basepath = realpath(__DIR__ . '/../modules/');
+    $reqFile = $basepath . '/' . substr($req, 8);
+    $path = realpath($reqFile);
+
+    var_dump($path);
+    var_dump($basepath);
+
+    if ($path && str_starts_with($path, $basepath . DIRECTORY_SEPARATOR) && is_file($path)) {
+      $helpers = OBFHelpers::get_instance();
+      OBFHelpers::sendfile($path);
+    } else {
+      http_response_code(404);
+      exit();
+    }
   }
   // no module file? return 404
   else {
