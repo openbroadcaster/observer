@@ -20,9 +20,6 @@ if ($req !== '/') {
     $reqFile = $basepath . '/' . substr($req, 8);
     $path = realpath($reqFile);
 
-    var_dump($path);
-    var_dump($basepath);
-
     if ($path && str_starts_with($path, $basepath . DIRECTORY_SEPARATOR) && is_file($path)) {
       $helpers = OBFHelpers::get_instance();
       OBFHelpers::sendfile($path);
