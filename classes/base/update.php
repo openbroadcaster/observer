@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Base;
+namespace OpenBroadcaster\Base;
 
 class Update
 {

@@ -81,7 +81,7 @@ class OBFUpdates
 
             if ($this->module === null) {
                 require(__DIR__ . '/../../classes/updates/' . $version . '.php');
-                $class_name = '\\OpenBroadcaster\\Classes\\Updates\\OBUpdate' . $version;
+                $class_name = '\\OpenBroadcaster\\Updates\\OBUpdate' . $version;
             } else {
                 require("./modules/{$this->module}/updates/{$version}.php");
                 $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));

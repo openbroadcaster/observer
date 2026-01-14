@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Updates;
+namespace OpenBroadcaster\Updates;
 
-use OpenBroadcaster\Classes\Base\Update;
+use OpenBroadcaster\Base\Update;
 
 /*
  * The ISO 639-3 code set is managed by SIL International. Please see https://iso639-3.sil.org/

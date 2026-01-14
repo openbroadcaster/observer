@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Updates;
+namespace OpenBroadcaster\Updates;
 
-use OpenBroadcaster\Classes\Base\Update;
+use OpenBroadcaster\Base\Update;
 
 class OBUpdate20200220 extends Update
 {
