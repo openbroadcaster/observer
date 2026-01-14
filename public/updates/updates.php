@@ -5,17 +5,6 @@
 
 require(__DIR__ . '/checker.php');
 
-class OBUpdate
-{
-    public function __construct()
-    {
-        $this->error = false;
-        $this->db = new OBFDB();
-        $this->load = OBFLoad::get_instance();
-        $this->models = OBFModels::get_instance();
-    }
-}
-
 class OBFUpdates
 {
     public function __construct($module = null)
@@ -72,7 +61,7 @@ class OBFUpdates
     public function updates()
     {
         if ($this->module === null) {
-            $scandir = scandir('./public/updates', SCANDIR_SORT_ASCENDING);
+            $scandir = scandir(__DIR__ . '/../../classes/updates/', SCANDIR_SORT_ASCENDING);
         } else {
             $dir = "./modules/{$this->module}/updates/";
             if (file_exists($dir)) {
@@ -91,8 +80,8 @@ class OBFUpdates
             $version = $file_explode[0];
 
             if ($this->module === null) {
-                require($version . '.php');
-                $class_name = 'OBUpdate' . $version;
+                require(__DIR__ . '/../../classes/updates/' . $version . '.php');
+                $class_name = '\\OpenBroadcaster\\Classes\\Updates\\OBUpdate' . $version;
             } else {
                 require("./modules/{$this->module}/updates/{$version}.php");
                 $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));

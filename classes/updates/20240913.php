@@ -1,0 +1,24 @@
+<?php
+
+namespace OpenBroadcaster\Classes\Updates;
+
+use OpenBroadcaster\Classes\Base\Update;
+
+class OBUpdate20240913 extends Update
+{
+    public function items()
+    {
+        $updates = [];
+        $updates[] = 'Add visibility option to metadata fields.';
+        return $updates;
+    }
+
+    public function run()
+    {
+        $this->db->query('
+            ALTER TABLE `media_metadata` ADD COLUMN `visibility` ENUM("visible", "public") NOT NULL DEFAULT "public";
+        ');
+
+        return true;
+    }
+}

@@ -382,7 +382,7 @@ class OBFChecker
         }
 
         if ($this->module === null) {
-            $files = scandir(__DIR__);
+            $files = scandir(__DIR__ . '/../../classes/updates/');
         } else {
             $dir = __DIR__ . "/../../modules/{$this->module}/updates/";
             if (file_exists($dir)) {

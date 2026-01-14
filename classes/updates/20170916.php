@@ -1,0 +1,29 @@
+<?php
+
+namespace OpenBroadcaster\Classes\Updates;
+
+use OpenBroadcaster\Classes\Base\Update;
+
+class OBUpdate20170916 extends Update
+{
+    public function items()
+    {
+        $updates = [];
+        $updates[] = 'Media table index updates.';
+        return $updates;
+    }
+
+    public function run()
+    {
+        $this->db->query("ALTER TABLE `media` DROP INDEX artist");
+        $this->db->query("ALTER TABLE `media` DROP INDEX title");
+
+        $this->db->query("ALTER TABLE `media` ADD INDEX(`owner_id`)");
+        $this->db->query("ALTER TABLE `media` ADD INDEX(`language_id`)");
+        $this->db->query("ALTER TABLE `media` ADD INDEX(`country_id`)");
+        $this->db->query("ALTER TABLE `media` ADD INDEX(`category_id`)");
+        $this->db->query("ALTER TABLE `media` ADD INDEX(`genre_id`)");
+
+        return true;
+    }
+}
