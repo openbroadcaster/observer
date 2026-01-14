@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Remote;
+namespace OpenBroadcaster\Remote;
 
-class Schedule extends \OpenBroadcaster\Classes\Base\Remote
+class Schedule extends \OpenBroadcaster\Base\Remote
 {
     private $PlayersModel;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Cron;
+namespace OpenBroadcaster\Cron;
 
-use OpenBroadcaster\Classes\Base\Cron;
+use OpenBroadcaster\Base\Cron;
 
 class ExtractThumbnails extends Cron
 {

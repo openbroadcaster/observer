@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Remote;
+namespace OpenBroadcaster\Remote;
 
-class Version extends \OpenBroadcaster\Classes\Base\Remote
+class Version extends \OpenBroadcaster\Base\Remote
 {
     public function __construct(object $player, object $request)
     {

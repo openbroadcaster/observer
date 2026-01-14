@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Cron;
+namespace OpenBroadcaster\Cron;
 
-use OpenBroadcaster\Classes\Base\Cron;
+use OpenBroadcaster\Base\Cron;
 
 // TODO add player monitoring emails to player settings, etc.
 class PlayerNotices extends Cron

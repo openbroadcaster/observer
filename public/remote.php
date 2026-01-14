@@ -150,7 +150,7 @@ class Remote
         $actionPascal = str_replace('_', '', ucwords($action, '_'));
 
         // handle action (overrides any code that follows this block)
-        $actionClass = 'OpenBroadcaster\\Classes\\Remote\\' . $actionPascal;
+        $actionClass = 'OpenBroadcaster\\Remote\\' . $actionPascal;
         if (class_exists($actionClass)) {
             // instantiate and handle request
             $this->action = new $actionClass($this->player, (object) $_REQUEST);

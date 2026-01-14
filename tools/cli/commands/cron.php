@@ -29,7 +29,7 @@ if (isset($argv[3]) && isset($argv[4])) {
         }
 
         require_once('classes/cron/' . $task . '.php');
-        $class = '\\OpenBroadcaster\\Classes\\Cron\\' . $task;
+        $class = '\\OpenBroadcaster\\Cron\\' . $task;
     } else {
         if (! file_exists('modules/' . $module . '/cron/' . $task . '.php')) {
             echo "Task '{$module}/{$task}' not found." . PHP_EOL;
@@ -109,7 +109,7 @@ $jobs = [];
 
 foreach (glob('classes/cron/*.php') as $file) {
     require_once($file);
-    $class = '\\OpenBroadcaster\\Classes\Cron\\' . basename($file, '.php');
+    $class = '\\OpenBroadcaster\Cron\\' . basename($file, '.php');
     $instance = new $class();
 
     $jobs[] = [

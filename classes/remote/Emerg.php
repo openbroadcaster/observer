@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Remote;
+namespace OpenBroadcaster\Remote;
 
-class Emerg extends \OpenBroadcaster\Classes\Base\Remote
+class Emerg extends \OpenBroadcaster\Base\Remote
 {
     public function run(): bool|object
     {

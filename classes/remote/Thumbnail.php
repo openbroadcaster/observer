@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Remote;
+namespace OpenBroadcaster\Remote;
 
-class Thumbnail extends \OpenBroadcaster\Classes\Base\Remote
+class Thumbnail extends \OpenBroadcaster\Base\Remote
 {
     public function run(): bool|object
     {

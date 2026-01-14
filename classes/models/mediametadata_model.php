@@ -25,11 +25,11 @@ class MediaMetadataModel extends OBFModel
                 $column_type = 'boolean';
             }
 
-            $class = 'OpenBroadcaster\Classes\Metadata\\' . ucfirst($column_type);
+            $class = 'OpenBroadcaster\\Metadata\\' . ucfirst($column_type);
 
             // no class? use base class.
             if (!class_exists($class)) {
-                $class = 'OpenBroadcaster\Classes\Base\Metadata';
+                $class = 'OpenBroadcaster\\Base\\Metadata';
             }
 
             // exclude this field if not public and not authenticated

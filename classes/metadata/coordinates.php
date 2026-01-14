@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Metadata;
+namespace OpenBroadcaster\Metadata;
 
-class Coordinates extends \OpenBroadcaster\Classes\Base\Metadata
+class Coordinates extends \OpenBroadcaster\Base\Metadata
 {
     private function isPointData($data)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenBroadcaster\Classes\Metadata;
+namespace OpenBroadcaster\Metadata;
 
-class Boolean extends \OpenBroadcaster\Classes\Base\Metadata
+class Boolean extends \OpenBroadcaster\Base\Metadata
 {
     public function processRow(&$row)
     {
