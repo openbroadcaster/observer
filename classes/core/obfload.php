@@ -66,11 +66,10 @@ class OBFLoad
         }
 
         // scan through modules.
-
         $modules = $this->db->get('modules') ?: [];
 
         foreach ($modules as $module_row) {
-      // get dir, make sure dir exists.
+        // get dir, make sure dir exists.
             $dir = $module_row['directory'];
             if (!is_dir('modules/' . $dir)) {
                 continue;
@@ -78,7 +77,7 @@ class OBFLoad
 
             // get module models.
             if (is_dir('modules/' . $dir . '/models')) {
-        // find module models (can override core models)
+            // find module models (can override core models)
                 $files = scandir('modules/' . $dir . '/models');
 
                 foreach ($files as $file) {
@@ -101,7 +100,7 @@ class OBFLoad
 
             // get module controllers
             if (is_dir('modules/' . $dir . '/controllers')) {
-        // find module controllers (can override core controllers)
+            // find module controllers (can override core controllers)
                 $files = scandir('modules/' . $dir . '/controllers');
 
                 foreach ($files as $file) {
@@ -169,7 +168,13 @@ class OBFLoad
             return false;
         }
         $model_file = $this->model_files[strtolower($model)];
-        $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
+
+        if (strpos($model_file, 'modules/') === 0) {
+            // TODO: Module class namespacing
+            $model_class = '\\' . $model . 'Model';
+        } else {
+            $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
+        }
         require_once($model_file);
         return new $model_class();
     }
@@ -191,7 +196,13 @@ class OBFLoad
             return false;
         }
         $controller_file = $this->controller_files[strtolower($controller)];
-        $controller_class = 'OpenBroadcaster\\Controllers\\' . $controller;
+
+        if (strpos($controller_file, 'modules/') === 0) {
+            // TODO: Module class namespacing
+            $controller_class = '\\' . $controller;
+        } else {
+            $controller_class = 'OpenBroadcaster\\Controllers\\' . $controller;
+        }
         require_once($controller_file);
         return new $controller_class();
     }
