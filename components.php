@@ -89,8 +89,10 @@ date_default_timezone_set('Etc/UTC');
 // Use autoloading to include controller and model files.
 spl_autoload_register(function ($className) {
     $namespaceMap = [
+        'OpenBroadcaster\\Base\\' => __DIR__ . '/classes/base/',
         'OpenBroadcaster\\Models\\' => __DIR__ . '/classes/models/',
         'OpenBroadcaster\\Controllers\\' => __DIR__ . '/classes/controllers/',
+        'OpenBroadcaster\\Metadata\\' => __DIR__ . '/classes/metadata/',
     ];
 
     // TODO: scan through module directories and add them to namespace map.
@@ -119,11 +121,9 @@ spl_autoload_register(function ($className) {
     }
 });
 
-// require class files
+// Require core files (TODO: add to autoloading, will need to be namespaced first).
 $require_from = [
     'classes/core',
-    'classes/base',
-    'classes/metadata'
 ];
 foreach ($require_from as $dir) {
     $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
