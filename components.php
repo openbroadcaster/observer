@@ -86,6 +86,39 @@ if (!defined('OB_TRANSCODE_VIDEO_OGV')) {
 // most things are done in UTC.  sometimes the tz is set to the player's tz for a 'strtotime' +1month,etc. type calculation which considers DST.
 date_default_timezone_set('Etc/UTC');
 
+// Use autoloading to include controller and model files.
+spl_autoload_register(function ($className) {
+    $namespaceMap = [
+        'OpenBroadcaster\\Models\\' => __DIR__ . '/classes/models/',
+        'OpenBroadcaster\\Controllers\\' => __DIR__ . '/classes/controllers/',
+    ];
+
+    // TODO: scan through module directories and add them to namespace map.
+
+    foreach ($namespaceMap as $namespacePrefix => $baseDir) {
+        if (strpos($className, $namespacePrefix) === 0) {
+            $relativeClass = substr($className, strlen($namespacePrefix));
+
+            // Convert further namespace separators to directory separators.
+            $file = $baseDir . str_replace('\\', '/', $relativeClass);
+
+            // Check if model, which has a weird naming scheme (possible TODO, currently breaks
+            // too many things).
+            if (str_ends_with($file, 'Model')) {
+                $file = strtolower(substr($file, 0, -5)) . '_model';
+            }
+
+            // Add extension.
+            $file = $file . '.php';
+
+            if (file_exists($file)) {
+                require_once $file;
+                return;
+            }
+        }
+    }
+});
+
 // require class files
 $require_from = [
     'classes/core',

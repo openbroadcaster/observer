@@ -130,39 +130,6 @@ class OBFLoad
                 $module_instance->callbacks();
             }
         }
-
-        // Use autoloading to include controller and model files.
-        spl_autoload_register(function ($className) {
-            $namespaceMap = [
-                'OpenBroadcaster\\Models\\' => __DIR__ . '/../models/',
-                'OpenBroadcaster\\Controllers\\' => __DIR__ . '/../controllers/',
-            ];
-
-            // TODO: scan through module directories and add them to namespace map.
-
-            foreach ($namespaceMap as $namespacePrefix => $baseDir) {
-                if (strpos($className, $namespacePrefix) === 0) {
-                    $relativeClass = substr($className, strlen($namespacePrefix));
-
-                    // Convert further namespace separators to directory separators.
-                    $file = $baseDir . str_replace('\\', '/', $relativeClass);
-
-                    // Check if model, which has a weird naming scheme (possible TODO, currently breaks
-                    // too many things).
-                    if (str_ends_with($file, 'Model')) {
-                        $file = substr($file, 0, -5) . '_model';
-                    }
-
-                    // Add extension.
-                    $file = $file . '.php';
-
-                    if (file_exists($file)) {
-                        require_once $file;
-                        return;
-                    }
-                }
-            }
-        });
     }
 
 
@@ -209,6 +176,7 @@ class OBFLoad
         } else {
             $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
         }
+
         return new $model_class();
     }
 
