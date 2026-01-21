@@ -20,15 +20,6 @@ class Remote
         // required for some functions
         date_default_timezone_set('Etc/UTC');
 
-        // require_once all files in 'remote', starting with BaseAction
-        require_once(__DIR__ . '/../classes/base/remote.php');
-        $dir = new DirectoryIterator(__DIR__ . '/../classes/remote');
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->isFile() && $fileinfo->getExtension() == 'php') {
-                require_once($fileinfo->getPathname());
-            }
-        }
-
         remoteDebug('remote.php called by ' . $_SERVER['REMOTE_ADDR'] . ' with ' . json_encode($_REQUEST));
 
         $this->load = OBFLoad::get_instance();

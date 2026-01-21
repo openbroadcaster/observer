@@ -94,6 +94,7 @@ spl_autoload_register(function ($className) {
         'OpenBroadcaster\\Controllers\\' => __DIR__ . '/classes/controllers/',
         'OpenBroadcaster\\Metadata\\' => __DIR__ . '/classes/metadata/',
         'OpenBroadcaster\\Cron\\' => __DIR__ . '/classes/cron/',
+        'OpenBroadcaster\\Remote\\' => __DIR__ . '/classes/remote/',
     ];
 
     $modulesDir = __DIR__ . '/modules/';
