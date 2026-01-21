@@ -10,6 +10,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class SettingsModel extends OBFModel
 {
     /**

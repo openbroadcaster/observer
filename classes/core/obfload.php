@@ -169,9 +169,9 @@ class OBFLoad
             return false;
         }
         $model_file = $this->model_files[strtolower($model)];
+        $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
         require_once($model_file);
-        $model_name = $model . 'Model';
-        return new $model_name();
+        return new $model_class();
     }
 
     /**
@@ -191,7 +191,8 @@ class OBFLoad
             return false;
         }
         $controller_file = $this->controller_files[strtolower($controller)];
+        $controller_class = 'OpenBroadcaster\\Controllers\\' . $controller;
         require_once($controller_file);
-        return new $controller();
+        return new $controller_class();
     }
 }

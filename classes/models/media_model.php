@@ -9,6 +9,11 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+use OBFHelpers;
+
 class MediaModel extends OBFModel
 {
     /**
@@ -32,13 +37,13 @@ class MediaModel extends OBFModel
 
         // get our mime data
         if (defined('OB_MAGIC_FILE')) {
-            $finfo = new finfo(FILEINFO_MIME_TYPE, OB_MAGIC_FILE);
+            $finfo = new \finfo(FILEINFO_MIME_TYPE, OB_MAGIC_FILE);
             $mime = strtolower($finfo->file($args['filename']));
         }
 
         // did ob_magic_file cause problems?
         if (!defined('OB_MAGIC_FILE') || $mime == '' || $mime == 'application/octet-stream') {
-            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mime = strtolower($finfo->file($args['filename']));
         }
 
@@ -1152,7 +1157,7 @@ class MediaModel extends OBFModel
         $playlists = $this->db->get('playlists_items');
 
         foreach ($playlists as $playlist) {
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'playlist';
             $used_data->id = $playlist['playlist_id'];
             $used_data->name = $playlist['name'];
@@ -1203,7 +1208,7 @@ class MediaModel extends OBFModel
                     $media_search = $this('search', ['params' => ['limit' => 1,'query' => json_decode($item['properties'], true)['query'],'id' => $id]]);
 
                     if ($media_search && $media_search[1] > 0) {
-                        $used_data = new stdClass();
+                        $used_data = new \stdClass();
                         $used_data->where = 'playlist_dynamic';
                         $used_data->id = $item['id'];
                         $used_data->name = $item['name'];
@@ -1228,7 +1233,7 @@ class MediaModel extends OBFModel
                 $info['can_delete'] = false;
             }
 
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'player';
             $used_data->id = $station_id['player_id'];
             $used_data->name = $station_id['name'];
@@ -1245,7 +1250,7 @@ class MediaModel extends OBFModel
                 $info['can_delete'] = false;
             }
 
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'alert';
             $used_data->name = $alert['name'];
             $used_data->user_id = $alert['user_id'];
@@ -1269,7 +1274,7 @@ class MediaModel extends OBFModel
                 $info['can_delete'] = false;
             }
 
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'show';
             $used_data->name = $show['player_name'];
             $used_data->id = $show['id'];
@@ -2588,10 +2593,10 @@ class MediaModel extends OBFModel
         $filename = $args['filename'];
 
         require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
-        $getID3 = new getID3();
+        $getID3 = new \getID3();
 
         $info = $getID3->analyze($filename);
-        getid3_lib::CopyTagsToComments($info);
+        \getid3_lib::CopyTagsToComments($info);
 
         $id3 = $this->id3makesafe($info);
 

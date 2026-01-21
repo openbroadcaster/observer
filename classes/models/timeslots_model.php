@@ -8,6 +8,14 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use DateTime;
+use DateTimeZone;
+use DateInterval;
+
+use OBFModel;
+
 class TimeslotsModel extends OBFModel
 {
     public function __construct()

@@ -9,6 +9,10 @@
  *
  * @package Controller
  */
+namespace OpenBroadcaster\Controllers;
+
+use OBFController;
+
 class UI extends OBFController
 {
     public function __construct()

@@ -8,6 +8,13 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use DateTime;
+use DateTimeZone;
+
+use OBFModel;
+
 class PlayersModel extends OBFModel
 {
     /**

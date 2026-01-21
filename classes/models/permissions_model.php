@@ -8,6 +8,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class PermissionsModel extends OBFModel
 {
     public $permission_cache = false;

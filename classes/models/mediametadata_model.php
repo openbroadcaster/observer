@@ -8,6 +8,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class MediaMetadataModel extends OBFModel
 {
     /**

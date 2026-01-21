@@ -9,6 +9,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class UsersModel extends OBFModel
 {
     /**
@@ -331,7 +335,7 @@ class UsersModel extends OBFModel
 
         // email validation
         //T The email address you have provided is not valid.
-        if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) {
+        if (!\PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) {
             return [false, 'The email address you have provided is not valid.'];
         }
 
@@ -660,7 +664,7 @@ class UsersModel extends OBFModel
             return [false,'One or more required fields were not filled.'];
         }
         //T The email address you have provided is not valid.
-        if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($data['email'])) {
+        if (!\PHPMailer\PHPMailer\PHPMailer::ValidateAddress($data['email'])) {
             return [false,'The email address you have provided is not valid.'];
         }
 
@@ -832,7 +836,7 @@ class UsersModel extends OBFModel
         if (empty($name) || empty($email) || empty($username)) {
             return [false,'One or more required fields were not filled.'];
         }
-        if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) {
+        if (!\PHPMailer\PHPMailer\PHPMailer::ValidateAddress($email)) {
             return [false,'The email address you have provided is not valid.'];
         }
 
@@ -897,7 +901,7 @@ class UsersModel extends OBFModel
      */
     public function email_username_password($email, $username, $password)
     {
-        $mailer = new PHPMailer\PHPMailer\PHPMailer();
+        $mailer = new \PHPMailer\PHPMailer\PHPMailer();
 
         if (defined('OB_EMAIL_HOST') && defined('OB_EMAIL_USER') && defined('OB_EMAIL_PASS') && defined('OB_EMAIL_TYPE') && defined('OB_EMAIL_PORT')) {
             // WRFL custom code for SMTP email

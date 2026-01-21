@@ -9,6 +9,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class UploadsModel extends OBFModel
 {
     /**

@@ -8,6 +8,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class UpdatesModel extends OBFModel
 {
     // get an array of update classes.

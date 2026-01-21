@@ -8,6 +8,12 @@
  *
  * @package Controller
  */
+namespace OpenBroadcaster\Controllers;
+
+use OBFController;
+use OBFHelpers;
+use OBFIO;
+
 class Stream extends OBFController
 {
     private $io;

@@ -8,6 +8,12 @@
  *
  * @package Controller
  */
+namespace OpenBroadcaster\Controllers;
+
+use OBFController;
+use OBFHelpers;
+use OBFIO;
+
 class Downloads extends OBFController
 {
     private $io;

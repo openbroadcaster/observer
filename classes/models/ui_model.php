@@ -9,6 +9,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class UIModel extends OBFModel
 {
     public function __construct()

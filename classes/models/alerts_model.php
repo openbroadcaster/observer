@@ -9,6 +9,11 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+use OBFHelpers;
+
 class AlertsModel extends OBFModel
 {
     /**

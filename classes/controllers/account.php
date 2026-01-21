@@ -11,6 +11,10 @@
  *
  * @package Controller
  */
+namespace OpenBroadcaster\Controllers;
+
+use OBFController;
+
 class Account extends OBFController
 {
     public function __construct()

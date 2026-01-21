@@ -8,6 +8,10 @@
  *
  * @package Controller
  */
+namespace OpenBroadcaster\Controllers;
+
+use OBFController;
+
 class Metadata extends OBFController
 {
     public $media_types = ['audio','image','video'];

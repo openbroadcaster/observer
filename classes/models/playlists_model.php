@@ -9,6 +9,10 @@
  *
  * @package Model
  */
+namespace OpenBroadcaster\Models;
+
+use OBFModel;
+
 class PlaylistsModel extends OBFModel
 {
     /**
@@ -235,7 +239,7 @@ class PlaylistsModel extends OBFModel
                 $info['can_delete'] = false;
             }
 
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'show';
             $used_data->name = $show['player_name']; // for player
             $used_data->id = $show['id'];
@@ -251,7 +255,7 @@ class PlaylistsModel extends OBFModel
         $players = $this->db->get('players');
 
         foreach ($players as $player) {
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'default playlist';
             $used_data->name = $player['player_name']; // for player
             $used_data->id = $player['player_id'];
@@ -266,7 +270,7 @@ class PlaylistsModel extends OBFModel
         $liveassist_playlists = $this->db->get('playlists_liveassist_buttons');
 
         foreach ($liveassist_playlists as $playlist) {
-            $used_data = new stdClass();
+            $used_data = new \stdClass();
             $used_data->where = 'liveassist buttons';
             $used_data->name = $playlist['name']; // for playlist
             $used_data->id = $playlist['id'];
