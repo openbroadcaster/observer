@@ -93,6 +93,7 @@ spl_autoload_register(function ($className) {
         'OpenBroadcaster\\Models\\' => __DIR__ . '/classes/models/',
         'OpenBroadcaster\\Controllers\\' => __DIR__ . '/classes/controllers/',
         'OpenBroadcaster\\Metadata\\' => __DIR__ . '/classes/metadata/',
+        'OpenBroadcaster\\Cron\\' => __DIR__ . '/classes/cron/',
     ];
 
     // TODO: scan through module directories and add them to namespace map.

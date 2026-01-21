@@ -21,24 +21,16 @@ if (isset($argv[3]) && isset($argv[4])) {
     $forceRun = ($argv[5] ?? '') === 'now';
 
     // Get cron job class instance.
-    require_once('classes/base/cron.php');
     if ($module === 'core') {
-        if (! file_exists('classes/cron/' . $task . '.php')) {
-            echo "Task '{$module}/{$task}' not found." . PHP_EOL;
-            exit(1);
-        }
-
-        require_once('classes/cron/' . $task . '.php');
         $class = '\\OpenBroadcaster\\Cron\\' . $task;
     } else {
-        if (! file_exists('modules/' . $module . '/cron/' . $task . '.php')) {
-            echo "Task '{$module}/{$task}' not found." . PHP_EOL;
-            exit(1);
-        }
-
-        require_once('modules/' . $module . '/cron/' . $task . '.php');
         $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
         $class = '\\OpenBroadcaster\\Modules\\' . $moduleNamespace . '\\Cron\\' . $task;
+    }
+
+    if (! class_exists($class)) {
+        echo "Task '{$module}/{$task}' not found." . PHP_EOL;
+        exit(1);
     }
 
     $job = new $class();
