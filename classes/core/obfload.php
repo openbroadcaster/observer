@@ -130,6 +130,39 @@ class OBFLoad
                 $module_instance->callbacks();
             }
         }
+
+        // Use autoloading to include controller and model files.
+        spl_autoload_register(function ($className) {
+            $namespaceMap = [
+                'OpenBroadcaster\\Models\\' => __DIR__ . '/../models/',
+                'OpenBroadcaster\\Controllers\\' => __DIR__ . '/../controllers/',
+            ];
+
+            // TODO: scan through module directories and add them to namespace map.
+
+            foreach ($namespaceMap as $namespacePrefix => $baseDir) {
+                if (strpos($className, $namespacePrefix) === 0) {
+                    $relativeClass = substr($className, strlen($namespacePrefix));
+
+                    // Convert further namespace separators to directory separators.
+                    $file = $baseDir . str_replace('\\', '/', $relativeClass);
+
+                    // Check if model, which has a weird naming scheme (possible TODO, currently breaks
+                    // too many things).
+                    if (str_ends_with($file, 'Model')) {
+                        $file = substr($file, 0, -5) . '_model';
+                    }
+
+                    // Add extension.
+                    $file = $file . '.php';
+
+                    if (file_exists($file)) {
+                        require_once $file;
+                        return;
+                    }
+                }
+            }
+        });
     }
 
 
@@ -170,12 +203,12 @@ class OBFLoad
         $model_file = $this->model_files[strtolower($model)];
 
         if (strpos($model_file, 'modules/') === 0) {
-            // TODO: Module class namespacing
+            // TODO: Module class namespacing, then no longer needs to require file.
             $model_class = '\\' . $model . 'Model';
+            require_once($model_file);
         } else {
             $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
         }
-        require_once($model_file);
         return new $model_class();
     }
 
@@ -198,12 +231,12 @@ class OBFLoad
         $controller_file = $this->controller_files[strtolower($controller)];
 
         if (strpos($controller_file, 'modules/') === 0) {
-            // TODO: Module class namespacing
+            // TODO: Module class namespacing, then no longer needs to require file.
             $controller_class = '\\' . $controller;
+            require_once($controller_file);
         } else {
             $controller_class = 'OpenBroadcaster\\Controllers\\' . $controller;
         }
-        require_once($controller_file);
         return new $controller_class();
     }
 }
