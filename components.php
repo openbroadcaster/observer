@@ -96,7 +96,14 @@ spl_autoload_register(function ($className) {
         'OpenBroadcaster\\Cron\\' => __DIR__ . '/classes/cron/',
     ];
 
-    // TODO: scan through module directories and add them to namespace map.
+    $modulesDir = __DIR__ . '/modules/';
+    foreach (scandir($modulesDir) as $module) {
+        if ($module !== '.' && $module !== '..' && is_dir($modulesDir . $module)) {
+            $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
+            $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}\\Cron\\"] = $modulesDir . $module . '/cron/';
+            // TODO: Additional module namespacing to add to map.
+        }
+    }
 
     foreach ($namespaceMap as $namespacePrefix => $baseDir) {
         if (strpos($className, $namespacePrefix) === 0) {
