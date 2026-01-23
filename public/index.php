@@ -13,14 +13,24 @@ if ($req !== '/') {
   $req = strtok($req, '?');
   $req = ltrim($req, '/');
 
-  // check if module, and serve appropriate module file if so; resolve full path first
-  // to prevent directory traversal attacks
+  // Check if module, and serve appropriate module file if so; resolve full path first
+  // to prevent directory traversal attacks.
   if (str_starts_with($req, 'modules/')) {
     $basepath = realpath(__DIR__ . '/../modules/');
     $reqFile = $basepath . '/' . substr($req, 8);
     $path = realpath($reqFile);
 
     if ($path && str_starts_with($path, $basepath . DIRECTORY_SEPARATOR) && is_file($path)) {
+      // Some old modules may directly call to php files (this is very bad practice).  If so,
+      // simply include them and then die.
+      $ext = pathinfo($path, PATHINFO_EXTENSION);
+      if ($ext === 'php') {
+        include_once($path);
+
+        die();
+      }
+
+      // If no PHP file, simply send the file to the client.
       $helpers = OBFHelpers::get_instance();
       OBFHelpers::sendfile($path);
     } else {
@@ -28,7 +38,7 @@ if ($req !== '/') {
       exit();
     }
   }
-  // no module file? return 404
+  // No module file? Return 404
   else {
     http_response_code(404);
     exit();

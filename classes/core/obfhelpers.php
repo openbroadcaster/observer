@@ -286,6 +286,15 @@ class OBFHelpers
      */
     public static function sendfile($file, $type = null, $download = false)
     {
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if ($ext === 'php') {
+            // Exposing php files through sendfile() should not be possible, but kill off
+            // the process instead of sending it just in case.
+            http_response_code(500);
+
+            die();
+        }
+
         if ($download) {
             $type = 'application/octet-stream';
             header("Access-Control-Allow-Origin: *");
@@ -297,8 +306,6 @@ class OBFHelpers
             $type = mime_content_type($file);
 
             if ($type === 'text/plain') {
-                $ext = pathinfo($file, PATHINFO_EXTENSION);
-
                 switch($ext) {
                     case 'css':
                         $type = 'text/css';
