@@ -952,7 +952,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status'];
+        $allowed_filters = ['id','comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1034,6 +1034,7 @@ class MediaModel extends OBFModel
             $column_array['duration'] = 'media.duration';
             $column_array['comments'] = 'media.comments';
             $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
+            $column_array['id'] = 'media.id';
 
             $metadata_fields = $this->models->mediametadata('get_all');
             $metadata_defaults = [];
