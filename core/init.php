@@ -26,17 +26,17 @@ if (!defined('OB_ERROR_SERVER')) {
     define('OB_ERROR_SERVER', 6);
 }
 if (!defined('OB_LOCAL')) {
-    define('OB_LOCAL', __DIR__);
+    define('OB_LOCAL', realpath(__DIR__ . '/../'));
 }
 
 // use same working directory regardless of where our script is.
 chdir(OB_LOCAL);
 
 // load config
-if (!file_exists('config.php')) {
+if (!file_exists(OB_LOCAL . '/config.php')) {
     die('Settings file (config.php) not found.');
 }
-require_once('config.php');
+require_once(OB_LOCAL . '/config.php');
 
 // set appropriate SENDFILE header based on server
 if (!defined('OB_SENDFILE_HEADER')) {
@@ -89,15 +89,15 @@ date_default_timezone_set('Etc/UTC');
 // Use autoloading to include controller and model files.
 spl_autoload_register(function ($className) {
     $namespaceMap = [
-        'OpenBroadcaster\\Base\\' => __DIR__ . '/classes/base/',
-        'OpenBroadcaster\\Models\\' => __DIR__ . '/classes/models/',
-        'OpenBroadcaster\\Controllers\\' => __DIR__ . '/classes/controllers/',
-        'OpenBroadcaster\\Metadata\\' => __DIR__ . '/classes/metadata/',
-        'OpenBroadcaster\\Cron\\' => __DIR__ . '/classes/cron/',
-        'OpenBroadcaster\\Remote\\' => __DIR__ . '/classes/remote/',
+        'OpenBroadcaster\\Base\\' => OB_LOCAL . '/core/base/',
+        'OpenBroadcaster\\Models\\' => OB_LOCAL . '/core/models/',
+        'OpenBroadcaster\\Controllers\\' => OB_LOCAL . '/core/controllers/',
+        'OpenBroadcaster\\Metadata\\' => OB_LOCAL . '/core/metadata/',
+        'OpenBroadcaster\\Cron\\' => OB_LOCAL . '/core/cron/',
+        'OpenBroadcaster\\Remote\\' => OB_LOCAL . '/core/remote/',
     ];
 
-    $modulesDir = __DIR__ . '/modules/';
+    $modulesDir = OB_LOCAL . '/modules/';
     foreach (scandir($modulesDir) as $module) {
         if ($module !== '.' && $module !== '..' && is_dir($modulesDir . $module)) {
             $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
@@ -132,7 +132,7 @@ spl_autoload_register(function ($className) {
 
 // Require core files (TODO: add to autoloading, will need to be namespaced first).
 $require_from = [
-    'classes/core',
+    'core/core',
 ];
 foreach ($require_from as $dir) {
     $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));

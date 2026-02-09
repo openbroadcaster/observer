@@ -46,7 +46,7 @@ class UIModel extends OBFModel
      */
     public function css_files($args = [])
     {
-        if ($this->theme && file_exists('public/themes/' . $this->theme . '/style.css')) {
+        if ($this->theme && file_exists(OB_LOCAL . '/public/themes/' . $this->theme . '/style.css')) {
             $css_files[] = 'themes/' . $this->theme . '/style.css';
         } else {
             $css_files[] = 'themes/default/style.css';
@@ -83,7 +83,7 @@ class UIModel extends OBFModel
      */
     public function get_themes($args = [])
     {
-        $dirs = scandir('themes');
+        $dirs = scandir(OB_LOCAL . '/public/themes');
 
         $themes = [];
 
@@ -91,11 +91,11 @@ class UIModel extends OBFModel
             if ($dir[0] == '.' && !is_dir($dir)) {
                 continue;
             }
-            if (!file_exists('themes/' . $dir . '/style.css')) {
+            if (!file_exists(OB_LOCAL . '/public/themes/' . $dir . '/style.css')) {
                 continue;
             }
 
-            $css = file_get_contents('themes/' . $dir . '/style.css');
+            $css = file_get_contents(OB_LOCAL . '/public/themes/' . $dir . '/style.css');
             $comment = [];
 
             // https://www.w3.org/TR/CSS2/grammar.html#scanner

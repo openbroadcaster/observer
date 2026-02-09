@@ -61,9 +61,9 @@ class OBFUpdates
     public function updates()
     {
         if ($this->module === null) {
-            $scandir = scandir(__DIR__ . '/../../classes/updates/', SCANDIR_SORT_ASCENDING);
+            $scandir = scandir(OB_LOCAL . '/core/updates/', SCANDIR_SORT_ASCENDING);
         } else {
-            $dir = "./modules/{$this->module}/updates/";
+            $dir = OB_LOCAL . "/modules/{$this->module}/updates/";
             if (file_exists($dir)) {
                 $scandir = scandir($dir, SCANDIR_SORT_ASCENDING);
             } else {
@@ -80,10 +80,10 @@ class OBFUpdates
             $version = $file_explode[0];
 
             if ($this->module === null) {
-                require(__DIR__ . '/../../classes/updates/' . $version . '.php');
+                require(OB_LOCAL . '/core/updates/' . $version . '.php');
                 $class_name = '\\OpenBroadcaster\\Updates\\OBUpdate' . $version;
             } else {
-                require("./modules/{$this->module}/updates/{$version}.php");
+                require(OB_LOCAL . "/modules/{$this->module}/updates/{$version}.php");
                 $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));
                 $class_name = "{$moduleClass}Update{$version}";
             }

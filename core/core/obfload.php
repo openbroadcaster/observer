@@ -30,13 +30,13 @@ class OBFLoad
         $this->controller_files = [];
 
         // find core models.
-        $files = scandir('classes/models');
+        $files = scandir(OB_LOCAL . '/core/models');
 
         foreach ($files as $file) {
             if ($file == '..' || $file == '.') {
                 continue;
             }
-            if (!is_file('classes/models/' . $file)) {
+            if (!is_file(OB_LOCAL . '/core/models/' . $file)) {
                 continue;
             }
             if (substr($file, -4) != '.php') {
@@ -46,23 +46,23 @@ class OBFLoad
             if (count($name_split) != 2) {
                 continue;
             }
-            $this->model_files[$name_split[0]] = 'classes/models/' . $file;
+            $this->model_files[$name_split[0]] = 'core/models/' . $file;
         }
 
         // find core controllers.
-        $files = scandir('classes/controllers');
+        $files = scandir(OB_LOCAL . '/core/controllers');
 
         foreach ($files as $file) {
             if ($file == '..' || $file == '.') {
                 continue;
             }
-            if (!is_file('classes/controllers/' . $file)) {
+            if (!is_file(OB_LOCAL . '/core/controllers/' . $file)) {
                 continue;
             }
             if (substr($file, -4) != '.php') {
                 continue;
             }
-            $this->controller_files[substr($file, 0, -4)] = 'classes/controllers/' . $file;
+            $this->controller_files[substr($file, 0, -4)] = 'core/controllers/' . $file;
         }
 
         // scan through modules.
@@ -193,9 +193,11 @@ class OBFLoad
         if (!preg_match('/^[a-z0-9_]+$/i', $controller)) {
             return false;
         }
+
         if (!isset($this->controller_files[strtolower($controller)])) {
             return false;
         }
+
         $controller_file = $this->controller_files[strtolower($controller)];
 
         if (strpos($controller_file, 'modules/') === 0) {

@@ -6,7 +6,7 @@
 // might be used by other things as well.
 header('OpenBroadcaster-Application: index');
 
-require_once(__DIR__ . '/../components.php');
+require_once(__DIR__ . '/../core/init.php');
 
 $req = $_SERVER['REQUEST_URI'];
 if ($req !== '/') {

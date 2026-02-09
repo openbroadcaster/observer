@@ -5,7 +5,7 @@
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-require_once('updates.php');
+require_once(__DIR__ . '/updates.php');
 
 if (empty($_GET['run']) || $_GET['run'] != 1) {
     $run = false;
