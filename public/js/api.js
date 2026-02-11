@@ -161,16 +161,19 @@ OB.API.postSuccess = function (controller, action, callback_function, sdata, dat
     });
     if (has_error) {
         //T Access denied while attempting to complete your request. Please refresh your web browser, log out, log back in, and try again. If the problem persists, please contact the system administrator.
-        if (has_error.no == 4 && has_error.uid != 0)
+        if (has_error.no == 4 && has_error.uid != 0) {
             OB.UI.alert(
                 "Access denied while attempting to complete your request. Please refresh your web browser, log out, log back in, and try again. If the problem persists, please contact the system administrator.",
             );
-        else if (has_error.no == 4 && has_error.uid == 0) OB.Account.loginWindow();
+        } else if (has_error.no == 4 && has_error.uid == 0) {
+            OB.Account.loginWindow();
+        }
         //T An unknown error occurred while attempting to complete your request. Please refresh your web browser and try again. If the problem persists, please contact the system administrator.
-        else
+        else {
             OB.UI.alert(
                 "An unknown error occurred while attempting to complete your request. Please refresh your web browser and try again. If the problem persists, please contact the system administrator.",
             );
+        }
 
         return false;
     }
