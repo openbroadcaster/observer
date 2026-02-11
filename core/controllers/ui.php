@@ -109,7 +109,7 @@ class UI extends OBFController
         $this->html_data = [];
         $this->find_core_html_files($this->theme);
         foreach ($modules as $module) {
-            $this->find_module_html_files('modules/' . $module['dir'] . '/html');
+            $this->find_module_html_files(OB_LOCAL . '/modules/' . $module['dir'] . '/html');
         }
 
         return [true,'HTML Data',$this->html_data];
@@ -118,18 +118,18 @@ class UI extends OBFController
     // TODO this should be in UI model? then we don't need to check theme in this file?
     private function find_core_html_files($theme = false, $dir = '')
     {
-        $files = scandir('public/html/' . $dir);
+        $files = scandir(OB_LOCAL . '/public/html/' . $dir);
 
         foreach ($files as $file) {
             $dirfile = ($dir != '' ? $dir . '/' : '') . $file;
-            $fullpath = 'public/html/' . $dirfile;
+            $fullpath = OB_LOCAL . '/public/html/' . $dirfile;
 
             if (is_dir($fullpath) && $file[0] != '.') {
                 $this->find_core_html_files($theme, $dirfile);
             } elseif (is_file($fullpath) && substr($fullpath, -5) == '.html') {
                 // use theme override?
-                if ($theme && is_file('public/themes/' . $theme . '/' . $fullpath)) {
-                    $fullpath = 'public/themes/' . $theme . '/' . $fullpath;
+                if ($theme && is_file(OB_LOCAL . '/public/themes/' . $theme . '/' . $fullpath)) {
+                    $fullpath = OB_LOCAL . '/public/themes/' . $theme . '/' . $fullpath;
                 }
                 // echo "OB.UI.htmlCache['$dirfile'] = $.ajax({'url': '$fullpath', 'async': false}).responseText;\n";
                 $this->html_data[$dirfile] = file_get_contents($fullpath);

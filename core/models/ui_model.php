@@ -29,12 +29,12 @@ class UIModel extends OBFModel
      */
     public function image_files($args = [])
     {
-        $image_files = $this->find_files('public/images');
+        $image_files = $this->find_files(OB_LOCAL . '/public/images');
         if ($this->theme) {
-            $image_files = array_merge($image_files, $this->find_files('public/themes/' . $this->theme . '/images'));
+            $image_files = array_merge($image_files, $this->find_files(OB_LOCAL . '/public/themes/' . $this->theme . '/images'));
         } // add our custom theme images.
         foreach ($this->modules as $module) {
-            $image_files = array_merge($image_files, $this->find_files('modules/' . $module['dir'] . '/images'));
+            $image_files = array_merge($image_files, $this->find_files(OB_LOCAL . '/modules/' . $module['dir'] . '/images'));
         }
         return $image_files;
     }
@@ -53,10 +53,10 @@ class UIModel extends OBFModel
         }
 
         if ($this->theme) {
-            $css_files = array_merge($css_files, $this->find_files('public/themes/' . $this->theme . '/css_theme', 'css'));
+            $css_files = array_merge($css_files, $this->find_files(OB_LOCAL . '/public/themes/' . $this->theme . '/css_theme', 'css'));
         }
         foreach ($this->modules as $module) {
-            $css_files = array_merge($css_files, $this->find_files('modules/' . $module['dir'] . '/css', 'css'));
+            $css_files = array_merge($css_files, $this->find_files(OB_LOCAL . '/modules/' . $module['dir'] . '/css', 'css'));
         }
         return $css_files;
     }
@@ -68,9 +68,9 @@ class UIModel extends OBFModel
      */
     public function js_files($args = [])
     {
-        $js_files = $this->find_files('public/js', 'js');
+        $js_files = $this->find_files(OB_LOCAL . '/public/js', 'js');
         foreach ($this->modules as $module) {
-            $js_files = array_merge($js_files, $this->find_files('modules/' . $module['dir'] . '/js', 'js'));
+            $js_files = array_merge($js_files, $this->find_files(OB_LOCAL . '/modules/' . $module['dir'] . '/js', 'js'));
         }
 
         return $js_files;
@@ -233,10 +233,18 @@ class UIModel extends OBFModel
             if (is_dir($dirfile) && $file[0] != '.') {
                 $this->find_files($dirfile, $ext, $array);
             } elseif (is_file($dirfile)) {
-                // or add file if file; remove initial public/ if existing since
-                // server will automatically serve from that directory
-                if (strpos($dirfile, 'public/') === 0) {
-                    $dirfile = substr($dirfile, 7);
+                // Remove all path before and including /public/ since files will be served from there
+                // by default.
+                $publicPos = strrpos($dirfile, '/public/');
+                if ($publicPos !== false) {
+                    $dirfile = substr($dirfile, $publicPos + 8);
+                }
+
+                // Do the same as with public files but for modules. However, this time include /modules/
+                // at the start of the path, so the server knows to serve it from there.
+                $modulePos = strrpos($dirfile, '/modules/');
+                if ($modulePos !== false) {
+                    $dirfile = substr($dirfile, $modulePos);
                 }
 
                 $array[] = $dirfile;

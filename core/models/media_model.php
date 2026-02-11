@@ -294,9 +294,11 @@ class MediaModel extends OBFModel
         $media = $this->db->get_one('media');
 
         // get metadata objects to run the media through processRow
-        $metadata_fields = $this->models->mediametadata('get_all_objects');
-        foreach ($metadata_fields as $metadata_field) {
-            $metadata_field->processRow($media);
+        if ($media) {
+            $metadata_fields = $this->models->mediametadata('get_all_objects');
+            foreach ($metadata_fields as $metadata_field) {
+                $metadata_field->processRow($media);
+            }
         }
 
         return $media;

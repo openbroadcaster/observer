@@ -29,9 +29,6 @@ if (!defined('OB_LOCAL')) {
     define('OB_LOCAL', realpath(__DIR__ . '/../'));
 }
 
-// use same working directory regardless of where our script is.
-chdir(OB_LOCAL);
-
 // load config
 if (!file_exists(OB_LOCAL . '/config.php')) {
     die('Settings file (config.php) not found.');
@@ -132,7 +129,7 @@ spl_autoload_register(function ($className) {
 
 // Require core files (TODO: add to autoloading, will need to be namespaced first).
 $require_from = [
-    'core/core',
+    OB_LOCAL . '/core/core',
 ];
 foreach ($require_from as $dir) {
     $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
@@ -144,7 +141,7 @@ foreach ($require_from as $dir) {
 }
 
 // load third party components
-require_once('vendor/autoload.php');
+require_once(OB_LOCAL . '/vendor/autoload.php');
 //require('extras/PHPMailer/src/Exception.php');
 //require('extras/PHPMailer/src/PHPMailer.php');
 
@@ -152,7 +149,7 @@ require_once('vendor/autoload.php');
 $init_verify_running = false;
 if (!$init_verify_running && OB_INIT_VERIFY && is_array(OB_INIT_VERIFY) && !defined('OB_CLI')) {
     $init_verify_running = true;
-    require_once('updates/checker.php');
+    require_once(OB_LOCAL . '/public/updates/checker.php');
     $checker = new \OBFChecker();
     $methods = get_class_methods($checker);
 

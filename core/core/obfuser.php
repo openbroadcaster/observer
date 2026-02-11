@@ -281,7 +281,7 @@ class OBFUser
                 }
             } else {
                 // Permissions check for new v2 API.
-                $routes = json_decode(file_get_contents('routes.json'), true);
+                $routes = json_decode(file_get_contents(OB_LOCAL . '/routes.json'), true);
                 $permissions = json_decode($result['permissions_v2'], true);
 
                 foreach ($requests as $request) {
@@ -541,10 +541,10 @@ class OBFUser
 
         // if not delete after use, see if we can reuse an existing nonce.
         if ($delete_after_use === false && (!$expiry_seconds || $expiry_seconds >= 60)) {
-            $this->db->query('SELECT nonce FROM users_nonces WHERE 
-                user_id = "' . $this->db->escape($this->param('id')) . '" AND 
-                scope = "' . $this->db->escape($scope) . '" AND 
-                delete_after_use = 0 AND 
+            $this->db->query('SELECT nonce FROM users_nonces WHERE
+                user_id = "' . $this->db->escape($this->param('id')) . '" AND
+                scope = "' . $this->db->escape($scope) . '" AND
+                delete_after_use = 0 AND
                 DATE_ADD(created, INTERVAL 10 SECOND) > NOW()');
             $existing_nonce = $this->db->assoc_list();
 
