@@ -1293,6 +1293,23 @@ OB.Sidebar.advancedSearchWindowInit = function () {
             );
         });
 
+        if (OB.Settings.formats) {
+            var all_formats = [];
+            $.each(["audio_formats", "video_formats", "image_formats", "document_formats"], function (i, key) {
+                if (OB.Settings.formats[key]) {
+                    $.each(OB.Settings.formats[key], function (j, fmt) {
+                        if (all_formats.indexOf(fmt) === -1) all_formats.push(fmt);
+                    });
+                }
+            });
+            all_formats.sort();
+            $.each(all_formats, function (index, fmt) {
+                $("#advanced_search_format_options").append(
+                    '<option value="' + fmt + '">' + htmlspecialchars(fmt.toUpperCase()) + "</option>",
+                );
+            });
+        }
+
         $.each(OB.Settings.media_metadata, function (index, metadata) {
             // skip hidden metadata and media/playlist currently unsupported for advanced search
             if (metadata.type == "hidden" || metadata.type == "media" || metadata.type == "playlist") return;

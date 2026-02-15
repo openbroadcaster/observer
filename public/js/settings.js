@@ -31,6 +31,7 @@ OB.Settings.getSettings = function (callback) {
     post.push(["metadata", "media_get_fields", {}]);
     post.push(["metadata", "playlist_item_types", {}]);
     post.push(["metadata", "recording_default_values", {}]);
+    post.push(["media", "formats_get", {}]);
 
     OB.API.multiPost(
         post,
@@ -44,6 +45,7 @@ OB.Settings.getSettings = function (callback) {
             OB.Settings.media_required_fields = response[6].data;
             OB.Settings.playlist_item_types = response[7].data;
             OB.Settings.recording_metadata = response[8].data;
+            OB.Settings.formats = response[9].data;
 
             if (callback) callback();
         },
