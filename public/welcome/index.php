@@ -1,6 +1,6 @@
 <?php
 
-require(__DIR__ . '/../../components.php');
+require(__DIR__ . '/../../core/init.php');
 $models = OBFModels::get_instance();
 $db = OBFDB::get_instance();
 $db->where('name', 'client_login_message');

@@ -109,7 +109,7 @@ class UI extends OBFController
         $this->html_data = [];
         $this->find_core_html_files($this->theme);
         foreach ($modules as $module) {
-            $this->find_module_html_files('modules/' . $module['dir'] . '/html');
+            $this->find_module_html_files($module['dir'] . '/html');
         }
 
         return [true,'HTML Data',$this->html_data];
@@ -118,18 +118,18 @@ class UI extends OBFController
     // TODO this should be in UI model? then we don't need to check theme in this file?
     private function find_core_html_files($theme = false, $dir = '')
     {
-        $files = scandir('public/html/' . $dir);
+        $files = scandir(OB_LOCAL . '/public/html/' . $dir);
 
         foreach ($files as $file) {
             $dirfile = ($dir != '' ? $dir . '/' : '') . $file;
-            $fullpath = 'public/html/' . $dirfile;
+            $fullpath = OB_LOCAL . '/public/html/' . $dirfile;
 
             if (is_dir($fullpath) && $file[0] != '.') {
                 $this->find_core_html_files($theme, $dirfile);
             } elseif (is_file($fullpath) && substr($fullpath, -5) == '.html') {
                 // use theme override?
-                if ($theme && is_file('public/themes/' . $theme . '/' . $fullpath)) {
-                    $fullpath = 'public/themes/' . $theme . '/' . $fullpath;
+                if ($theme && is_file(OB_LOCAL . '/public/themes/' . $theme . '/' . $fullpath)) {
+                    $fullpath = OB_LOCAL . '/public/themes/' . $theme . '/' . $fullpath;
                 }
                 // echo "OB.UI.htmlCache['$dirfile'] = $.ajax({'url': '$fullpath', 'async': false}).responseText;\n";
                 $this->html_data[$dirfile] = file_get_contents($fullpath);
@@ -140,22 +140,23 @@ class UI extends OBFController
     // TODO this should be in UI model? then we don't need to check theme in this file?
     private function find_module_html_files($dir)
     {
-        if (!is_dir($dir)) {
+        if (!is_dir(OB_LOCAL . '/modules/' . $dir)) {
             return;
         }
-
-        $files = scandir($dir);
+        $files = scandir(OB_LOCAL . '/modules/' . $dir);
 
         foreach ($files as $file) {
             $dirfile = $dir . '/' . $file;
+            $fullpath = OB_LOCAL . '/modules/' . $dirfile;
 
-            if (is_dir($dirfile) && $file[0] != '.') {
+            if (is_dir($fullpath) && $file[0] != '.') {
                 $this->find_module_html_files($dirfile);
-            } elseif (is_file($dirfile)) {
-                $index_array = explode('/', $dirfile);
-                array_splice($index_array, 2, 1);
-                // echo "OB.UI.htmlCache['".implode('/',$index_array)."'] = $.ajax({'url': '$dirfile', 'async': false}).responseText;\n";
-                $this->html_data[implode('/', $index_array)] = file_get_contents($dirfile);
+            } elseif (is_file($fullpath)) {
+                // For some reason modules assume direct access to html files rather than in html/ subdir
+                // when using OB.UI.replaceMain, so strip this out from the dirfile (if there's multiple /html/
+                // then this obviously breaks).
+                $dirfile = str_replace('/html/', '/', $dirfile);
+                $this->html_data['modules/' . $dirfile] = file_get_contents($fullpath);
             }
         }
     }

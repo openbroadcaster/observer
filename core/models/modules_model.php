@@ -49,7 +49,7 @@ class ModulesModel extends OBFModel
     public function get_all($installed = true, $object = false)
     {
         // TODO ignore any module name "core" as this is a reserved name used as a prefix for core functionality.
-        $modules = scandir('modules');
+        $modules = scandir(OB_LOCAL . '/modules');
 
         $modules_list = [];
 
@@ -61,12 +61,12 @@ class ModulesModel extends OBFModel
         }
 
         foreach ($modules as $module) {
-            if ($module == '..' || $module == '.' || !is_dir('modules/' . $module)) {
+            if ($module == '..' || $module == '.' || !is_dir(OB_LOCAL . '/modules/' . $module)) {
                 continue;
             }
 
-            if (is_file('modules/' . $module . '/module.php')) {
-                require_once('modules/' . $module . '/module.php');
+            if (is_file(OB_LOCAL . '/modules/' . $module . '/module.php')) {
+                require_once(OB_LOCAL . '/modules/' . $module . '/module.php');
                 $module_class_name = $module . 'Module';
 
                 // remove underscores in name if we need to.

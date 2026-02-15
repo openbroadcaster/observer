@@ -36,7 +36,7 @@ class OBUpdate20240408 extends Update
             return false;
         }
 
-        $json = json_decode(file_get_contents(__DIR__ . '/data/iso-3166.json'), true);
+        $json = json_decode(file_get_contents(OB_LOCAL . '/core/data/iso-3166.json'), true);
         foreach ($json as $country) {
             $this->db->query("INSERT INTO `countries` (`name`, `alpha2`, `alpha3`, `code`, `region`, `region_sub`, `region_intermediate`)
                 VALUES (

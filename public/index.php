@@ -6,7 +6,7 @@
 // might be used by other things as well.
 header('OpenBroadcaster-Application: index');
 
-require_once(__DIR__ . '/../components.php');
+require_once(__DIR__ . '/../core/init.php');
 
 $req = $_SERVER['REQUEST_URI'];
 if ($req !== '/') {
@@ -108,17 +108,14 @@ foreach ($js_dependencies as $file) {
     echo '<script type="text/javascript" src="' . $file . '?v=' . filemtime(__DIR__ . '/' . $file) . '"></script>' . PHP_EOL;
 }
 
-// get a recursive list of files in "ui" and add them as js modules, change active directory first to be in /public,
-// then back at the very end of this file (we're expected to be in /public for filemtime() to work, but the src attributes
-// need to not include it)
-$activeDir = getcwd();
-chdir(__DIR__);
-$jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('ui'));
+// get a recursive list of files in "ui" and add them as js modules
+$jsModuleIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(OB_LOCAL . '/public/ui'));
 foreach ($jsModuleIterator as $file) {
+    $publicPath = substr($file->getPathname(), strrpos($file->getPathname(), '/public/') + 8);
     if ($file->getExtension() !== 'js') {
         continue;
     }
-    echo '<script type="module" src="/' . $file->getPathname() . '?v=' . filemtime($file->getPathname()) . '"></script>' . PHP_EOL;
+    echo '<script type="module" src="/' . $publicPath . '?v=' . filemtime($file->getPathname()) . '"></script>' . PHP_EOL;
 }
 ?>
   <script type="text/javascript" src="extras/jquery-ui.min.js?v=<?=filemtime('extras/jquery-ui.min.js')?>"></script>
@@ -154,14 +151,14 @@ foreach ($jsModuleIterator as $file) {
 
   <?php foreach ($js_files as $file) {
     // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
-    $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
+    $mtime = (strpos($file, '/modules/') === 0) ? filemtime(OB_LOCAL . $file) : filemtime(OB_LOCAL . '/public/' . $file);
   ?>
     <script type="text/javascript" src="<?=$file?>?v=<?=$mtime?>"></script>
   <?php } ?>
 
   <?php foreach ($css_files as $file) {
     // need to go prev dir since we're in public/ for modules or filemtime will cause warnings
-    $mtime = (strpos($file, 'modules/') === 0) ? filemtime('../' . $file) : filemtime($file);
+    $mtime = (strpos($file, '/modules/') === 0) ? filemtime(OB_LOCAL . $file) : filemtime(OB_LOCAL . '/public/' . $file);
   ?>
     <link rel="stylesheet" type="text/css" href="<?=$file?>?v=<?=$mtime?>">
   <?php } ?>
@@ -188,8 +185,5 @@ foreach ($jsModuleIterator as $file) {
 </html>
 
 <?php
-
-// change back to active directory now that filemtime and file loading no longer expects us to be in /public
-chdir($activeDir);
 
 ?>

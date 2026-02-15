@@ -294,9 +294,11 @@ class MediaModel extends OBFModel
         $media = $this->db->get_one('media');
 
         // get metadata objects to run the media through processRow
-        $metadata_fields = $this->models->mediametadata('get_all_objects');
-        foreach ($metadata_fields as $metadata_field) {
-            $metadata_field->processRow($media);
+        if ($media) {
+            $metadata_fields = $this->models->mediametadata('get_all_objects');
+            foreach ($metadata_fields as $metadata_field) {
+                $metadata_field->processRow($media);
+            }
         }
 
         return $media;
@@ -952,7 +954,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['id','comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status'];
+        $allowed_filters = ['id','comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1035,6 +1037,7 @@ class MediaModel extends OBFModel
             $column_array['comments'] = 'media.comments';
             $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
             $column_array['id'] = 'media.id';
+            $column_array['dynamic_select'] = 'media.dynamic_select';
 
             $metadata_fields = $this->models->mediametadata('get_all');
             $metadata_defaults = [];

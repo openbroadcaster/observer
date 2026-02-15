@@ -1182,7 +1182,7 @@ OB.UI.permissionsUpdate = function (context) {
 };
 
 OB.UI.replaceMain = function (file, attrs) {
-    $("#layout_main").html(OB.UI.getHTML(file));
+    $("#layout_main").html(OB.UI.getHTML(file))
     $("#layout_main").attr("data-src", file);
 
     // form tag is used for layout information, but we never do a regular form submit.

@@ -3,7 +3,7 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require_once(__DIR__ . '/../components.php');
+require_once(__DIR__ . '/../core/init.php');
 
 class OBFAPI
 {
@@ -29,7 +29,7 @@ class OBFAPI
 
         if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
             // we have routes for this request method? find the regex pattern to match with, and variables to extract.
-            $routes = json_decode(file_get_contents('routes.json'));
+            $routes = json_decode(file_get_contents(OB_LOCAL . '/routes.json'));
             if ($routes && is_object($routes) && property_exists($routes, $_SERVER['REQUEST_METHOD'])) {
                 $this->routes = $routes->{$_SERVER['REQUEST_METHOD']};
                 foreach ($this->routes as &$route) {

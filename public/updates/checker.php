@@ -102,12 +102,12 @@ class OBFChecker
         if (!file_exists(__DIR__ . '/../../config.php')) {
             return ['Settings file', 'Settings file (config.php) not found.',2];
         }
-        return ['Settings file','Settings file (config.php) found.  Will try to load components.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0];
+        return ['Settings file','Settings file (config.php) found.  Will try to load init.php and config.php now.' . "\n\n" . 'If you see an error below (or if output stops), check config.php for errors.',0];
     }
 
     public function config_file_valid()
     {
-        require_once(__DIR__ . '/../../components.php');
+        require_once(__DIR__ . '/../../core/init.php');
 
         $fatal_error = false;
         $errors = [];
@@ -382,9 +382,9 @@ class OBFChecker
         }
 
         if ($this->module === null) {
-            $files = scandir(__DIR__ . '/../../classes/updates/');
+            $files = scandir(OB_LOCAL . '/core/updates/');
         } else {
-            $dir = __DIR__ . "/../../modules/{$this->module}/updates/";
+            $dir = OB_LOCAL . "/modules/{$this->module}/updates/";
             if (file_exists($dir)) {
                 $files = scandir($dir);
             } else {

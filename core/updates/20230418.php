@@ -48,7 +48,7 @@ class OBUpdate20230418 extends Update
             return false;
         }
 
-        $iso = fopen(__DIR__ . '/data/iso-639-3.tab', 'r');
+        $iso = fopen(OB_LOCAL . '/core/data/iso-639-3.tab', 'r');
         if (!$iso) {
             die('Couldn\'t load ISO 639-3 tab file.');
         }
@@ -136,7 +136,7 @@ class OBUpdate20230418 extends Update
         // is not an expert on the distinctions between various languages, and as a result
         // media items may still end up with an inaccurate language designation and require
         // some further manual input.
-        $remaining_json = json_decode(file_get_contents(__DIR__ . '/data/language_map.json'), true);
+        $remaining_json = json_decode(file_get_contents(OB_LOCAL . '/core/data/language_map.json'), true);
         $iso_new_code = 'qaa';
         foreach ($remaining_json as $remain_lang) {
             // Get IDs of remaining languages in media_languages table.
