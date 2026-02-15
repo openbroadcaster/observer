@@ -294,7 +294,7 @@ class PlaylistsModel extends OBFModel
      *
      * @return [num_results, playlists]
      */
-    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false)
+    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false, $owner = null, $group = null)
     {
         $where_strings = [];
 
@@ -308,6 +308,16 @@ class PlaylistsModel extends OBFModel
         // limit results to those owned by the presently logged in user.
         if ($my) {
             $where_strings[] = 'owner_id = "' . $this->db->escape($this->user->param('id')) . '"';
+        }
+
+        // filter by owner
+        if (!empty($owner)) {
+            $where_strings[] = 'owner_id = "' . $this->db->escape($owner) . '"';
+        }
+
+        // filter by group
+        if (!empty($group)) {
+            $where_strings[] = 'playlists.id IN (SELECT playlist_id FROM playlists_permissions_groups WHERE group_id = "' . $this->db->escape($group) . '")';
         }
 
         if (count($where_strings) > 0) {

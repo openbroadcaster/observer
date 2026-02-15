@@ -1293,6 +1293,22 @@ OB.Sidebar.advancedSearchWindowInit = function () {
             );
         });
 
+        if (OB.Settings.users) {
+            $.each(OB.Settings.users, function (index, user) {
+                $("#advanced_search_owner_options").append(
+                    '<option value="' + user.id + '">' + htmlspecialchars(user.display_name) + "</option>",
+                );
+            });
+        }
+
+        if (OB.Settings.groups) {
+            $.each(OB.Settings.groups, function (index, group) {
+                $("#advanced_search_group_options").append(
+                    '<option value="' + group.id + '">' + htmlspecialchars(group.name) + "</option>",
+                );
+            });
+        }
+
         $.each(OB.Settings.media_metadata, function (index, metadata) {
             // skip hidden metadata and media/playlist currently unsupported for advanced search
             if (metadata.type == "hidden" || metadata.type == "media" || metadata.type == "playlist") return;
