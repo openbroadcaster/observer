@@ -412,6 +412,45 @@ body.sidebar-left .sidebar_search_media_container_detailed #media_detailed_toggl
     width: 90px;
 }
 
+.sidebar_search_playlist_name_text {
+    vertical-align: middle;
+}
+
+.sidebar_search_playlist_type_badges {
+    display: inline-flex;
+    gap: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.sidebar_search_playlist_type_badge {
+    display: inline-block;
+    min-width: 18px;
+    padding: 0 4px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    color: #fff;
+}
+
+.sidebar_search_playlist_type_badge_pl {
+    background: #56606f;
+}
+
+.sidebar_search_playlist_type_badge_b {
+    background: #2f8f83;
+}
+
+.sidebar_search_playlist_type_badge_a {
+    background: #426cc6;
+}
+
+.sidebar_search_playlist_type_badge_la {
+    background: #c7772d;
+}
+
 .sidebar_search_playlist_description {
     width: 240px;
     /* see sidebar.js $(document).ready() */

@@ -299,12 +299,44 @@ class PlaylistsModel extends OBFModel
         $where_strings = [];
 
         if ($query !== '' && $query !== false && $query !== null) {
-            // If query is numeric, also search by ID
-            if (is_numeric($query)) {
-                $where_strings[] = '(id = "' . $this->db->escape($query) . '" OR name LIKE "%' . $this->db->escape($query) . '%" OR description LIKE "%' . $this->db->escape($query) . '%")';
-            } else {
-                $where_strings[] = '(name LIKE "%' . $this->db->escape($query) . '%" OR description LIKE "%' . $this->db->escape($query) . '%")';
+            $query = trim($query);
+            $query_escape = $this->db->escape($query);
+
+            $type_query = null;
+            $type_query_map = [
+                'b' => 'standard',
+                'basic' => 'standard',
+                'pl b' => 'standard',
+                'playlist basic' => 'standard',
+                'a' => 'advanced',
+                'advanced' => 'advanced',
+                'pl a' => 'advanced',
+                'playlist advanced' => 'advanced',
+                'la' => 'live_assist',
+                'live assist' => 'live_assist',
+                'liveassist' => 'live_assist',
+                'live_assist' => 'live_assist',
+                'pl la' => 'live_assist',
+                'playlist live assist' => 'live_assist',
+            ];
+
+            $query_normalized = strtolower($query);
+            if (isset($type_query_map[$query_normalized])) {
+                $type_query = $this->db->escape($type_query_map[$query_normalized]);
             }
+
+            // Build the base WHERE: name/description LIKE, plus ID match if numeric
+            if (is_numeric($query)) {
+                $where = '(id = "' . $query_escape . '" OR name LIKE "%' . $query_escape . '%" OR description LIKE "%' . $query_escape . '%")';
+            } else {
+                $where = '(name LIKE "%' . $query_escape . '%" OR description LIKE "%' . $query_escape . '%")';
+            }
+
+            if ($type_query !== null) {
+                $where .= ' OR type = "' . $type_query . '"';
+            }
+
+            $where_strings[] = '(' . $where . ')';
         }
         if (!$this->user->check_permission('manage_playlists')) {
             $where_strings[] = '(status = "public" or status = "visible" or owner_id = "' . $this->db->escape($this->user->param('id')) . '")';

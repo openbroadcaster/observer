@@ -10,7 +10,25 @@ OB.Sidebar.init = function () {
 OB.Sidebar.mediaSearchQuery = "";
 OB.Sidebar.playlistSearchQuery = "";
 
+OB.Sidebar.ensurePlaylistTypeBadgeStyles = function () {
+    if (document.getElementById("ob-playlist-type-badge-styles")) return;
+
+    $("head").append(
+        '<style id="ob-playlist-type-badge-styles">' +
+            ".sidebar_search_playlist_name_text{vertical-align:middle;}" +
+            ".sidebar_search_playlist_type_badges{display:inline-flex;gap:4px;margin-right:6px;vertical-align:middle;}" +
+            ".sidebar_search_playlist_type_badge{display:inline-block;min-width:18px;padding:0 4px;border-radius:10px;font-size:.7rem;font-weight:700;line-height:1.4;text-align:center;color:#fff;}" +
+            ".sidebar_search_playlist_type_badge_pl{background:#56606f;}" +
+            ".sidebar_search_playlist_type_badge_b{background:#2f8f83;}" +
+            ".sidebar_search_playlist_type_badge_a{background:#426cc6;}" +
+            ".sidebar_search_playlist_type_badge_la{background:#c7772d;}" +
+            "</style>",
+    );
+};
+
 OB.Sidebar.sidebarInit = function () {
+    OB.Sidebar.ensurePlaylistTypeBadgeStyles();
+
     if (parseInt(OB.Account.userdata.sidebar_display_left)) {
         $("body").addClass("sidebar-left");
     } else {
@@ -850,6 +868,27 @@ OB.Sidebar.playlistSearchSort = function (sortby) {
     OB.Sidebar.playlistSearch();
 };
 
+OB.Sidebar.playlistTypeShort = function (playlistType) {
+    if (playlistType == "advanced") return "A";
+    if (playlistType == "live_assist") return "LA";
+    return "B";
+};
+
+OB.Sidebar.playlistTypeBadges = function (playlistType) {
+    var playlistTypeShort = OB.Sidebar.playlistTypeShort(playlistType);
+
+    return (
+        '<span class="sidebar_search_playlist_type_badges">' +
+        '<span class="sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_pl">PL</span>' +
+        '<span class="sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_' +
+        playlistTypeShort.toLowerCase() +
+        '">' +
+        playlistTypeShort +
+        "</span>" +
+        "</span>"
+    );
+};
+
 OB.Sidebar.playlistSearch = function (more) {
     // if not the result of pagination (new search), reset offset to 0
     if (!more) {
@@ -913,7 +952,10 @@ OB.Sidebar.playlistSearch = function (more) {
                         playlist[i]["id"] +
                         '" data-mode="playlist">\
           <td class="sidebar_search_playlist_name" data-column="name">' +
+                        OB.Sidebar.playlistTypeBadges(playlist[i]["type"]) +
+                        '<span class="sidebar_search_playlist_name_text">' +
                         htmlspecialchars(playlist[i]["name"]) +
+                        "</span>" +
                         '</td>\
           <td class="sidebar_search_playlist_description" data-column="description">' +
                         playlist_description +
@@ -948,6 +990,7 @@ OB.Sidebar.playlistSearch = function (more) {
                     "data-can_edit",
                     playlist[i]["can_edit"],
                 );
+                $("#sidebar_search_playlist_result_" + playlist[i]["id"]).attr("data-type", playlist[i]["type"]);
 
                 // set up context menu
                 var menuOptions = new Object();
