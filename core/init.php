@@ -4,7 +4,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // set default cache control header (if not overridden by controller code later)
-header('Cache-Control: no-cache, no-store, must-revalidate');
+if (php_sapi_name() !== 'cli') {
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+}
 
 // set some constants
 if (!defined('OB_ERROR_BAD_POSTDATA')) {

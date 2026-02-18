@@ -6,7 +6,7 @@ if (! defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require(__DIR__ . '/../../../components.php');
+require_once(__DIR__ . '/../../../core/init.php');
 
 $db = \OBFDB::get_instance();
 
