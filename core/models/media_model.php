@@ -830,6 +830,7 @@ class MediaModel extends OBFModel
         $this->db->leftjoin('media_categories', 'media.category_id', 'media_categories.id');
         $this->db->leftjoin('countries', 'media.country', 'countries.country_id');
         $this->db->leftjoin('languages', 'media.language', 'languages.language_id');
+        $this->db->leftjoin('users', 'media.owner_id', 'users.id');
 
         if ($params['sort_by'] == 'category_name') {
             $params['sort_by'] = 'media_categories.name';
@@ -954,7 +955,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select'];
+        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','copyright_owner','status','dynamic_select'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1036,6 +1037,7 @@ class MediaModel extends OBFModel
             $column_array['duration'] = 'media.duration';
             $column_array['comments'] = 'media.comments';
             $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
+            $column_array['copyright_owner'] = 'users.username';
             $column_array['dynamic_select'] = 'media.dynamic_select';
 
             $metadata_fields = $this->models->mediametadata('get_all');
@@ -1125,6 +1127,11 @@ class MediaModel extends OBFModel
             }
 
             $where_array[] = $tmp_sql;
+
+            // copyright_owner filter: also enforce that is_copyright_owner = 1
+            if ($filter['filter'] == 'copyright_owner') {
+                $where_array[] = 'media.is_copyright_owner = 1';
+            }
         }
 
         return $where_array;
