@@ -16,12 +16,11 @@ OB.Sidebar.ensurePlaylistTypeBadgeStyles = function () {
     $("head").append(
         '<style id="ob-playlist-type-badge-styles">' +
             ".sidebar_search_playlist_name_text{vertical-align:middle;}" +
-            ".sidebar_search_playlist_type_badges{display:inline-flex;gap:4px;margin-right:6px;vertical-align:middle;}" +
-            ".sidebar_search_playlist_type_badge{display:inline-block;min-width:18px;padding:0 4px;border-radius:10px;font-size:.7rem;font-weight:700;line-height:1.4;text-align:center;color:#fff;}" +
-            ".sidebar_search_playlist_type_badge_pl{background:#56606f;}" +
-            ".sidebar_search_playlist_type_badge_b{background:#2f8f83;}" +
-            ".sidebar_search_playlist_type_badge_a{background:#426cc6;}" +
-            ".sidebar_search_playlist_type_badge_la{background:#c7772d;}" +
+            ".sidebar_search_playlist_type_badges{display:inline-flex;margin-right:6px;vertical-align:middle;}" +
+            ".sidebar_search_playlist_type_badge{display:inline-block;min-width:22px;padding:0 6px;border-radius:10px;border:1px solid currentColor;background:rgba(0,0,0,.15);font-size:.7rem;font-weight:700;line-height:1.5;text-align:center;}" +
+            ".sidebar_search_playlist_type_badge_b{color:#66d1b6;}" +
+            ".sidebar_search_playlist_type_badge_a{color:#87aeea;}" +
+            ".sidebar_search_playlist_type_badge_la{color:#f0b36c;}" +
             "</style>",
     );
 };
@@ -879,7 +878,6 @@ OB.Sidebar.playlistTypeBadges = function (playlistType) {
 
     return (
         '<span class="sidebar_search_playlist_type_badges">' +
-        '<span class="sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_pl">PL</span>' +
         '<span class="sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_' +
         playlistTypeShort.toLowerCase() +
         '">' +
