@@ -20,6 +20,8 @@
                 <option value="genre" data-compare="select" data-value="genre" data-t>Genre</option>
                 <option value="comments" data-compare="text" data-value="text" data-t>Comments</option>
                 <option value="duration" data-compare="duration" data-value="text" data-t>Duration</option>
+                <option value="created" data-compare="date" data-value="date" data-t>Created Date</option>
+                <option value="updated" data-compare="date" data-value="date" data-t>Last Updated Date</option>
                 <option value="is_copyright_owner" data-compare="select" data-value="bool" data-t>
                     Is Copyright Owner
                 </option>
@@ -51,6 +53,13 @@
             <select id="advanced_search_duration_compare" data-type="compare" data-name="duration" class="hidden">
                 <option value="gte">is greater than or equal to (seconds)</option>
                 <option value="lte">is less than or equal to (seconds)</option>
+            </select>
+
+            <select id="advanced_search_date_compare" data-type="compare" data-name="date" class="hidden">
+                <option value="is">is on</option>
+                <option value="not">is not on</option>
+                <option value="gte">is on or after</option>
+                <option value="lte">is on or before</option>
             </select>
 
             <select id="advanced_search_select_compare" data-type="compare" data-name="select" class="hidden">
@@ -104,6 +113,7 @@
             </select>
 
             <input type="text" id="advanced_search_value" data-type="value" data-name="text" />
+            <input type="date" id="advanced_search_date_value" data-type="value" data-name="date" class="hidden" />
 
             <select id="advanced_search_owner_options" data-type="value" data-name="owner" class="hidden"></select>
 

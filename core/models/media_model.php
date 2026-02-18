@@ -954,7 +954,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select','owner','group'];
+        $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','created','updated','is_copyright_owner','status','dynamic_select','owner','group'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1034,6 +1034,8 @@ class MediaModel extends OBFModel
             $column_array['language'] = 'media.language';
             $column_array['genre'] = 'media.genre_id';
             $column_array['duration'] = 'media.duration';
+            $column_array['created'] = 'media.created';
+            $column_array['updated'] = 'media.updated';
             $column_array['comments'] = 'media.comments';
             $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
             $column_array['id'] = 'media.id';
@@ -1123,6 +1125,37 @@ class MediaModel extends OBFModel
                     $tmp_sql = 'COALESCE(' . $this->db->format_table_column($column_array[$filter['filter']]) . ',"' . $this->db->escape($default) . '")';
                 } else {
                     $tmp_sql = $column_array[$filter['filter']];
+                }
+
+                $is_date_filter = in_array($filter['filter'], ['created', 'updated'], true);
+                $date_value = null;
+                if ($is_date_filter && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $filter['val'])) {
+                    $date_value = strtotime($filter['val'] . ' 00:00:00');
+                }
+
+                if ($is_date_filter && $date_value !== false && $date_value !== null) {
+                    $day_start = (int) $date_value;
+                    $day_end = $day_start + 86399;
+                    $column = $tmp_sql;
+
+                    if (in_array($filter['op'], ['is', 'eq'], true)) {
+                        $tmp_sql = '(' . $column . ' >= "' . $day_start . '" AND ' . $column . ' <= "' . $day_end . '")';
+                    } elseif (in_array($filter['op'], ['not', 'neq'], true)) {
+                        $tmp_sql = '(' . $column . ' < "' . $day_start . '" OR ' . $column . ' > "' . $day_end . '")';
+                    } elseif (in_array($filter['op'], ['gte', 'gt'], true)) {
+                        $compare_value = $filter['op'] == 'gt' ? $day_end : $day_start;
+                        $operator = $filter['op'] == 'gt' ? '>' : '>=';
+                        $tmp_sql = $column . ' ' . $operator . ' "' . $compare_value . '"';
+                    } elseif (in_array($filter['op'], ['lte', 'lt'], true)) {
+                        $compare_value = $filter['op'] == 'lt' ? $day_start : $day_end;
+                        $operator = $filter['op'] == 'lt' ? '<' : '<=';
+                        $tmp_sql = $column . ' ' . $operator . ' "' . $compare_value . '"';
+                    } else {
+                        $tmp_sql = $column . ' ' . $op_array[$filter['op']] . ' "' . $day_start . '"';
+                    }
+
+                    $where_array[] = $tmp_sql;
+                    continue;
                 }
 
                 $tmp_sql .= ' ' . $op_array[$filter['op']] . ' "';

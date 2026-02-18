@@ -1506,6 +1506,11 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
             return false;
         }
 
+        if ((filter == "created" || filter == "updated") && val.match(/^\d{4}-\d{2}-\d{2}$/) === null) {
+            $("#advanced_search_message").obWidget("error", ["A valid %1 is required", filter_name.toLowerCase()]);
+            return false;
+        }
+
         $("#advanced_search_no_criteria").hide();
         OB.Sidebar.advanced_search_filter_id++;
 
@@ -1513,6 +1518,7 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
 
         if (compare_field == "select") filter_description += " " + op_name + " " + val_name;
         else if (compare_field == "number") filter_description += " " + op_name + " " + val;
+        else if (compare_field == "date") filter_description += " " + op_name + " " + val;
         //T seconds
         else if (compare_field == "duration") filter_description += " " + op_name + " " + val + " " + OB.t("seconds");
         else filter_description += " " + op_name + ' "' + val + '"';
