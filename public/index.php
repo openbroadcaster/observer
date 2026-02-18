@@ -45,8 +45,8 @@ if ($req !== '/') {
   }
 }
 
-if (is_file('VERSION')) {
-    $version = trim(file_get_contents('VERSION'));
+if (is_file(OB_LOCAL . '/VERSION')) {
+    $version = trim(file_get_contents(OB_LOCAL . '/VERSION'));
 } else {
     $version = false;
 }

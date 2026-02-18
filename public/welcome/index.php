@@ -7,7 +7,7 @@ $db->where('name', 'client_login_message');
 $result = $db->get_one('settings');
 $welcome_message = $result ? $result['value'] : '';
 
-$version = trim(file_get_contents('VERSION'));
+$version = trim(file_get_contents(OB_LOCAL . '/VERSION'));
 $version_array = explode('-', $version, 2);
 $version_string = $version_array[0];
 if (!empty($version_array[1])) {
