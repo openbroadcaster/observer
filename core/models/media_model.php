@@ -2595,7 +2595,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filename']);
         $filename = $args['filename'];
 
-        require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
+        require_once(OB_LOCAL . '/vendor/james-heinrich/getid3/getid3/getid3.php');
         $getID3 = new \getID3();
 
         $info = $getID3->analyze($filename);
