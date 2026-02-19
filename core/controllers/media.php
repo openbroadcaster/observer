@@ -76,7 +76,11 @@ class Media extends OBFController
     public function media_my_searches()
     {
         $this->user->require_authenticated();
-        return [true,'Searches',['saved' => $this->models->media('search_get_saved', ['type' => 'saved']), 'history' => $this->models->media('search_get_saved', ['type' => 'history'])]];
+        return [true,'Searches',[
+            'saved' => $this->models->media('search_get_saved', ['type' => 'saved']),
+            'history' => $this->models->media('search_get_saved', ['type' => 'history']),
+            'shared' => $this->models->media('search_get_shared')
+        ]];
     }
 
     /**
@@ -175,6 +179,55 @@ class Media extends OBFController
             return [true,'Search default has been unset.'];
         } else {
             return [false,'Error removing default from search item.'];
+        }
+    }
+
+    /**
+     * Share a saved search with users and/or groups.
+     *
+     * @param id
+     * @param user_ids
+     * @param group_ids
+     *
+     * @route POST /v2/media/searches/share
+     */
+    public function media_my_searches_share()
+    {
+        $this->user->require_authenticated();
+
+        $user_ids = $this->data('user_ids');
+        $group_ids = $this->data('group_ids');
+
+        if ($this->models->media('search_share', [
+            'id' => $this->data('id'),
+            'user_id' => $this->user->param('id'),
+            'user_ids' => is_array($user_ids) ? $user_ids : [],
+            'group_ids' => is_array($group_ids) ? $group_ids : [],
+        ])) {
+            return [true,'Search shared successfully.'];
+        } else {
+            return [false,'Error sharing search.'];
+        }
+    }
+
+    /**
+     * Remove sharing for a saved search.
+     *
+     * @param id
+     *
+     * @route DELETE /v2/media/searches/share/(:id:)
+     */
+    public function media_my_searches_unshare()
+    {
+        $this->user->require_authenticated();
+
+        if ($this->models->media('search_unshare', [
+            'id' => $this->data('id'),
+            'user_id' => $this->user->param('id'),
+        ])) {
+            return [true,'Search sharing removed.'];
+        } else {
+            return [false,'Error removing search sharing.'];
         }
     }
 

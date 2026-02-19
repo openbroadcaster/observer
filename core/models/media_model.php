@@ -659,6 +659,167 @@ class MediaModel extends OBFModel
     }
 
     /**
+     * Share a saved search with users and/or groups.
+     *
+     * @param id Search ID to share.
+     * @param user_id Owner of the search (for validation).
+     * @param user_ids Array of user IDs to share with.
+     * @param group_ids Array of group IDs to share with.
+     *
+     * @return success
+     */
+    public function search_share($args = [])
+    {
+        OBFHelpers::require_args($args, ['id', 'user_id']);
+        OBFHelpers::default_args($args, ['user_ids' => [], 'group_ids' => []]);
+
+        // verify this search belongs to the user and is saved
+        $this->db->where('id', $args['id']);
+        $this->db->where('user_id', $args['user_id']);
+        $this->db->where('type', 'saved');
+        $search = $this->db->get_one('media_searches');
+
+        if (!$search) {
+            return false;
+        }
+
+        // remove existing shares for this search
+        $this->db->where('search_id', $args['id']);
+        $this->db->delete('media_searches_shared');
+
+        // share with users
+        if (!empty($args['user_ids'])) {
+            foreach ($args['user_ids'] as $share_user_id) {
+                $share_user_id = (int) $share_user_id;
+
+                // don't share with self
+                if ($share_user_id == $args['user_id']) {
+                    continue;
+                }
+                $this->db->insert('media_searches_shared', [
+                    'search_id' => $args['id'],
+                    'shared_by' => $args['user_id'],
+                    'shared_with_user_id' => $share_user_id,
+                ]);
+            }
+        }
+
+        // share with groups
+        if (!empty($args['group_ids'])) {
+            foreach ($args['group_ids'] as $group_id) {
+                $this->db->insert('media_searches_shared', [
+                    'search_id' => $args['id'],
+                    'shared_by' => $args['user_id'],
+                    'shared_with_group_id' => (int) $group_id,
+                ]);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove all sharing for a saved search.
+     *
+     * @param id Search ID to unshare.
+     * @param user_id Owner of the search (for validation).
+     *
+     * @return success
+     */
+    public function search_unshare($args = [])
+    {
+        OBFHelpers::require_args($args, ['id', 'user_id']);
+
+        // verify this search belongs to the user
+        $this->db->where('id', $args['id']);
+        $this->db->where('user_id', $args['user_id']);
+        $search = $this->db->get_one('media_searches');
+
+        if (!$search) {
+            return false;
+        }
+
+        $this->db->where('search_id', $args['id']);
+        return $this->db->delete('media_searches_shared');
+    }
+
+    /**
+     * Get searches shared with the current user (directly or via groups).
+     *
+     * @return searches
+     */
+    public function search_get_shared()
+    {
+        if (!$this->user->param('id')) {
+            return [];
+        }
+
+        $user_id = $this->db->escape($this->user->param('id'));
+
+        $this->db->query("
+            SELECT DISTINCT ms.id, ms.query, ms.description, ms.`default`,
+                   mss.shared_by,
+                   u.display_name AS shared_by_name
+            FROM media_searches ms
+            JOIN media_searches_shared mss ON mss.search_id = ms.id
+            LEFT JOIN users_to_groups utg ON utg.group_id = mss.shared_with_group_id
+            LEFT JOIN users u ON u.id = mss.shared_by
+            WHERE mss.shared_with_user_id = \"{$user_id}\"
+               OR utg.user_id = \"{$user_id}\"
+        ");
+
+        $searches = $this->db->assoc_list();
+        if (!is_array($searches)) {
+            return [];
+        }
+
+        foreach ($searches as $index => $search) {
+            $searches[$index]['query'] = unserialize($search['query']);
+        }
+
+        return $searches;
+    }
+
+    /**
+     * Get the recipients (users and groups) a search is shared with.
+     *
+     * @param id Search ID.
+     * @param user_id Owner of the search (for validation).
+     *
+     * @return recipients Array with 'user_ids' and 'group_ids'.
+     */
+    public function search_get_shared_recipients($args = [])
+    {
+        OBFHelpers::require_args($args, ['id', 'user_id']);
+
+        // verify ownership
+        $this->db->where('id', $args['id']);
+        $this->db->where('user_id', $args['user_id']);
+        $search = $this->db->get_one('media_searches');
+
+        if (!$search) {
+            return false;
+        }
+
+        $this->db->where('search_id', $args['id']);
+        $shares = $this->db->get('media_searches_shared');
+
+        $user_ids = [];
+        $group_ids = [];
+
+        foreach ($shares as $share) {
+            if (!empty($share['shared_with_user_id'])) {
+                $user_ids[] = (int) $share['shared_with_user_id'];
+            }
+            if (!empty($share['shared_with_group_id'])) {
+                $group_ids[] = (int) $share['shared_with_group_id'];
+            }
+        }
+
+        return ['user_ids' => $user_ids, 'group_ids' => $group_ids];
+    }
+
+    /**
      * Get captions URL for media item
      *
      * @param media

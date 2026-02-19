@@ -1,0 +1,40 @@
+<obwidget id="share_search_message" type="message"></obwidget>
+
+<div>
+    <p data-t>Select users and/or groups to share this search with.</p>
+
+    <fieldset>
+        <legend data-t>Share With Users</legend>
+        <div class="fieldrow">
+            <select id="share_search_users" multiple size="6" style="width: 100%;"></select>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend data-t>Share With Groups</legend>
+        <div class="fieldrow">
+            <select id="share_search_groups" multiple size="4" style="width: 100%;"></select>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <div class="fieldrow">
+            <ob-element-button
+                data-text="Share"
+                data-icon-name="share-nodes"
+                data-icon-style="solid"
+                onclick="OB.Sidebar.mySearchesShareSubmit();"
+                data-t
+                >Share</ob-element-button
+            >
+            <ob-element-button
+                data-text="Cancel"
+                data-icon-name="xmark"
+                data-icon-style="solid"
+                onclick="OB.UI.closeModalWindow();"
+                data-t
+                >Cancel</ob-element-button
+            >
+        </div>
+    </fieldset>
+</div>
