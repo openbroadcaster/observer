@@ -954,7 +954,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select'];
+        $allowed_filters = ['comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','never_broadcasted','status','dynamic_select'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1019,6 +1019,16 @@ class MediaModel extends OBFModel
         foreach ($filters as $filter) {
             if (is_object($filter)) {
                 $filter = get_object_vars($filter);
+            }
+
+            // never_broadcasted filter: uses subquery, skip normal column mapping
+            if ($filter['filter'] == 'never_broadcasted') {
+                if ($filter['val'] == '1') {
+                    $where_array[] = 'NOT EXISTS (SELECT 1 FROM players_log WHERE players_log.media_id = media.id)';
+                } else {
+                    $where_array[] = 'EXISTS (SELECT 1 FROM players_log WHERE players_log.media_id = media.id)';
+                }
+                continue;
             }
 
             // our possible column (mappings)
