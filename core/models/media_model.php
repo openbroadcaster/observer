@@ -1015,46 +1015,47 @@ class MediaModel extends OBFModel
         $filters = $args['filters'];
 
         $where_array = [];
+        $grouped_filters = [];
+
+        // our possible column (mappings)
+        $column_array = [];
+        $column_array['artist'] = 'media.artist';
+        $column_array['title'] = 'media.title';
+        $column_array['album'] = 'media.album';
+        $column_array['year'] = 'media.year';
+        $column_array['type'] = 'media.type';
+        $column_array['status'] = 'media.status';
+        $column_array['category'] = 'media.category_id';
+        $column_array['country'] = 'media.country';
+        $column_array['language'] = 'media.language';
+        $column_array['genre'] = 'media.genre_id';
+        $column_array['duration'] = 'media.duration';
+        $column_array['comments'] = 'media.comments';
+        $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
+        $column_array['dynamic_select'] = 'media.dynamic_select';
+
+        $metadata_fields = $this->models->mediametadata('get_all');
+        $metadata_defaults = [];
+        foreach ($metadata_fields as $metadata_field) {
+            $column_array['metadata_' . $metadata_field['name']] = 'media.metadata_' . $metadata_field['name'];
+            if (isset($metadata_field['settings']->default)) {
+                $default = $metadata_field['settings']->default;
+
+                // make lowercase for case insensitive comparison
+                if (is_array($default)) {
+                    $default = array_map('strtolower', $default);
+                } else {
+                    $default = strtolower($default);
+                }
+
+                // keep track for comparison below
+                $metadata_defaults['metadata_' . $metadata_field['name']] = $default;
+            }
+        }
 
         foreach ($filters as $filter) {
             if (is_object($filter)) {
                 $filter = get_object_vars($filter);
-            }
-
-            // our possible column (mappings)
-            $column_array = [];
-            $column_array['artist'] = 'media.artist';
-            $column_array['title'] = 'media.title';
-            $column_array['album'] = 'media.album';
-            $column_array['year'] = 'media.year';
-            $column_array['type'] = 'media.type';
-            $column_array['status'] = 'media.status';
-            $column_array['category'] = 'media.category_id';
-            $column_array['country'] = 'media.country';
-            $column_array['language'] = 'media.language';
-            $column_array['genre'] = 'media.genre_id';
-            $column_array['duration'] = 'media.duration';
-            $column_array['comments'] = 'media.comments';
-            $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
-            $column_array['dynamic_select'] = 'media.dynamic_select';
-
-            $metadata_fields = $this->models->mediametadata('get_all');
-            $metadata_defaults = [];
-            foreach ($metadata_fields as $metadata_field) {
-                $column_array['metadata_' . $metadata_field['name']] = 'media.metadata_' . $metadata_field['name'];
-                if (isset($metadata_field['settings']->default)) {
-                    $default = $metadata_field['settings']->default;
-
-                    // make lowercase for case insensitive comparison
-                    if (is_array($default)) {
-                        $default = array_map('strtolower', $default);
-                    } else {
-                        $default = strtolower($default);
-                    }
-
-                    // keep track for comparison below
-                    $metadata_defaults['metadata_' . $metadata_field['name']] = $default;
-                }
             }
 
             // find_in_set works a bit differently
@@ -1124,7 +1125,21 @@ class MediaModel extends OBFModel
                 $tmp_sql .= '"';
             }
 
-            $where_array[] = $tmp_sql;
+            // Group by SQL column so same-column filters can be OR'd.
+            $group_key = $column_array[$filter['filter']];
+            if (!isset($grouped_filters[$group_key])) {
+                $grouped_filters[$group_key] = [];
+            }
+            $grouped_filters[$group_key][] = $tmp_sql;
+        }
+
+        // Same-column filters are OR'd, different columns stay AND'd by caller.
+        foreach ($grouped_filters as $conditions) {
+            if (count($conditions) === 1) {
+                $where_array[] = $conditions[0];
+            } else {
+                $where_array[] = '(' . implode(' OR ', $conditions) . ')';
+            }
         }
 
         return $where_array;
