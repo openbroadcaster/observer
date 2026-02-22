@@ -1487,13 +1487,17 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         var op_name = $op.text();
 
         var $val = $(".advanced_search [data-type=value][data-name=" + value_field + "]");
-        var val = $val.val();
+        if ($val.prop("nodeName") == "OB-DATE-INPUT") {
+            var val = OB.UI.dateInputVal($val[0]);
+        } else {
+            var val = $val.val();
+        }
         if ($val.prop("nodeName") == "SELECT") var val_name = $val.find("option:selected").text();
         else if ($val.prop("nodeName") == "OB-FIELD-LANGUAGE") var val_name = $val[0].currentLanguageName();
         else if ($val.prop("nodeName") == "OB-FIELD-COUNTRY") var val_name = $val[0].currentCountryName();
 
         // trim val
-        val = val.trim();
+        if (typeof val === "string") val = val.trim();
 
         // some basic validation
         if ((filter == "artist" || filter == "album" || filter == "title") && val == "") {
@@ -1506,7 +1510,7 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
             return false;
         }
 
-        if ((filter == "created" || filter == "updated") && val.match(/^\d{4}-\d{2}-\d{2}$/) === null) {
+        if ((filter == "created" || filter == "updated") && (!val || val === "")) {
             $("#advanced_search_message").obWidget("error", ["A valid %1 is required", filter_name.toLowerCase()]);
             return false;
         }
