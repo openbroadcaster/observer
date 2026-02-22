@@ -306,8 +306,10 @@ class PlaylistsModel extends OBFModel
             $type_query_map = [
                 'b' => 'standard',
                 'basic' => 'standard',
+                'standard' => 'standard',
                 'pl b' => 'standard',
                 'playlist basic' => 'standard',
+                'playlist standard' => 'standard',
                 'a' => 'advanced',
                 'advanced' => 'advanced',
                 'pl a' => 'advanced',

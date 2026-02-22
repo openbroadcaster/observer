@@ -10,24 +10,8 @@ OB.Sidebar.init = function () {
 OB.Sidebar.mediaSearchQuery = "";
 OB.Sidebar.playlistSearchQuery = "";
 
-OB.Sidebar.ensurePlaylistTypeBadgeStyles = function () {
-    if (document.getElementById("ob-playlist-type-badge-styles")) return;
-
-    $("head").append(
-        '<style id="ob-playlist-type-badge-styles">' +
-            ".sidebar_search_playlist_name_text{vertical-align:middle;}" +
-            ".sidebar_search_playlist_type_badges{display:inline-flex;margin-right:6px;vertical-align:middle;}" +
-            ".sidebar_search_playlist_type_badge{display:inline-block;min-width:22px;padding:0 6px;border-radius:10px;border:1px solid currentColor;background:rgba(0,0,0,.15);font-size:.7rem;font-weight:700;line-height:1.5;text-align:center;}" +
-            ".sidebar_search_playlist_type_badge_b{color:#66d1b6;}" +
-            ".sidebar_search_playlist_type_badge_a{color:#87aeea;}" +
-            ".sidebar_search_playlist_type_badge_la{color:#f0b36c;}" +
-            "</style>",
-    );
-};
 
 OB.Sidebar.sidebarInit = function () {
-    OB.Sidebar.ensurePlaylistTypeBadgeStyles();
-
     if (parseInt(OB.Account.userdata.sidebar_display_left)) {
         $("body").addClass("sidebar-left");
     } else {
@@ -867,22 +851,25 @@ OB.Sidebar.playlistSearchSort = function (sortby) {
     OB.Sidebar.playlistSearch();
 };
 
-OB.Sidebar.playlistTypeShort = function (playlistType) {
-    if (playlistType == "advanced") return "A";
-    if (playlistType == "live_assist") return "LA";
-    return "B";
-};
-
 OB.Sidebar.playlistTypeBadges = function (playlistType) {
-    var playlistTypeShort = OB.Sidebar.playlistTypeShort(playlistType);
+    if (!playlistType) playlistType = "standard";
+
+    var iconClass = "fa-list";
+    var title = "Standard Playlist";
+    
+    if (playlistType == "advanced") {
+        iconClass = "fa-cogs";
+        title = "Advanced Playlist";
+    } else if (playlistType == "live_assist") {
+        iconClass = "fa-microphone";
+        title = "Live Assist Playlist";
+    }
 
     return (
-        '<span class="sidebar_search_playlist_type_badges">' +
-        '<span class="sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_' +
-        playlistTypeShort.toLowerCase() +
-        '">' +
-        playlistTypeShort +
-        "</span>" +
+        '<span class="sidebar_search_playlist_type_badges" title="' + title + '">' +
+        '<i class="fas ' + iconClass + ' sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_' +
+        playlistType +
+        '"></i>' +
         "</span>"
     );
 };

@@ -424,26 +424,21 @@ body.sidebar-left .sidebar_search_media_container_detailed #media_detailed_toggl
 
 .sidebar_search_playlist_type_badge {
     display: inline-block;
-    min-width: 22px;
-    padding: 0 6px;
-    border-radius: 10px;
-    border: 1px solid currentColor;
-    background: rgba(0, 0, 0, 0.15);
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1.5;
+    padding: 0 2px;
+    font-size: 1.1rem;
     text-align: center;
 }
 
-.sidebar_search_playlist_type_badge_b {
+.sidebar_search_playlist_type_badge_standard,
+.sidebar_search_playlist_type_badge_basic {
     color: #66d1b6;
 }
 
-.sidebar_search_playlist_type_badge_a {
+.sidebar_search_playlist_type_badge_advanced {
     color: #87aeea;
 }
 
-.sidebar_search_playlist_type_badge_la {
+.sidebar_search_playlist_type_badge_live_assist {
     color: #f0b36c;
 }
 
