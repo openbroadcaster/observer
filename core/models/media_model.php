@@ -954,7 +954,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['id','comments','artist','title','album','year','type','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select','owner','group'];
+        $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','is_copyright_owner','status','dynamic_select','owner','group'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1038,6 +1038,7 @@ class MediaModel extends OBFModel
             $column_array['is_copyright_owner'] = 'media.is_copyright_owner';
             $column_array['id'] = 'media.id';
             $column_array['dynamic_select'] = 'media.dynamic_select';
+            $column_array['format'] = 'media.format';
             $column_array['owner'] = 'media.owner_id';
 
             $metadata_fields = $this->models->mediametadata('get_all');
