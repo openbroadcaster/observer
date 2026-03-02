@@ -8,23 +8,22 @@
 namespace ob\tools\cli;
 
 define('OB_CLI', true);
-chdir(__DIR__ . '/../../');
 
-require('tools/cli/includes/helpers.php');
+require_once(__DIR__ . '/includes/helpers.php');
 
 if (php_sapi_name() !== 'cli') {
     die('This tool can only be used from the command line.');
 }
 
-if (!file_exists('config.php')) {
-    die('Missing config.php. Please run from the OpenBroadcaster root directory.' . PHP_EOL);
+if (!file_exists(__DIR__ . '/../../config.php')) {
+    die('Missing config.php. Please make sure the OpenBroadcaster has a valid configuration file.' . PHP_EOL);
 }
 
-if (!is_dir('vendor')) {
-    die('Missing vendor directory (required for CLI tool). Install composer then run "composer install" to get required dependencies.' . PHP_EOL);
+if (!is_dir(__DIR__ . '/../../vendor')) {
+    die('Missing vendor directory in OpenBroadcaster root directory. Install composer then run "composer install" to get required dependencies.' . PHP_EOL);
 }
 
-require('vendor/autoload.php');
+require_once(__DIR__ . '/../../vendor/autoload.php');
 
 $command = $argv[1] ?? '';
 $subcommand = $argv[2] ?? '';

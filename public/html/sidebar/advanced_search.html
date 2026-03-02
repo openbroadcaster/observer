@@ -7,6 +7,7 @@
 
         <div class="fieldrow">
             <select onchange="OB.Sidebar.advancedSearchFilterChange();" id="advanced_search_filter">
+                <option value="id" data-compare="number" data-value="text" data-t>Media ID</option>
                 <option value="artist" data-compare="text" data-value="text" data-t>Artist</option>
                 <option value="title" data-compare="text" data-value="text" data-t>Title</option>
                 <option value="album" data-compare="text" data-value="text" data-t>Album</option>
@@ -24,6 +25,8 @@
                 </option>
                 <option value="status" data-compare="select" data-value="status" data-t>Status</option>
                 <option value="dynamic_select" data-compare="select" data-value="bool" data-t>Include in Dynamic Selections?</option>
+                <option value="owner" data-compare="select" data-value="owner" data-t>Owner</option>
+                <option value="group" data-compare="select" data-value="group" data-t>Group</option>
             </select>
 
             <select id="advanced_search_text_compare" data-type="compare" data-name="text">
@@ -101,6 +104,10 @@
             </select>
 
             <input type="text" id="advanced_search_value" data-type="value" data-name="text" />
+
+            <select id="advanced_search_owner_options" data-type="value" data-name="owner" class="hidden"></select>
+
+            <select id="advanced_search_group_options" data-type="value" data-name="group" class="hidden"></select>
 
             <div id="advanced_search_metadata" style="display: none; align-items: flex-start; gap: 10px"></div>
 

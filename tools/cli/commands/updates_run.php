@@ -30,7 +30,7 @@ exit(0);
 
 function runUpdates($type = 'core', $module = null)
 {
-    require_once('updates/updates.php');
+    require_once(__DIR__ . '/../../../public/updates/updates.php');
 
     $db = new \OBFDB();
 

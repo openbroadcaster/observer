@@ -140,7 +140,10 @@ class Playlists extends OBFController
 
         $my = $this->data('my');
 
-        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my);
+        $owner = $this->data('owner');
+        $group = $this->data('group');
+
+        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my, $owner, $group);
 
         foreach ($search_result['playlists'] as &$playlist) {
             $playlist['can_edit'] = $this->user_can_edit($playlist);

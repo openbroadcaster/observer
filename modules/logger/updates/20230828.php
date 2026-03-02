@@ -1,6 +1,8 @@
 <?php
 
-class LoggerUpdate20230828 extends OBUpdate
+use OpenBroadcaster\Base\Update;
+
+class LoggerUpdate20230828 extends Update
 {
     public function items()
     {

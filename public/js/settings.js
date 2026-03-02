@@ -17,6 +17,7 @@ OB.Settings.genres = new Array();
 
 OB.Settings.permissions = null;
 OB.Settings.groups = null;
+OB.Settings.users = null;
 
 OB.Settings.storeCache = {};
 
@@ -32,6 +33,8 @@ OB.Settings.getSettings = function (callback) {
     post.push(["metadata", "playlist_item_types", {}]);
     post.push(["metadata", "recording_default_values", {}]);
     post.push(["media", "formats_get", {}]);
+    post.push(["users", "user_list", {}]);
+    post.push(["users", "group_list", {}]);
 
     OB.API.multiPost(
         post,
@@ -46,6 +49,8 @@ OB.Settings.getSettings = function (callback) {
             OB.Settings.playlist_item_types = response[7].data;
             OB.Settings.recording_metadata = response[8].data;
             OB.Settings.formats = response[9].data;
+            OB.Settings.users = response[9].data;
+            OB.Settings.groups = response[10].data;
 
             if (callback) callback();
         },

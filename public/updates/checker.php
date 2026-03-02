@@ -128,6 +128,9 @@ class OBFChecker
         if (!defined('OB_HASH_SALT')) {
             $errors[] = 'OB_HASH_SALT (password hash salt) not set.';
         }
+        if (!defined('OB_UPLOADS')) {
+            $errors[] = 'OB_UPLOADS (uploads directory) not set.';
+        }
         if (!defined('OB_MEDIA')) {
             $errors[] = 'OB_MEDIA (media directory) not set.';
         }
@@ -236,6 +239,12 @@ class OBFChecker
     {
         $errors = [];
 
+        if (!is_dir(OB_UPLOADS)) {
+            $errors[] = 'OB_UPLOADS (uploads directory) is not a valid directory.';
+        } elseif (!is_writable(OB_UPLOADS)) {
+            $errors[] = 'OB_UPLOADS (uploads directory) is not writable by the server.';
+        }
+
         if (!is_dir(OB_MEDIA)) {
             $errors[] = 'OB_MEDIA (media directory) is not a valid directory.';
         } elseif (!is_writable(OB_MEDIA)) {
@@ -266,16 +275,10 @@ class OBFChecker
             $errors[] = 'OB_CACHE (cache directory) is not writable by the server.';
         }
 
-        if (!is_dir(OB_UPLOADS)) {
-            $errors[] = 'The uploads directory does not exist.';
-        } elseif (!is_writable(OB_UPLOADS)) {
-            $errors[] = 'The uploads directory is not writable by the server.';
-        }
-
         if (count($errors) == 0) {
             // make sure there are no directories specified within the OB_CACHE directory
             $cache = realpath(OB_CACHE);
-            foreach ([OB_MEDIA, OB_MEDIA_UNAPPROVED, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_UPLOADS] as $dir) {
+            foreach ([OB_UPLOADS, OB_MEDIA, OB_MEDIA_UNAPPROVED, OB_MEDIA_ARCHIVE, OB_THUMBNAILS, OB_UPLOADS] as $dir) {
                 if (strpos(realpath($dir), $cache) === 0) {
                     $errors[] = 'Directory ' . $dir . ' is within the cache directory.';
                 }

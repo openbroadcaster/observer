@@ -8,7 +8,7 @@ class Helpers
     public static function requireValid()
     {
         $result_code = null;
-        exec(command: 'tools/cli/ob check', result_code: $result_code);
+        exec(command: __DIR__ . '/../ob check', result_code: $result_code);
         if ($result_code == 1) {
             echo 'OpenBroadcaster installation is not valid. Run "ob check" for more information.' . PHP_EOL;
             exit(1);

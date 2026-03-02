@@ -12,6 +12,7 @@ define('OB_DB_NAME', 'dbname'); // database name
 define('OB_HASH_SALT', 'CHANGEMEPLEASE'); // change to random characters for password salt.
 
 // make sure the following directories are writable by the web server.
+define('OB_UPLOADS', '/where/to/put/uploads');
 define('OB_MEDIA', '/where/to/put/media');
 define('OB_MEDIA_UNAPPROVED', '/where/to/put/media/unapproved'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
 define('OB_MEDIA_ARCHIVE', '/where/to/put/media/archive'); // can be subdirectory of OB_MEDIA, but doesn't need to be.
@@ -52,9 +53,6 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 
 // where to media file versions (default is OB_MEDIA/versions)
 // define('OB_MEDIA_VERSIONS','/where/to/put/media/versions');
-
-// set a custom uploads directory (required for multisite installations)
-// define('OB_UPLOADS', '/where/to/put/uploads');
 
 // disable language/translation demos (translated using Google Translate, will contain many errors)
 // define('OB_DISABLE_LANGUAGE_DEMOS',TRUE);

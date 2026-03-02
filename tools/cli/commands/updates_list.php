@@ -28,7 +28,7 @@ switch ($argv[3]) {
 
 function listUpdates($type = 'core', $module = null)
 {
-    require_once('updates/updates.php');
+    require_once(__DIR__ . '/../../../public/updates/updates.php');
 
     if ($type === 'core') {
         // List all core updates.

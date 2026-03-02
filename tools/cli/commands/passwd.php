@@ -11,7 +11,7 @@ Helpers::requireValid();
 
 $username = $subcommand;
 
-require_once('components.php');
+require_once(__DIR__ . '/../../../core/init.php');
 
 $db = new \OBFDB();
 

@@ -10,7 +10,7 @@ if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once('components.php');
+require_once(__DIR__ . '/../../../core/init.php');
 
 $db = \OBFDB::get_instance();
 
@@ -99,7 +99,7 @@ if (isset($argv[3]) && isset($argv[4])) {
 // Get all cron job module/name combinations.
 $jobs = [];
 
-foreach (glob('classes/cron/*.php') as $file) {
+foreach (glob(OB_LOCAL . '/core/cron/*.php') as $file) {
     require_once($file);
     $class = '\\OpenBroadcaster\Cron\\' . basename($file, '.php');
     $instance = new $class();
@@ -111,7 +111,7 @@ foreach (glob('classes/cron/*.php') as $file) {
     ];
 }
 
-foreach (glob('modules/*', GLOB_ONLYDIR) as $module) {
+foreach (glob(OB_LOCAL . '/modules/*', GLOB_ONLYDIR) as $module) {
     foreach (glob($module . '/cron/*.php') as $file) {
         require_once($file);
         $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', basename($module))));

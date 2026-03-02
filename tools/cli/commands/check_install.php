@@ -6,7 +6,7 @@ if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require('updates/checker.php');
+require_once(__DIR__ . '/../../../public/updates/checker.php');
 
 $checker = new \OBFChecker();
 $methods = get_class_methods($checker);
