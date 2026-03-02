@@ -32,8 +32,8 @@ class Settings extends OBFController
      */
     public function get_ob_version()
     {
-        if (file_exists('VERSION')) {
-            $version = trim(file_get_contents('VERSION'));
+        if (file_exists(OB_LOCAL . '/VERSION')) {
+            $version = trim(file_get_contents(OB_LOCAL . '/VERSION'));
         } else {
             $version = '';
         }

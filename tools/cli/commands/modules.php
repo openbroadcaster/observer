@@ -8,7 +8,7 @@ if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once('components.php');
+require_once(__DIR__ . '/../../../core/init.php');
 
 $db = \OBFDB::get_instance();
 $models = \OBFModels::get_instance();

@@ -22,8 +22,8 @@ class Version extends \OpenBroadcaster\Base\Remote
             }
         }
 
-        if (is_file('VERSION')) {
-            $version = trim(file_get_contents('VERSION'));
+        if (is_file(OB_LOCAL . '/VERSION')) {
+            $version = trim(file_get_contents(OB_LOCAL . '/VERSION'));
             header("content-type: application/json");
             echo json_encode($version);
             die(); // not XML return format, so not having remote.php handle
