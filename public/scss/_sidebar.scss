@@ -408,37 +408,25 @@ body.sidebar-left .sidebar_search_media_container_detailed #media_detailed_toggl
     width: 30px;
 }
 
-.sidebar_search_playlist_name {
-    width: 90px;
+#sidebar_search_playlist_results .sidebar_search_playlist_type {
+    width: 12px;
+    overflow: hidden;
 }
 
-.sidebar_search_playlist_name_text {
-    vertical-align: middle;
+#sidebar_search_playlist_results .sidebar_search_playlist_type i {
+    position: relative;
+    left: 3px;
 }
 
-.sidebar_search_playlist_type_badges {
-    display: inline-flex;
-    margin-right: 6px;
-    vertical-align: middle;
-}
-
-.sidebar_search_playlist_type_badge {
-    display: inline-block;
-    padding: 0 2px;
-    font-size: 1.1rem;
-    text-align: center;
-}
-
-.sidebar_search_playlist_type_badge_standard,
-.sidebar_search_playlist_type_badge_basic {
+.sidebar_search_playlist_type i.fa-list {
     color: #66d1b6;
 }
 
-.sidebar_search_playlist_type_badge_advanced {
+.sidebar_search_playlist_type i.fa-cogs {
     color: #87aeea;
 }
 
-.sidebar_search_playlist_type_badge_live_assist {
+.sidebar_search_playlist_type i.fa-microphone {
     color: #f0b36c;
 }
 

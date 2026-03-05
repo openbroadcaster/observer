@@ -304,22 +304,11 @@ class PlaylistsModel extends OBFModel
 
             $type_query = null;
             $type_query_map = [
-                'b' => 'standard',
-                'basic' => 'standard',
                 'standard' => 'standard',
-                'pl b' => 'standard',
-                'playlist basic' => 'standard',
-                'playlist standard' => 'standard',
-                'a' => 'advanced',
                 'advanced' => 'advanced',
-                'pl a' => 'advanced',
-                'playlist advanced' => 'advanced',
-                'la' => 'live_assist',
                 'live assist' => 'live_assist',
                 'liveassist' => 'live_assist',
                 'live_assist' => 'live_assist',
-                'pl la' => 'live_assist',
-                'playlist live assist' => 'live_assist',
             ];
 
             $query_normalized = strtolower($query);

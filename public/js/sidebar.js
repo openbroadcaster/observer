@@ -865,13 +865,7 @@ OB.Sidebar.playlistTypeBadges = function (playlistType) {
         title = "Live Assist Playlist";
     }
 
-    return (
-        '<span class="sidebar_search_playlist_type_badges" title="' + title + '">' +
-        '<i class="fas ' + iconClass + ' sidebar_search_playlist_type_badge sidebar_search_playlist_type_badge_' +
-        playlistType +
-        '"></i>' +
-        "</span>"
-    );
+    return '<i class="fas ' + iconClass + '" title="' + title + '"></i>';
 };
 
 OB.Sidebar.playlistSearch = function (more) {
@@ -936,11 +930,11 @@ OB.Sidebar.playlistSearch = function (more) {
         <tr class="sidebar_search_playlist_result" id="sidebar_search_playlist_result_' +
                         playlist[i]["id"] +
                         '" data-mode="playlist">\
-          <td class="sidebar_search_playlist_name" data-column="name">' +
+          <td class="sidebar_search_playlist_type" data-column="type">' +
                         OB.Sidebar.playlistTypeBadges(playlist[i]["type"]) +
-                        '<span class="sidebar_search_playlist_name_text">' +
+                        '</td>\
+          <td class="sidebar_search_playlist_name" data-column="name">' +
                         htmlspecialchars(playlist[i]["name"]) +
-                        "</span>" +
                         '</td>\
           <td class="sidebar_search_playlist_description" data-column="description">' +
                         playlist_description +
