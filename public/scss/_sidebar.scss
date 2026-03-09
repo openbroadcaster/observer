@@ -582,8 +582,14 @@ body.sidebar-left #sidebar_search_playlist_footer .details {
 }
 
 #my_searches_history_nosearches,
-#my_searches_saved_nosearches {
+#my_searches_saved_nosearches,
+#my_searches_shared_nosearches {
     margin-top: -10px;
+}
+
+#my_searches_shared,
+#my_searches_shared * {
+    cursor: pointer;
 }
 
 .my_searches_item {

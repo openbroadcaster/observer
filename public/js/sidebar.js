@@ -1052,7 +1052,13 @@ OB.Sidebar.playlistSearch = function (more) {
 };
 
 OB.Sidebar.mySearchesContextMenuOn = function (e, type, id) {
-    $("#my_searches_item_" + id).addClass("context_menu_on");
+    $(".my_searches_item").removeClass("context_menu_on");
+
+    var itemSelector = "#my_searches_item_" + id;
+    if (type == "shared") {
+        itemSelector = "#my_searches_shared_item_" + id;
+    }
+    $(itemSelector).addClass("context_menu_on");
 
     $("#my_searches_" + type + "_context_menu")
         .css("left", e.pageX)
@@ -1079,6 +1085,7 @@ OB.Sidebar.mySearchesContextMenuOff = function (e) {
 
     $("#my_searches_history_context_menu").hide();
     $("#my_searches_saved_context_menu").hide();
+    $("#my_searches_shared_context_menu").hide();
 
     $(".my_searches_item").removeClass("context_menu_on");
 
@@ -1122,10 +1129,18 @@ OB.Sidebar.mySearchesNosearchtext = function () {
 
     if ($("#my_searches_saved .my_searches_item").length == 0) $("#my_searches_saved_nosearches").show();
     else $("#my_searches_saved_nosearches").hide();
+
+    if ($("#my_searches_shared .my_searches_item").length == 0) $("#my_searches_shared_nosearches").show();
+    else $("#my_searches_shared_nosearches").hide();
 };
 
 OB.Sidebar.mySearchesSearch = function (id) {
-    OB.Sidebar.advanced_search_filters = $("#my_searches_item_" + id).data("filters");
+     var $item = $("#my_searches_item_" + id);
+    if (!$item.length) $item = $("#my_searches_shared_item_" + id);
+    if (!$item.length) $item = $('.my_searches_item[data-id="' + id + '"]').first();
+    if (!$item.length) return;
+
+    OB.Sidebar.advanced_search_filters = $item.data("filters");
     OB.Sidebar.mediaSearch();
     OB.UI.closeModalWindow();
 };
@@ -1136,6 +1151,7 @@ OB.Sidebar.mySearchesWindow = function () {
 
         var history = response.data.history;
         var saved = response.data.saved;
+        var shared = response.data.shared;
 
         if (history && history.length > 0) {
             $.each(history, function (index, data) {
@@ -1149,6 +1165,12 @@ OB.Sidebar.mySearchesWindow = function () {
             });
         }
 
+        if (shared && shared.length > 0) {
+            $.each(shared, function (index, data) {
+                OB.Sidebar.mySearchesWindowAddItem(data, "shared");
+            });
+        }
+
         OB.Sidebar.mySearchesNosearchtext();
     });
 };
@@ -1156,31 +1178,47 @@ OB.Sidebar.mySearchesWindow = function () {
 OB.Sidebar.mySearchesWindowAddItem = function (data, type) {
     if (data.query.mode != "advanced") return; // this shouldn't be.
 
+    // use unique element id for shared items to avoid collisions with saved items
+    var itemId = type === "shared" ? "my_searches_shared_item_" + data.id : "my_searches_item_" + data.id;
+
     $("#my_searches_" + type).append(
-        '<div class="my_searches_item" data-id="' + data.id + '" id="my_searches_item_' + data.id + '"></div>',
+        '<div class="my_searches_item" data-id="' + data.id + '" id="' + itemId + '"></div>',
     );
 
-    $("#my_searches_item_" + data.id).click(function () {
+    $("#" + itemId).click(function () {
         OB.Sidebar.mySearchesSearch(data.id);
     });
-    $("#my_searches_item_" + data.id).data("filters", data.query.filters);
-    $("#my_searches_item_" + data.id).data("description", data.description);
+    $("#" + itemId).data("filters", data.query.filters);
+    $("#" + itemId).data("description", data.description);
 
-    OB.Sidebar.mySearchesItemContextMenu($("#my_searches_item_" + data.id), type);
+    OB.Sidebar.mySearchesItemContextMenu($("#" + itemId), type);
 
     //T All simple searches will include these filters by default.
     if (data.default == "1")
-        $("#my_searches_item_" + data.id).append(
+        $("#" + itemId).append(
             '<div class="media_search_item_default_text">' +
                 OB.t("All simple searches will include these filters by default.") +
                 "</div>",
         );
 
+    // show shared by info for shared items
+    if (type === "shared" && data.shared_by_name) {
+        //T Shared by
+        $("#" + itemId).append(
+            '<div class="media_search_item_shared_by" style="font-size: 0.9em; opacity: 0.82; margin-bottom: 6px;">' +
+                '<span style="font-weight: 600;">' +
+                OB.t("Shared by") +
+                ":</span> " +
+                htmlspecialchars(data.shared_by_name) +
+                "</div>",
+        );
+    }
+
     if (type == "saved" && data.description != "") {
-        $("#my_searches_item_" + data.id).append("<div><i>" + nl2br(htmlspecialchars(data.description)) + "</i></div>");
+        $("#" + itemId).append("<div><i>" + nl2br(htmlspecialchars(data.description)) + "</i></div>");
     } else
         $.each(data.query.filters, function (filter_index, filter) {
-            $("#my_searches_item_" + data.id).append("<div>" + htmlspecialchars(filter.description) + "</div>");
+             $("#" + itemId).append("<div>" + htmlspecialchars(filter.description) + "</div>");
         });
 };
 
@@ -1264,6 +1302,67 @@ OB.Sidebar.mySearchesEdit = function () {
     });
 };
 
+OB.Sidebar.mySearchesShareWindow = function () {
+    if (!$(".my_searches_item.context_menu_on").length) return;
+
+    var id = $(".my_searches_item.context_menu_on").attr("data-id");
+    OB.Sidebar.mySearchesShareId = id;
+
+    OB.API.post("users", "user_list", {}, function (userResponse) {
+        OB.API.post("users", "group_list", {}, function (groupResponse) {
+            OB.UI.openModalWindow("sidebar/share_search.html");
+
+            var users = userResponse.data || [];
+            var groups = groupResponse.data || [];
+
+            // populate user select
+            $.each(users, function (index, user) {
+                $("#share_search_users").append(
+                    '<option value="' + user.id + '">' + htmlspecialchars(user.display_name) + "</option>",
+                );
+            });
+
+            // populate group select
+            $.each(groups, function (index, group) {
+                $("#share_search_groups").append(
+                    '<option value="' + group.id + '">' + htmlspecialchars(group.name) + "</option>",
+                );
+            });
+        });
+    });
+};
+
+OB.Sidebar.mySearchesShareSubmit = function () {
+    var userIds = $("#share_search_users").val() || [];
+    var groupIds = $("#share_search_groups").val() || [];
+
+    if (userIds.length === 0 && groupIds.length === 0) {
+        //T Please select at least one user or group to share with.
+        $("#share_search_message").obWidget("error", "Please select at least one user or group to share with.");
+        return;
+    }
+
+    OB.API.post(
+        "media",
+        "media_my_searches_share",
+        {
+            id: OB.Sidebar.mySearchesShareId,
+            user_ids: userIds,
+            group_ids: groupIds,
+        },
+        function (response) {
+            if (response.status == true) {
+                OB.UI.closeModalWindow();
+                //T Search shared successfully.
+                OB.UI.alert("Search shared successfully.");
+            } else {
+                //T An error occurred while trying to share this search.
+                $("#share_search_message").obWidget("error", "An error occurred while trying to share this search.");
+            }
+        },
+    );
+};
+
 OB.Sidebar.advancedSearchWindowInit = function () {
     // refresh settings and then load window
     OB.Settings.getSettings(function () {
@@ -1309,7 +1408,7 @@ OB.Sidebar.advancedSearchWindowInit = function () {
                 );
             });
         }
-      
+
         if (OB.Settings.users) {
             $.each(OB.Settings.users, function (index, user) {
                 $("#advanced_search_owner_options").append(

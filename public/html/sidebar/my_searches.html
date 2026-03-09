@@ -12,6 +12,14 @@
     </fieldset>
 
     <fieldset>
+        <legend data-t>Shared With Me</legend>
+
+        <p id="my_searches_shared_nosearches" class="hidden" data-t>No shared searches found.</p>
+
+        <div id="my_searches_shared"></div>
+    </fieldset>
+
+    <fieldset>
         <legend data-t>Search History</legend>
 
         <p id="my_searches_history_nosearches" class="hidden" data-t>No searches found.</p>
@@ -44,6 +52,11 @@
         <div class="hidden" id="my_searches_context_menu_unset_default">
             <a class="context_menu_item" onclick="OB.Sidebar.mySearchesUnsetDefault();" data-t>Unset Default</a>
         </div>
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesShareWindow();" data-t>Share</a></div>
         <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesDelete();" data-t>Delete</a></div>
+    </div>
+
+    <div class="my_searches_context_menu" id="my_searches_shared_context_menu">
+        <div><a class="context_menu_item" onclick="OB.Sidebar.mySearchesSearch($('.my_searches_item.context_menu_on').attr('data-id'));" data-t>Search</a></div>
     </div>
 </div>
