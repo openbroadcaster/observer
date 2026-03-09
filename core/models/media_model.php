@@ -1115,7 +1115,7 @@ class MediaModel extends OBFModel
         OBFHelpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
-        $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','created','updated','is_copyright_owner','status','dynamic_select','owner','group'];
+        $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','created','updated','is_copyright_owner','status','dynamic_select','owner','group','play_count'];
         $allowed_operators = [
             // deprecated
             'like',
@@ -1232,6 +1232,24 @@ class MediaModel extends OBFModel
                     $tmp_sql = 'media.id NOT IN (SELECT media_id FROM media_permissions_groups WHERE group_id = "' . $group_id . '")';
                 }
                 $where_array[] = $tmp_sql;
+                continue;
+            }
+
+            // play count filter uses a subquery on players_log
+            if ($filter['filter'] === 'play_count') {
+                $play_count_ops = [
+                    'eq'  => '=',
+                    'neq' => '!=',
+                    'gt'  => '>',
+                    'gte' => '>=',
+                    'lt'  => '<',
+                    'lte' => '<=',
+                    'is'  => '=',
+                    'not' => '!=',
+                ];
+                $op = $play_count_ops[$filter['op']] ?? '=';
+                $val = (int) $filter['val'];
+                $where_array[] = '(SELECT COUNT(*) FROM players_log WHERE players_log.media_id = media.id) ' . $op . ' ' . $val;
                 continue;
             }
 
