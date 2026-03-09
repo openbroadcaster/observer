@@ -49,8 +49,8 @@ OB.Settings.getSettings = function (callback) {
             OB.Settings.playlist_item_types = response[7].data;
             OB.Settings.recording_metadata = response[8].data;
             OB.Settings.formats = response[9].data;
-            OB.Settings.users = response[9].data;
-            OB.Settings.groups = response[10].data;
+            OB.Settings.users = response[10].data;
+            OB.Settings.groups = response[11].data;
 
             if (callback) callback();
         },
