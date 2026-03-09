@@ -8,10 +8,10 @@ if (php_sapi_name()!='cli') {
     die('cli only');
 }
 
-$dirs = scandir(__DIR__.'/../themes/');
+$dirs = scandir(__DIR__.'/../public/themes/');
 
 foreach ($dirs as $dir) {
-    $fulldir = realpath(__DIR__.'/../themes/'.$dir);
+    $fulldir = realpath(__DIR__.'/../public/themes/'.$dir);
     if ($dir[0]=='.' || !is_dir($fulldir) || !is_file($fulldir.'/style.scss')) {
         continue;
     }
