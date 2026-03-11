@@ -3,7 +3,9 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-class NowPlayingModule extends OBFModule
+use OpenBroadcaster\Base\Module;
+
+class NowPlayingModule extends Module
 {
 
 	public $name = 'Now Playing v1.0';

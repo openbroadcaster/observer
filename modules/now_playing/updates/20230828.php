@@ -1,6 +1,8 @@
 <?php
 
-class NowPlayingUpdate20230828 extends OBUpdate
+use OpenBroadcaster\Base\Update;
+
+class NowPlayingUpdate20230828 extends Update
 {
     public function items()
     {

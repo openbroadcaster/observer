@@ -8,8 +8,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 require('../../components.php');
 
-$load = OBFLoad::get_instance();
-$db = OBFDB::get_instance();
+$load = \OBFLoad::get_instance();
+$db = \OBFDB::get_instance();
 
 // make sure this module is installed
 $module_model = $load->model('Modules');
@@ -54,4 +54,4 @@ if(!empty($_GET['thumbnail']))
 // return information via JSON if requested as such.
 if(!empty($_GET['json'])) { echo json_encode($data); die(); }
 
-require('modules/now_playing/template.php');
+require(OB_LOCAL . '/modules/now_playing/template.php');
