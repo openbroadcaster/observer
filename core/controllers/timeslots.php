@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Timeslots extends OBFController
+class Timeslots extends Controller
 {
     public function __construct()
     {

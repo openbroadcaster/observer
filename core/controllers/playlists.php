@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Playlists extends OBFController
+class Playlists extends Controller
 {
     public function __construct()
     {

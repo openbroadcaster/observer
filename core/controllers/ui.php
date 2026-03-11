@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class UI extends OBFController
+class UI extends Controller
 {
     public function __construct()
     {

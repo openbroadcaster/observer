@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Media extends OBFController
+class Media extends Controller
 {
     public function __construct()
     {

@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Playlog extends OBFController
+class Playlog extends Controller
 {
     public function __construct()
     {

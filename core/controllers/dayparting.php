@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Dayparting extends OBFController
+class Dayparting extends Controller
 {
     public function __construct()
     {

@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Alerts extends OBFController
+class Alerts extends Controller
 {
     public function __construct()
     {

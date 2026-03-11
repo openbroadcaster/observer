@@ -13,9 +13,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Settings extends OBFController
+class Settings extends Controller
 {
     public function __construct()
     {

@@ -10,11 +10,11 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 use OBFHelpers;
 use OBFIO;
 
-class Downloads extends OBFController
+class Downloads extends Controller
 {
     private $io;
 

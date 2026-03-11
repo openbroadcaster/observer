@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Modules extends OBFController
+class Modules extends Controller
 {
     public function __construct()
     {

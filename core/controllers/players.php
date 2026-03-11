@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 
-class Players extends OBFController
+class Players extends Controller
 {
     public function __construct()
     {

@@ -10,11 +10,11 @@
  */
 namespace OpenBroadcaster\Controllers;
 
-use OBFController;
+use OpenBroadcaster\Base\Controller;
 use OBFHelpers;
 use OBFIO;
 
-class Stream extends OBFController
+class Stream extends Controller
 {
     private $io;
 
