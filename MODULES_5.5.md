@@ -4,3 +4,6 @@ A refactor in 5.5 changed most of the structure of the core code. In practically
 
 - Module update files no longer extend `OBUpdate`, but instead extend `OpenBroadcaster\Base\Update`.
 - Cron files now extend `OpenBroadcaster\Base\Cron`
+- Module controllers go from `OBFController` -> `OpenBroadcaster\Base\Controller`
+- Module models go from `OBFModel` -> `OpenBroadcaster\Base\Model`
+- Module top level file goes from `OBFModule` -> `OpenBroadcaster\Base\Module`

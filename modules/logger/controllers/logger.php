@@ -3,7 +3,9 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-class Logger extends OBFController
+use OpenBroadcaster\Base\Controller;
+
+class Logger extends Controller
 {
 
 	public function __construct()

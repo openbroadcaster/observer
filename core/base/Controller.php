@@ -3,6 +3,8 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Base;
+
 /**
  * Manages controllers. Makes frameworks available, adds associated controller
  * request handlers, and methods get called when calling methods on associated
@@ -10,7 +12,7 @@
  *
  * @package Class
  */
-class OBFController
+class Controller
 {
     public $load;
     public $db;
@@ -22,17 +24,17 @@ class OBFController
     protected $callback_handler;
 
     /**
-     * Create a new instance of OBFController. Makes various classes of OB available
+     * Create a new instance of Controller. Makes various classes of OB available
      * by default, such as OBFLoad, OBFDB, OBFUser, OBFCallbacks, and OBFHelpers.
      */
     public function __construct()
     {
-        $this->load = OBFLoad::get_instance();
-        $this->db = OBFDB::get_instance();
-        $this->user = OBFUser::get_instance();
-        $this->callback_handler = OBFCallbacks::get_instance();
-        $this->helpers = OBFHelpers::get_instance();
-        $this->models = OBFModels::get_instance();
+        $this->load = \OBFLoad::get_instance();
+        $this->db = \OBFDB::get_instance();
+        $this->user = \OBFUser::get_instance();
+        $this->callback_handler = \OBFCallbacks::get_instance();
+        $this->helpers = \OBFHelpers::get_instance();
+        $this->models = \OBFModels::get_instance();
     }
 
     /**

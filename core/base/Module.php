@@ -3,12 +3,14 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Base;
+
 /**
  * Manages modules.
  *
  * @package Class
  */
-class OBFModule
+class Module
 {
     public $db;
     public $callback_handler;
@@ -19,8 +21,8 @@ class OBFModule
      */
     public function __construct()
     {
-        $this->db = OBFDB::get_instance();
-        $this->callback_handler = OBFCallbacks::get_instance();
+        $this->db = \OBFDB::get_instance();
+        $this->callback_handler = \OBFCallbacks::get_instance();
     }
 
     /**

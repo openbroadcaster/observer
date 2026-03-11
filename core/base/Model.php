@@ -3,12 +3,14 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Base;
+
 /**
  * Model class. Defines basic OB model functionality.
  *
  * @package Class
  */
-class OBFModel
+class Model
 {
     public $load;
     public $db;
@@ -25,12 +27,12 @@ class OBFModel
      */
     public function __construct()
     {
-        $this->load = OBFLoad::get_instance();
-        $this->db = OBFDB::get_instance();
-        $this->user = OBFUser::get_instance();
-        $this->callback_handler = OBFCallbacks::get_instance();
-        $this->helpers = OBFHelpers::get_instance();
-        $this->models = OBFModels::get_instance();
+        $this->load = \OBFLoad::get_instance();
+        $this->db = \OBFDB::get_instance();
+        $this->user = \OBFUser::get_instance();
+        $this->callback_handler = \OBFCallbacks::get_instance();
+        $this->helpers = \OBFHelpers::get_instance();
+        $this->models = \OBFModels::get_instance();
     }
 
     /**
