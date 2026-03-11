@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class MediaCountriesModel extends OBFModel
+class MediaCountriesModel extends Model
 {
     /**
      * Get all countries from the database.

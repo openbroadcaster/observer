@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class PlaylogModel extends OBFModel
+class PlaylogModel extends Model
 {
     public function __construct()
     {

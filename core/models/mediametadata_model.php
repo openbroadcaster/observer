@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class MediaMetadataModel extends OBFModel
+class MediaMetadataModel extends Model
 {
     /**
      * Get all metadata columns as metadata objects.

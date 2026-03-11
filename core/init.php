@@ -111,13 +111,12 @@ spl_autoload_register(function ($className) {
 
             // Check if model, which has a weird naming scheme (possible TODO, currently breaks
             // too many things).
-            if (str_ends_with($file, 'Model')) {
+            if (str_ends_with($file, 'Model') && $relativeClass !== 'Model') {
                 $file = strtolower(substr($file, 0, -5)) . '_model';
             }
 
             // Add extension.
             $file = $file . '.php';
-
             if (file_exists($file)) {
                 require_once $file;
                 return;

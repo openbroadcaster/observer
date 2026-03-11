@@ -14,9 +14,9 @@ use DateTime;
 use DateTimeZone;
 use DateInterval;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class ShowsModel extends OBFModel
+class ShowsModel extends Model
 {
     public function __construct()
     {

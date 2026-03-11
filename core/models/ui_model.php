@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class UIModel extends OBFModel
+class UIModel extends Model
 {
     public function __construct()
     {

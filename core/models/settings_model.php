@@ -12,9 +12,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class SettingsModel extends OBFModel
+class SettingsModel extends Model
 {
     /**
      * Update a setting.

@@ -11,9 +11,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class UploadsModel extends OBFModel
+class UploadsModel extends Model
 {
     /**
     * Return whether an uploaded file ID and associated key is valid. Returns

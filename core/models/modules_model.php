@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class ModulesModel extends OBFModel
+class ModulesModel extends Model
 {
     /**
      * Get all installed modules.

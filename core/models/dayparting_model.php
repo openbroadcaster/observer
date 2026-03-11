@@ -13,10 +13,10 @@ namespace OpenBroadcaster\Models;
 
 use DateTime;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 use OBFHelpers;
 
-class DaypartingModel extends OBFModel
+class DaypartingModel extends Model
 {
     public function search($args = [])
     {

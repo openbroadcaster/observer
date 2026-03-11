@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class UserStorageModel extends OBFModel
+class UserStorageModel extends Model
 {
     /**
      * Insert or update a name/value pair.

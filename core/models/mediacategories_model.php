@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class MediaCategoriesModel extends OBFModel
+class MediaCategoriesModel extends Model
 {
     /**
      * Search media categories.

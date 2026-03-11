@@ -13,9 +13,9 @@ namespace OpenBroadcaster\Models;
 use DateTime;
 use DateTimeZone;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class PlayersModel extends OBFModel
+class PlayersModel extends Model
 {
     /**
      * Retrieve data from a single player. ID passed as parameter, rather than in

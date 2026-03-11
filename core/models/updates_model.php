@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class UpdatesModel extends OBFModel
+class UpdatesModel extends Model
 {
     // get an array of update classes.
     public function update_required()

@@ -10,9 +10,9 @@
  */
 namespace OpenBroadcaster\Models;
 
-use OBFModel;
+use OpenBroadcaster\Base\Model;
 
-class PermissionsModel extends OBFModel
+class PermissionsModel extends Model
 {
     public $permission_cache = false;
 
