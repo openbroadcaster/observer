@@ -6,7 +6,7 @@ class OBElementSearchPlaylist extends OBLitElement {
         query: { type: String },
         view: { type: String }, // 'list', 'grid', etc.
         my: { type: Boolean }, // true if only showing media owned by the user
-        status: { type: String }, // 'approved', 'unapproved', 'archived'
+        type: { type: String }, // 'approved', 'unapproved', 'archived'
         mode: { type: String }, // 'simple', 'advanced',
         settingsOpen: { type: Boolean }, // true if the settings menu is open
     };
@@ -15,8 +15,8 @@ class OBElementSearchPlaylist extends OBLitElement {
         super();
         this.query = "";
         this.view = "list"; // default view
-        this.my = false; // default to showing all media
-        this.status = "approved"; // default status
+        this.my = false; // default to showing all playlists
+        this.type = "all"; // default type
         this.mode = "simple";
         this.settingsOpen = false;
         this.queryTimeout = null;
@@ -172,6 +172,23 @@ class OBElementSearchPlaylist extends OBLitElement {
 
             <div class="settings" ?hidden=${!this.settingsOpen}>
                 <label><input type="checkbox" ?checked=${this.my} @change=${this._changeMy} /> My Playlists</label>
+                <hr />
+                <label>
+                    <input type="radio" name="type" ?checked=${this.type === "all"} @change=${this._changeType} value="all" />
+                    All Playlists
+                </label>
+                <label>
+                    <input type="radio" name="type" ?checked=${this.type === "standard"} @change=${this._changeType} value="standard" />
+                    Standard
+                </label>
+                <label>
+                    <input type="radio" name="type" ?checked=${this.type === "advanced"} @change=${this._changeType} value="advanced" />
+                    Advanced
+                </label>
+                <label>
+                    <input type="radio" name="type" ?checked=${this.type === "live_assist"} @change=${this._changeType} value="live_assist" />
+                    Live Assist
+                </label>
             </div>
         `;
     }
@@ -235,6 +252,17 @@ class OBElementSearchPlaylist extends OBLitElement {
                 bubbles: true,
                 composed: true,
                 detail: { my: this.my },
+            }),
+        );
+    }
+
+    _changeType(e) {
+        this.type = e.target.value;
+        this.dispatchEvent(
+            new CustomEvent("ob-search-playlist-type-changed", {
+                bubbles: true,
+                composed: true,
+                detail: { type: this.type },
             }),
         );
     }

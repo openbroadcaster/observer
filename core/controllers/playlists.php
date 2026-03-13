@@ -124,6 +124,7 @@ class Playlists extends Controller
      * @param sort_by
      * @param sort_dir
      * @param my Ownership. Set to filter for playlists owned by user.
+     * @param type Type of playlist, can be 'all', 'standard', 'advanced', or 'live_assist'. May be removed in the future for advanced search functionality.
      *
      * @return [num_results, playlists]
      *
@@ -139,11 +140,12 @@ class Playlists extends Controller
         $sort_dir = $this->data('sort_dir');
 
         $my = $this->data('my');
+        $type = $this->data('type');
 
         $owner = $this->data('owner');
         $group = $this->data('group');
 
-        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my, $owner, $group);
+        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my, $owner, $group, $type);
 
         foreach ($search_result['playlists'] as &$playlist) {
             $playlist['can_edit'] = $this->user_can_edit($playlist);

@@ -291,10 +291,11 @@ class PlaylistsModel extends Model
      * @param sort_by
      * @param sort_dir
      * @param my Limit results to currently logged in user. Default FALSE.
+     * @param type Type of playlist, can be 'all', 'standard', 'advanced', or 'live_assist'. May be removed in the future for advanced search functionality.
      *
      * @return [num_results, playlists]
      */
-    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false, $owner = null, $group = null)
+    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false, $owner = null, $group = null, $type = null)
     {
         $where_strings = [];
 
@@ -318,6 +319,13 @@ class PlaylistsModel extends Model
         // filter by owner
         if (!empty($owner)) {
             $where_strings[] = 'owner_id = "' . $this->db->escape($owner) . '"';
+        }
+
+        // filter by type
+        if (!empty($type)) {
+            if (in_array($type, ['standard', 'advanced', 'live_assist'], true)) {
+                $where_strings[] = 'type = "' . $this->db->escape($type) . '"';
+            }
         }
 
         // filter by group

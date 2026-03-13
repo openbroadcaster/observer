@@ -63,6 +63,9 @@ OB.Sidebar.sidebarInit = function () {
     OB.Sidebar.playlistSearchForm.addEventListener("ob-search-playlist-my-changed", function (e) {
         OB.Sidebar.playlistSearchFilter("my");
     });
+    OB.Sidebar.playlistSearchForm.addEventListener("ob-search-playlist-type-changed", function (e) {
+        OB.Sidebar.playlistSearchFilter(e.detail.type);
+    });
 };
 
 OB.Sidebar.playerToggle = function () {
@@ -735,11 +738,16 @@ OB.Sidebar.contextMenuPlaylistDetailsPage = function (id) {
 
 OB.Sidebar.playlist_search_filters = new Object();
 OB.Sidebar.playlist_search_filters.my = false;
+OB.Sidebar.playlist_search_filters.type = 'all';
 OB.Sidebar.playlist_search_filters.bookmarked = false;
 
 OB.Sidebar.playlistSearchFilter = function (what) {
     // toggle on off
     if (what == "my") OB.Sidebar.playlist_search_filters.my = !OB.Sidebar.playlist_search_filters.my;
+
+    if (what === 'all' || what === 'standard' || what === 'advanced' || what === 'live_assist') {
+        OB.Sidebar.playlist_search_filters.type = what;
+    }
 
     //T my
     if (OB.Sidebar.playlist_search_filters.my == true) $("#sidebar_search_playlist_my").text(OB.t("my").toUpperCase());
@@ -874,6 +882,7 @@ OB.Sidebar.playlistSearch = function (more) {
             l: results_per_page,
             o: OB.Sidebar.playlist_search_offset,
             my: OB.Sidebar.playlist_search_filters.my,
+            type: OB.Sidebar.playlist_search_filters.type,
         },
         function (data) {
             var playlist = data.data.playlists;
