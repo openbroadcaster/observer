@@ -125,9 +125,9 @@ spl_autoload_register(function ($className) {
     }
 });
 
-// Require core files (TODO: add to autoloading, will need to be namespaced first).
+// Require core files
 $require_from = [
-    OB_LOCAL . '/core/core',
+    OB_LOCAL . '/core/support',
 ];
 foreach ($require_from as $dir) {
     $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
