@@ -21,6 +21,7 @@ class OBFieldMedia extends OBField {
     #trimEnd;
 
     #init;
+    #loading;
 
     static comparisonOperators = {
         eq: "is",
@@ -50,6 +51,8 @@ class OBFieldMedia extends OBField {
         this.#trimStart = 0.0;
         this.#trimEnd = 0.0;
 
+	this.#loading = false;
+
         this.renderComponent().then(() => {
             this.addEventListener("dragstart", this.onDragStart.bind(this));
             this.addEventListener("dragend", this.onDragEnd.bind(this));
@@ -63,7 +66,7 @@ class OBFieldMedia extends OBField {
     }
 
     async renderEdit() {
-        await this.mediaContent();
+        if(!this.#loading) await this.mediaContent();
 
         render(
             html`
@@ -152,7 +155,7 @@ class OBFieldMedia extends OBField {
     }
 
     async renderView() {
-        await this.mediaContent();
+        if(!this.#loading) await this.mediaContent();
 
         render(
             html`
@@ -415,8 +418,11 @@ class OBFieldMedia extends OBField {
     async mediaContent() {
         if (!this._value || !this.#mediaContent) return;
 
-        return Promise.all(
+	this.#loading = true;
+
+        await Promise.all(
             this._value.map(async (mediaItem) => {
+
                 if (this.#mediaContent[mediaItem]) {
                     return;
                 }
@@ -438,6 +444,8 @@ class OBFieldMedia extends OBField {
                 this.refresh();
             }),
         );
+
+	this.#loading = false;
     }
 
     mediaTrimBuffer(buffer, trimStart, trimEnd) {
