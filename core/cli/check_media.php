@@ -1,12 +1,12 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 if (! defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once(__DIR__ . '/../../../core/init.php');
+require_once(__DIR__ . '/../init.php');
 
 $db = \OBFDB::get_instance();
 

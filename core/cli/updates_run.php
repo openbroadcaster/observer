@@ -1,6 +1,6 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 if (!defined('OB_CLI')) {
     die('Command line access only.');
@@ -30,7 +30,7 @@ exit(0);
 
 function runUpdates($type = 'core', $module = null)
 {
-    require_once(__DIR__ . '/../../../public/updates/updates.php');
+    require_once(__DIR__ . '/../../public/updates/updates.php');
 
     $db = new \OBFDB();
 
@@ -50,7 +50,7 @@ function runUpdates($type = 'core', $module = null)
         $list = $u->updates();
     } else {
         // Run all module updates.
-        $modules = array_filter(scandir('./modules/'), fn($f) => $f[0] !== '.');
+        $modules = array_filter(scandir(__DIR__ . '/../../modules/'), fn($f) => $f[0] !== '.');
         foreach ($modules as $module) {
             $db->where('directory', $module);
             $installed = $db->get_one('modules');

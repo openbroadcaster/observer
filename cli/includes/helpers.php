@@ -1,6 +1,6 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 class Helpers
 {

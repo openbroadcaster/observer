@@ -1,6 +1,6 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 if (!defined('OB_CLI')) {
     die('Command line access only.');
@@ -11,7 +11,7 @@ Helpers::requireValid();
 
 $username = $subcommand;
 
-require_once(__DIR__ . '/../../../core/init.php');
+require_once(__DIR__ . '/../init.php');
 
 $db = new \OBFDB();
 

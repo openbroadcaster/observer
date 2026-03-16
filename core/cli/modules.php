@@ -1,6 +1,6 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 global $argv;
 
@@ -8,7 +8,7 @@ if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once(__DIR__ . '/../../../core/init.php');
+require_once(__DIR__ . '/../init.php');
 
 $db = \OBFDB::get_instance();
 $models = \OBFModels::get_instance();

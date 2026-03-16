@@ -1,12 +1,12 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once(__DIR__ . '/../../../public/updates/checker.php');
+require_once(__DIR__ . '/../../public/updates/checker.php');
 
 $checker = new \OBFChecker();
 $methods = get_class_methods($checker);

@@ -1,6 +1,6 @@
 <?php
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 define('OB_CRON_LOG', '/tmp/cronlog');
 
@@ -10,7 +10,7 @@ if (!defined('OB_CLI')) {
     die('Command line access only.');
 }
 
-require_once(__DIR__ . '/../../../core/init.php');
+require_once(__DIR__ . '/../init.php');
 
 $db = \OBFDB::get_instance();
 
@@ -129,7 +129,7 @@ foreach (glob(OB_LOCAL . '/modules/*', GLOB_ONLYDIR) as $module) {
 if ($subcommand === 'run') {
     foreach ($jobs as $job) {
         echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
-        exec(OB_LOCAL . '/tools/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+        exec(OB_LOCAL . '/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
     }
 } elseif ($subcommand === 'monitor') {
     while (true) {
@@ -143,7 +143,7 @@ if ($subcommand === 'run') {
 
             // disabled "running" message since we have things running every second (would be good to have a debug mode)
             // echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
-            exec(OB_LOCAL . '/tools/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
+            exec(OB_LOCAL . '/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . OB_CRON_LOG . ' &');
         }
 
         sleep(1);

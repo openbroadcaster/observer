@@ -5,7 +5,7 @@
 
 // command line tool (alpha)
 
-namespace ob\tools\cli;
+namespace OpenBroadcaster\CLI;
 
 define('OB_CLI', true);
 
@@ -15,15 +15,15 @@ if (php_sapi_name() !== 'cli') {
     die('This tool can only be used from the command line.');
 }
 
-if (!file_exists(__DIR__ . '/../../config.php')) {
+if (!file_exists(__DIR__ . '/../config.php')) {
     die('Missing config.php. Please make sure the OpenBroadcaster has a valid configuration file.' . PHP_EOL);
 }
 
-if (!is_dir(__DIR__ . '/../../vendor')) {
+if (!is_dir(__DIR__ . '/../vendor')) {
     die('Missing vendor directory in OpenBroadcaster root directory. Install composer then run "composer install" to get required dependencies.' . PHP_EOL);
 }
 
-require_once(__DIR__ . '/../../vendor/autoload.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
 
 $command = $argv[1] ?? '';
 $subcommand = $argv[2] ?? '';
@@ -69,9 +69,9 @@ Commands:
     {
         global $subcommand;
         if ($subcommand === 'install') {
-            require(__DIR__ . '/commands/check_install.php');
+            require(__DIR__ . '/../core/cli/check_install.php');
         } elseif ($subcommand === 'media') {
-            require(__DIR__ . '/commands/check_media.php');
+            require(__DIR__ . '/../core/cli/check_media.php');
         } else {
             $this->help();
         }
@@ -81,7 +81,7 @@ Commands:
     {
         global $subcommand;
         if ($subcommand == 'run' || $subcommand == 'monitor') {
-            require(__DIR__ . '/commands/cron.php');
+            require(__DIR__ . '/../core/cli/cron.php');
         } else {
             $this->help();
         }
@@ -91,7 +91,7 @@ Commands:
     {
         global $subcommand;
         if (in_array($subcommand, ['list', 'install', 'uninstall', 'purge'])) {
-            require(__DIR__ . '/commands/modules.php');
+            require(__DIR__ . '/../core/cli/modules.php');
         } else {
             $this->help();
         }
@@ -119,9 +119,9 @@ Commands:
         }
 
         if ($argv[2] == 'run') {
-            require(__DIR__ . '/commands/updates_run.php');
+            require(__DIR__ . '/../core/cli/updates_run.php');
         } elseif ($argv[2] == 'list') {
-            require(__DIR__ . '/commands/updates_list.php');
+            require(__DIR__ . '/../core/cli/updates_list.php');
         } else {
             $this->help();
         }
@@ -131,7 +131,7 @@ Commands:
     {
         global $subcommand;
         if ($subcommand) {
-            require(__DIR__ . '/commands/passwd.php');
+            require(__DIR__ . '/../core/cli/passwd.php');
         } else {
             $this->help();
         }
