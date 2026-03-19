@@ -1932,7 +1932,7 @@ class Media extends Model
             }
 
             // move our file to its home
-            $file_src = OB_UPLOADS . '/' . $file_id;
+            $file_src = OB_MEDIA_UPLOADS . '/' . $file_id;
 
             if ($item['is_approved'] == 0) {
                 $file_dest = OB_MEDIA_UNAPPROVED . $media_location . $filename;
@@ -2175,7 +2175,7 @@ class Media extends Model
         }
 
         // move file
-        if (!rename(OB_UPLOADS . '/' . $file_id, $dst_file)) {
+        if (!rename(OB_MEDIA_UPLOADS . '/' . $file_id, $dst_file)) {
             return [false, 'Error adding new version.'];
         }
 
@@ -2803,7 +2803,7 @@ class Media extends Model
 
         foreach ($requiredDirs as $checkDir) {
             if (!file_exists($checkDir)) {
-                mkdir($checkDir);
+                mkdir($checkDir, 0755, true);
             }
         }
 
