@@ -20,3 +20,5 @@ vendor
 node_modules
 .php-cs-fixer.cache
 bundles
+media_data/
+.DS_Store
