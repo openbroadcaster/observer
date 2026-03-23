@@ -4,7 +4,7 @@ namespace OpenBroadcaster\Updates;
 
 use OpenBroadcaster\Base\Update;
 
-class OBUpdate20170916 extends Update
+class Update20170916 extends Update
 {
     public function items()
     {

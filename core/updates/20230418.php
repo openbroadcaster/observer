@@ -11,7 +11,7 @@ use OpenBroadcaster\Base\Update;
  * The code set can be downloaded at https://iso639-3.sil.org/code_tables/download_tables.
  */
 
-class OBUpdate20230418 extends Update
+class Update20230418 extends Update
 {
     public function items()
     {
