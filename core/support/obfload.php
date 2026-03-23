@@ -14,10 +14,8 @@ class OBFLoad
     private $db;
 
     /**
-     * Construct an instance of OBFLoad. It scans the models directory first, adding
-     * the appropriate files to an array of models, then does the same for the
-     * controllers. Finally, it goes through all the module directories, and does
-     * the same for the models and controllers there.
+     * Construct an instance of OBFLoad. It creates an instance of every installed top-level
+     * module using the definition file in each module folder.
      */
     public function __construct()
     {
@@ -33,7 +31,7 @@ class OBFLoad
                 continue;
             }
 
-            $module_class = 'OpenBroadcaster\\Modules\\' . $dir;
+            $module_class = 'OpenBroadcaster\\Modules\\' . $dir . '\\' . $dir;
             $module_instance = new $module_class();
             $module_instance->callbacks();
         }
