@@ -14,7 +14,7 @@ namespace OpenBroadcaster\Models;
 use OpenBroadcaster\Base\Model;
 use OBFHelpers;
 
-class MediaModel extends Model
+class Media extends Model
 {
     /**
      * Return info about uploaded file.

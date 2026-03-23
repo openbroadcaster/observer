@@ -15,7 +15,7 @@ use DateTimeZone;
 
 use OpenBroadcaster\Base\Model;
 
-class PlayersModel extends Model
+class Players extends Model
 {
     /**
      * Retrieve data from a single player. ID passed as parameter, rather than in

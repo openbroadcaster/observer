@@ -16,7 +16,7 @@ use DateInterval;
 
 use OpenBroadcaster\Base\Model;
 
-class ShowsModel extends Model
+class Shows extends Model
 {
     public function __construct()
     {

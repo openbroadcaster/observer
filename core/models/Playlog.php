@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class PlaylogModel extends Model
+class Playlog extends Model
 {
     public function __construct()
     {

@@ -13,7 +13,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class UIModel extends Model
+class UI extends Model
 {
     public function __construct()
     {

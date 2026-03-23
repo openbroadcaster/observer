@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class PermissionsModel extends Model
+class Permissions extends Model
 {
     public $permission_cache = false;
 

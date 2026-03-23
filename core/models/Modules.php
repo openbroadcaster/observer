@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class ModulesModel extends Model
+class Modules extends Model
 {
     /**
      * Get all installed modules.

@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class UserStorageModel extends Model
+class UserStorage extends Model
 {
     /**
      * Insert or update a name/value pair.

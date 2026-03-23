@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class MediaMetadataModel extends Model
+class MediaMetadata extends Model
 {
     /**
      * Get all metadata columns as metadata objects.

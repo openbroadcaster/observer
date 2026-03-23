@@ -29,26 +29,6 @@ class OBFLoad
         $this->model_files = [];
         $this->controller_files = [];
 
-        // find core models.
-        $files = scandir(OB_LOCAL . '/core/models');
-
-        foreach ($files as $file) {
-            if ($file == '..' || $file == '.') {
-                continue;
-            }
-            if (!is_file(OB_LOCAL . '/core/models/' . $file)) {
-                continue;
-            }
-            if (substr($file, -4) != '.php') {
-                continue;
-            }
-            $name_split = explode('_', $file);
-            if (count($name_split) != 2) {
-                continue;
-            }
-            $this->model_files[$name_split[0]] = 'core/models/' . $file;
-        }
-
         // find core controllers.
         $files = scandir(OB_LOCAL . '/core/controllers');
 
@@ -164,17 +144,15 @@ class OBFLoad
         if (!preg_match('/^[a-z0-9_]+$/i', $model)) {
             return false;
         }
-        if (!isset($this->model_files[strtolower($model)])) {
-            return false;
-        }
-        $model_file = $this->model_files[strtolower($model)];
+        $model_file = $this->model_files[strtolower($model)] ?? null;
 
         if (strpos($model_file, '/modules/') !== false) {
-            // TODO: Module class namespacing, then no longer needs to require file.
+            // TODO: Module class namespacing, then no longer needs to require file or use different
+            // class name format.
             $model_class = '\\' . $model . 'Model';
             require_once($model_file);
         } else {
-            $model_class = 'OpenBroadcaster\\Models\\' . $model . 'Model';
+            $model_class = 'OpenBroadcaster\\Models\\' . $model;
         }
 
         return new $model_class();

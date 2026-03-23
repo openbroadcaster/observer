@@ -13,7 +13,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class UsersModel extends Model
+class Users extends Model
 {
     /**
      * Set to TRUE or FALSE in the settings table depending on whether new users

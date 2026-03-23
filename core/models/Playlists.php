@@ -13,7 +13,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class PlaylistsModel extends Model
+class Playlists extends Model
 {
     /**
      * Insert a playlist.

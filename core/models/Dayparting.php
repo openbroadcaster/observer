@@ -16,7 +16,7 @@ use DateTime;
 use OpenBroadcaster\Base\Model;
 use OBFHelpers;
 
-class DaypartingModel extends Model
+class Dayparting extends Model
 {
     public function search($args = [])
     {

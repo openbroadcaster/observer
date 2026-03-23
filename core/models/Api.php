@@ -14,7 +14,7 @@ namespace OpenBroadcaster\Models;
 use OpenBroadcaster\Base\Model;
 use OBFHelpers;
 
-class ApiModel extends Model
+class Api extends Model
 {
     private $api_url;
     private $api_user;

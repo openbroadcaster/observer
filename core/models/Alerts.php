@@ -14,7 +14,7 @@ namespace OpenBroadcaster\Models;
 use OpenBroadcaster\Base\Model;
 use OBFHelpers;
 
-class AlertsModel extends Model
+class Alerts extends Model
 {
     /**
      * Set up the initial parts of a database query, selecting media and

@@ -111,16 +111,30 @@ spl_autoload_register(function ($className) {
 
             // Check if model, which has a weird naming scheme (possible TODO, currently breaks
             // too many things).
-            if (str_ends_with($file, 'Model') && $relativeClass !== 'Model') {
-                $file = strtolower(substr($file, 0, -5)) . '_model';
-            }
+            //if (str_ends_with($file, 'Model') && $relativeClass !== 'Model') {
+            //    $file = strtolower(substr($file, 0, -5)) . '_model';
+            //}
 
             // Add extension.
             $file = $file . '.php';
+
+            // TEMPORARY TODO: capitalization was changed for files but calls to models are uncapitalized, do
+            // case-insensitive comparison for all files and match temporarily.
+            foreach (scandir($baseDir . '/') as $phpFn) {
+                $fullPath = $baseDir . '/' . $phpFn;
+                $pathName = pathinfo($fullPath, PATHINFO_FILENAME);
+                if (strcasecmp($pathName, $relativeClass) === 0) {
+                    require_once $fullPath;
+                    return;
+                }
+            }
+
+            /* TEMPORARY: uncomment and remove case-insensitive check above (that needs to also get entire folder each
+            time when calls with wrong capitalization are fixed.
             if (file_exists($file)) {
                 require_once $file;
                 return;
-            }
+            }*/
         }
     }
 });

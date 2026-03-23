@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class MediaCategoriesModel extends Model
+class MediaCategories extends Model
 {
     /**
      * Search media categories.

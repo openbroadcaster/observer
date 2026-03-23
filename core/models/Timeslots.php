@@ -16,7 +16,7 @@ use DateInterval;
 
 use OpenBroadcaster\Base\Model;
 
-class TimeslotsModel extends Model
+class Timeslots extends Model
 {
     public function __construct()
     {

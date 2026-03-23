@@ -12,7 +12,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class MediaLanguagesModel extends Model
+class MediaLanguages extends Model
 {
     /**
      * Get all media languages.

@@ -14,7 +14,7 @@ namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
 
-class SettingsModel extends Model
+class Settings extends Model
 {
     /**
      * Update a setting.
