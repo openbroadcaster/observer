@@ -6,7 +6,7 @@
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
-require('../../components.php');
+require(__DIR__ . '/../../core/init.php');
 
 $load = \OBFLoad::get_instance();
 $db = \OBFDB::get_instance();
@@ -14,7 +14,7 @@ $db = \OBFDB::get_instance();
 // make sure this module is installed
 $module_model = $load->model('Modules');
 $installed_modules = $module_model('get_installed');
-if(!isset($installed_modules['now_playing'])) die('The "now playing" module is not installed.');
+if(!isset($installed_modules['NowPlaying'])) die('The "now playing" module is not installed.');
 
 // make sure this player is valid.
 if(!isset($_GET['i']) || !preg_match('/^\d+$/',$_GET['i'])) die('Invalid player.');
@@ -54,4 +54,4 @@ if(!empty($_GET['thumbnail']))
 // return information via JSON if requested as such.
 if(!empty($_GET['json'])) { echo json_encode($data); die(); }
 
-require(OB_LOCAL . '/modules/now_playing/template.php');
+require(OB_LOCAL . '/modules/NowPlaying/template.php');

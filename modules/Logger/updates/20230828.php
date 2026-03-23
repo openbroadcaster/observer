@@ -1,8 +1,10 @@
 <?php
 
+namespace OpenBroadcaster\Modules\Logger\Updates;
+
 use OpenBroadcaster\Base\Update;
 
-class LoggerUpdate20230828 extends Update
+class Update20230828 extends Update
 {
     public function items()
     {

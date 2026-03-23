@@ -67,7 +67,7 @@ class Modules extends Model
 
             if (is_file(OB_LOCAL . '/modules/' . $module . '/module.php')) {
                 require_once(OB_LOCAL . '/modules/' . $module . '/module.php');
-                $module_class_name = $module . 'Module';
+                $module_class_name = $module;
 
                 // remove underscores in name if we need to.
                 if (!class_exists($module_class_name)) {

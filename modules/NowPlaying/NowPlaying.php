@@ -3,13 +3,15 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Modules\NowPlaying;
+
 use OpenBroadcaster\Base\Module;
 
-class TutorialModule extends Module
+class NowPlaying extends Module
 {
 
-	public $name = 'Tutorial v1.0';
-	public $description = 'Interactive tutorial running through the basics of OBServer.';
+	public $name = 'Now Playing v1.0';
+	public $description = 'Provide "now playing" information on page at <IP_of_Server>/modules/now_playing/now_playing.php?i=playerID';
 
 	public function callbacks()
 	{

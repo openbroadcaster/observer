@@ -3,9 +3,11 @@
 // Copyright 2012-2025 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Modules\Logger;
+
 use OpenBroadcaster\Base\Module;
 
-class LoggerModule extends Module
+class Logger extends Module
 {
 
     public $name = 'Logger v1.0';

@@ -11,8 +11,6 @@
  */
 class OBFLoad
 {
-    private $model_files;
-    private $controller_files;
     private $db;
 
     /**
@@ -25,26 +23,6 @@ class OBFLoad
     {
         $this->db = OBFDB::get_instance();
 
-        // generate a list of models and controllers... starting with core then modules
-        $this->model_files = [];
-        $this->controller_files = [];
-
-        // find core controllers.
-        $files = scandir(OB_LOCAL . '/core/controllers');
-
-        foreach ($files as $file) {
-            if ($file == '..' || $file == '.') {
-                continue;
-            }
-            if (!is_file(OB_LOCAL . '/core/controllers/' . $file)) {
-                continue;
-            }
-            if (substr($file, -4) != '.php') {
-                continue;
-            }
-            $this->controller_files[substr($file, 0, -4)] = 'core/controllers/' . $file;
-        }
-
         // scan through modules.
         $modules = $this->db->get('modules') ?: [];
 
@@ -55,60 +33,9 @@ class OBFLoad
                 continue;
             }
 
-            // get module models.
-            if (is_dir(OB_LOCAL . '/modules/' . $dir . '/models')) {
-            // find module models (can override core models)
-                $files = scandir(OB_LOCAL . '/modules/' . $dir . '/models');
-
-                foreach ($files as $file) {
-                    if ($file == '..' || $file == '.') {
-                        continue;
-                    }
-                    if (!is_file(OB_LOCAL . '/modules/' . $dir . '/models/' . $file)) {
-                        continue;
-                    }
-                    if (substr($file, -4) != '.php') {
-                        continue;
-                    }
-                    $name_split = explode('_', $file);
-                    if (count($name_split) != 2) {
-                        continue;
-                    }
-                    $this->model_files[$name_split[0]] = OB_LOCAL . '/modules/' . $dir . '/models/' . $file;
-                }
-            }
-
-            // get module controllers
-            if (is_dir(OB_LOCAL . '/modules/' . $dir . '/controllers')) {
-            // find module controllers (can override core controllers)
-                $files = scandir(OB_LOCAL . '/modules/' . $dir . '/controllers');
-
-                foreach ($files as $file) {
-                    if ($file == '..' || $file == '.') {
-                        continue;
-                    }
-                    if (!is_file(OB_LOCAL . '/modules/' . $dir . '/controllers/' . $file)) {
-                        continue;
-                    }
-                    if (substr($file, -4) != '.php') {
-                        continue;
-                    }
-                    $this->controller_files[substr($file, 0, -4)] = OB_LOCAL . '/modules/' . $dir . '/controllers/' . $file;
-                }
-            }
-
-            if (is_file(OB_LOCAL . '/modules/' . $dir . '/module.php')) {
-                require_once(OB_LOCAL . '/modules/' . $dir . '/module.php');
-                $module_class_name = $dir . 'Module';
-
-                // remove underscores in name if we need to.  if it still doesn't exist, then that's a problem.
-                if (!class_exists($module_class_name)) {
-                    $module_class_name = str_replace('_', '', $module_class_name);
-                }
-
-                $module_instance = new $module_class_name();
-                $module_instance->callbacks();
-            }
+            $module_class = 'OpenBroadcaster\\Modules\\' . $dir;
+            $module_instance = new $module_class();
+            $module_instance->callbacks();
         }
     }
 
@@ -136,21 +63,19 @@ class OBFLoad
      * access associated data.
      *
      * @param model
+     * @param module Optional, specify module name
      *
      * @return model_instance
      */
-    public function model($model)
+    public function model($model, $module = null)
     {
         if (!preg_match('/^[a-z0-9_]+$/i', $model)) {
             return false;
         }
         $model_file = $this->model_files[strtolower($model)] ?? null;
 
-        if (strpos($model_file, '/modules/') !== false) {
-            // TODO: Module class namespacing, then no longer needs to require file or use different
-            // class name format.
-            $model_class = '\\' . $model . 'Model';
-            require_once($model_file);
+        if ($module !== null) {
+            $model_class = 'OpenBroadcaster\\Modules\\' . $module . '\\Models\\' . $model;
         } else {
             $model_class = 'OpenBroadcaster\\Models\\' . $model;
         }
@@ -163,25 +88,18 @@ class OBFLoad
      * access its methods.
      *
      * @param controller
+     * @param module Optional, specify module name
      *
      * @return controller_instance
      */
-    public function controller($controller)
+    public function controller($controller, $module = null)
     {
         if (!preg_match('/^[a-z0-9_]+$/i', $controller)) {
             return false;
         }
 
-        if (!isset($this->controller_files[strtolower($controller)])) {
-            return false;
-        }
-
-        $controller_file = $this->controller_files[strtolower($controller)];
-
-        if (strpos($controller_file, '/modules/') !== false) {
-            // TODO: Module class namespacing, then no longer needs to require file.
-            $controller_class = '\\' . $controller;
-            require_once($controller_file);
+        if ($module !== null) {
+            $controller_class = 'OpenBroadcaster\\Modules\\' . $module . '\\Controllers\\' . $controller;
         } else {
             $controller_class = 'OpenBroadcaster\\Controllers\\' . $controller;
         }

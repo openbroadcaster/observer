@@ -7,3 +7,18 @@ A refactor in 5.5 changed most of the structure of the core code. In practically
 - Module controllers go from `OBFController` -> `OpenBroadcaster\Base\Controller`
 - Module models go from `OBFModel` -> `OpenBroadcaster\Base\Model`
 - Module top level file goes from `OBFModule` -> `OpenBroadcaster\Base\Module`
+
+## Loading models
+
+- Loading a model now requires the name of the module to be passed on to `OBFLoad`. Practically, this means a change from `$model = $this->load->model('ModelName');` to `$model = $this->load->model('ModelName', 'ModuleName');`. This is a new requirement since core and module models are now in different namespaces.
+- `OBFModels` *can no longer be used directly to call module model methods*. Its `__call` method uses `$this->load->model` under the hood with its name as the first argument, so a module can't be passed to it since they're no longer all in the same namespace. The code `$models = OBFModels::get_instance(); $models->YourModuleController('argument1', 'argument2');` can no longer tell what module something is from.
+
+## Module Namespacing
+
+- Module directory names now need to match namespace of the actual module, e.g. `now_playing` to `NowPlaying`
+- The top level module definition file went from `module.php` to the actual module name. It also needs to be be properly namespaced. For example, `NowPlaying.php` now defines the class `NowPlaying` (without the old `Module` suffix) and has the namespace `OpenBroadcaster\Modules\NowPlaying`. The full class name is `OpenBroadcaster\Modules\NowPlaying\NowPlaying`
+- All controller, model, and update files in module follow the same namespacing convention. Rather than being in the global namespace, a model in a module (still in the models directory) now uses the namespace `OpenBroadcaster\Modules\YourModuleName\Models`
+
+## KNOWN BUGS/BROKEN
+
+- Module controllers do not currently work. Any call to `$this->load->controller()` is done in the API, and now requires the module name as the second argument. This has not been implemented on the API side yet and likely requires a rework for how routing works.

@@ -3,9 +3,11 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Modules\Logger\Models;
+
 use OpenBroadcaster\Base\Model;
 
-class LoggerModel extends Model
+class Logger extends Model
 {
 
 	public function log($hook,$position,&$args)

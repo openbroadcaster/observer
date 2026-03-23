@@ -3,6 +3,8 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+namespace OpenBroadcaster\Modules\Logger\Controllers;
+
 use OpenBroadcaster\Base\Controller;
 
 class Logger extends Controller
@@ -14,7 +16,7 @@ class Logger extends Controller
 		parent::__construct();
 
 		$this->user->require_permission('view_logger_log');
-		$this->LoggerModel = $this->load->model('Logger');
+		$this->LoggerModel = $this->load->model('Logger', 'Logger');
 
 	}
 

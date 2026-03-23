@@ -19,6 +19,8 @@ class OBFModels
         $this->models = new stdClass();
     }
 
+    // NOTE / TODO: Now that modules are separately namespaced, there is currently no way to use OBFModels to call methods from models
+    // in modules, since it uses OBFLoad under the hood, and has no way of passing on the second optional module name.
     public function __call($name, $args)
     {
         if (!isset($this->models->$name)) {

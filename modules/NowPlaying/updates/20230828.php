@@ -1,8 +1,10 @@
 <?php
 
+namespace OpenBroadcaster\Modules\NowPlaying\Updates;
+
 use OpenBroadcaster\Base\Update;
 
-class NowPlayingUpdate20230828 extends Update
+class Update20230828 extends Update
 {
     public function items()
     {
