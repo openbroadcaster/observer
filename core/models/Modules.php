@@ -65,9 +65,9 @@ class Modules extends Model
                 continue;
             }
 
-            if (is_file(OB_LOCAL . '/modules/' . $module . '/module.php')) {
-                require_once(OB_LOCAL . '/modules/' . $module . '/module.php');
-                $module_class_name = $module;
+            if (is_file(OB_LOCAL . '/modules/' . $module . '/' . $module . '.php')) {
+                require_once(OB_LOCAL . '/modules/' . $module . '/' . $module . '.php');
+                $module_class_name = "OpenBroadcaster\\Modules\\{$module}\\{$module}";
 
                 // remove underscores in name if we need to.
                 if (!class_exists($module_class_name)) {
