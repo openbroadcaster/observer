@@ -396,8 +396,8 @@ class OBFChecker
         }
         foreach ($files as $file) {
             $filename = pathinfo($file)['filename'];
-            if (preg_match('/^[0-9]{8}$/', $filename)) {
-                $latest = max($latest, (int) $filename);
+            if (preg_match('/^Update[0-9]{8}$/', $filename)) {
+                $latest = max($latest, (int) substr($filename, 6));
             }
         }
 

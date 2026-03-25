@@ -73,19 +73,19 @@ class OBFUpdates
 
         $updates = [];
         foreach ($scandir as $file) {
-            if (!preg_match('/^[0-9]{8}\.php$/', $file)) {
+            if (!preg_match('/^Update[0-9]{8}\.php$/', $file)) {
                 continue;
             }
             $file_explode = explode('.', $file);
-            $version = $file_explode[0];
+            $version = substr($file_explode[0], 6);
 
             if ($this->module === null) {
-                require(OB_LOCAL . '/core/updates/' . $version . '.php');
+                require(OB_LOCAL . '/core/updates/Update' . $version . '.php');
                 $class_name = '\\OpenBroadcaster\\Updates\\Update' . $version;
             } else {
-                require(OB_LOCAL . "/modules/{$this->module}/updates/{$version}.php");
+                require(OB_LOCAL . "/modules/{$this->module}/updates/Update{$version}.php");
                 $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $this->module)));
-                $class_name = "{$moduleClass}Update{$version}";
+                $class_name = '\\OpenBroadcaster\\Modules\\' . $this->module . '\\Updates\\Update' . $version;
             }
 
 
