@@ -24,7 +24,34 @@ if (!is_dir(__DIR__ . '/../vendor')) {
 }
 
 require_once(__DIR__ . '/../vendor/autoload.php');
+require_once(__DIR__ . '/../core/init.php');
 
+// Find the most specific CLI class based on the commands provided.
+$commands = array_slice($argv, 1);
+$cliInstance = null;
+$commandLength = count($argv);
+do {
+    $className = implode('', array_map(fn ($x) => ucwords($x), $commands));
+
+    if (file_exists(OB_LOCAL . '/core/cli/' . $className . '.php')) {
+        require_once(OB_LOCAL . '/core/cli/' . $className . '.php');
+
+        $fullClassName = 'OpenBroadcaster\\CLI\\' . $className;
+        $cliInstance = new $fullClassName();
+
+        break;
+    }
+
+    $commandLength = $commandLength - 1;
+} while ($commands = array_slice($commands, 0, -1));
+
+if ($cliInstance !== null) {
+    $cliInstance->run(array_slice($argv, $commandLength));
+} else {
+    (new OBCLI())->help();
+}
+
+/*
 $command = $argv[1] ?? '';
 $subcommand = $argv[2] ?? '';
 
@@ -34,7 +61,7 @@ if (method_exists($obcli, $command)) {
     $obcli->$command();
 } else {
     $obcli->help();
-}
+}*/
 
 class OBCLI
 {
