@@ -15,10 +15,9 @@ class OBFieldBool extends OBField {
     }
 
     renderEdit() {
-        render(
-            html`<input type="checkbox" onchange=${this.inputChange.bind(this)} checked=${this._value} />`,
-            this.root,
-        );
+        const checked = this._value == "0" ? false : Boolean(this._value);
+
+        render(html`<input type="checkbox" onchange=${this.inputChange.bind(this)} checked=${checked} />`, this.root);
     }
 
     inputChange(event) {
