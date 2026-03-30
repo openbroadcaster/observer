@@ -65,7 +65,7 @@ class Cron extends CLI
             }
 
             // Run job.
-            echo "Running job..." . PHP_EOL;
+            echo "Running job '{$module}/{$task}'..." . PHP_EOL;
             $status = $job->run();
             if ($status) {
                 if ($lastRun) {
@@ -145,6 +145,9 @@ class Cron extends CLI
 
                     // disabled "running" message since we have things running every second (would be good to have a debug mode)
                     // echo "Running job '{$job['module']}/{$job['name']}'..." . PHP_EOL;
+                    // $output = '';
+                    // exec(OB_LOCAL . '/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'], $output);
+                    // echo implode(PHP_EOL, $output) . PHP_EOL;
                     exec(OB_LOCAL . '/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . $this->obCronLog . ' &');
                 }
 

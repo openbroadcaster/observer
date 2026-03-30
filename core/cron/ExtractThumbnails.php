@@ -8,7 +8,7 @@ class ExtractThumbnails extends Cron
 {
     public function interval(): int
     {
-        return 300;
+        return 1;
     }
 
     public function run(): bool
@@ -23,6 +23,12 @@ class ExtractThumbnails extends Cron
         $media = $db->assoc_list();
 
         foreach ($media as $item) {
+            // don't generate thumbnails for achived media files (these are in their own separate directory anyway and
+            // wouldn't be found)
+            if ($item['is_archived']) {
+                continue;
+            }
+
             $input_file = OB_MEDIA . '/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['filename'];
             $output_dir = OB_THUMBNAILS . '/media/' . $item['file_location'][0] . '/' . $item['file_location'][1];
             $output_file = $output_dir . '/' . $item['id'] . '.webp';
