@@ -9,7 +9,9 @@ class Passwd extends CLI
     public function run(array $args): bool
     {
         // requires valid install
-        Helpers::requireValid();
+        if (! Helpers::requireValid()) {
+            return false;
+        }
 
         $username = $args[0] ?? null;
         if (! $username) {
