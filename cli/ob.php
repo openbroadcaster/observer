@@ -46,20 +46,8 @@ do {
 } while ($commands = array_slice($commands, 0, -1));
 
 if ($cliInstance !== null) {
-    ob_start();
     $success = $cliInstance->run(array_values(array_slice($argv, $commandLength)));
-    $output = ob_get_contents();
-    ob_end_clean();
-
-    if (empty($output)) {
-        if ($success) {
-            echo "Successfully ran command." . PHP_EOL;
-        } else {
-            echo "An unknown error occurred trying to run command." . PHP_EOL;
-        }
-    } else {
-        echo $output;
-    }
+    exit($success);
 } else {
     (new OBCLI())->help();
 }

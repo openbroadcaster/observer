@@ -32,7 +32,6 @@ class Passwd extends CLI
         $password_again = '';
 
         $valid = false;
-        ob_end_clean(); // Clear output buffering so terminal echoing works properly.
         do {
             echo 'New password: ';
             $password = trim(readline());
@@ -47,7 +46,6 @@ class Passwd extends CLI
                 $valid = true;
             }
         } while (!$valid);
-        ob_start(); // Resume output buffering.
 
         exec('stty echo');
 

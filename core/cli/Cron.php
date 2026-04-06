@@ -134,7 +134,6 @@ class Cron extends CLI
                 //exec(OB_LOCAL . '/cli/ob' . ' cron run ' . $job['module'] . ' ' . $job['name'] . ' >> ' . $this->obCronLog . ' &');
             }
         } elseif ($args[0] === 'monitor') {
-            ob_end_clean(); // clear output buffering since this script will run forever, so we need to echo immediately
             while (true) {
                 foreach ($jobs as $job) {
                     $this->db->where('name', 'cron-' . $job['module'] . '-' . $job['name']);
@@ -153,7 +152,6 @@ class Cron extends CLI
 
                 sleep(1);
             }
-            ob_start(); // start output buffering again
         } else {
             (new OBCLI())->help();
             return false;
