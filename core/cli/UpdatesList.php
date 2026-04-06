@@ -29,12 +29,7 @@ class UpdatesList extends CLI
                 $this->listUpdates('core');
                 break;
             case 'module':
-                if (count($args) < 2) {
-                    (new OBCLI())->help();
-                    return false;
-                }
-
-                $this->listUpdates('module', $args[1]);
+                $this->listUpdates('module', $args[1] ?? null);
                 break;
             default:
                 (new OBCLI())->help();
@@ -65,7 +60,7 @@ class UpdatesList extends CLI
 
                 $moduleClass = implode('', array_map(fn($x) => ucwords($x), explode('_', $module)));
                 echo "\033[94mModule:\033[0m " . $moduleClass . PHP_EOL;
-                listUpdates('module', $module);
+                $this->listUpdates('module', $module);
             }
             return false;
         }
