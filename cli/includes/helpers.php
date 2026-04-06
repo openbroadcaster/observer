@@ -11,8 +11,10 @@ class Helpers
         exec(command: __DIR__ . '/../ob check', result_code: $result_code);
         if ($result_code == 1) {
             echo 'OpenBroadcaster installation is not valid. Run "ob check" for more information.' . PHP_EOL;
-            exit(1);
+            return false;
         }
+
+        return true;
     }
 
     // output a formatted table
