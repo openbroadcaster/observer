@@ -7,53 +7,63 @@
 
 namespace OpenBroadcaster\CLI;
 
-define('OB_CLI', true);
-
-require_once(__DIR__ . '/includes/helpers.php');
-
-if (php_sapi_name() !== 'cli') {
-    die('This tool can only be used from the command line.');
-}
-
-if (!file_exists(__DIR__ . '/../config.php')) {
-    die('Missing config.php. Please make sure the OpenBroadcaster has a valid configuration file.' . PHP_EOL);
-}
-
-if (!is_dir(__DIR__ . '/../vendor')) {
-    die('Missing vendor directory in OpenBroadcaster root directory. Install composer then run "composer install" to get required dependencies.' . PHP_EOL);
-}
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-require_once(__DIR__ . '/../core/init.php');
-
-// Find the most specific CLI class based on the commands provided.
-$commands = array_slice($argv, 1);
-$cliInstance = null;
-$commandLength = count($argv);
-do {
-    $className = implode('', array_map(fn ($x) => ucwords($x), $commands));
-
-    if (file_exists(OB_LOCAL . '/core/cli/' . $className . '.php')) {
-        require_once(OB_LOCAL . '/core/cli/' . $className . '.php');
-
-        $fullClassName = 'OpenBroadcaster\\CLI\\' . $className;
-        $cliInstance = new $fullClassName();
-
-        break;
-    }
-
-    $commandLength = $commandLength - 1;
-} while ($commands = array_slice($commands, 0, -1));
-
-if ($cliInstance !== null) {
-    $success = $cliInstance->run(array_values(array_slice($argv, $commandLength)));
-    exit($success);
-} else {
-    (new OBCLI())->help();
-}
-
 class OBCLI
 {
+    private array $argv;
+
+    public function __construct($argv = null)
+    {
+        $this->argv = $argv ?? [];
+    }
+
+    public function run()
+    {
+        define('OB_CLI', true);
+
+        require_once(__DIR__ . '/includes/helpers.php');
+
+        if (php_sapi_name() !== 'cli') {
+            die('This tool can only be used from the command line.');
+        }
+
+        if (!file_exists(__DIR__ . '/../config.php')) {
+            die('Missing config.php. Please make sure the OpenBroadcaster has a valid configuration file.' . PHP_EOL);
+        }
+
+        if (!is_dir(__DIR__ . '/../vendor')) {
+            die('Missing vendor directory in OpenBroadcaster root directory. Install composer then run "composer install" to get required dependencies.' . PHP_EOL);
+        }
+
+        require_once(__DIR__ . '/../vendor/autoload.php');
+        require_once(__DIR__ . '/../core/init.php');
+
+        // Find the most specific CLI class based on the commands provided.
+        $commands = array_slice($this->argv, 1);
+        $cliInstance = null;
+        $commandLength = count($this->argv);
+        do {
+            $className = implode('', array_map(fn ($x) => ucwords($x), $commands));
+
+            if (file_exists(OB_LOCAL . '/core/cli/' . $className . '.php')) {
+                require_once(OB_LOCAL . '/core/cli/' . $className . '.php');
+
+                $fullClassName = 'OpenBroadcaster\\CLI\\' . $className;
+                $cliInstance = new $fullClassName();
+
+                break;
+            }
+
+            $commandLength = $commandLength - 1;
+        } while ($commands = array_slice($commands, 0, -1));
+
+        if ($cliInstance !== null) {
+            $success = $cliInstance->run(array_values(array_slice($this->argv, $commandLength)));
+            exit($success);
+        } else {
+            $this->help();
+        }
+    }
+
     public function help()
     {
         echo 'OpenBroadcaster CLI Tool (alpha). Run ob <command>.
@@ -81,3 +91,5 @@ Commands:
         ]);
     }
 }
+
+(new OBCLI($argv))->run();
