@@ -64,18 +64,6 @@ if ($cliInstance !== null) {
     (new OBCLI())->help();
 }
 
-/*
-$command = $argv[1] ?? '';
-$subcommand = $argv[2] ?? '';
-
-$obcli = new OBCLI();
-
-if (method_exists($obcli, $command)) {
-    $obcli->$command();
-} else {
-    $obcli->help();
-}*/
-
 class OBCLI
 {
     public function help()
@@ -103,82 +91,5 @@ Commands:
             ['updates run module <name>', 'run updates for specified module'],
             ['passwd <username>', 'change password for user']
         ]);
-    }
-
-    public function check()
-    {
-        global $subcommand;
-        if ($subcommand === 'install') {
-            require(__DIR__ . '/../core/cli/check_install.php');
-        } elseif ($subcommand === 'media') {
-            require(__DIR__ . '/../core/cli/check_media.php');
-        } else {
-            $this->help();
-        }
-    }
-
-    public function cron()
-    {
-        global $subcommand;
-        if ($subcommand == 'run' || $subcommand == 'monitor') {
-            require(__DIR__ . '/../core/cli/cron.php');
-        } else {
-            $this->help();
-        }
-    }
-
-    public function modules()
-    {
-        global $subcommand;
-        if (in_array($subcommand, ['list', 'install', 'uninstall', 'purge'])) {
-            require(__DIR__ . '/../core/cli/modules.php');
-        } else {
-            $this->help();
-        }
-    }
-
-    public function updates()
-    {
-        global $argv;
-        if (count($argv) < 4 || ! (in_array($argv[3], ['all', 'core', 'module']))) {
-            $this->help();
-            return false;
-        }
-
-        if ($argv[3] === 'module') {
-            if (count($argv) < 5) {
-                $this->help();
-                return false;
-            }
-
-            $modules = array_filter(scandir(__DIR__ . '/../../modules/'), fn($f) => $f[0] !== '.');
-            if (! in_array($argv[4], $modules)) {
-                $this->moduleNotFound($argv[4]);
-                return false;
-            }
-        }
-
-        if ($argv[2] == 'run') {
-            require(__DIR__ . '/../core/cli/updates_run.php');
-        } elseif ($argv[2] == 'list') {
-            require(__DIR__ . '/../core/cli/updates_list.php');
-        } else {
-            $this->help();
-        }
-    }
-
-    public function passwd()
-    {
-        global $subcommand;
-        if ($subcommand) {
-            require(__DIR__ . '/../core/cli/passwd.php');
-        } else {
-            $this->help();
-        }
-    }
-
-    private function moduleNotFound($module)
-    {
-        echo "Module {$module} could not be found in the OpenBroadcaster installation.";
     }
 }
