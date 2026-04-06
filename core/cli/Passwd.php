@@ -24,37 +24,30 @@ class Passwd extends CLI
             exit(1);
         }
 
-        $cli_specified_password = $args[1] ?? '';
-        if (trim($cli_specified_password)) {
-            if (strlen($cli_specified_password) < 6) {
-                echo 'Password must be at least 6 characters long.' . PHP_EOL;
-                return false;
+        exec('stty -echo');
+
+        $password = '';
+        $password_again = '';
+
+        $valid = false;
+        ob_end_clean(); // Clear output buffering so terminal echoing works properly.
+        do {
+            echo 'New password: ';
+            $password = trim(readline());
+            echo PHP_EOL . 'New password (again): ';
+            $password_again = trim(readline());
+
+            if ($password != $password_again) {
+                echo PHP_EOL . 'Passwords do not match.' . PHP_EOL;
+            } elseif (strlen($password) < 6) {
+                echo PHP_EOL . 'Password must be at least 6 characters long.' . PHP_EOL;
+            } else {
+                $valid = true;
             }
-            $password = $cli_specified_password;
-        } else {
-            exec('stty -echo');
+        } while (!$valid);
+        ob_start(); // Resume output buffering.
 
-            $password = '';
-            $password_again = '';
-
-            $valid = false;
-            do {
-                echo 'New password: ';
-                $password = trim(readline());
-                echo PHP_EOL . 'New password (again): ';
-                $password_again = trim(readline());
-
-                if ($password != $password_again) {
-                    echo PHP_EOL . 'Passwords do not match.' . PHP_EOL;
-                } elseif (strlen($password) < 6) {
-                    echo PHP_EOL . 'Password must be at least 6 characters long.' . PHP_EOL;
-                } else {
-                    $valid = true;
-                }
-            } while (!$valid);
-
-            exec('stty echo');
-        }
+        exec('stty echo');
 
         $passsword_hashed = password_hash($password . OB_HASH_SALT, PASSWORD_DEFAULT);
 
