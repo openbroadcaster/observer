@@ -6,6 +6,13 @@ use OpenBroadcaster\Base\CLI;
 
 class Modules extends CLI
 {
+    protected array $help = [
+        ['modules list', 'list all modules and their status'],
+        ['modules install <name>', 'install module'],
+        ['modules uninstall <name>', 'uninstall module'],
+        ['modules purge <name>', 'uninstall module and delete all data'],
+    ];
+
     public function run(array $args): bool
     {
         $root = OB_LOCAL;

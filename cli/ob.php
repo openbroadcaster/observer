@@ -71,24 +71,20 @@ class OBCLI
 Commands:
 ';
 
-        echo Helpers::table(spacing: 5, rows: [
-            ['check install', 'check installation for errors'],
-            ['check media', 'check media for errors'],
-            ['cron run', 'run scheduled tasks once'],
-            ['cron run <module> <task> [now]', 'run scheduled task for module'],
-            ['cron monitor', 'monitor and run cron tasks as needed'],
-            ['modules list', 'list all modules and their status'],
-            ['modules install <name>', 'install module'],
-            ['modules uninstall <name>', 'uninstall module'],
-            ['modules purge <name>', 'uninstall module and delete all data'],
-            ['updates list all', 'list all available updates'],
-            ['updates list core', 'list core ob updates'],
-            ['updates list module <name>', 'list updates for specified module'],
-            ['updates run all', 'run all available updates'],
-            ['updates run core', 'run core ob updates'],
-            ['updates run module <name>', 'run updates for specified module'],
-            ['passwd <username>', 'change password for user']
-        ]);
+        $rows = [];
+        $cliList = array_filter(scandir(OB_LOCAL . '/core/cli/'), fn($f) => $f[0] !== '.');
+        foreach($cliList as $cliPath) {
+            $cliFileName = pathinfo($cliPath, PATHINFO_FILENAME);
+            $cliCommand = strtolower(preg_replace('/(?<!^)[A-Z]/', ' $0', $cliFileName));
+            $cliClassName = "OpenBroadcaster\\CLI\\" . $cliFileName;
+
+            require_once(OB_LOCAL . '/core/cli/' . $cliPath);
+
+            $cliClass = new $cliClassName();
+            $rows = [...$rows, ...$cliClass->help()];
+        }
+
+        echo Helpers::table(spacing: 5, rows: $rows);
     }
 }
 

@@ -6,6 +6,10 @@ use OpenBroadcaster\Base\CLI;
 
 class CheckMedia extends CLI
 {
+    protected array $help = [
+        ['check media', 'check media for errors'],
+    ];
+
     public function run(array $args): bool
     {
         $this->db->query('select * from media order by id');

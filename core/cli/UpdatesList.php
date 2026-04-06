@@ -6,6 +6,12 @@ use OpenBroadcaster\Base\CLI;
 
 class UpdatesList extends CLI
 {
+    protected array $help = [
+        ['updates list all', 'list all available updates'],
+        ['updates list core', 'list core ob updates'],
+        ['updates list module <name>', 'list updates for specified module'],
+    ];
+
     public function run(array $args): bool
     {
         // only show update list if check passes

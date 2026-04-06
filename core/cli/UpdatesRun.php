@@ -6,6 +6,12 @@ use OpenBroadcaster\Base\CLI;
 
 class UpdatesRun extends CLI
 {
+    protected array $help = [
+        ['updates run all', 'run all available updates'],
+        ['updates run core', 'run core ob updates'],
+        ['updates run module <name>', 'run updates for specified module'],
+    ];
+
     public function run(array $args): bool
     {
         // only run update if check passes

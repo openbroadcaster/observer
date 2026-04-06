@@ -6,6 +6,10 @@ use OpenBroadcaster\Base\CLI;
 
 class Passwd extends CLI
 {
+    protected array $help = [
+        ['passwd <username>', 'change password for user'],
+    ];
+
     public function run(array $args): bool
     {
         // requires valid install

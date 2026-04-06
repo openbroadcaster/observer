@@ -6,6 +6,10 @@ use OpenBroadcaster\Base\CLI;
 
 class CheckInstall extends CLI
 {
+    protected array $help = [
+        ['check install', 'check installation for errors']
+    ];
+
     public function run(array $args): bool
     {
         require_once(__DIR__ . '/../../public/updates/checker.php');

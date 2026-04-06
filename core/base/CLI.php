@@ -15,10 +15,21 @@ abstract class CLI
     protected $db;
     protected $models;
 
+    protected array $help;
+
     final public function __construct()
     {
         $this->db = \OBFDB::get_instance();
         $this->models = \OBFModels::get_instance();
+
+        if (! isset($this->help)) {
+            $this->help = [];
+        }
+    }
+
+    final public function help(): array
+    {
+        return $this->help;
     }
 
     abstract public function run(array $args): bool;
