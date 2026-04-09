@@ -239,6 +239,7 @@ class Update20230418 extends Update
                     $column = 'properties';
                     $properties = json_decode($row[$column], true);
                     $settings = &$properties['query'] ?? null;
+                    $fullSettings = $properties;
                 } else {
                     break;
                 }
@@ -265,7 +266,17 @@ class Update20230418 extends Update
                     continue;
                 }
 
-                $settings_encoded = ($table == 'media_searches') ? serialize($settings) : json_encode($settings);
+                if ($table === 'media_searches') {
+                    $settings_encoded = serialize($settings);
+                } elseif ($table === 'dayparting') {
+                    $settings_encoded = json_encode($settings);
+                } elseif ($table === 'playlists_items') {
+                    // Make query part of entire properties again rather than overwriting entirely.
+                    $fullSettings['query'] = $settings;
+                    $settings_encoded = json_encode($fullSettings);
+                } else {
+                    continue;
+                }
 
                 /*
                 echo 'Updating '.$table.' '.$row['id'].' '.$column."\n";
