@@ -5,6 +5,8 @@
 
 require_once(__DIR__ . '/../core/init.php');
 
+use OpenBroadcaster\Base\Controller;
+
 // COMPLETE AUTHENTICATION, usually handled by api.php
 $user = OBFUser::get_instance();
 
@@ -35,7 +37,7 @@ if (empty($_POST['appkey'])) {
 }
 
 // define our class, create instance, handle upload.
-class Upload extends OBFController
+class Upload extends Controller
 {
     // used by handle_upload() to get some important information about the uploaded media
     private function media_info($filename)

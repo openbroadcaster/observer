@@ -2803,7 +2803,7 @@ class Media extends Model
 
         foreach ($requiredDirs as $checkDir) {
             if (!file_exists($checkDir)) {
-                mkdir($checkDir);
+                mkdir($checkDir, 0755, true);
             }
         }
 
