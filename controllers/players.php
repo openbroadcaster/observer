@@ -117,7 +117,7 @@ class Players extends OBFController
 
         $data['timezone'] = trim($this->data('timezone'));
         $data['station_id_image_duration'] = trim($this->data('station_id_image_duration'));
-        $data['default_playlist_id'] = $this->data('default_playlist');
+        $data['default_playlist_id'] = $this->data('default_playlist') ?: null;
 
         $data['parent_player_id'] = $this->data('parent_player_id');
         if (!empty($data['parent_player_id'])) {
