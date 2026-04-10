@@ -15,7 +15,6 @@ class CheckInstall extends CLI
         $checker = new \OBFChecker();
         $methods = get_class_methods($checker);
         $methods = array_filter($methods, fn($x) => $x !== '__construct');
-        $results = [];
         $rows = [];
         $errors = 0;
         $warnings = 0;
@@ -24,20 +23,7 @@ class CheckInstall extends CLI
         $check_fatal_error = false;
 
         foreach ($methods as $method) {
-            // directories valid needs to be run via web. use includes/web.php to do that.
-            if ($method == 'directories_valid') {
-                $ob_site = OB_SITE;
-                if (!str_ends_with($ob_site, '/')) {
-                    $ob_site .= '/';
-                }
-
-                // This currently fails on most installs on account of the server not allowing direct access to the tools directory.
-                $web_check_result = json_decode(file_get_contents($ob_site . 'tools/cli/includes/web.php'), true);
-                $result = $web_check_result['directories_valid'] ?? ['Directories', 'Unable to check directory permissions.', 1];
-            } else {
-                $result = $checker->$method();
-            }
-            $results[] = $result;
+            $result = $checker->$method();
 
             $formatting1 = '';
             $formatting2 = '';

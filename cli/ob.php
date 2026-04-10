@@ -37,6 +37,29 @@ class OBCLI
         require_once(__DIR__ . '/../vendor/autoload.php');
         require_once(__DIR__ . '/../core/init.php');
 
+        // Confirm that process is running as same user that web process uses, otherwise all sorts of permission
+        // problems may happen and checks cannot be guaranteed to make sense.
+        $token = bin2hex(random_bytes(32));
+        $tmpFile = "/tmp/ob_cli_{$token}";
+        touch($tmpFile);
+
+        $requestUrl = rtrim(OB_SITE, '/') . '/same-user.php?token=' . $token;
+        $ch = curl_init($requestUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_NOBODY => true,
+            CURLOPT_TIMEOUT => 5,
+        ]);
+        curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        unlink($tmpFile);
+
+        if ($statusCode !== 200) {
+            echo Helpers::bold('CLI process and web server are running as different users. (' . $statusCode . ') ') . PHP_EOL;
+            exit(1);
+        }
+
         // Find the most specific CLI class based on the commands provided.
         $commands = array_slice($this->argv, 1);
         $cliInstance = null;
