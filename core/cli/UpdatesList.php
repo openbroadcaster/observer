@@ -6,10 +6,10 @@ use OpenBroadcaster\Base\CLI;
 
 class UpdatesList extends CLI
 {
-    protected array $help = [
-        ['updates list all', 'list all available updates'],
-        ['updates list core', 'list core ob updates'],
-        ['updates list module <name>', 'list updates for specified module'],
+    protected array|string $help = [
+        ['all', 'list all available updates'],
+        ['core', 'list core ob updates'],
+        ['module <name>', 'list updates for specified module'],
     ];
 
     public function run(array $args): bool

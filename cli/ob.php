@@ -81,7 +81,18 @@ Commands:
             require_once(OB_LOCAL . '/core/cli/' . $cliPath);
 
             $cliClass = new $cliClassName();
-            $rows = [...$rows, ...$cliClass->help()];
+            $help = $cliClass->help();
+
+            if (is_array($help)) {
+                foreach ($help as &$helpItem) {
+                    $helpItem[0] = $cliCommand . ' ' . $helpItem[0];
+                }
+                $rows = [...$rows, ...$help];
+            }
+
+            if (is_string($help)) {
+                $rows = [...$rows, [$cliCommand, $help]];
+            }
         }
 
         echo Helpers::table(spacing: 5, rows: $rows);

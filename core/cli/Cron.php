@@ -7,10 +7,10 @@ use OpenBroadcaster\Base\CLI;
 class Cron extends CLI
 {
     private string $obCronLog;
-    protected array $help = [
-        ['cron run', 'run scheduled tasks once'],
-        ['cron run <module> <task> [now]', 'run scheduled task for module'],
-        ['cron monitor', 'monitor and run cron tasks as needed'],
+    protected array|string $help = [
+        ['run', 'run scheduled tasks once'],
+        ['run <module> <task> [now]', 'run scheduled task for module'],
+        ['monitor', 'monitor and run cron tasks as needed'],
     ];
 
     public function run(array $args): bool

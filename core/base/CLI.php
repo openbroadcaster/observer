@@ -15,7 +15,7 @@ abstract class CLI
     protected $db;
     protected $models;
 
-    protected array $help;
+    protected array|string $help;
 
     final public function __construct()
     {
@@ -27,7 +27,7 @@ abstract class CLI
         }
     }
 
-    final public function help(): array
+    final public function help(): array|string
     {
         return $this->help;
     }

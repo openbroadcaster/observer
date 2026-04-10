@@ -6,9 +6,7 @@ use OpenBroadcaster\Base\CLI;
 
 class CheckMedia extends CLI
 {
-    protected array $help = [
-        ['check media', 'check media for errors'],
-    ];
+    protected array|string $help = 'check media for errors';
 
     public function run(array $args): bool
     {

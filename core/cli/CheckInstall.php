@@ -6,9 +6,7 @@ use OpenBroadcaster\Base\CLI;
 
 class CheckInstall extends CLI
 {
-    protected array $help = [
-        ['check install', 'check installation for errors']
-    ];
+    protected array|string $help = 'check installation for errors';
 
     public function run(array $args): bool
     {
