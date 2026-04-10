@@ -411,4 +411,24 @@ class OBFChecker
 
         return ['Database Version', 'Database version found: ' . $dbver['value'] . '.',0];
     }
+
+    public function certificate_valid()
+    {
+        $ch = curl_init(OB_SITE);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_NOBODY => true,
+        ]);
+        if (curl_exec($ch) === false) {
+            $errorCode = curl_errno($ch);
+            $errorMessage = curl_error($ch);
+
+            if ($errorCode === CURLE_SSL_CACERT || $errorCode === CURLE_SSL_PEER_CERTIFICATE) {
+                return ['SSL Certificate', $errorMessage, 1];
+            }
+        }
+
+        return ['SSL Certificate', 'SSL certificate valid.', 0];
+    }
 }

@@ -38,7 +38,8 @@ class OBCLI
         require_once(__DIR__ . '/../core/init.php');
 
         // Confirm that process is running as same user that web process uses, otherwise all sorts of permission
-        // problems may happen and checks cannot be guaranteed to make sense.
+        // problems may happen and checks cannot be guaranteed to make sense. Note that this purposely ignores
+        // self-signed or invalid SSL certificates.
         $token = bin2hex(random_bytes(32));
         $tmpFile = "/tmp/ob_cli_{$token}";
         touch($tmpFile);
@@ -49,6 +50,8 @@ class OBCLI
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_NOBODY => true,
             CURLOPT_TIMEOUT => 5,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
         ]);
         curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
