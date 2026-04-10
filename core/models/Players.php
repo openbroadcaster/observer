@@ -329,7 +329,7 @@ class Players extends Model
 
         $station_id_data['player_id'] = $id;
         if ($station_ids !== false) {
-      // delete all station IDs for this player.
+        // delete all station IDs for this player.
             $this->db->where('player_id', $id);
             $this->db->delete('players_station_ids');
 
