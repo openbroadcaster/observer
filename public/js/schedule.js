@@ -291,16 +291,16 @@ OB.Schedule.addeditModeChange = function (where) {
     var val = $("#" + where + "_mode").val();
 
     if (val == "once") {
-        $("#" + where + "_addedit_x_data").hide();
-        $("#" + where + "_addedit_stop").hide();
+        $("#" + where + "_addedit_x_data").addClass('hidden');
+        $("#" + where + "_addedit_stop").addClass('hidden');
 
         return;
     }
 
-    $("#" + where + "_addedit_stop").show();
+    $("#" + where + "_addedit_stop").removeClass('hidden');
 
-    if (val == "xweeks" || val == "xmonths" || val == "xdays") $("#" + where + "_addedit_x_data").show();
-    else $("#" + where + "_addedit_x_data").hide();
+    if (val == "xweeks" || val == "xmonths" || val == "xdays") $("#" + where + "_addedit_x_data").removeClass('hidden');
+    else $("#" + where + "_addedit_x_data").addClass('hidden');
 
     //T Weeks
     if (val == "xweeks") $("#" + where + "_addedit_x_data_interval").text(OB.t("Weeks"));
