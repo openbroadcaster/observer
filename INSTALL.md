@@ -10,18 +10,18 @@
 
 ## Required PHP Modules
 
-Make sure the following PHP modules are installed and enabled:
+Make sure the following PHP modules are installed and enabled (listed as Ubuntu/Debian packages):
 
-- mysql (for MySQL database connectivity)
-- mbstring (for multi-byte string handling)
-- xml (for XML parsing)
-- gd (for image manipulation)
-- curl (for making HTTP requests)
-- imagick (for advanced image processing)
+- php-mysql (for MySQL database connectivity)
+- php-mbstring (for multi-byte string handling)
+- php-xml (for XML parsing)
+- php-gd (for image manipulation)
+- php-curl (for making HTTP requests)
+- php-imagick (for advanced image processing)
 
 ## Required Packages
 
-Install the following Ubuntu / Debian packages, or the equivalent for your operating system.
+Install the following Ubuntu/Debian packages, or the equivalent for your operating system.
 
 - festival (for text-to-speech functionality)
 - imagemagick (for image manipulation)
@@ -40,11 +40,11 @@ Install the following Ubuntu / Debian packages, or the equivalent for your opera
 composer install && npm install
 ```
 
-5. Create a new MySQL or MariaDB database for OpenBroadcaster and import the `db/clean.sql` file to set up the initial database structure.
+3. Create a new MySQL or MariaDB database for OpenBroadcaster and import the `db/clean.sql` file to set up the initial database structure.
 
-6. Copy the `config.sample.php` file to `config.php` and open it in a text editor. Set the required configuration items, such as database connection details and other settings specific to your environment.
+4. Copy the `config.sample.php` file to `config.php` and open it in a text editor. Set the required configuration items, such as database connection details and other settings specific to your environment.
 
-7. Run the following command to validate your configuration file. Correct any errors displayed in red.
+5. Run the following command to validate your configuration file. Correct any errors displayed in red.
 
 ```
 tools/cli/ob check
@@ -56,17 +56,17 @@ tools/cli/ob check
 tools/cli/ob updates run all
 ```
 
-8. Set the password for the default admin user by running the following command. Enter a secure password when prompted.
+7. Set the password for the default admin user by running the following command. Enter a secure password when prompted.
 
 ```
 tools/cli/ob passwd admin
 ```
 
-9. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/bli/cli cron monitor` is running continously.
+8. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
 
-# Example Service
+## Example Service
 
-As an example for step 9, set up a service, `/etc/systemd/system/ob.service`, as follows:
+As an example for step 8, set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
 
 ```
 [Unit]
@@ -84,7 +84,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Then enable and start the service:
+Then enable and start the service (as root or with sudo):
 
 ```
 systemctl daemon-reload
