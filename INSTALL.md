@@ -3,7 +3,7 @@
 ## Dependencies
 
 - A web server with a web environment available (e.g., Apache, Nginx)
-- PHP 8.2 or higher
+- A [supported PHP version](https://www.php.net/supported-versions.php) (not end of life)
 - MySQL or MariaDB database server
 - Composer (PHP dependency manager)
 - Node.js and npm (Node Package Manager)
@@ -34,7 +34,7 @@ Install the following Ubuntu / Debian packages, or the equivalent for your opera
 
 1. Copy the OpenBroadcaster Server files to your web server's document root directory.
 
-2. Navigate to the cloned repository directory within the web document root and run the following command to install PHP and JavaScript dependencies.
+2. Navigate to the web document root and run the following command to install PHP and JavaScript dependencies.
 
 ```
 composer install && npm install
@@ -62,8 +62,31 @@ tools/cli/ob updates run all
 tools/cli/ob passwd admin
 ```
 
-9. Set up a cron job to run the `cron.php` script regularly. This script is responsible for clearing old cache and unused upload files. The following is an example crontab entry.
+9. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/bli/cli cron monitor` is running continously.
+
+For example, set up a service, `/etc/systemd/system/ob.service`, as follows:
 
 ```
-* * * * * /path/to/openbroadcaster/tools/cli/ob cron run
+[Unit]
+Description=OB Background Tasks
+After=network.target
+
+[Service]
+Type=simple
+User=obuser
+ExecStart=/path/to/ob/tools/cli/ob cron monitor
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
 ```
+
+Then run:
+
+```
+systemctl daemon-reload
+systemctl enable ob
+systemctl start ob
+```
+
