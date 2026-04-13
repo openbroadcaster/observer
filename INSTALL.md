@@ -1,5 +1,6 @@
 # OpenBroadcaster - Server Installation Instructions
 
+
 ## Dependencies
 
 - A web server with a web environment available (e.g., Apache, Nginx)
@@ -7,6 +8,7 @@
 - MySQL or MariaDB database server
 - Composer (PHP dependency manager)
 - Node.js and npm (Node Package Manager)
+
 
 ## Required PHP Modules
 
@@ -19,6 +21,7 @@ Make sure the following PHP modules are installed and enabled (listed as Ubuntu/
 - php-curl (for making HTTP requests)
 - php-imagick (for advanced image processing)
 
+
 ## Required Packages
 
 Install the following Ubuntu/Debian packages, or the equivalent for your operating system.
@@ -29,6 +32,7 @@ Install the following Ubuntu/Debian packages, or the equivalent for your operati
 - libavcodec-extra (extra codecs for ffmpeg)
 - libavfilter-extra (extra filters for ffmpeg)
 - vorbis-tools (for Ogg Vorbis audio encoding)
+
 
 ## Installation Steps
 
@@ -64,41 +68,28 @@ tools/cli/ob passwd admin
 
 8. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
 
-9. To improve performance, set one of the OB_SENDFILE_HEADER following values in `config.php`. Ensure your web server and site configuration supports this (see Nginx example below).
+9. To improve performance, uncomment the `OB_SENDFILE_HEADER` line appropriate for your webserver in `config.php`. Ensure your web server and site configuration supports this (see Nginx example below).
 
 ```
-define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
-define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
-define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
+// define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
+// define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
+// define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
 ```
 
-## Example Service
 
-As an example for step 8, set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
+## PHP Configuration
 
-```
-[Unit]
-Description=OB Background Tasks
-After=network.target
+A default PHP installation is generally adequate, though you will likely want to increase these values:
 
-[Service]
-Type=simple
-User=obuser
-ExecStart=/path/to/ob/tools/cli/ob cron monitor
-Restart=always
-RestartSec=10
+| Name | Value | Description |
+| - | - | - |
+| memory_limit | 512M | Increase memory allowed per request |
+| post_max_size | 1024M | Increase max post size to handle file uploads |
 
-[Install]
-WantedBy=multi-user.target
-```
+Note that increasing `upload_max_filesize` should not be necessary given how OpenBroadcaster handles file uploads.
 
-Then enable and start the service (as root or with sudo):
+Additionally, ensure that PHP runs as a user that has write access to paths specified in `config.php`.
 
-```
-systemctl daemon-reload
-systemctl enable ob
-systemctl start ob
-```
 
 ## Nginx Configuration
 
@@ -150,6 +141,36 @@ server {
   }
 
   # allow larger data posts and file uploads
+  # this should have the same value as PHP's post_max_size
   client_max_body_size 1024M;
 }
+```
+
+
+## Service Configuration
+
+As an example for step 8, set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
+
+```
+[Unit]
+Description=OB Background Tasks
+After=network.target
+
+[Service]
+Type=simple
+User=obuser
+ExecStart=/path/to/ob/tools/cli/ob cron monitor
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable and start the service (as root or with sudo):
+
+```
+systemctl daemon-reload
+systemctl enable ob
+systemctl start ob
 ```
