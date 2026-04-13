@@ -34,7 +34,7 @@ Install the following Ubuntu/Debian packages, or the equivalent for your operati
 - vorbis-tools (for Ogg Vorbis audio encoding)
 
 
-## Installation Steps
+## Files and Database Setup
 
 1. Copy the OpenBroadcaster Server files to your web server's document root directory.
 
@@ -48,33 +48,19 @@ composer install && npm install
 
 4. Copy the `config.sample.php` file to `config.php` and open it in a text editor. Set the required configuration items, such as database connection details and other settings specific to your environment.
 
-5. Run the following command to validate your configuration file. Correct any errors displayed in red.
-
-```
-tools/cli/ob check
-```
-
-6. Run the following command to install database updates. This may take a few minutes to complete.
-
-```
-tools/cli/ob updates run all
-```
-
-7. Set the password for the default admin user by running the following command. Enter a secure password when prompted.
-
-```
-tools/cli/ob passwd admin
-```
-
-8. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
-
-9. To improve performance, uncomment the `OB_SENDFILE_HEADER` line appropriate for your webserver in `config.php`. Ensure your web server and site configuration supports this (see Nginx example below).
+5. To improve performance, uncomment the `OB_SENDFILE_HEADER` line appropriate for your web server in `config.php`. Ensure your web server and site configuration supports this (see Nginx example below).
 
 ```
 // define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
 // define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
 // define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
 ```
+
+## Users and Permissions
+
+1. Create a dedicated user for OpenBroadcaster. This user should be the same user the web server PHP process runs as, the background task service runs as, and any manual use of the CLI tool runs as.
+
+2. Ensure the paths specified in `config.php` exist and are writable by this user.
 
 
 ## PHP Configuration
@@ -88,8 +74,26 @@ A default PHP installation is generally adequate, though you will likely want to
 
 Note that increasing `upload_max_filesize` should not be necessary given how OpenBroadcaster handles file uploads.
 
-Additionally, ensure that PHP runs as a user that has write access to paths specified in `config.php`.
+Additionally, PHP should be configured to run as the dedicated OpenBroadcaster user. The following is an example PHP pool.d file at `/etc/php/8.3/fpm/pool.d/openbroadcaster.conf`:
 
+```
+[openbroadcaster]
+user = openbroadcaster
+group = openbroadcaster
+listen = /run/php/php8.3-openbroadcaster-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+php_admin_value[memory_limit] = 512M
+php_admin_value[post_max_size] = 1024M
+```
+
+This assumes the dedicated OpenBroadcaster user is `openbroadcaster`, and that Nginx is running as `www-data`.
 
 ## Nginx Configuration
 
@@ -146,10 +150,32 @@ server {
 }
 ```
 
+## Verifying Install and Running Updates
+
+1. Run the following command to validate your configuration file. Correct any errors displayed in red.
+
+```
+tools/cli/ob check
+```
+
+2. Run the following command to install database updates. This may take a few minutes to complete.
+
+```
+tools/cli/ob updates run all
+```
+
+3. Set the password for the default admin user by running the following command. Enter a secure password when prompted.
+
+```
+tools/cli/ob passwd admin
+```
+
+4. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
+
 
 ## Service Configuration
 
-As an example for step 8, set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
+The last step is to ensure `tools/cli/ob cron monitor` is running continuously in the background. To do this, you may set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
 
 ```
 [Unit]
@@ -158,7 +184,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=obuser
+User=openbroadcaster
 ExecStart=/path/to/ob/tools/cli/ob cron monitor
 Restart=always
 RestartSec=10
