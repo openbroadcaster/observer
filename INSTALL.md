@@ -64,6 +64,14 @@ tools/cli/ob passwd admin
 
 8. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
 
+9. To improve performance, set one of the OB_SENDFILE_HEADER following values in `config.php`. Ensure your web server and site configuration supports this (see Nginx example below).
+
+```
+define('OB_SENDFILE_HEADER', 'X-Sendfile'); // set appropriate SENDFILE header based on server (apache)
+define('OB_SENDFILE_HEADER', 'X-Accel-Redirect'); // set appropriate SENDFILE header based on server (nginx)
+define('OB_SENDFILE_HEADER', 'X-LIGHTTPD-send-file'); // set appropriate SENDFILE header based on server (lighttpd)
+```
+
 ## Example Service
 
 As an example for step 8, set up a service, `/etc/systemd/system/ob.service`, as follows. Be sure to update the `ExecStart` path and `User` as necessary.
@@ -92,3 +100,56 @@ systemctl enable ob
 systemctl start ob
 ```
 
+## Nginx Configuration
+
+1. Make sure 'mjs' is added as an extension for application/javascript in `/etc/nginx/mime.types`: 
+
+```
+application/javascript js mjs;
+```
+
+2. Use the following as a starting point for your site configuration, updating values as necessary:
+   
+```
+server {
+  listen 80;
+  server_name openbroadcaster.example.com;
+
+  root /home/openbroadcaster/www;
+  index index.php;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  # disallow access to files and directories starting with a period
+  location ~ /\. {
+    deny all;
+    access_log off;
+    log_not_found off;
+  }
+
+  # php file handling
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php8.3-openbroadcaster-fpm.sock;
+    fastcgi_buffer_size 32k;
+    fastcgi_buffers 8 32k;
+    fastcgi_busy_buffers_size 64k;
+  }
+
+  # rewrite for API URLs
+  location ^~ /api/ {
+    try_files $uri $uri/ /api.php$is_args$args;
+  }
+
+  # allow access to files via X-Accel-Redirect
+  location /home/openbroadcaster/files/ {
+    internal;
+    alias /home/openbroadcaster/files/;
+  }
+
+  # allow larger data posts and file uploads
+  client_max_body_size 1024M;
+}
+```
