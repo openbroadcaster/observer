@@ -170,8 +170,6 @@ tools/cli/ob updates run all
 tools/cli/ob passwd admin
 ```
 
-4. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/cli/ob cron monitor` is running continuously.
-
 
 ## Service Configuration
 
