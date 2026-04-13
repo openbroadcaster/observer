@@ -3,7 +3,7 @@
 
 ## Dependencies
 
-- A web server with a web environment available (e.g., Apache, Nginx)
+- A web server with a web environment available (Nginx recommended)
 - A [supported PHP version](https://www.php.net/supported-versions.php) (not end of life)
 - MySQL or MariaDB database server
 - Composer (PHP dependency manager)
