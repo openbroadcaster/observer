@@ -64,7 +64,9 @@ tools/cli/ob passwd admin
 
 9. Set up a service (or similar) to run required background tasks such as generating thumbnails and cache management. This service should ensure that `tools/bli/cli cron monitor` is running continously.
 
-For example, set up a service, `/etc/systemd/system/ob.service`, as follows:
+# Example Service
+
+As an example for step 9, set up a service, `/etc/systemd/system/ob.service`, as follows:
 
 ```
 [Unit]
@@ -82,7 +84,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Then run:
+Then enable and start the service:
 
 ```
 systemctl daemon-reload
