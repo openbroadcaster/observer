@@ -58,7 +58,7 @@ composer install && npm install
 
 ## Users and Permissions
 
-1. Create a dedicated user for OpenBroadcaster. This user should be the same user the web server PHP process runs as, the background task service runs as, and any manual use of the CLI tool runs as.
+1. Create a dedicated user for OpenBroadcaster. This user should be the same user used by the web server PHP process, the background task service, and any manual use of the CLI tool.
 
 2. Ensure the paths specified in `config.php` exist and are writable by this user.
 
