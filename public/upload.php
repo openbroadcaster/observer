@@ -102,7 +102,8 @@ class Upload extends Controller
         $result['media_supported'] = $models->media('format_allowed', ['type' => $media_info['type'], 'format' => $media_info['format']]);
 
         // to pass data through iframe you will need to encode all html tags
-        echo json_encode($result);
+        // ignoring invalid utf8 since it's possible to get this via getid3
+        echo json_encode($result, JSON_INVALID_UTF8_IGNORE);
     }
 
     private function randKey()
