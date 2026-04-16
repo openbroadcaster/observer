@@ -1426,7 +1426,12 @@ OB.Sidebar.advancedSearchAdd = function (filter_data) {
         var filter = document.getElementById("advanced_search_filter").value;
         filter = filter.replace(/^metadata_/, "");
         var op = document.getElementById("advanced_search_metadata_operator").value;
-        var val = document.getElementById("advanced_search_metadata_value").value?.trim();
+        var val = document.getElementById("advanced_search_metadata_value").value;
+        if (typeof val === "string") val = val.trim();
+        else if (typeof val === "boolean") {
+            if (val) val = 1;
+            else val = 0;
+        }
 
         // get metadata/settings for this field
         const metadata = OB.Settings.media_metadata.find((metadata) => metadata.name === filter);
