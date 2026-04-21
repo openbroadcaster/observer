@@ -612,6 +612,12 @@ OB.Media.recordingDefaultsGet = function () {
                 metaElem = document.createElement("ob-field-playlist");
                 metaElem.dataset.single = "";
                 break;
+            case "license":
+                metaElem = document.createElement("ob-field-license");
+                break;
+            case "coordinates":
+                metaElem = document.createElement("ob-field-coordinates");
+                break;
         }
 
         if (!metaElem) {
