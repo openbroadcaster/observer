@@ -277,7 +277,6 @@ class Metadata extends Controller
                 }
 
                 if ($field['type'] === 'integer' && ! ctype_digit((string) $value)) {
-                    var_dump($value);
                     return [false, 'Value for custom field `' . $field['name'] . '` must be an integer'];
                 }
             }
