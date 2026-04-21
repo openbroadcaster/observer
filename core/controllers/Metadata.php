@@ -231,7 +231,7 @@ class Metadata extends Controller
             return [false, 'No default album provided.'];
         }
 
-        if ($coreFields['year'] === 'required' && ! ctype_digit($this->data['year'])) {
+        if ($coreFields['year'] === 'required' && ! ctype_digit((string) $this->data['year'])) {
             //T No default year provided.
             return [false, 'No default year provided.'];
         }
@@ -271,12 +271,13 @@ class Metadata extends Controller
                 if (
                     $field['type'] === 'select' &&
                     (! in_array($value, $field['settings']->options) &&
-                    (! ctype_digit($value) || count($field['settings']->options) < intval($value) || intval($value) < 0))
+                    (! ctype_digit((string) $value) || count($field['settings']->options) < intval($value) || intval($value) < 0))
                 ) {
                     return [false, 'Selected value not in allowed options for custom field `' . $field['name'] . '`'];
                 }
 
-                if ($field['type'] === 'integer' && ! ctype_digit($value)) {
+                if ($field['type'] === 'integer' && ! ctype_digit((string) $value)) {
+                    var_dump($value);
                     return [false, 'Value for custom field `' . $field['name'] . '` must be an integer'];
                 }
             }
