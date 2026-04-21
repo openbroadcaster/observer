@@ -177,7 +177,7 @@ class MediaMetadata extends Model
         if (!$id) {
             $this->db->where('name', $data['name']);
             //T This field name is already in use.
-            if ($this->db->get_one('media_metadata_columns')) {
+            if ($this->db->get_one('media_metadata')) {
                 return [false,'This field name is already in use'];
             }
         }
