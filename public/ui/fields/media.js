@@ -180,7 +180,7 @@ class OBFieldMedia extends OBField {
                     gap: 5px;
                 }
 
-                canvas { 
+                canvas {
                     display: block;
                 }
 
@@ -299,7 +299,7 @@ class OBFieldMedia extends OBField {
                     text-align: center;
                     line-height: 96px;
                 }
-               
+
                 .media-viewable[data-single="true"]:empty::after {
                     content: "No Media (Single)";
                 }
@@ -585,6 +585,11 @@ class OBFieldMedia extends OBField {
     }
 
     async mediaRecordSave(event) {
+        if (! OB.Settings.recording_metadata) {
+            OB.UI.alert('Unable to save voicetrack. Recording defaults must first be set in media settings.');
+            return false;
+        }
+
         if (this.dataset.status !== "cached") {
             return false;
         }
