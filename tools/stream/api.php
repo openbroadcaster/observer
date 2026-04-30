@@ -5,7 +5,7 @@
 
 header("Access-Control-Allow-Origin: *");
 
-require_once('../../components.php');
+require_once(__DIR__ . '/../../core/init.php');
 
 if (!defined('OB_STREAM_API') || OB_STREAM_API !== true || (empty($_GET['category_id']) && empty($_GET['genre_id']) && empty($_GET['media_id']))) {
     http_response_code(404);
@@ -17,7 +17,7 @@ $return = [
   'media' => []
 ];
 
-$db = OBFDB::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
 
 $category_id = $_GET['category_id'] ?? null;
 $genre_id = $_GET['genre_id'] ?? null;

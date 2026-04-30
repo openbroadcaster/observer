@@ -7,7 +7,7 @@
  * Manages callbacks. Returns a CallbackReturn when firing, which is also
  * defined in the same file.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

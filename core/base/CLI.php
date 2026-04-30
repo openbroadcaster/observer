@@ -19,8 +19,8 @@ abstract class CLI
 
     final public function __construct()
     {
-        $this->db = \OBFDB::get_instance();
-        $this->models = \OBFModels::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
+        $this->models = \OpenBroadcaster\Support\Models::get_instance();
 
         if (! isset($this->help)) {
             $this->help = [];

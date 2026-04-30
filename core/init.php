@@ -85,6 +85,7 @@ date_default_timezone_set('Etc/UTC');
 // Use autoloading to include controller and model files.
 spl_autoload_register(function ($className) {
     $namespaceMap = [
+        'OpenBroadcaster\\Support\\' => OB_LOCAL . '/core/support/',
         'OpenBroadcaster\\Base\\' => OB_LOCAL . '/core/base/',
         'OpenBroadcaster\\Models\\' => OB_LOCAL . '/core/models/',
         'OpenBroadcaster\\Controllers\\' => OB_LOCAL . '/core/controllers/',
@@ -140,19 +141,6 @@ spl_autoload_register(function ($className) {
         }
     }
 });
-
-// Require core files
-$require_from = [
-    OB_LOCAL . '/core/support',
-];
-foreach ($require_from as $dir) {
-    $classes_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-    foreach ($classes_iterator as $file) {
-        if ($file->isFile() && $file->getExtension() == 'php') {
-            require_once($file->getPathname());
-        }
-    }
-}
 
 // load third party components
 require_once(OB_LOCAL . '/vendor/autoload.php');

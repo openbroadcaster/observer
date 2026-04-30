@@ -13,7 +13,7 @@ class CleanNonce extends Cron
 
     public function run(): bool
     {
-        $db = \OBFDB::get_instance();
+        $db = \OpenBroadcaster\Support\DB::get_instance();
 
         // remove expired tokens
         $db->query('DELETE FROM users_nonces WHERE DATE_ADD(created, INTERVAL expiry SECOND) < NOW()');

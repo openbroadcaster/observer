@@ -6,7 +6,7 @@
 /**
  * Input/Output class. Outputs data and error messages.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 
@@ -99,6 +99,6 @@ class IO
      */
     public function output($data)
     {
-        echo json_encode($data);
+        echo json_encode($data, JSON_THROW_ON_ERROR);
     }
 }

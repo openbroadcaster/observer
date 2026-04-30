@@ -6,10 +6,10 @@ if (php_sapi_name() != 'cli') {
   exit("Script cannot be run from web environment.\n");
 }
 
-require(__DIR__.'/../../components.php');
+require(__DIR__ . '/../../core/init.php');
 
-$db = OBFDB::get_instance();
-$models = OBFModels::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
+$models = \OpenBroadcaster\Support\Models::get_instance();
 
 $schedule_str  = file_get_contents(__DIR__ . '/schedule4.json');
 $schedule_json = json_decode($schedule_str, true);

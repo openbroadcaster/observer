@@ -9,7 +9,6 @@ use OpenBroadcaster\Base\Model;
 
 class Logger extends Model
 {
-
 	public function log($hook,$position,&$args)
 	{
 
@@ -25,7 +24,7 @@ class Logger extends Model
 
 		$this->db->insert('module_logger',$data);
 
-		return new OBFCallbackReturn;
+		return new \OpenBroadcaster\Support\CallbackReturn;
 	}
 
 	// call after logEntries to get total results.

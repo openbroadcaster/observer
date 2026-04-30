@@ -2,10 +2,10 @@
 // Include the core components
 //  This script should be run as php test_playlist_resolve.php 1767 1
 // Allows you to test playlist resolution, and duplicate prevention
-require_once 'components.php';
+require_once(__DIR__ . '/../../core/init.php');
 
 // Get the models instance through the framework
-$load = OBFLoad::get_instance();
+$load = \OpenBroadcaster\Support\Load::get_instance();
 $playlistsModel = $load->model('Playlists');
 
 // Get playlistId and playerId from command-line arguments
@@ -19,7 +19,7 @@ $playerId = (int)$argv[2];
 
 // Resolve the playlist
 try {
-    $resolvedItems = $playlistsModel('resolve', 
+    $resolvedItems = $playlistsModel('resolve',
         $playlistId,      // Specific playlist ID to test
         $playerId,        // Player ID
         false,            // No parent player
@@ -36,7 +36,7 @@ try {
     // Check for duplicates manually
     $mediaIds = array_column($resolvedItems, 'id');
     $duplicates = array_diff_assoc($mediaIds, array_unique($mediaIds));
-    
+
     echo "\nDuplicates Found: ";
     if (empty($duplicates)) {
         echo "None\n";

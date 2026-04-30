@@ -14,7 +14,7 @@ class PlayerNotices extends Cron
 
     public function run(): bool
     {
-        $db = \OBFDB::get_instance();
+        $db = \OpenBroadcaster\Support\DB::get_instance();
 
         $cutoff = strtotime('-1 hour'); // connection must be made at least once/hour. this should be a setting at some point, maybe in player settings?
         $connect_types = ['schedule','playlog','emergency'];

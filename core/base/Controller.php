@@ -25,16 +25,16 @@ class Controller
 
     /**
      * Create a new instance of Controller. Makes various classes of OB available
-     * by default, such as OBFLoad, OBFDB, OBFUser, OBFCallbacks, and OBFHelpers.
+     * by default, such as Load, DB, User, Callbacks, and Helpers.
      */
     public function __construct()
     {
-        $this->load = \OBFLoad::get_instance();
-        $this->db = \OBFDB::get_instance();
-        $this->user = \OBFUser::get_instance();
-        $this->callback_handler = \OBFCallbacks::get_instance();
-        $this->helpers = \OBFHelpers::get_instance();
-        $this->models = \OBFModels::get_instance();
+        $this->load = \OpenBroadcaster\Support\Load::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
+        $this->user = \OpenBroadcaster\Support\User::get_instance();
+        $this->callback_handler = \OpenBroadcaster\Support\Callbacks::get_instance();
+        $this->helpers = \OpenBroadcaster\Support\Helpers::get_instance();
+        $this->models = \OpenBroadcaster\Support\Models::get_instance();
     }
 
     /**

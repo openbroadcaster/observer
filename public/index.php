@@ -31,8 +31,8 @@ if ($req !== '/') {
       }
 
       // If no PHP file, simply send the file to the client.
-      $helpers = OBFHelpers::get_instance();
-      OBFHelpers::sendfile($path);
+      $helpers = \OpenBroadcaster\Support\Helpers::get_instance();
+      \OpenBroadcaster\Support\Helpers::sendfile($path);
     } else {
       http_response_code(404);
       exit();
@@ -52,14 +52,14 @@ if (is_file(OB_LOCAL . '/VERSION')) {
 }
 
 // are we logged in? if not, redirect to welcome page.
-$user = OBFUser::get_instance();
+$user = \OpenBroadcaster\Support\User::get_instance();
 if (!isset($_COOKIE['ob_auth_id']) || !isset($_COOKIE['ob_auth_key']) || !$user->auth($_COOKIE['ob_auth_id'], $_COOKIE['ob_auth_key'])) {
     header('Location: /welcome/');
     die();
 }
 
 // we're logged in! continue with load.
-$models = OBFModels::get_instance();
+$models = \OpenBroadcaster\Support\Models::get_instance();
 $js_files    = $models->ui('js_files');
 $css_files   = $models->ui('css_files');
 $image_files = $models->ui('image_files');

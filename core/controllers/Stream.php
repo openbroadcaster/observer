@@ -11,8 +11,8 @@
 namespace OpenBroadcaster\Controllers;
 
 use OpenBroadcaster\Base\Controller;
-use OBFHelpers;
-use OBFIO;
+use OpenBroadcaster\Support\Helpers;
+use OpenBroadcaster\Support\IO;
 
 class Stream extends Controller
 {
@@ -21,7 +21,7 @@ class Stream extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->io = OBFIO::get_instance();
+        $this->io = IO::get_instance();
     }
 
     /**
@@ -50,7 +50,7 @@ class Stream extends Controller
             $index_file = 'prog_index.m3u8';
         }
 
-        OBFHelpers::preview_media_auth($media);
+        Helpers::preview_media_auth($media);
 
         $locationA = $media['file_location'][0];
         $locationB = $media['file_location'][1];
@@ -95,7 +95,7 @@ class Stream extends Controller
             if ($ondemand && !file_exists($dir . $file)) {
                 // find index by removing non-numeric characters from file
                 $segment_index = preg_replace('/[^0-9]/', '', $file);
-                $this->ondemand_transcode(OBFHelpers::media_file($media), $dir, $segment_index, 10);
+                $this->ondemand_transcode(Helpers::media_file($media), $dir, $segment_index, 10);
             }
 
             // make sure it exists
@@ -108,7 +108,7 @@ class Stream extends Controller
             file_put_contents($dir . 'last_access_file', $file);
 
             // output
-            OBFHelpers::sendfile($dir . $file, 'video/mp2t');
+            Helpers::sendfile($dir . $file, 'video/mp2t');
         } else {
             // no index file but we can do this on-demand
             if ($media['type'] == 'audio' && !file_exists($dir . $index_file)) {
@@ -133,7 +133,7 @@ class Stream extends Controller
         $output_dir = OB_CACHE . '/ondemand/' . $randid . '/';
         mkdir($output_dir, 0775, true);
 
-        $media_file = OBFHelpers::media_file($media);
+        $media_file = Helpers::media_file($media);
 
         if (!file_exists($media_file)) {
             $this->error(OB_ERROR_NOTFOUND);

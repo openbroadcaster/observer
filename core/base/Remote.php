@@ -15,10 +15,10 @@ abstract class Remote
 
     public function __construct(object $player, object $request)
     {
-        $this->io = \OBFIO::get_instance();
-        $this->load = \OBFLoad::get_instance();
-        $this->user = \OBFUser::get_instance();
-        $this->db = \OBFDB::get_instance();
+        $this->io = \OpenBroadcaster\Support\IO::get_instance();
+        $this->load = \OpenBroadcaster\Support\Load::get_instance();
+        $this->user = \OpenBroadcaster\Support\User::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
 
         $this->player = $player;
         $this->request = $request;

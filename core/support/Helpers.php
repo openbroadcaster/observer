@@ -6,7 +6,7 @@
 /**
  * OpenBroadcaster helper functions.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

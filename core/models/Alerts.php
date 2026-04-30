@@ -12,7 +12,7 @@
 namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
-use OBFHelpers;
+use OpenBroadcaster\Support\Helpers;
 
 class Alerts extends Model
 {
@@ -50,7 +50,7 @@ class Alerts extends Model
      */
     public function get_one($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
+        Helpers::require_args($args, ['id']);
 
         $this('get_init');
 
@@ -85,7 +85,7 @@ class Alerts extends Model
      */
     public function get_for_player($args = [])
     {
-        OBFHelpers::require_args($args, ['player_id']);
+        Helpers::require_args($args, ['player_id']);
 
         $this('get_init');
 
@@ -117,8 +117,8 @@ class Alerts extends Model
      */
     public function validate($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
-        OBFHelpers::default_args($args, ['id' => false]);
+        Helpers::require_args($args, ['data']);
+        Helpers::default_args($args, ['id' => false]);
 
         foreach ($args['data'] as $key => $value) {
             $$key = $value;
@@ -203,8 +203,8 @@ class Alerts extends Model
      */
     public function save($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
-        OBFHelpers::default_args($args, ['id' => false]);
+        Helpers::require_args($args, ['data']);
+        Helpers::default_args($args, ['id' => false]);
 
         $this->db->where('id', $args['data']['item_id']);
         $media = $this->db->get_one('media');
@@ -227,7 +227,7 @@ class Alerts extends Model
      */
     public function delete($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
+        Helpers::require_args($args, ['id']);
 
         $this->db->where('id', $args['id']);
         $this->db->delete('alerts');

@@ -8,7 +8,7 @@ require_once(__DIR__ . '/../core/init.php');
 use OpenBroadcaster\Base\Controller;
 
 // COMPLETE AUTHENTICATION, usually handled by api.php
-$user = OBFUser::get_instance();
+$user = \OpenBroadcaster\Support\User::get_instance();
 
 $auth_id = null;
 $auth_key = null;
@@ -53,7 +53,7 @@ class Upload extends Controller
 
     // max file size in bytes
         // $sizeLimit = 100 * 1024 * 1024;
-        $models = OBFModels::get_instance();
+        $models = \OpenBroadcaster\Support\Models::get_instance();
 
         $key = $this->randKey();
         $id = $this->db->insert('uploads', ['key' => $key, 'expiry' => strtotime('+24 hours')]);

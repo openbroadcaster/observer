@@ -6,9 +6,13 @@
 /**
  * Model example class.
  *
- * @package OBFModel
+ * @package Model
  */
-class ApiModel extends OBFModel
+namespace OpenBroadcaster\Models;
+
+use OpenBroadcaster\Base\Model;
+
+class Api extends Model
 {
     private $api_url;
     private $api_user;

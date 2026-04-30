@@ -3,10 +3,10 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require('../../components.php');
+require_once(__DIR__ . '/../../core/init.php');
 
-$db = OBFDB::get_instance();
-$user = OBFUser::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
+$user = \OpenBroadcaster\Support\User::get_instance();
 $auth_id = null;
 $auth_key = null;
 

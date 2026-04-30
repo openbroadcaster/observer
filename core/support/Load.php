@@ -7,7 +7,7 @@
  * Loading class. Manages the loading of OpenBroadcaster files, models, and
  * controllers.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

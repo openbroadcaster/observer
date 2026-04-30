@@ -11,8 +11,8 @@
 namespace OpenBroadcaster\Controllers;
 
 use OpenBroadcaster\Base\Controller;
-use OBFHelpers;
-use OBFIO;
+use OpenBroadcaster\Support\Helpers;
+use OpenBroadcaster\Support\IO;
 
 class Downloads extends Controller
 {
@@ -21,7 +21,7 @@ class Downloads extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->io = OBFIO::get_instance();
+        $this->io = IO::get_instance();
     }
 
     /**
@@ -87,9 +87,9 @@ class Downloads extends Controller
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        OBFHelpers::download_media_auth($media);
+        Helpers::download_media_auth($media);
 
-        $fullpath = OBFHelpers::media_file($media);
+        $fullpath = Helpers::media_file($media);
 
         $this->download($fullpath, $media['filename']);
     }
@@ -115,7 +115,7 @@ class Downloads extends Controller
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        OBFHelpers::preview_media_auth($media);
+        Helpers::preview_media_auth($media);
 
         $cache_dir = OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
@@ -129,7 +129,7 @@ class Downloads extends Controller
             $this->error(OB_ERROR_SERVER);
         }
 
-        $media_file = OBFHelpers::media_file($media);
+        $media_file = Helpers::media_file($media);
 
         if ($media['type'] == 'audio') {
             // audio preview transcode
@@ -162,7 +162,7 @@ class Downloads extends Controller
             }
         }
 
-        OBFHelpers::sendfile($cache_file);
+        Helpers::sendfile($cache_file);
     }
 
     /**
@@ -181,7 +181,7 @@ class Downloads extends Controller
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        OBFHelpers::preview_media_auth($media);
+        Helpers::preview_media_auth($media);
 
         // get thumbnail
         $file = $this->models->media('thumbnail_file', ['media' => $id]);
@@ -193,7 +193,7 @@ class Downloads extends Controller
             if (($_GET['v'] ?? null) && $_GET['v'] == filemtime($file) && $media['status'] == 'public') {
                 header('Cache-Control: public, max-age=' . (60 * 60 * 24 * 7)); // cache for 7 days
             }
-            OBFHelpers::sendfile($file);
+            Helpers::sendfile($file);
         }
     }
 
@@ -209,7 +209,7 @@ class Downloads extends Controller
             $this->error(OB_ERROR_NOTFOUND);
         }
 
-        OBFHelpers::sendfile($fullpath, null, true);
+        Helpers::sendfile($fullpath, null, true);
 
         // don't want any more output after outputting file
         die();

@@ -15,7 +15,7 @@ class Metadata
         $this->description = $description;
         $this->type = $type;
         $this->settings = $settings;
-        $this->db = \OBFDB::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
 
         // letters, numbers, underscores only for name
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->name)) {

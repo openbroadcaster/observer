@@ -18,8 +18,9 @@ if (php_sapi_name()!='cli') {
 define('OB_STREAM_VERSION', 1); // update this to re-transcode, etc.
 
 // db init
-require(__DIR__.'/../../components.php');
-$db = OBFDB::get_instance();
+require_once(__DIR__ . '/../../core/init.php');
+
+$db = \OpenBroadcaster\Support\DB::get_instance();
 
 // make sure our media & cache directorys are defined
 if (!defined('OB_MEDIA') || !defined('OB_CACHE') || !is_dir(OB_MEDIA) || !is_dir(OB_CACHE)) {
@@ -35,13 +36,13 @@ if(!defined('OB_STREAM_TRANSCODE_ALL') || !OB_STREAM_TRANSCODE_ALL) {
 // get media without stream information
 $db->query('
   SELECT stream_version, thumbnail_version, file_location, filename, id, type, duration
-  FROM media 
+  FROM media
   WHERE
     '.$public_only.'
-    is_approved=1 
-    AND is_archived=0 
+    is_approved=1
+    AND is_archived=0
     AND (
-      stream_version IS NULL 
+      stream_version IS NULL
       OR stream_version < '.OB_STREAM_VERSION.'
     )
 ');

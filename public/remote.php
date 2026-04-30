@@ -22,8 +22,8 @@ class Remote
 
         remoteDebug('remote.php called by ' . $_SERVER['REMOTE_ADDR'] . ' with ' . json_encode($_REQUEST));
 
-        $this->load = OBFLoad::get_instance();
-        $this->db = OBFDB::get_instance();
+        $this->load = \OpenBroadcaster\Support\Load::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
 
         // devmode bypasses auth
         if (!empty($_REQUEST['devmode']) && defined('OB_REMOTE_DEBUG') && $_REQUEST['devmode'] == OB_REMOTE_DEBUG) {

@@ -6,7 +6,7 @@
 /**
  * User class. Manages user authorization, permissions, and settings.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

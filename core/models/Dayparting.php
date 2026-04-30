@@ -14,7 +14,7 @@ namespace OpenBroadcaster\Models;
 use DateTime;
 
 use OpenBroadcaster\Base\Model;
-use OBFHelpers;
+use OpenBroadcaster\Support\Helpers;
 
 class Dayparting extends Model
 {
@@ -30,7 +30,7 @@ class Dayparting extends Model
 
     public function save($args = [])
     {
-        OBFHelpers::default_args($args, ['type' => false, 'filters' => '', 'description' => '', 'id' => false, ]);
+        Helpers::default_args($args, ['type' => false, 'filters' => '', 'description' => '', 'id' => false, ]);
 
         $data = [];
         $type = $args['type'];
@@ -132,7 +132,7 @@ class Dayparting extends Model
 
     public function get($args)
     {
-        OBFHelpers::default_args($args, ['id' => 0]);
+        Helpers::default_args($args, ['id' => 0]);
 
         $this->db->where('id', $args['id']);
         $row = $this->db->get_one('dayparting');
@@ -147,7 +147,7 @@ class Dayparting extends Model
 
     public function delete($args)
     {
-        OBFHelpers::default_args($args, ['id' => 0]);
+        Helpers::default_args($args, ['id' => 0]);
 
         $this->db->where('id', $args['id']);
         $this->db->delete('dayparting');
@@ -180,7 +180,7 @@ class Dayparting extends Model
     // get excluded media ids by datetime
     public function excluded_media_ids($args = [])
     {
-        OBFHelpers::default_args($args, ['start_time' => null]);
+        Helpers::default_args($args, ['start_time' => null]);
 
         $dayparting_exclude_ids = [];
         $start_time = $args['start_time'];

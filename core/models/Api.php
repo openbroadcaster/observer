@@ -12,7 +12,7 @@
 namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
-use OBFHelpers;
+use OpenBroadcaster\Support\Helpers;
 
 class Api extends Model
 {
@@ -30,7 +30,7 @@ class Api extends Model
      */
     public function set_url($args = [])
     {
-        OBFHelpers::require_args($args, ['url']);
+        Helpers::require_args($args, ['url']);
 
         $this->api_url = $args['url'];
     }
@@ -42,7 +42,7 @@ class Api extends Model
      */
     public function set_user($args = [])
     {
-        OBFHelpers::require_args($args, ['user']);
+        Helpers::require_args($args, ['user']);
 
         $this->api_user = $args['user'];
     }
@@ -54,7 +54,7 @@ class Api extends Model
      */
     public function set_pass($args = [])
     {
-        OBFHelpers::require_args($args, ['pass']);
+        Helpers::require_args($args, ['pass']);
 
         $this->api_pass = $args['pass'];
     }
@@ -70,7 +70,7 @@ class Api extends Model
      */
     public function upload($args = [])
     {
-        OBFHelpers::require_args($args, ['file']);
+        Helpers::require_args($args, ['file']);
 
         // uploads can take a while...
         set_time_limit(3600);
@@ -120,8 +120,8 @@ class Api extends Model
      */
     public function call($args = [])
     {
-        OBFHelpers::require_args($args, ['controller', 'action']);
-        OBFHelpers::default_args($args, ['data' => null, 'login_required' => true]);
+        Helpers::require_args($args, ['controller', 'action']);
+        Helpers::default_args($args, ['data' => null, 'login_required' => true]);
 
         if (!$this->api_url) {
             return false;

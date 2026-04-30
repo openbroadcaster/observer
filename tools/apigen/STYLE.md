@@ -2,7 +2,7 @@
 
 ## Packages
 
-Due to namespacing issues, all PHP files in the core code need to be have the appropriate `@package` tag. For files in `/classes`, add an `@package OBFClass` tag at the top of the class; for files in `/controllers`, add an `@package OBFController`; finally, for files in `/models`, add an `@package OBFModel`.
+Due to namespacing issues, all PHP files in the core code need to be have the appropriate `@package` tag. For files in `/support`, add an `@package Support` tag at the top of the class; for files in `/controllers`, add an `@package Controller`; finally, for files in `/models`, add an `@package Model`.
 
 ## Implicit Data
 

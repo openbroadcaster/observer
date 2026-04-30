@@ -13,7 +13,7 @@ class OptimizeDB extends Cron
 
     public function run(): bool
     {
-        $db = \OBFDB::get_instance();
+        $db = \OpenBroadcaster\Support\DB::get_instance();
 
         $db->query('show table status');
         $tables = $db->assoc_list();

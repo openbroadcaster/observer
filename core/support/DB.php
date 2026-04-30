@@ -7,7 +7,7 @@
  * Database class. Manages SQL connections and queries, keeps track of last query
  * and errors. Also hosts some utility methods.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

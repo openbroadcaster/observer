@@ -12,8 +12,8 @@ class Update
     public function __construct()
     {
         $this->error = false;
-        $this->db = new \OBFDB();
-        $this->load = \OBFLoad::get_instance();
-        $this->models = \OBFModels::get_instance();
+        $this->db = new \OpenBroadcaster\Support\DB();
+        $this->load = \OpenBroadcaster\Support\Load::get_instance();
+        $this->models = \OpenBroadcaster\Support\Models::get_instance();
     }
 }

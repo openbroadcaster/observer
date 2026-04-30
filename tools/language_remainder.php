@@ -5,9 +5,9 @@ if (php_sapi_name()!='cli') {
     die('cli only');
 }
 
-require(__DIR__ . '/../components.php');
+require(__DIR__ . '/../core/init.php');
 
-$db = OBFDB::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
 
 $db->query('SELECT language_id, ref_name FROM languages');
 $languages = $db->assoc_list();

@@ -33,7 +33,7 @@ class OBFUpdates
         $this->dbver = $checker->dbver ?? 0;
         $this->checker_status = true;
 
-        $this->db = new OBFDB();
+        $this->db = new \OpenBroadcaster\Support\DB();
         $this->auth();
     }
 

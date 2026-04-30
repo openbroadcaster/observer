@@ -3,7 +3,7 @@
   <h1>Welcome to OpenBroadcaster</h1>
 
   <p id="login_welcome"><?=nl2br(htmlspecialchars($welcome_message))?></p>
-  
+
   <?php /* form/submit tags used so browser offers to save password. does not function without javascript. */ ?>
   <form method="post" action="index.php" onSubmit="return false;">
     <p id="login_message"></p>
@@ -15,7 +15,7 @@
   <div class="welcome_actions">
     <a href="javascript: OB.Welcome.show('forgotpass');">Forgot Password?</a>
     <?php
-    $load = OBFLoad::get_instance();
+    $load = \OpenBroadcaster\Support\Load::get_instance();
     $user_model = $load->model('users');
     if ($user_model->user_registration_get()) { ?>
       <a href="javascript: OB.Welcome.show('newaccount');">Create New Account</a>

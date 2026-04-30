@@ -13,7 +13,7 @@ class ExtractThumbnails extends Cron
 
     public function run(): bool
     {
-        $db = \OBFDB::get_instance();
+        $db = \OpenBroadcaster\Support\DB::get_instance();
 
         // get all media that needs thumbnail to extract
         $db->query('SELECT * FROM media WHERE

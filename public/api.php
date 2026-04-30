@@ -90,7 +90,7 @@ class OBFAPI
                         }
 
                         // provided expected data for v1 behavior below
-                        $_POST['d'] = json_encode($_POST['d']);
+                        $_POST['d'] = json_encode($_POST['d'], JSON_THROW_ON_ERROR);
                         $_POST['c'] = $route[1];
                         $_POST['a'] = $route[2];
 
@@ -128,10 +128,10 @@ class OBFAPI
             $_POST['a'] = $request[1] ?? null; // action/method
         }
 
-        $this->io = OBFIO::get_instance();
-        $this->load = OBFLoad::get_instance();
-        $this->user = OBFUser::get_instance();
-        $this->callback_handler = OBFCallbacks::get_instance();
+        $this->io = \OpenBroadcaster\Support\IO::get_instance();
+        $this->load = \OpenBroadcaster\Support\Load::get_instance();
+        $this->user = \OpenBroadcaster\Support\User::get_instance();
+        $this->callback_handler = \OpenBroadcaster\Support\Callbacks::get_instance();
 
         $auth_id = null;
         $auth_key = null;

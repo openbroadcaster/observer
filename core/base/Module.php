@@ -16,13 +16,13 @@ class Module
     public $callback_handler;
 
     /**
-     * Create instance of OBFModules, makes database (db) and base framwork (ob)
+     * Create instance of Modules, makes database (db) and base framwork (ob)
      * available.
      */
     public function __construct()
     {
-        $this->db = \OBFDB::get_instance();
-        $this->callback_handler = \OBFCallbacks::get_instance();
+        $this->db = \OpenBroadcaster\Support\DB::get_instance();
+        $this->callback_handler = \OpenBroadcaster\Support\Callbacks::get_instance();
     }
 
     /**

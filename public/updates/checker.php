@@ -312,7 +312,7 @@ class OBFChecker
 
     public function database_privileges()
     {
-        $db = new OBFDB();
+        $db = new \OpenBroadcaster\Support\DB();
 
         // compares the db name against TABLE_SCHEMA column which may use a wildcard %.
         $db->query('SELECT * FROM information_schema.schema_privileges WHERE
@@ -363,7 +363,7 @@ class OBFChecker
 
     public function database_version()
     {
-        $db = new OBFDB();
+        $db = new \OpenBroadcaster\Support\DB();
         $latest = 0;
 
         if ($this->module === null) {

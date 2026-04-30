@@ -6,7 +6,7 @@
 /**
  * Models class. Provides access to all models.
  *
- * @package Class
+ * @package Support
  */
 namespace OpenBroadcaster\Support;
 

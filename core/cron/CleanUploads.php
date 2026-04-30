@@ -19,7 +19,7 @@ class CleanUploads extends Cron
 
         $uploadsDir = OB_UPLOADS . '/';
 
-        $db = \OBFDB::get_instance();
+        $db = \OpenBroadcaster\Support\DB::get_instance();
         $db->where('expiry', time(), '<');
         $uploads = $db->get('uploads');
 

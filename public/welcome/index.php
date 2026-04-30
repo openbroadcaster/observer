@@ -1,8 +1,8 @@
 <?php
 
 require(__DIR__ . '/../../core/init.php');
-$models = OBFModels::get_instance();
-$db = OBFDB::get_instance();
+$models = \OpenBroadcaster\Support\Models::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
 $db->where('name', 'client_login_message');
 $result = $db->get_one('settings');
 $welcome_message = $result ? $result['value'] : '';

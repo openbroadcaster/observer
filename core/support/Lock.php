@@ -6,7 +6,7 @@
 /**
  * OpenBroadcaster acquire or release a lock.
  *
- * @package Class
+ * @package Support
  */
 class Lock
 {

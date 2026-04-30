@@ -4,17 +4,17 @@
 * TOC
 {:toc}
 
-## Module Support 
+## Module Support
 
 OpenBroadcaster v5.X supports modules with a plugin architecture.
 
 The module system extends OpenBroadcaster functionality (by adding new functionality), but can also integrate with core functionality using callbacks/hooks.
 
-## Module install instructions 
+## Module install instructions
 
 Server lives at /var/www/openbroadcaster, all files under there need to be owned by www-data:www-data.
 
-## Directory Structure 
+## Directory Structure
 
 Modules are contained within the /modules directory. /modules/MODULE_NAME is the main directory for the module. Within this directory, we find the following structure:
 
@@ -32,7 +32,7 @@ MODULE_NAME/models : Add models to be accessed by controllers (and models).
 
 MODULE_NAME/module.php : Main module file which provides install/uninstall procedures,
 
-## Javascript Files 
+## Javascript Files
 
 Module javascript files are automatically loaded after core javascript. This javascript can be used to append or modify the client application. Be sure to encapsulate your javascript code in a single object (class) to avoid namespace issues with the core or other modules.
 
@@ -44,15 +44,15 @@ The core OpenBroadcaster code is not as nicely encapsulated in this way, but sho
 
 HTML files are loaded (cached) into a javascript object. You can get the contents of a module HTML file using the html.get javascript method. html.get accepts a single argument defining the HTML file you want to retrieve. For example, to get the contents of /modules/logger/html/main/logger.html, you would call html.get('modules/logger/main/logger.html'). Note that the HTML directory is removed from the parameter as it is redundant, but modules/logger remains in order to avoid naming conflicts with the core or other modules.
 
-## CSS Files 
+## CSS Files
 
 CSS files are automatically loaded on client application startup. They are loaded after the core CSS (including core CSS overrides by themes), but before non-overriding theme CSS. While themes do not have the ability to override complete module CSS files, they can override individual module CSS definitions as they are loaded after the module CSS files.
 
-## Image Files 
+## Image Files
 
 Add any support images required. There are presently no module image overrides available with themes (but this should be done at some point).
 
-## Controllers 
+## Controllers
 
 TODO: Create guide for controller files. Namespace/integration/coding guidelines.
 
@@ -60,7 +60,7 @@ NOTE: If you use the same controller name as one of the core controllers, it wil
 
 Controllers can be accessed by the user (or front-end application) directly through the api (api.php), or by hooking into existing controllers. For information on linking an existing controller with your module's controller, see the callbacks section of module.php below.
 
-## Models 
+## Models
 
 TODO: Create guide for model files. Namespace/integration/coding guidelines (and OB DB abstraction).
 
@@ -68,10 +68,12 @@ NOTE: If you use the same model name as one of the core models, it will complete
 
 ## Module.php
 
-Each module must have a module.php in the main module directly. This contains a class which extends OBFModule. Let's start with an example:
+Each module must have a module.php in the main module directly. This contains a class which extends Module. Let's start with an example:
 
 ~~~~
-class LoggerModule extends OBFModule
+use OpenBroadcaster\Base\Module;
+
+class LoggerModule extends Module
 {
 
 	public $name = 'Logger v1.0';
@@ -79,7 +81,7 @@ class LoggerModule extends OBFModule
 
 	public function callbacks()
 	{
-		
+
 		$this->callback_handler->register_callback('LoggerModel.log','Account.login','return',0);
 	}
 
@@ -104,7 +106,7 @@ class LoggerModule extends OBFModule
 }
 ~~~~
 
-### Properties 
+### Properties
 
 First, there are two properties. $name provides the name of the module, and $description provides the description.
 callback() Method
@@ -124,7 +126,7 @@ install() and uninstall() Methods
 
 These methods are called when the module is installed or uninstalled. If they return true, the (un)install will be considered successful. If they return false, the (un)install not be considered successful and an error will be returned to the user. A return value is required.
 
-## Callbacks 
+## Callbacks
 
 OpenBroadcaster uses a callback system to link modules and core functionality, as well as modules with other modules. There are for times when callbacks are called:
 
@@ -136,24 +138,26 @@ Models - Init: Callbacks assigned to a model method with the 'init' position are
 
 Models - Return: Callbacks assigned to a model method with the 'return' position are called after the requested model has returned.
 
-### Callback Process Chain 
+### Callback Process Chain
 
 Multiple callbacks can be assigned to a single hook (controller/action or model/method). Callbacks for the same hook and position are called in order of weight (which is specified when the callback is registered). The chain of callbacks for a given action or method is referred to as the callback process chain. This process chain includes the init callbacks, the requested action or method, and the return callbacks. Return values for any function in the chain can be accessed using the callback handler class (see next section).
 
-### Callback Return Value 
+### Callback Return Value
 
-Any method acting as a callback is expected to return a OBFCallbackReturn object. This object can provide some data to the next callback in the process chain, or force an early return requested method.
+Any method acting as a callback is expected to return a CallbackReturn object. This object can provide some data to the next callback in the process chain, or force an early return requested method.
 
-To return a OBFCallbackReturn object, consider the following:
+To return a CallbackReturn object, consider the following:
 
 
 ~~~~
+use OpenBroadcaster\Support\CallbackReturn;
+
 public function someControllerAction()
 {
   ...
-  return OBFCallbackReturn(); (option #1)
-  return OBFCallbackReturn($data); (option #2)
-  return OBFCallbackReturn($data,true); (option #3)
+  return CallbackReturn(); (option #1)
+  return CallbackReturn($data); (option #2)
+  return CallbackReturn($data,true); (option #3)
 }
 ~~~~
 
@@ -163,6 +167,6 @@ Option #2: Return with data. Provide some information to the next callback, but 
 
 Option #3: Force early return with data. $data will be returned immediately as the requested model/method or controller/action. $data will replace the requested model/method or controller/action return value.
 
-### Accessing Other Return Values 
+### Accessing Other Return Values
 
 Sometimes it is necessary to access other return values in the process chain. You can do this using the callback handler class ($this->callback_handler) available in any model or controller. $this->callback_handler->get_retvals($hook) will give you a list of return values for the specified hook. Hook must be specified since there may be multiple process chains running simultaneously (a single controller/action or multiple model/methods).

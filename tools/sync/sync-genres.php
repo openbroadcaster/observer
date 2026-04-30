@@ -8,8 +8,8 @@ header('Content-Type: application/json');
 require_once('../../components.php');
 require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
 $getID3 = new getID3();
-$db = OBFDB::get_instance();
-$models = OBFModels::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
+$models = \OpenBroadcaster\Support\Models::get_instance();
 $user_agent = 'OpenBroadcaster/'.trim(file_get_contents('VERSION'));
 
 if (php_sapi_name()!='cli') {

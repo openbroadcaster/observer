@@ -8,8 +8,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 require(__DIR__ . '/../../core/init.php');
 
-$load = \OBFLoad::get_instance();
-$db = \OBFDB::get_instance();
+$load = \OpenBroadcaster\Support\Load::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
 
 // make sure this module is installed
 $module_model = $load->model('Modules');

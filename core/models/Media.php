@@ -12,7 +12,7 @@
 namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
-use OBFHelpers;
+use OpenBroadcaster\Support\Helpers;
 
 class Media extends Model
 {
@@ -27,7 +27,7 @@ class Media extends Model
      */
     public function media_info($args = [])
     {
-        OBFHelpers::require_args($args, ['filename']);
+        Helpers::require_args($args, ['filename']);
 
         // this is the info we want -- if we can't get it, it will remain null.
         $return = [];
@@ -205,7 +205,7 @@ class Media extends Model
      */
     public function get_init_what($args = [])
     {
-        OBFHelpers::require_args($args, ['metadata_fields']);
+        Helpers::require_args($args, ['metadata_fields']);
 
         $this->db->what('media.id', 'id');
         $this->db->what('media.stream_version');
@@ -286,7 +286,7 @@ class Media extends Model
      */
     public function get_by_id($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
+        Helpers::require_args($args, ['id']);
 
         $this('get_init');
 
@@ -312,7 +312,7 @@ class Media extends Model
      */
     public function thumbnail_file($args = [])
     {
-        OBFHelpers::require_args($args, ['media']);
+        Helpers::require_args($args, ['media']);
 
         if (!is_array($args['media'])) {
             $this->db->where('id', $args['media']);
@@ -325,7 +325,7 @@ class Media extends Model
             $media = $args['media'];
         }
 
-        OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
+        Helpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
         if (strlen($media['file_location']) != 2) {
             trigger_error('Invalid media file location.', E_USER_WARNING);
             return false;
@@ -369,7 +369,7 @@ class Media extends Model
         $output_file = $output_dir . '/' . $media['id'] . '.webp';
 
         // resize our image to a webp thumbnail
-        OBFHelpers::image_resize($input_file, $output_file, 600, 600, $rotate);
+        Helpers::image_resize($input_file, $output_file, 600, 600, $rotate);
 
         // return our file if it exists now
         if (file_exists($output_file)) {
@@ -387,7 +387,7 @@ class Media extends Model
      */
     public function thumbnail_clear($args = [])
     {
-        OBFHelpers::require_args($args, ['media']);
+        Helpers::require_args($args, ['media']);
 
         if (!is_array($args['media'])) {
             $this->db->where('id', $args['media']);
@@ -400,7 +400,7 @@ class Media extends Model
             $media = $args['media'];
         }
 
-        OBFHelpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
+        Helpers::require_args($media, ['type', 'is_archived', 'is_approved', 'file_location']);
         if (strlen($media['file_location']) != 2) {
             trigger_error('Invalid media file location.', E_USER_WARNING);
             return false;
@@ -426,7 +426,7 @@ class Media extends Model
      */
     public function get_permissions($args = [])
     {
-        OBFHelpers::require_args($args, ['media_id']);
+        Helpers::require_args($args, ['media_id']);
 
         $return = [];
         $return['groups'] = [];
@@ -456,7 +456,7 @@ class Media extends Model
      */
     public function search_get_default_filters($args = [])
     {
-        OBFHelpers::require_args($args, ['user_id']);
+        Helpers::require_args($args, ['user_id']);
 
         $this->db->where('user_id', $args['user_id']);
         $this->db->where('default', 1);
@@ -480,7 +480,7 @@ class Media extends Model
      */
     public function search_default($args = [])
     {
-        OBFHelpers::require_args($args, ['id', 'user_id']);
+        Helpers::require_args($args, ['id', 'user_id']);
 
         $this->db->where('user_id', $args['user_id']);
         $this->db->update('media_searches', ['default' => 0]);
@@ -503,7 +503,7 @@ class Media extends Model
      */
     public function search_unset_default($args = [])
     {
-        OBFHelpers::require_args($args, ['user_id']);
+        Helpers::require_args($args, ['user_id']);
 
         $this->db->where('user_id', $args['user_id']);
         $this->db->update('media_searches', ['default' => 0]);
@@ -518,7 +518,7 @@ class Media extends Model
      */
     public function search_save($args = [])
     {
-        OBFHelpers::require_args($args, ['query']);
+        Helpers::require_args($args, ['query']);
 
         if (!$this->user->param('id')) {
             return false;
@@ -564,7 +564,7 @@ class Media extends Model
      */
     public function search_get_saved($args = [])
     {
-        OBFHelpers::default_args($args, ['type' => 'history']);
+        Helpers::default_args($args, ['type' => 'history']);
 
         $this->db->what('id');
         $this->db->what('query');
@@ -593,8 +593,8 @@ class Media extends Model
     */
     public function search_save_history($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
-        OBFHelpers::default_args($args, ['user_id' => false]);
+        Helpers::require_args($args, ['id']);
+        Helpers::default_args($args, ['user_id' => false]);
 
         if (!$args['id']) {
             return false;
@@ -616,8 +616,8 @@ class Media extends Model
      */
     public function search_delete_saved($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
-        OBFHelpers::default_args($args, ['user_id' => false]);
+        Helpers::require_args($args, ['id']);
+        Helpers::default_args($args, ['user_id' => false]);
 
         if (!$args['id']) {
             return false;
@@ -641,8 +641,8 @@ class Media extends Model
      */
     public function search_edit($args = [])
     {
-        OBFHelpers::require_args($args, ['id', 'filters', 'description']);
-        OBFHelpers::default_args($args, ['user_id' => false]);
+        Helpers::require_args($args, ['id', 'filters', 'description']);
+        Helpers::default_args($args, ['user_id' => false]);
 
         if (!$this->search_filters_validate(['filters' => $args['filters']])) {
             return false;
@@ -670,8 +670,8 @@ class Media extends Model
      */
     public function search_share($args = [])
     {
-        OBFHelpers::require_args($args, ['id', 'user_id']);
-        OBFHelpers::default_args($args, ['user_ids' => [], 'group_ids' => []]);
+        Helpers::require_args($args, ['id', 'user_id']);
+        Helpers::default_args($args, ['user_ids' => [], 'group_ids' => []]);
 
         // verify this search belongs to the user and is saved
         $this->db->where('id', $args['id']);
@@ -728,7 +728,7 @@ class Media extends Model
      */
     public function search_unshare($args = [])
     {
-        OBFHelpers::require_args($args, ['id', 'user_id']);
+        Helpers::require_args($args, ['id', 'user_id']);
 
         // verify this search belongs to the user
         $this->db->where('id', $args['id']);
@@ -790,7 +790,7 @@ class Media extends Model
      */
     public function search_get_shared_recipients($args = [])
     {
-        OBFHelpers::require_args($args, ['id', 'user_id']);
+        Helpers::require_args($args, ['id', 'user_id']);
 
         // verify ownership
         $this->db->where('id', $args['id']);
@@ -882,9 +882,9 @@ class Media extends Model
      */
     public function search($args = [])
     {
-        OBFHelpers::require_args($args, ['params']);
-        OBFHelpers::default_args($args['params'], ['sort_by' => null]);
-        OBFHelpers::default_args($args, ['player_id' => false, 'random_order' => false, 'include_private' => false]);
+        Helpers::require_args($args, ['params']);
+        Helpers::default_args($args['params'], ['sort_by' => null]);
+        Helpers::default_args($args, ['player_id' => false, 'random_order' => false, 'include_private' => false]);
 
         // get metadata objects needed for postprocessing (done before other db stuff to prevent conflict)
         // TODO FIX models should be able to act without affecting other models (have own db class instance with shared connection)
@@ -1112,7 +1112,7 @@ class Media extends Model
      */
     public function search_filters_validate($args = [])
     {
-        OBFHelpers::require_args($args, ['filters']);
+        Helpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
         $allowed_filters = ['id','comments','artist','title','album','year','type','format','category','country','language','genre','duration','created','updated','is_copyright_owner','status','dynamic_select','owner','group','play_count'];
@@ -1172,7 +1172,7 @@ class Media extends Model
      */
     public function search_filters_where_array($args = [])
     {
-        OBFHelpers::require_args($args, ['filters']);
+        Helpers::require_args($args, ['filters']);
         $filters = $args['filters'];
 
         $where_array = [];
@@ -1367,8 +1367,8 @@ class Media extends Model
      */
     public function where_used($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
-        OBFHelpers::default_args($args, ['include_dynamic' => false]);
+        Helpers::require_args($args, ['id']);
+        Helpers::default_args($args, ['include_dynamic' => false]);
         $id = $args['id'];
         $include_dynamic = $args['include_dynamic'];
 
@@ -1526,8 +1526,8 @@ class Media extends Model
      */
     public function validate($args = [])
     {
-        OBFHelpers::require_args($args, ['item']);
-        OBFHelpers::default_args($args, ['skip_upload_check' => false]);
+        Helpers::require_args($args, ['item']);
+        Helpers::default_args($args, ['skip_upload_check' => false]);
         $item = $args['item'];
         $skip_upload_check = $args['skip_upload_check'];
 
@@ -1677,7 +1677,7 @@ class Media extends Model
      */
     public function properties($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
+        Helpers::require_args($args, ['id']);
         $media_id = $args['id'];
         $properties = $args['properties'] ?? null;
 
@@ -1718,7 +1718,7 @@ class Media extends Model
     {
         mysqli_report(MYSQLI_REPORT_ERROR);
 
-        OBFHelpers::require_args($args, ['item']);
+        Helpers::require_args($args, ['item']);
         $item = $args['item'];
 
         // grab some important values
@@ -2023,7 +2023,7 @@ class Media extends Model
      */
     public function versions($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2058,7 +2058,7 @@ class Media extends Model
      */
     public function version_add_original($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2116,7 +2116,7 @@ class Media extends Model
      */
     public function version_add($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2201,7 +2201,7 @@ class Media extends Model
      */
     public function version_edit($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2223,7 +2223,7 @@ class Media extends Model
      */
     public function version_delete($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2273,7 +2273,7 @@ class Media extends Model
      */
     public function version_set($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2354,7 +2354,7 @@ class Media extends Model
      */
     public function versions_delete_all($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         $media_id = $data['media_id'] ?? null;
@@ -2388,7 +2388,7 @@ class Media extends Model
      */
     public function archive($args = [])
     {
-        OBFHelpers::require_args($args, ['ids']);
+        Helpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
         $original_media = [];
@@ -2439,7 +2439,7 @@ class Media extends Model
      */
     public function unarchive($args = [])
     {
-        OBFHelpers::require_args($args, ['ids']);
+        Helpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
         $original_media = [];
@@ -2485,7 +2485,7 @@ class Media extends Model
      */
     public function delete($args = [])
     {
-        OBFHelpers::require_args($args, ['ids']);
+        Helpers::require_args($args, ['ids']);
         $ids = $args['ids'];
 
         $original_media = [];
@@ -2541,7 +2541,7 @@ class Media extends Model
      */
     public function delete_cached($args = [])
     {
-        OBFHelpers::require_args($args, ['media']);
+        Helpers::require_args($args, ['media']);
         $media = $args['media'];
 
         // make sure cache dir exists (otherwise nothing to delete anyway)
@@ -2568,7 +2568,7 @@ class Media extends Model
      */
     public function formats_validate($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         foreach ($data as $name => $value) {
@@ -2620,7 +2620,7 @@ class Media extends Model
      */
     public function formats_save($args = [])
     {
-        OBFHelpers::require_args($args, ['data']);
+        Helpers::require_args($args, ['data']);
         $data = $args['data'];
 
         foreach ($data as $name => $value) {
@@ -2702,7 +2702,7 @@ class Media extends Model
      */
     public function remove_where_used($args = [])
     {
-        OBFHelpers::require_args($args, ['id']);
+        Helpers::require_args($args, ['id']);
         $id = $args['id'];
 
         // remove from player ids
@@ -2743,7 +2743,7 @@ class Media extends Model
      */
     public function format_allowed($args = [])
     {
-        // OBFHelpers::default($args, ['type' => '', 'format' => '']);
+        // Helpers::default($args, ['type' => '', 'format' => '']);
         $type = $args['type'];
         $format = $args['format'];
 
@@ -2819,7 +2819,7 @@ class Media extends Model
      */
     public function getid3($args = [])
     {
-        OBFHelpers::require_args($args, ['filename']);
+        Helpers::require_args($args, ['filename']);
         $filename = $args['filename'];
 
         require_once(OB_LOCAL . '/vendor/james-heinrich/getid3/getid3/getid3.php');

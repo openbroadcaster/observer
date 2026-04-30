@@ -5,7 +5,7 @@
 
 $DEBUG = true;
 
-require_once('../../components.php');
+require_once(__DIR__ . '/../../core/init.php');
 
 if (php_sapi_name()!='cli') {
     die('Command line tool only.');
@@ -28,8 +28,8 @@ if (!is_writable(OB_UPLOADS)) {
     exit("Uploads directory isn't writable.");
 }
 
-$db = OBFDB::get_instance();
-$models = OBFModels::get_instance();
+$db = \OpenBroadcaster\Support\DB::get_instance();
+$models = \OpenBroadcaster\Support\Models::get_instance();
 
 function subsonic_request($path, $args=[], $decode=true)
 {
