@@ -111,6 +111,11 @@ class Players extends Model
                 $media = $this->db->get_one('media');
 
                 if ($media) {
+                    $metadata_fields = $this->models->mediametadata('get_all_objects');
+                    foreach ($metadata_fields as $metadata_field) {
+                        $metadata_field->processRow($media);
+                    }
+
                     $result[$index]['media_ids'][] = $media;
                 }
             }
