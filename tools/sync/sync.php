@@ -10,8 +10,8 @@ if (php_sapi_name()!='cli') {
 }
 
 header('Content-Type: application/json');
-require_once('../../components.php');
-require_once('vendor/james-heinrich/getid3/getid3/getid3.php');
+require_once(__DIR__ . '/../../core/init.php');
+require_once(__DIR__ . '/../../vendor/james-heinrich/getid3/getid3/getid3.php');
 $getID3 = new getID3();
 $db = \OpenBroadcaster\Support\DB::get_instance();
 $models = \OpenBroadcaster\Support\Models::get_instance();

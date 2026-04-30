@@ -9,7 +9,7 @@ if (php_sapi_name() === 'cli') {
     die('This tool must not be run via the command line.' . PHP_EOL);
 }
 
-// required to bypass components.php verify install
+// required to bypass core/init.php verify install
 define('OB_CLI', true);
 
 require_once(__DIR__ . '/../../core/init.php');
