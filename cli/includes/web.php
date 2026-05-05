@@ -13,11 +13,10 @@ if (php_sapi_name() === 'cli') {
 define('OB_CLI', true);
 
 require_once(__DIR__ . '/../../core/init.php');
-require_once(__DIR__ . '/../../public/updates/checker.php');
 
 $system_user = exec('whoami');
 
-$checker = new \OBFChecker();
+$checker = new \OpenBroadcaster\Support\Checker();
 
 $output = [];
 $output['system_user'] = exec('whoami');

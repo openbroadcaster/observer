@@ -10,9 +10,7 @@ class CheckInstall extends CLI
 
     public function run(array $args): bool
     {
-        require_once(__DIR__ . '/../../public/updates/checker.php');
-
-        $checker = new \OBFChecker();
+        $checker = new \OpenBroadcaster\Support\Checker();
         $methods = get_class_methods($checker);
         $methods = array_filter($methods, fn($x) => $x !== '__construct');
         $rows = [];

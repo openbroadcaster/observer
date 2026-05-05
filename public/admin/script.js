@@ -12,7 +12,7 @@ async function run(data)
     });
 
     const output = document.querySelector("#cli-output");
-    
+
     response.json().then((data) => {
         if (! response.ok) {
             output.innerHTML += '<p class="error">' + data.message + '</p>';
@@ -27,7 +27,7 @@ async function run(data)
 async function cliCheck()
 {
     const data = {
-        command: "check"
+        command: "check install"
     };
 
     run(data);

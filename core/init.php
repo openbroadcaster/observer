@@ -151,8 +151,7 @@ require_once(OB_LOCAL . '/vendor/autoload.php');
 $init_verify_running = false;
 if (!$init_verify_running && OB_INIT_VERIFY && is_array(OB_INIT_VERIFY) && !defined('OB_CLI')) {
     $init_verify_running = true;
-    require_once(OB_LOCAL . '/public/updates/checker.php');
-    $checker = new \OBFChecker();
+    $checker = new \OpenBroadcaster\Support\Checker();
     $methods = get_class_methods($checker);
 
     foreach (OB_INIT_VERIFY as $check) {

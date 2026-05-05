@@ -12,7 +12,7 @@ use SensioLabs\AnsiConverter\Theme\SolarizedTheme;
 $theme = new SolarizedTheme();
 $converter = new AnsiToHtmlConverter($theme, false);
 
-header('Content-type: application-json');
+header('Content-type: application/json');
 
 $json = json_decode(file_get_contents('php://input'));
 
@@ -32,17 +32,19 @@ if (! $json || ! isset($json->command)) {
     exit();
 }
 
-$validCommands = ['check', 'cron run', 'updates list all', 'updates run all'];
+$validCommands = ['check install', 'cron run', 'updates list all', 'updates run all'];
 if (in_array($json->command, $validCommands)) {
     $output = [];
     $resultCode = 0;
-    exec(__DIR__ . "/../../tools/cli/ob {$json->command}", $output);
+    $commandStr = __DIR__ . "/../../cli/ob {$json->command}";
+
+    exec($commandStr, $output, $resultCode);
 
     $output = $converter->convert(implode(PHP_EOL, $output));
     if ($output === "" && $resultCode === 0) {
         $output = $converter->convert('No output. Command ran successfully.');
     } elseif ($output === "") {
-        $output = $converter->convert('An error occurred running the command but no output was provided.');
+        $output = $converter->convert('An error occurred (' . $resultCode . ') running the command but no output was provided.');
     }
 
     echo json_encode([
