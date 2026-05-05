@@ -30,7 +30,6 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== OB_UPDATE
         </form>
         <div id="cli-options">
             <button onclick="cliCheck()">Check installation for errors</button>
-            <button onclick="cliCronRun()">Run scheduled tasks</button>
             <button onclick="cliUpdatesList()">List available updates</button>
             <button onclick="cliUpdatesRun()">Run available updates</button>
         </div>

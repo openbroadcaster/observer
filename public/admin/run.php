@@ -32,7 +32,7 @@ if (! $json || ! isset($json->command)) {
     exit();
 }
 
-$validCommands = ['check install', 'cron run', 'updates list all', 'updates run all'];
+$validCommands = ['check install', 'updates list all', 'updates run all'];
 if (in_array($json->command, $validCommands)) {
     $output = [];
     $resultCode = 0;

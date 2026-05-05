@@ -33,15 +33,6 @@ async function cliCheck()
     run(data);
 }
 
-async function cliCronRun()
-{
-    const data = {
-        command: "cron run"
-    };
-
-    run(data);
-}
-
 async function cliUpdatesList()
 {
     const data = {
