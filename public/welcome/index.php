@@ -1,7 +1,6 @@
 <?php
 
 require(__DIR__ . '/../../core/init.php');
-$models = \OpenBroadcaster\Support\Models::get_instance();
 $db = \OpenBroadcaster\Support\DB::get_instance();
 $db->where('name', 'client_login_message');
 $result = $db->get_one('settings');
@@ -14,7 +13,8 @@ if (!empty($version_array[1])) {
     $version_string = $version_string . ' (' . $version_array[1] . ')';
 }
 
-$update_required = $models->updates('update_required');
+$updatesModel = new \OpenBroadcaster\Models\Updates();
+$update_required = $updatesModel->update_required();
 
 ?><!DOCTYPE html>
 <html lang="en">

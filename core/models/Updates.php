@@ -17,11 +17,11 @@ class Updates extends Model
     // get an array of update classes.
     public function update_required()
     {
-        $update_files = scandir(OB_LOCAL . '/public/updates', SCANDIR_SORT_DESCENDING);
+        $update_files = scandir(OB_LOCAL . '/core/updates', SCANDIR_SORT_DESCENDING);
         $latest_version = null;
         foreach ($update_files as $update_file) {
-            if (preg_match('/^[0-9]{8}\.php$/', $update_file)) {
-                $latest_version = (int) substr($update_file, 0, 8);
+            if (preg_match('/^Update[0-9]{8}\.php$/', $update_file)) {
+                $latest_version = (int) substr($update_file, 6, 8);
                 break;
             }
         }
