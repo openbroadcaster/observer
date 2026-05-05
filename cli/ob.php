@@ -84,7 +84,7 @@ class OBCLI
 
         if ($cliInstance !== null) {
             $success = $cliInstance->run(array_values(array_slice($this->argv, $commandLength)));
-            exit($success);
+            exit(! $success);
         } else {
             $this->help();
         }
