@@ -5,13 +5,16 @@
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-require_once(__DIR__ . '/updates.php');
+require_once(__DIR__ . '/../../core/support/Checker.php');
+require_once(__DIR__ . '/../../core/support/Updates.php');
 
 if (empty($_GET['run']) || $_GET['run'] != 1) {
     $run = false;
 } else {
     $run = true;
 }
+
+$u = new \OpenBroadcaster\Support\Updates();
 
 ?>
 <html>

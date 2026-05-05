@@ -1,11 +1,18 @@
 <?php
 
-// Copyright 2012-2025 OpenBroadcaster, Inc.
+// Copyright 2012-2026 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
+/**
+ * Class to check for problems with the installation.
+ *
+ * @package Support
+ */
+namespace OpenBroadcaster\Support;
 
 // verify the OB installation. each method will be run, and should return array(NAME, DESCRIPTION (string or array), STATUS=success (0) / warning (1) / error (2) ).
 // if error is returned, subsequent methods will not be run.
-class OBFChecker
+class Checker
 {
     public function __construct($module = null)
     {
@@ -189,7 +196,7 @@ class OBFChecker
             //     }
             // }
 
-            if (!PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) {
+            if (! \PHPMailer\PHPMailer\PHPMailer::ValidateAddress(OB_EMAIL_REPLY)) {
                 $errors[] = 'OB_EMAIL_REPLY (email address used to send emails) is not valid.';
             }
             if (trim(OB_EMAIL_FROM) == '') {

@@ -1,18 +1,23 @@
 <?php
 
-// Copyright 2012-2024 OpenBroadcaster, Inc.
+// Copyright 2012-2026 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-require(__DIR__ . '/checker.php');
+/**
+ * Database updates class.
+ *
+ * @package Support
+ */
+namespace OpenBroadcaster\Support;
 
-class OBFUpdates
+class Updates
 {
     public function __construct($module = null)
     {
         $this->module = $module;
 
-        $checker = new OBFChecker($module);
-        $checker_methods = get_class_methods('OBFChecker');
+        $checker = new \OpenBroadcaster\Support\Checker($module);
+        $checker_methods = get_class_methods('\\OpenBroadcaster\\Support\\Checker');
         $checker_methods = array_filter($checker_methods, fn($x) => $x !== '__construct');
         $this->checker_results = [];
 
@@ -117,5 +122,3 @@ class OBFUpdates
         return $result;
     }
 }
-
-$u = new OBFUpdates();

@@ -47,10 +47,9 @@ class UpdatesRun extends CLI
 
     function runUpdates($type = 'core', $module = null)
     {
-        require_once(__DIR__ . '/../../public/updates/updates.php');
-
         if ($type === 'core') {
             // Run all core updates.
+            $u = new \OpenBroadcaster\Support\Updates();
             $list = $u->updates();
         } elseif ($module !== null) {
             $this->db->where('directory', $module);
@@ -61,7 +60,7 @@ class UpdatesRun extends CLI
             }
 
             // Run specified module updates.
-            $u = new \OBFUpdates($module);
+            $u = new \OpenBroadcaster\Support\Updates($module);
             $list = $u->updates();
         } else {
             // Run all module updates.

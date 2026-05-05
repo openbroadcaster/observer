@@ -46,14 +46,12 @@ class UpdatesList extends CLI
 
     private function listUpdates($type = 'core', $module = null)
     {
-        require_once(__DIR__ . '/../../public/updates/updates.php');
-
         if ($type === 'core') {
             // List all core updates.
-            $list = $u->updates();
+            $list = (new \OpenBroadcaster\Support\Updates())->updates();
         } elseif ($module !== null) {
             // List specified module updates.
-            $list = (new \OBFUpdates($module))->updates();
+            $list = (new \OpenBroadcaster\Support\Updates($module))->updates();
         } else {
             // List all module updates.
             $modules = array_filter(scandir(__DIR__ . '/../../modules/'), fn($f) => $f[0] !== '.');
