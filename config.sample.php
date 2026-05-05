@@ -84,7 +84,7 @@ define('OB_EMAIL_FROM', 'OpenBroadcaster'); // emails to users come from this na
 // OB_ACOUSTID_KEY = '';
 
 // what checks should be done on every request to ensure proper operation?
-// see updates/checker.php method names for available checks
+// see core/support/Checker.php method names for available checks
 // default false
 // define('OB_INIT_VERIFY', ['database_version', 'config_file_valid']);
 
