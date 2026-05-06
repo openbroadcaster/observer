@@ -6,9 +6,9 @@ config.php
 !/assets/.keep
 !/assets/uploads/.keep
 modules/*
-!modules/now_playing
-!modules/logger
-!modules/tutorial
+!modules/NowPlaying
+!modules/Logger
+!modules/Tutorial
 .*.swp
 .*.swo
 .well-known
