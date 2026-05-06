@@ -66,15 +66,15 @@ class OBCLI
         // Find the most specific CLI class based on the commands provided.
         $commands = array_slice($this->argv, 1);
         $cliInstance = null;
+        $cliMap = $this->getCliMap();
         $commandLength = count($this->argv);
         do {
-            $className = implode('', array_map(fn ($x) => ucwords($x), $commands));
+            $command = implode(' ', $commands);
 
-            if (file_exists(OB_LOCAL . '/core/cli/' . $className . '.php')) {
-                require_once(OB_LOCAL . '/core/cli/' . $className . '.php');
+            if (isset($cliMap[$command])) {
+                require_once($cliMap[$command]['file']);
 
-                $fullClassName = 'OpenBroadcaster\\CLI\\' . $className;
-                $cliInstance = new $fullClassName();
+                $cliInstance = new ($cliMap[$command]['class'])();
 
                 break;
             }
@@ -98,15 +98,12 @@ Commands:
 ';
 
         $rows = [];
-        $cliList = array_filter(scandir(OB_LOCAL . '/core/cli/'), fn($f) => $f[0] !== '.');
-        foreach($cliList as $cliPath) {
-            $cliFileName = pathinfo($cliPath, PATHINFO_FILENAME);
-            $cliCommand = strtolower(preg_replace('/(?<!^)[A-Z]/', ' $0', $cliFileName));
-            $cliClassName = "OpenBroadcaster\\CLI\\" . $cliFileName;
 
-            require_once(OB_LOCAL . '/core/cli/' . $cliPath);
+        $cliMap = $this->getCliMap();
+        foreach ($cliMap as $cliCommand => $cliItem) {
+            require_once($cliItem['file']);
 
-            $cliClass = new $cliClassName();
+            $cliClass = new ($cliItem['class'])();
             $help = $cliClass->help();
 
             if (is_array($help)) {
@@ -122,6 +119,44 @@ Commands:
         }
 
         echo Helpers::table(spacing: 5, rows: $rows);
+    }
+
+    private function getCliMap(): array
+    {
+        $cliMap = [];
+        $coreDir = OB_LOCAL . '/core';
+        $subDirs = [$coreDir, ...glob(OB_LOCAL . '/modules/*')];
+
+        foreach ($subDirs as $subDir) {
+            $dir = $subDir . '/cli/';
+            if (! file_exists($dir) || ! is_dir($dir)) {
+                continue;
+            }
+
+            $files = array_filter(scandir($dir), fn($f) => $f[0] !== '.');
+
+            foreach ($files as $file) {
+                $cliFileName = pathinfo($file, PATHINFO_FILENAME);
+                $cliCommand = strtolower(preg_replace('/(?<!^)[A-Z]/', ' $0', $cliFileName));
+                $cliClassName = "OpenBroadcaster\\CLI\\" . $cliFileName;
+
+                if (isset($cliMap[$cliCommand])) {
+                    echo "Duplicate CLI command found: '{$cliCommand}'. Perhaps one or more models define conflicting commands? Quitting." . PHP_EOL;
+
+                    exit(2);
+                }
+
+                if ($subDir === $coreDir) {
+                }
+                $cliMap[$cliCommand] = [
+                    'type' => ($subDir === $coreDir) ? 'core' : 'module',
+                    'file' => $dir . $file,
+                    'class' => $cliClassName,
+                ];
+            }
+        }
+
+        return $cliMap;
     }
 }
 
