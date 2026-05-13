@@ -4,6 +4,12 @@
 // media details page
 OB.MediaDetails = {};
 OB.MediaDetails.currentId = null;
+OB.MediaDetails.canViewPlayerMonitor = function () {
+    return OB.Settings.permissions.some(function (permission) {
+        return permission == "view_player_monitor" || permission.indexOf("view_player_monitor:") == 0;
+    });
+};
+
 OB.MediaDetails.page = function (id) {
     OB.MediaDetails.currentId = id;
     OB.API.post("media", "get", { id: id, where_used: true }, function (response) {
@@ -42,6 +48,13 @@ OB.MediaDetails.page = function (id) {
                 OB.Media.download(id);
             });
             document.querySelector("#media_details_download").classList.remove("hidden");
+        }
+
+        if (OB.MediaDetails.canViewPlayerMonitor()) {
+            $("#media_details_monitor").click(function () {
+                OB.Player.monitor(id);
+            });
+            document.querySelector("#media_details_monitor").classList.remove("hidden");
         }
 
         // we can edit if we have manage_media (manage all media), or we're the owner and can create our own media

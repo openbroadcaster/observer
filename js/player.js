@@ -297,11 +297,16 @@ OB.Player.deletePlayerConfirm = function (player_id) {
    PLAYER MONITORING SECTION
 ========================= */
 
-OB.Player.monitor = function () {
+OB.Player.monitor = function (media_id = null) {
     OB.UI.replaceMain("player/monitor.html");
+    OB.Player.monitor_filter_id = 0;
 
     $("#monitor_date_start").attr("data-value", moment().subtract(1, "days"));
     $("#monitor_date_end").attr("data-value", moment());
+
+    if (media_id) {
+        OB.Player.monitorFilterAdd("media_id", "is", media_id);
+    }
 
     OB.API.post("players", "search", {}, function (data) {
         var players = data.data;
@@ -333,21 +338,30 @@ OB.Player.monitorFilterFieldChange = function () {
 
 OB.Player.monitor_filter_id = 0;
 
-OB.Player.monitorFilterAdd = function () {
+OB.Player.monitorFilterAdd = function (filter_column = null, filter_operator = null, filter_value = null) {
     OB.Player.monitor_filter_id++;
 
-    var filter_column = $("#monitor_filter_field").val();
-    var filter_operator = $("#monitor_filter_operator").val();
-    var filter_value = $.trim($("#monitor_filter_value").val());
+    if (filter_column == null) filter_column = $("#monitor_filter_field").val();
+    if (filter_operator == null) filter_operator = $("#monitor_filter_operator").val();
+    if (filter_value == null) filter_value = $("#monitor_filter_value").val();
+
+    filter_value = $.trim(String(filter_value));
 
     if (filter_value == "") return;
 
+    var filter_field_name = $("#monitor_filter_field option")
+        .filter(function () {
+            return this.value == filter_column;
+        })
+        .text();
+    var filter_operator_name = $("#monitor_filter_operator option")
+        .filter(function () {
+            return this.value == filter_operator;
+        })
+        .text();
+
     var filter_friendly_string =
-        $("#monitor_filter_field option:selected").text() +
-        " " +
-        $("#monitor_filter_operator option:selected").text() +
-        " " +
-        $("#monitor_filter_value").val();
+        (filter_field_name || filter_column) + " " + (filter_operator_name || filter_operator) + " " + filter_value;
 
     var $html = $(
         '<div><a href="javascript: OB.Player.monitorFilterDel(' +
