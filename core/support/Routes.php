@@ -118,6 +118,139 @@ class Routes
         return true;
     }
 
+    public function genDocs(string $targetDir): bool
+    {
+        foreach ($this->sourceDirs as $dir) {
+            if (! is_readable($dir)) {
+                echo "[E] Source directory isn't readable: " . $dir . "\n";
+                return false;
+            }
+        }
+
+        /* Iterate over source directories and their files (don't do so recursively,
+        the OpenBroadcaster framework doesn't support this for the core files anyway,
+        so each directory with source code has to be added to the source directories
+        array). Make sure all files are parsed before outputting any HTML, as we need
+        to know about all the files to be able to output the navigation sidebar. */
+        echo "Parsing PHP files and generating documentation structure.\n";
+        $pages = [];
+        $doc_files = [];
+        foreach ($this->sourceDirs as $dir) {
+            foreach (new \FilesystemIterator($dir) as $file) {
+                if ($file->isDir()) {
+                    continue;
+                }
+
+                if (! $file->isReadable()) {
+                    echo "[W] File '" . $file->getFilename() . "' isn't readable. Ignoring.\n";
+                    continue;
+                }
+
+                /* Check if it's a HTML file, and if so, save it as one of the general
+                documentation files to be inserted later. */
+                if ($file->getExtension() == 'html') {
+                    $pages[$file->getFilename()] = file_get_contents($file->getPathname());
+
+                    continue;
+                }
+
+                /* Otherwise, we're assuming it's a PHP file with DocGen strings, and we use
+                our custom parsing functions. */
+                $content = $this->parse_clean(file_get_contents($file->getPathname()));
+                $blocks = $this->parse_blocks($content);
+
+                $doc_files[] = $this->generate_tree($blocks, $file->getFilename(), basename($dir));
+            }
+        }
+
+        /* Generate routes as part of the documentation. */
+        $routes = [];
+        foreach ($doc_files as $file) {
+            foreach ($file->getClass()->getMethods() as $method) {
+                if (count($method->routes) > 0) {
+                    foreach ($method->routes as $route) {
+                        $routes[$route[0]][] = [$route[1], strtolower($file->getClass()->name), $method->name];
+                    }
+                }
+            }
+        }
+
+        if ($this->routes_contain_duplicates($routes)) {
+            echo "[E] Duplicate routes found. Quitting.\n";
+            return false;
+        }
+
+        echo "Generating navigation tree for HTML output.\n";
+        $nav_tree = [];
+        foreach ($pages as $index => $page) {
+            $nav_tree['pages'][] = explode(".", $index)[0];
+        }
+        foreach ($doc_files as $doc_file) {
+            $nav_tree[$doc_file->getClass()->package][] =
+                ($doc_file->getClass()->name != null) ? $doc_file->getClass()->name : $doc_file->name;
+        }
+        foreach ($nav_tree as &$tree) {
+            sort($tree);
+        }
+
+        echo "Outputting documentation as HTML.\n";
+        foreach ($pages as $index => $page) {
+            $doc_file_path = $targetDir . "/pages." . $index;
+            file_put_contents($doc_file_path, $this->html_page($page, $nav_tree));
+        }
+        foreach ($doc_files as $doc_file) {
+            $doc_file_path = $targetDir . "/" . $doc_file->getClass()->package . "."
+            . (($doc_file->getClass()->name != null) ? $doc_file->getClass()->name : $doc_file->name)
+            . ".html";
+            file_put_contents($doc_file_path, $this->html_file($doc_file, $nav_tree));
+        }
+
+        echo "Outputting route graph HTML.\n";
+        file_put_contents($targetDir . "/routes.html", $this->html_routes($this->trim_toplevel_routes($this->routes_by_endpoint($routes)), $nav_tree));
+        file_put_contents($targetDir . "/index.html", $this->html_index($nav_tree));
+        echo "Successfully generated documentation HTML.\n\n";
+
+        /* Copy style files and other general data needed for the documentation
+        to function. */
+        echo "Copying style and script files over to target directory.\n";
+        mkdir($targetDir . "/style");
+        foreach (new \FilesystemIterator(OB_LOCAL . '/core/data/routes/style/') as $style) {
+            if ($style->isDir()) {
+                continue;
+            }
+
+            if (! $style->isReadable()) {
+                echo "[W] Stylesheet '" . $style->getFilename() . "' isn't readable. Ignoring.\n";
+                continue;
+            }
+
+            copy($style->getPathname(), $targetDir . "/style/" . $style->getFilename());
+        }
+
+        mkdir($targetDir . "/js");
+        foreach (new \FilesystemIterator(OB_LOCAL . '/core/data/routes/js/') as $script) {
+            if ($script->isDir()) {
+                continue;
+            }
+
+            if (! $script->isReadable()) {
+                echo "[W] Javascript file '" . $script->getFilename() . "' isn't readable. Ignoring.\n";
+                continue;
+            }
+
+            copy($script->getPathname(), $targetDir . "/js/" . $script->getFilename());
+        }
+        echo "Successfully copied style and script files.\n\n";
+
+        echo "Successfully generated documentation. Statistics:\n";
+        echo "Packages:\t" . count($nav_tree) . "\n";
+        echo "Classes:\t" . count($doc_files) . "\n";
+        echo "CSS Files:\t" . (count(scandir($targetDir . "/style/")) - 2) . "\n";
+        echo "JS Files:\t" . (count(scandir($targetDir . "/js/")) - 2) . "\n\n";
+
+        return true;
+    }
+
     /* Parsing functions. The first thing we need to do is clean the content we
     get from PHP files a bit. This includes removing empty lines (just in case there's
     gaps between DocBlocks and start of class/method definitions), trimming all the
