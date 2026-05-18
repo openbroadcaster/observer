@@ -29,7 +29,8 @@ class OBFAPI
 
         if (str_starts_with($_SERVER['REQUEST_URI'], '/api/v2/')) {
             // we have routes for this request method? find the regex pattern to match with, and variables to extract.
-            $routes = json_decode(file_get_contents(OB_LOCAL . '/routes.json'));
+            $routes = json_decode(file_get_contents(OB_CACHE . '/routes.json'));
+
             if ($routes && is_object($routes) && property_exists($routes, $_SERVER['REQUEST_METHOD'])) {
                 $this->routes = $routes->{$_SERVER['REQUEST_METHOD']};
                 foreach ($this->routes as &$route) {

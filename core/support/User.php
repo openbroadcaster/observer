@@ -283,7 +283,7 @@ class User
                 }
             } else {
                 // Permissions check for new v2 API.
-                $routes = json_decode(file_get_contents(OB_LOCAL . '/routes.json'), true);
+                $routes = json_decode(file_get_contents(OB_CACHE . '/routes.json'), true);
                 $permissions = json_decode($result['permissions_v2'], true);
 
                 foreach ($requests as $request) {
