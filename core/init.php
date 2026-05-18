@@ -87,6 +87,7 @@ spl_autoload_register(function ($className) {
     $namespaceMap = [
         'OpenBroadcaster\\Support\\' => OB_LOCAL . '/core/support/',
         'OpenBroadcaster\\Base\\' => OB_LOCAL . '/core/base/',
+        'OpenBroadcaster\\Routes\\' => OB_LOCAL . '/core/routes/',
         'OpenBroadcaster\\Models\\' => OB_LOCAL . '/core/models/',
         'OpenBroadcaster\\Controllers\\' => OB_LOCAL . '/core/controllers/',
         'OpenBroadcaster\\Metadata\\' => OB_LOCAL . '/core/metadata/',
@@ -146,6 +147,13 @@ spl_autoload_register(function ($className) {
 require_once(OB_LOCAL . '/vendor/autoload.php');
 //require('extras/PHPMailer/src/Exception.php');
 //require('extras/PHPMailer/src/PHPMailer.php');
+
+// Generate controller routes if necessary.
+$routes = new \OpenBroadcaster\Support\Routes();
+if (! $routes->genRoutes()) {
+    http_response_code(500);
+    die('OpenBroadcaster failed to generate controller routes, temporarily unavailable.');
+}
 
 // verify proper functioning if requested in config
 $init_verify_running = false;
