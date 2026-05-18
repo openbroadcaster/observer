@@ -28,8 +28,10 @@ function parse_blocks(array $content): array
 {
     $blocks = array();
 
+    // Find the start of each DocBlock.
     $doc_start = array_keys($content, "/**");
     foreach ($doc_start as $start) {
+        // Find the end of the current DocBlock as a key in the content array.
         $end = array_values(array_filter(array_keys($content, "*/"), function ($value) use ($start) {
             return ($value > $start);
         }));
@@ -42,14 +44,41 @@ function parse_blocks(array $content): array
             exit("[E] Parsing error: Method or class declaration could not be found under DocBlock.");
         }
 
+        // Grab the doc between start and end of the block.
         $doc = array_slice($content, $start + 1, $end[0] - $start - 1);
         foreach ($doc as $i => $line) {
             $doc[$i] = ltrim(ltrim($line, '*'));
         }
 
+        // The declaration of DocBlock type might not be the first line after the end. Filter out lines that
+        // may contain some extraneous nonsense like `namespace` or `use`. Make sure not to keep going if none
+        // of the values to skip over are found.
+        $contentBetween = array_filter($content, fn ($key) => $key > $end[0], ARRAY_FILTER_USE_KEY);
+        $n = 1;
+        foreach ($contentBetween as $possibleDecl) {
+            $skipValues = [
+                'namespace',
+                'use',
+            ];
+
+            $found = false;
+            foreach ($skipValues as $skipValue) {
+                if (str_starts_with($possibleDecl, $skipValue . ' ')) {
+                    $found = true;
+                    $n++;
+
+                    break;
+                }
+            }
+
+            if (! $found) {
+                break;
+            }
+        }
+
         $blocks[] = [
             'doc'   => $doc,
-            'decl'  => $content[$end[0] + 1]
+            'decl'  => $content[$end[0] + $n]
         ];
     }
 
