@@ -208,7 +208,8 @@ class Users extends Model
 
         // make sure V2 permissions are valid
         if ($data['permissions_v2'] !== '') {
-            $routes = json_decode(file_get_contents(OB_CACHE . '/routes.json'), true);
+            $json = json_decode(file_get_contents(OB_CACHE . '/routes.json'), true);
+            $routes = $json['routes'] ?? null;
             $permissions = preg_split('/\r\n|\r|\n/', $data['permissions_v2']);
             foreach ($permissions as $permission) {
                 [$method, $route] = explode(' ', $permission);

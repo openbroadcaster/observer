@@ -14,20 +14,65 @@ use OpenBroadcaster\Routes\{RouteFile, RouteClass, RouteMethod};
 
 class Routes
 {
-    public function genRoutes(): bool
+    private string $targetJson;
+    private array $sourceDirs;
+
+    public function __construct()
     {
-        $targetJson = OB_CACHE . '/routes.json';
-        $sourceDirs = [
+        $this->targetJson = OB_CACHE . '/routes.json';
+        $this->sourceDirs = [
             OB_LOCAL . '/core/controllers/',
         ];
+    }
 
-        $pages = [];
-        $docFiles = [];
-        foreach ($sourceDirs as $dir) {
+    public function needsUpdate(): bool
+    {
+        if (! file_exists($this->targetJson)) {
+            return true;
+        }
+
+        $json = json_decode(file_get_contents($this->targetJson), true);
+        $updated = $json['updated'] ?? null;
+
+        if (! $updated) {
+            return true;
+        }
+
+        foreach ($this->sourceDirs as $dir) {
             foreach (new \FilesystemIterator($dir) as $file) {
-                if ($file->isDir()) continue;
+                if ($file->isDir()) {
+                    continue;
+                }
 
-                if ($file->getExtension() != 'php') {
+                if ($file->getExtension() !== 'php') {
+                    continue;
+                }
+
+                if (! $file->isReadable()) {
+                    error_log("[W] File '" . $file->getFilename() . "' isn't readable. Ignoring.\n");
+                    continue;
+                }
+
+                if (! $updated[$file->getRealPath()] || $updated[$file->getRealPath()] !== $file->getMTime()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function genRoutes(): bool
+    {
+        $docFiles = [];
+        $updated = [];
+        foreach ($this->sourceDirs as $dir) {
+            foreach (new \FilesystemIterator($dir) as $file) {
+                if ($file->isDir()) {
+                    continue;
+                }
+
+                if ($file->getExtension() !== 'php') {
                     continue;
                 }
 
@@ -38,6 +83,7 @@ class Routes
 
                 $content = $this->parse_clean(file_get_contents($file->getPathname()));
                 $blocks = $this->parse_blocks($content);
+                $updated[$file->getRealPath()] = $file->getMTime();
 
                 $docFiles[] = $this->generate_tree($blocks, $file->getFilename(), basename($dir));
             }
@@ -59,10 +105,13 @@ class Routes
             return false;
         }
 
-        $routes = json_encode($routes, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        $json = json_encode([
+            'updated' => $updated,
+            'routes' => $routes,
+        ], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
 
-        if (file_put_contents($targetJson, $routes) === false) {
-            error_log("[E] Failed to write routes to file: {$targetJson}." . PHP_EOL);
+        if (file_put_contents($this->targetJson, $json) === false) {
+            error_log("[E] Failed to write routes to file: {$this->targetJson}." . PHP_EOL);
             return false;
         }
 

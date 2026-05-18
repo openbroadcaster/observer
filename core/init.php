@@ -148,11 +148,13 @@ require_once(OB_LOCAL . '/vendor/autoload.php');
 //require('extras/PHPMailer/src/Exception.php');
 //require('extras/PHPMailer/src/PHPMailer.php');
 
-// Generate controller routes if necessary.
+// Generate controller routes if needed.
 $routes = new \OpenBroadcaster\Support\Routes();
-if (! $routes->genRoutes()) {
-    http_response_code(500);
-    die('OpenBroadcaster failed to generate controller routes, temporarily unavailable.');
+if ($routes->needsUpdate()) {
+    if (! $routes->genRoutes()) {
+        http_response_code(500);
+        die('OpenBroadcaster failed to generate controller routes, temporarily unavailable.');
+    }
 }
 
 // verify proper functioning if requested in config
