@@ -138,7 +138,13 @@ Commands:
             foreach ($files as $file) {
                 $cliFileName = pathinfo($file, PATHINFO_FILENAME);
                 $cliCommand = strtolower(preg_replace('/(?<!^)[A-Z]/', ' $0', $cliFileName));
-                $cliClassName = "OpenBroadcaster\\CLI\\" . $cliFileName;
+
+                if ($subDir === $coreDir) {
+                    $cliClassName = "OpenBroadcaster\\CLI\\{$cliFileName}";
+                } else {
+                    $moduleName = pathinfo($subDir, PATHINFO_FILENAME);
+                    $cliClassName = "OpenBroadcaster\\Modules\\{$moduleName}\\CLI\\{$cliFileName}";
+                }
 
                 if (isset($cliMap[$cliCommand])) {
                     echo "Duplicate CLI command found: '{$cliCommand}'. Perhaps one or more models define conflicting commands? Quitting." . PHP_EOL;

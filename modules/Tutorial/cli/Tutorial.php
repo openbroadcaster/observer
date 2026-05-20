@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenBroadcaster\CLI;
+namespace OpenBroadcaster\Modules\Tutorial\CLI;
 
 use OpenBroadcaster\Base\CLI;
 
