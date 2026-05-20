@@ -115,10 +115,20 @@ class Routes
                         // When a route comes from a module, it is instead stored as
                         // [
                         //      /api/v2/module/ModuleName/route/string,
-                        //      controller,
+                        //      {
+                        //          'module': module,
+                        //          'controller': controller
+                        //      },
                         //      method
                         // ]
-                        $routes[$route[0]][] = [$route[1], strtolower($file->getClass()->name), $method->name];
+                        $module = $file->getClass()->module;
+                        $controller = $file->getClass()->name;
+
+                        $routes[$route[0]][] = [
+                            $route[1],
+                            $module ? ['module' => $module, 'controller' => $controller] : $controller,
+                            $method->name
+                        ];
                     }
                 }
             }

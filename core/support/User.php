@@ -291,7 +291,17 @@ class User
                     $request_valid = false;
 
                     foreach ($routes[$_SERVER['REQUEST_METHOD']] ?? [] as $route) {
-                        if ($request[0] === $route[1] && $request[1] === $route[2]) {
+                        if (is_string($request[0])) {
+                            $check = $request[0] === $route[1] && $request[1] === $route[2];
+                        } else {
+                            if (is_string($route[1])) {
+                                continue;
+                            }
+
+                            $check = $request[0]->module === $route[1]['module'] && $request[0]->controller === $route[1]['controller'];
+                            $check = $check && $request[1] === $route[2];
+                        }
+                        if ($check) {
                             $req_permission = $route[0];
 
                             $found = array_filter($permissions ?? [], function ($p) use ($req_permission) {

@@ -191,7 +191,14 @@ class OBFAPI
 
         // make sure each request has a valid controller (not done above since auth required before controller load)
         foreach ($requests as $request) {
-            if (!$this->load->controller($request[0])) {
+
+            if (is_string($request[0])) {
+                $load = $this->load->controller($request[0]);
+            } else {
+
+                $load = $this->load->controller($request[0]->controller, $request[0]->module);
+            }
+            if (!$load) {
                 $this->io->error(OB_ERROR_BAD_POSTDATA);
                 return;
             }
@@ -206,7 +213,11 @@ class OBFAPI
             $action = $request[1];
 
             // load our controller.
-            $this->controller = $this->load->controller($controller);
+            if (is_string($controller)) {
+                $this->controller = $this->load->controller($controller);
+            } else {
+                $this->controller = $this->load->controller($controller->controller, $controller->module);
+            }
             $this->controller->data = json_decode($request[2], true, 512);
 
             // launch callbacks to be run before requested main process.
