@@ -29,7 +29,7 @@
           $nav_name = substr($nav_name, 0, strlen($nav_name) - 5);
         }
       ?>
-        <a href="<?=$nav_package . '.' . $nav_item?>.html"><?=($nav_package == 'pages' ? '' : (strtolower($nav_package) . '.')) . $nav_name?></a>
+        <a href="<?=$nav_package . '.' . $nav_item?>.html"><?=$nav_name?></a>
       <?php } ?>
     <?php } ?>
     </nav>

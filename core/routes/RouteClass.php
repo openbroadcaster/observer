@@ -7,14 +7,16 @@ class RouteClass
     public $name;
     public $description;
     public $package;
+    public $module;
 
     private $methods;
 
-    public function __construct($name, $description = [], $package = "NoPak")
+    public function __construct($name, $description = [], $package = "NoPak", $module = null)
     {
         $this->name = $name;
         $this->description = $description;
         $this->package = $package;
+        $this->module = $module;
 
         $this->methods = array();
     }

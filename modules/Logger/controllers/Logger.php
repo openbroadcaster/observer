@@ -3,6 +3,11 @@
 // Copyright 2012-2024 OpenBroadcaster, Inc.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+/**
+ * Logger example module.
+ *
+ * @package Controller.Logger
+ */
 namespace OpenBroadcaster\Modules\Logger\Controllers;
 
 use OpenBroadcaster\Base\Controller;
@@ -20,6 +25,15 @@ class Logger extends Controller
 
 	}
 
+	/**
+	 * View log.
+	 *
+	 * @param limit
+	 * @param offset
+	 * @return [entries, total]
+	 *
+	 * @route GET /logger
+	 */
 	public function viewLog()
 	{
 
@@ -32,6 +46,11 @@ class Logger extends Controller
 		return array(true,'Log Entries.',array('entries'=>$entries, 'total'=>$total));
 	}
 
+	/**
+	 * Clear log.
+	 *
+	 * @route DELETE /logger
+	 */
 	public function clearLog()
 	{
 		$this->LoggerModel('logClear');

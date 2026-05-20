@@ -22,6 +22,9 @@ class Routes
         $this->targetJson = OB_CACHE . '/routes.json';
         $this->sourceDirs = [
             OB_LOCAL . '/core/controllers/',
+            OB_LOCAL . '/core/models/',
+            ...glob(OB_LOCAL . '/modules/*/controllers/'),
+            ...glob(OB_LOCAL . '/modules/*/models/'),
         ];
     }
 
@@ -39,6 +42,10 @@ class Routes
         }
 
         foreach ($this->sourceDirs as $dir) {
+            if (! str_ends_with($dir, '/controllers/')) {
+                continue;
+            }
+
             foreach (new \FilesystemIterator($dir) as $file) {
                 if ($file->isDir()) {
                     continue;
@@ -53,7 +60,7 @@ class Routes
                     continue;
                 }
 
-                if (! $updated[$file->getRealPath()] || $updated[$file->getRealPath()] !== $file->getMTime()) {
+                if (! ($updated[$file->getRealPath()] ?? null) || $updated[$file->getRealPath()] !== $file->getMTime()) {
                     return true;
                 }
             }
@@ -67,6 +74,10 @@ class Routes
         $docFiles = [];
         $updated = [];
         foreach ($this->sourceDirs as $dir) {
+            if (! str_ends_with($dir, '/controllers/')) {
+                continue;
+            }
+
             foreach (new \FilesystemIterator($dir) as $file) {
                 if ($file->isDir()) {
                     continue;
@@ -85,7 +96,7 @@ class Routes
                 $blocks = $this->parse_blocks($content);
                 $updated[$file->getRealPath()] = $file->getMTime();
 
-                $docFiles[] = $this->generate_tree($blocks, $file->getFilename(), basename($dir));
+                $docFiles[] = $this->generate_tree($blocks, $file->getFilename(), $dir);
             }
         }
 
@@ -94,6 +105,19 @@ class Routes
             foreach ($file->getClass()->getMethods() as $method) {
                 if (count($method->routes) > 0) {
                     foreach ($method->routes as $route) {
+                        // Each route is stored in JSON as an array containing elements in the format
+                        // [
+                        //      /api/v2/route/string,
+                        //      controller,
+                        //      method
+                        // ]
+                        //
+                        // When a route comes from a module, it is instead stored as
+                        // [
+                        //      /api/v2/module/ModuleName/route/string,
+                        //      controller,
+                        //      method
+                        // ]
                         $routes[$route[0]][] = [$route[1], strtolower($file->getClass()->name), $method->name];
                     }
                 }
@@ -159,7 +183,13 @@ class Routes
                 $content = $this->parse_clean(file_get_contents($file->getPathname()));
                 $blocks = $this->parse_blocks($content);
 
-                $doc_files[] = $this->generate_tree($blocks, $file->getFilename(), basename($dir));
+                if (! str_ends_with(rtrim($dir, '/'), '/core/controllers')) {
+                    $moduleStr = '/modules/' . basename(dirname($dir)) . '/controllers';
+                } else {
+                    $moduleStr = '/core/controllers';
+                }
+
+                $doc_files[] = $this->generate_tree($blocks, $file->getFilename(), $moduleStr);
             }
         }
 
@@ -434,6 +464,11 @@ class Routes
                                 break;
                         }
                     }
+
+                    if (! str_ends_with(rtrim($dir, '/'), '/core/controllers')) {
+                        $moduleStr = basename(dirname($dir));
+                        $doc_class->module = $moduleStr;
+                    }
                     break;
                 case 'method':
                     $method = new RouteMethod($decl['name'], $doc['description'], $decl['visibility'], $decl['args']);
@@ -455,7 +490,12 @@ class Routes
                             case 'route':
                                 $route_method = substr($tag[1], 0, strpos($tag[1], " "));
                                 $route_url = substr($tag[1], strpos($tag[1], " ") + 1);
-                                $route_url = '/api/' . trim($route_url, '/');
+
+                                if ($doc_class !== null && $doc_class->module !== null) {
+                                    $route_url = '/api/v2/module/' . $doc_class->module . '/' . trim($route_url, '/');
+                                } else {
+                                    $route_url = '/api/' . trim($route_url, '/');
+                                }
 
                                 if (!in_array($route_method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
                                     error_log('[E] Unsupported HTTP method used in @route tag: ' . $tag[1] . ".\n");
