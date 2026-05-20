@@ -26,7 +26,7 @@ class Dayparting extends Controller
      *
      * @return restrictions
      *
-     * @route GET /v2/dayparting/search
+     * @route GET /dayparting/search
      */
     public function search()
     {
@@ -40,7 +40,7 @@ class Dayparting extends Controller
      *
      * @return restrction
      *
-     * @route GET /v2/dayparting/(:id:)
+     * @route GET /dayparting/(:id:)
      */
     public function get()
     {
@@ -61,7 +61,7 @@ class Dayparting extends Controller
      *
      * @return id
      *
-     * @route PUT /v2/dayparting/(:id:)
+     * @route PUT /dayparting/(:id:)
      */
     public function save()
     {
@@ -82,7 +82,7 @@ class Dayparting extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/dayparting/(:id:)
+     * @route DELETE /dayparting/(:id:)
      */
     public function delete()
     {

@@ -28,7 +28,7 @@ class ClientSettings extends Controller
      *
      * @return setting_result
      *
-     * @route POST /v2/clientsettings/login-message
+     * @route POST /clientsettings/login-message
      */
     public function set_login_message()
     {
@@ -42,7 +42,7 @@ class ClientSettings extends Controller
      *
      * @return client_login_message
      *
-     * @route GET /v2/clientsettings/login-message
+     * @route GET /clientsettings/login-message
      */
     public function get_login_message()
     {
@@ -56,7 +56,7 @@ class ClientSettings extends Controller
      *
      * @return setting_result
      *
-     * @route POST /v2/clientsettings/welcome-page
+     * @route POST /clientsettings/welcome-page
      */
     public function set_welcome_page()
     {
@@ -70,7 +70,7 @@ class ClientSettings extends Controller
     *
     * @return client_welcome_page
     *
-    * @route GET /v2/clientsettings/welcome-page
+    * @route GET /clientsettings/welcome-page
     */
     public function get_welcome_page()
     {

@@ -25,7 +25,7 @@ class Media extends Controller
      *
      * @return formats
      *
-     * @route GET /v2/media/formats
+     * @route GET /media/formats
      */
     public function formats_get()
     {
@@ -43,7 +43,7 @@ class Media extends Controller
      * @param audio_formats
      * @param document_formats
      *
-     * @route POST /v2/media/formats
+     * @route POST /media/formats
      */
     public function formats_save()
     {
@@ -71,7 +71,7 @@ class Media extends Controller
      *
      * @return [saved, history]
      *
-     * @route GET /v2/media/searches
+     * @route GET /media/searches
      */
     public function media_my_searches()
     {
@@ -89,7 +89,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route POST /v2/media/searches
+     * @route POST /media/searches
      */
     public function media_my_searches_save()
     {
@@ -109,7 +109,7 @@ class Media extends Controller
      * @param filters
      * @param description
      *
-     * @route PUT /v2/media/searches/(:id:)
+     * @route PUT /media/searches/(:id:)
      */
     public function media_my_searches_edit()
     {
@@ -131,7 +131,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/media/searches/(:id:)
+     * @route DELETE /media/searches/(:id:)
      */
     public function media_my_searches_delete()
     {
@@ -151,7 +151,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route POST /v2/media/searches/default
+     * @route POST /media/searches/default
      */
     public function media_my_searches_default()
     {
@@ -169,7 +169,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/media/searches/default/(:id:)
+     * @route DELETE /media/searches/default/(:id:)
      */
     public function media_my_searches_unset_default()
     {
@@ -189,7 +189,7 @@ class Media extends Controller
      * @param user_ids
      * @param group_ids
      *
-     * @route POST /v2/media/searches/share
+     * @route POST /media/searches/share
      */
     public function media_my_searches_share()
     {
@@ -215,7 +215,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/media/searches/share/(:id:)
+     * @route DELETE /media/searches/share/(:id:)
      */
     public function media_my_searches_unshare()
     {
@@ -279,7 +279,7 @@ class Media extends Controller
      *
      * @return [num_results, media]
      *
-     * @route GET /v2/media/search
+     * @route GET /media/search
      */
     public function search()
     {
@@ -331,8 +331,8 @@ class Media extends Controller
      *
      * @param media The media items to update.
      *
-     * @route POST /v2/media
-     * @route PUT /v2/media
+     * @route POST /media
+     * @route PUT /media
      */
     public function save()
     {
@@ -434,7 +434,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route POST /v2/media/properties/(:id:)
+     * @route POST /media/properties/(:id:)
      */
     public function save_properties()
     {
@@ -460,7 +460,7 @@ class Media extends Controller
      *
      * @param id
      *
-     * @route GET /v2/media/properties/(:id:)
+     * @route GET /media/properties/(:id:)
      */
     public function get_properties()
     {
@@ -502,8 +502,8 @@ class Media extends Controller
      *
      * @return [versions, media]
      *
-     * @route GET /v2/media/versions/(:media_id:)
-     * @route GET /v2/media/(:media_id:)/versions
+     * @route GET /media/versions/(:media_id:)
+     * @route GET /media/(:media_id:)/versions
      */
     public function versions()
     {
@@ -530,7 +530,7 @@ class Media extends Controller
      * @param file_id
      * @param file_key
      *
-     * @route POST /v2/media/versions
+     * @route POST /media/versions
      */
     public function version_add()
     {
@@ -552,7 +552,7 @@ class Media extends Controller
      * @param created Version timestamp
      * @param notes
      *
-     * @route PUT /v2/media/versions/(:media_id:)/(:created:)
+     * @route PUT /media/versions/(:media_id:)/(:created:)
      */
     public function version_edit()
     {
@@ -573,7 +573,7 @@ class Media extends Controller
      * @param media_id
      * @param created Version timestamp
      *
-     * @route DELETE /v2/media/versions/(:media_id:)/(:created:)
+     * @route DELETE /media/versions/(:media_id:)/(:created:)
      */
     public function version_delete()
     {
@@ -593,7 +593,7 @@ class Media extends Controller
      * @param media_id
      * @param created Version timestamp
      *
-     * @route PATCH /v2/media/versions/(:media_id:)
+     * @route PATCH /media/versions/(:media_id:)
      */
     public function version_set()
     {
@@ -612,7 +612,7 @@ class Media extends Controller
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route POST /v2/media/archive
+     * @route POST /media/archive
      */
     public function archive()
     {
@@ -647,7 +647,7 @@ class Media extends Controller
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route POST /v2/media/archive/undo
+     * @route POST /media/archive/undo
      */
     public function unarchive()
     {
@@ -673,7 +673,7 @@ class Media extends Controller
      *
      * @param id An array of media IDs. Can be a single ID.
      *
-     * @route DELETE /v2/media/archive
+     * @route DELETE /media/archive
      */
     public function delete()
     {
@@ -700,7 +700,7 @@ class Media extends Controller
      *
      * @return media
      *
-     * @route GET /v2/media/(:id:)
+     * @route GET /media/(:id:)
      */
     public function get()
     {
@@ -752,8 +752,8 @@ class Media extends Controller
      *
      * @return thumbnail
      *
-     * @route GET /v2/media/(:id:)/thumbnail
-     * @route GET /v2/media/thumbnail/(:id:)
+     * @route GET /media/(:id:)/thumbnail
+     * @route GET /media/thumbnail/(:id:)
      */
     public function thumbnail()
     {

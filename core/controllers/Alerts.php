@@ -30,7 +30,7 @@ class Alerts extends Controller
      *
      * @return alert
      *
-     * @route GET /v2/alerts/(:id:)
+     * @route GET /alerts/(:id:)
      */
     public function get()
     {
@@ -56,7 +56,7 @@ class Alerts extends Controller
      *
      * @return alerts
      *
-     * @route GET /v2/alerts/search/(:player_id:)
+     * @route GET /alerts/search/(:player_id:)
      */
     public function search()
     {
@@ -129,8 +129,8 @@ class Alerts extends Controller
      * @param mode
      * @param properties Settings if mode is set to voicetrack.
      *
-     * @route POST /v2/alerts
-     * @route PUT /v2/alerts/(:id:)
+     * @route POST /alerts
+     * @route PUT /alerts/(:id:)
      */
     public function save()
     {
@@ -176,7 +176,7 @@ class Alerts extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/alerts/(:id:)
+     * @route DELETE /alerts/(:id:)
      */
     public function delete()
     {

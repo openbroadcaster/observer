@@ -25,7 +25,7 @@ class Modules extends Controller
      *
      * @return [installed, available]
      *
-     * @route GET /v2/modules
+     * @route GET /modules
      */
     public function search()
     {
@@ -41,7 +41,7 @@ class Modules extends Controller
      *
      * @param name
      *
-     * @route PUT /v2/modules/(:name:)
+     * @route PUT /modules/(:name:)
      */
     public function install()
     {
@@ -61,7 +61,7 @@ class Modules extends Controller
      *
      * @param name
      *
-     * @route DELETE /v2/modules/(:name:)
+     * @route DELETE /modules/(:name:)
      */
     public function uninstall()
     {
@@ -82,7 +82,7 @@ class Modules extends Controller
      *
      * @param name
      *
-     * @route DELETE /v2/modules/purge/(:name:)
+     * @route DELETE /modules/purge/(:name:)
      */
     public function purge()
     {

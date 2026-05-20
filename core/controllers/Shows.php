@@ -26,7 +26,7 @@ class Shows extends Controller
      *
      * @return show
      *
-     * @route GET /v2/shows/(:id:)
+     * @route GET /shows/(:id:)
      */
     public function get()
     {
@@ -49,7 +49,7 @@ class Shows extends Controller
      *
      * @param id
      *
-     * @route GET /v2/shows/(:id:)/thumbnail
+     * @route GET /shows/(:id:)/thumbnail
      */
     public function thumbnail()
     {
@@ -98,7 +98,7 @@ class Shows extends Controller
      *
      * @return shows
      *
-     * @route GET /v2/shows
+     * @route GET /shows
      */
     public function search()
     {
@@ -181,7 +181,7 @@ class Shows extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/shows/(:id:)
+     * @route DELETE /shows/(:id:)
      */
     public function delete()
     {
@@ -214,8 +214,8 @@ class Shows extends Controller
      * @param item_type
      * @param item_id
      *
-     * @route POST /v2/shows
-     * @route PUT /v2/shows/(:id:)
+     * @route POST /shows
+     * @route PUT /shows/(:id:)
      */
     public function save()
     {

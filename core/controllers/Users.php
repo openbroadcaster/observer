@@ -28,7 +28,7 @@ class Users extends Controller
      *
      * @param user_registration
      *
-     * @route PUT /v2/users/can-register
+     * @route PUT /users/can-register
      */
     public function user_registration_set()
     {
@@ -43,7 +43,7 @@ class Users extends Controller
      *
      * @return user_registration
      *
-     * @route GET /v2/users/can-register
+     * @route GET /users/can-register
      */
     public function user_registration_get()
     {
@@ -55,7 +55,7 @@ class Users extends Controller
      *
      * @return [display_name, id, email]
      *
-     * @route GET /v2/users/all
+     * @route GET /users/all
      */
     public function user_list()
     {
@@ -72,7 +72,7 @@ class Users extends Controller
      *
      * @return users
      *
-     * @route GET /v2/users
+     * @route GET /users
      */
     public function user_manage_list()
     {
@@ -109,8 +109,8 @@ class Users extends Controller
      * @param group_ids
      * @param appkeys
      *
-     * @route POST /v2/users
-     * @route PUT /v2/users/(:id:)
+     * @route POST /users
+     * @route PUT /users/(:id:)
      */
     public function user_manage_addedit()
     {
@@ -154,7 +154,7 @@ class Users extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/users/(:id:)
+     * @route DELETE /users/(:id:)
      */
     public function user_manage_delete()
     {
@@ -179,7 +179,7 @@ class Users extends Controller
      *
      * @return [id, name, key]
      *
-     * @route POST /v2/users/appkeys
+     * @route POST /users/appkeys
      */
     public function user_manage_key_new()
     {
@@ -207,7 +207,7 @@ class Users extends Controller
      *
      * @return is_deleted?
      *
-     * @route DELETE /v2/users/appkeys/(:user_id:)/(:id:)
+     * @route DELETE /users/appkeys/(:user_id:)/(:id:)
      */
     public function user_manage_key_delete()
     {
@@ -239,7 +239,7 @@ class Users extends Controller
      *
      * @return appkeys
      *
-     * @route GET /v2/users/appkeys/(:id:)
+     * @route GET /users/appkeys/(:id:)
      */
     public function user_manage_key_load()
     {
@@ -260,7 +260,7 @@ class Users extends Controller
      *
      * @return groups
      *
-     * @route GET /v2/users/groups
+     * @route GET /users/groups
      */
     public function group_list()
     {
@@ -275,7 +275,7 @@ class Users extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/users/permissions/(:id:)
+     * @route DELETE /users/permissions/(:id:)
      */
     public function permissions_manage_delete()
     {
@@ -297,8 +297,8 @@ class Users extends Controller
      * @param id
      * @param permissions
      *
-     * @route POST /v2/users/permissions
-     * @route PUT /v2/users/permissions/(:id:)
+     * @route POST /users/permissions
+     * @route PUT /users/permissions/(:id:)
      */
     public function permissions_manage_addedit()
     {
@@ -331,7 +331,7 @@ class Users extends Controller
      *
      * @return permissions
      *
-     * @route GET /v2/users/permissions
+     * @route GET /users/permissions
      */
     public function permissions_manage_list()
     {

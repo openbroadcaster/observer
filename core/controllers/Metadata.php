@@ -27,7 +27,7 @@ class Metadata extends Controller
      *
      * @param order
      *
-     * @route PUT /v2/metadata/order
+     * @route PUT /metadata/order
      */
     public function metadata_order()
     {
@@ -49,8 +49,8 @@ class Metadata extends Controller
      * @param default
      * @param tag_suggestions
      *
-     * @route POST /v2/metadata
-     * @route PUT /v2/metadata/(:id:)
+     * @route POST /metadata
+     * @route PUT /metadata/(:id:)
      */
     public function metadata_save()
     {
@@ -106,7 +106,7 @@ class Metadata extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/metadata/(:id:)
+     * @route DELETE /metadata/(:id:)
      */
     public function metadata_delete()
     {
@@ -129,7 +129,7 @@ class Metadata extends Controller
      *
      * @return [tag]
      *
-     * @route GET /v2/metadata/tags
+     * @route GET /metadata/tags
      */
     public function metadata_tag_search()
     {
@@ -149,7 +149,7 @@ class Metadata extends Controller
      *
      * @return metadata_fields
      *
-     * @route GET /v2/metadata
+     * @route GET /metadata
      */
     public function media_metadata_fields()
     {
@@ -162,7 +162,7 @@ class Metadata extends Controller
      *
      * @return metadata_fields
      *
-     * @route GET /v2/metadata/core
+     * @route GET /metadata/core
      */
     public function media_get_fields()
     {
@@ -183,7 +183,7 @@ class Metadata extends Controller
      * @param dynamic_content_default
      * @param dynamic_content_hidden
      *
-     * @route PUT /v2/metadata/required
+     * @route PUT /metadata/required
      */
     public function media_required_fields()
     {
@@ -217,7 +217,7 @@ class Metadata extends Controller
      *
      * @param fields An array with the keys responding to metadata fields, and the values to their default values.
      *
-     * @route POST /v2/metadata/recording
+     * @route POST /metadata/recording
      */
     public function recording_default_values_save()
     {
@@ -291,7 +291,7 @@ class Metadata extends Controller
      *
      * @return metadata_values
      *
-     * @route GET /v2/metadata/recording
+     * @route GET /metadata/recording
      */
     public function recording_default_values()
     {
@@ -324,7 +324,7 @@ class Metadata extends Controller
      *
      * @return categories
      *
-     * @route GET /v2/metadata/categories
+     * @route GET /metadata/categories
      */
     public function category_list()
     {
@@ -350,8 +350,8 @@ class Metadata extends Controller
      * @param name
      * @param default Set as default category for new media.
      *
-     * @route POST /v2/metadata/categories
-     * @route PUT /v2/metadata/categories/(:id:)
+     * @route POST /metadata/categories
+     * @route PUT /metadata/categories/(:id:)
      */
     public function category_save()
     {
@@ -388,7 +388,7 @@ class Metadata extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/metadata/categories/(:id:)
+     * @route DELETE /metadata/categories/(:id:)
      */
     public function category_delete()
     {
@@ -417,7 +417,7 @@ class Metadata extends Controller
      *
      * @return [id, name, is_default]
      *
-     * @route GET /v2/metadata/categories/(:id:)
+     * @route GET /metadata/categories/(:id:)
      */
     public function category_get()
     {
@@ -447,7 +447,7 @@ class Metadata extends Controller
      *
      * @return genres
      *
-     * @route GET /v2/metadata/genres
+     * @route GET /metadata/genres
      */
     public function genre_list()
     {
@@ -475,8 +475,8 @@ class Metadata extends Controller
      * @param media_category_id
      * @param default Set as default genre for new media.
      *
-     * @route POST /v2/metadata/genres
-     * @route PUT /v2/metadata/genres/(:id:)
+     * @route POST /metadata/genres
+     * @route PUT /metadata/genres/(:id:)
      */
     public function genre_save()
     {
@@ -513,7 +513,7 @@ class Metadata extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/metadata/genres/(:id:)
+     * @route DELETE /metadata/genres/(:id:)
      */
     public function genre_delete()
     {
@@ -537,7 +537,7 @@ class Metadata extends Controller
      *
      * @return [id, name, description, media_category_id]
      *
-     * @route GET /v2/metadata/genres/(:id:)
+     * @route GET /metadata/genres/(:id:)
      */
     public function genre_get()
     {
@@ -561,7 +561,7 @@ class Metadata extends Controller
      *
      * @return countries
      *
-     * @route GET /v2/metadata/countries
+     * @route GET /metadata/countries
      */
     public function country_list()
     {
@@ -579,7 +579,7 @@ class Metadata extends Controller
      *
      * @return languages.
      *
-     * @route GET /v2/metadata/languages
+     * @route GET /metadata/languages
      */
     public function language_list()
     {

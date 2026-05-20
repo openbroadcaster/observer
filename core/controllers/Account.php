@@ -29,7 +29,7 @@ class Account extends Controller
      * @param password
      * @return [id, key, key_expiry]
      *
-     * @route POST /v2/account/login
+     * @route POST /account/login
      */
     public function login()
     {
@@ -52,7 +52,7 @@ class Account extends Controller
      *
      * @return [id, username]
      *
-     * @route GET /v2/account/uid
+     * @route GET /account/uid
      */
     public function uid()
     {
@@ -67,7 +67,7 @@ class Account extends Controller
      *
      * @return permission_array
      *
-     * @route GET /v2/account/permissions
+     * @route GET /account/permissions
      */
     public function permissions()
     {
@@ -92,7 +92,7 @@ class Account extends Controller
      *
      * @return group_names_array
      *
-     * @route GET /v2/account/groups
+     * @route GET /account/groups
      */
     public function groups()
     {
@@ -106,7 +106,7 @@ class Account extends Controller
     /**
      * Logout currently logged in user.
      *
-     * @route POST /v2/account/logout
+     * @route POST /account/logout
      */
     public function logout()
     {
@@ -129,7 +129,7 @@ class Account extends Controller
      *
      * @return user_fields_array
      *
-     * @route GET /v2/account/settings
+     * @route GET /account/settings
      */
     public function settings()
     {
@@ -157,7 +157,7 @@ class Account extends Controller
      * @param dyslexia_friendly_font Boolean set to TRUE for using a dyslexia-friendly font.
      * @param sidebar_display_left Boolean set to TRUE when displaying the sidebar on the left side.
      *
-     * @route PUT /v2/account/settings
+     * @route PUT /account/settings
      */
     public function update_settings()
     {
@@ -196,7 +196,7 @@ class Account extends Controller
      *
      * @param email
      *
-     * @route POST /v2/account/forgot
+     * @route POST /account/forgot
      */
     public function forgotpass()
     {
@@ -221,7 +221,7 @@ class Account extends Controller
      * @param email
      * @param username
      *
-     * @route POST /v2/account/new
+     * @route POST /account/new
      */
     public function newaccount()
     {
@@ -250,7 +250,7 @@ class Account extends Controller
      *
      * @return [id, name, key]
      *
-     * @route POST /v2/account/key
+     * @route POST /account/key
      */
     public function key_new()
     {
@@ -277,7 +277,7 @@ class Account extends Controller
      *
      * @return is_deleted?
      *
-     * @route DELETE /v2/account/key/(:id:)
+     * @route DELETE /account/key/(:id:)
      */
     public function key_delete()
     {
@@ -307,7 +307,7 @@ class Account extends Controller
      * @param id
      * @param permissions
      *
-     * @route PUT /v2/account/key/(:id:)
+     * @route PUT /account/key/(:id:)
      */
     public function key_permissions_save()
     {
@@ -332,7 +332,7 @@ class Account extends Controller
      *
      * @return appkeys
      *
-     * @route GET /v2/account/key
+     * @route GET /account/key
      */
     public function key_load()
     {
@@ -392,7 +392,7 @@ class Account extends Controller
     /**
      * Create a nonce for a one-time GET requests.
      *
-     * @route GET /v2/account/nonce/
+     * @route GET /account/nonce/
      *
      * @return nonce
      */

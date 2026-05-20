@@ -26,7 +26,7 @@ class Timeslots extends Controller
      *
      * @return timeslot
      *
-     * @route GET /v2/timeslots/(:id:)
+     * @route GET /timeslots/(:id:)
      */
     public function get()
     {
@@ -58,7 +58,7 @@ class Timeslots extends Controller
      *
      * @return timeslots
      *
-     * @route GET /v2/timeslots
+     * @route GET /timeslots
      */
     public function search()
     {
@@ -156,7 +156,7 @@ class Timeslots extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/timeslots/(:id:)
+     * @route DELETE /timeslots/(:id:)
      */
     public function delete()
     {
@@ -190,8 +190,8 @@ class Timeslots extends Controller
      * @param duration
      * @param stop
      *
-     * @route POST /v2/timeslots
-     * @route PUT /v2/timeslots/(:id:)
+     * @route POST /timeslots
+     * @route PUT /timeslots/(:id:)
      */
     public function save()
     {

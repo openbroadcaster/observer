@@ -31,8 +31,8 @@ class Playlog extends Controller
      *
      * @return log
      *
-     * @route GET /v2/playlog/(:id:)/(:start:)/(:end:)
-     * @route GET /v2/playlog/(:id:)/(:start:)
+     * @route GET /playlog/(:id:)/(:start:)/(:end:)
+     * @route GET /playlog/(:id:)/(:start:)
      */
     public function get()
     {

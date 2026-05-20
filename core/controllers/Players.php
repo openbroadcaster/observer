@@ -31,7 +31,7 @@ class Players extends Controller
      *
      * @return players_array
      *
-     * @route GET /v2/players
+     * @route GET /players
      */
     public function search()
     {
@@ -91,8 +91,8 @@ class Players extends Controller
      *
      * @return player_id
      *
-     * @route POST /v2/players
-     * @route PUT /v2/players/(:id:)
+     * @route POST /players
+     * @route PUT /players/(:id:)
      */
     public function save()
     {
@@ -166,7 +166,7 @@ class Players extends Controller
      *
      * @param id
      *
-     * @route DELETE /v2/players/(:id:)
+     * @route DELETE /players/(:id:)
      */
     public function delete()
     {
@@ -201,7 +201,7 @@ class Players extends Controller
      *
      * @return player_data
      *
-     * @route GET /v2/players/(:id:)
+     * @route GET /players/(:id:)
      */
     public function get()
     {
@@ -230,7 +230,7 @@ class Players extends Controller
      *
      * @return average
      *
-     * @route GET /v2/players/avg-duration
+     * @route GET /players/avg-duration
      */
     public function station_id_avg_duration()
     {
@@ -255,7 +255,7 @@ class Players extends Controller
      *
      * @return [results, total_rows, csv_results]
      *
-     * @route GET /v2/players/monitor
+     * @route GET /players/monitor
      */
     public function monitor_search()
     {
@@ -304,7 +304,7 @@ class Players extends Controller
      *
      * @return [show_name, show_time_left, media_data]
      *
-     * @route GET /v2/players/playing/(:id:)
+     * @route GET /players/playing/(:id:)
      */
     public function now_playing()
     {

@@ -28,7 +28,7 @@ class Settings extends Controller
      *
      * @return version
      *
-     * @route GET /v2/settings/version
+     * @route GET /settings/version
      */
     public function get_ob_version()
     {

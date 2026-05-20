@@ -28,7 +28,7 @@ class UI extends Controller
      *
      * @return themes
      *
-     * @route GET /v2/ui/themes
+     * @route GET /ui/themes
      */
     public function get_themes()
     {
@@ -40,7 +40,7 @@ class UI extends Controller
      *
      * @return languages
      *
-     * @route GET /v2/ui/languages
+     * @route GET /ui/languages
      */
     public function get_languages()
     {
@@ -52,7 +52,7 @@ class UI extends Controller
      *
      * @return strings
      *
-     * @route GET /v2/ui/strings
+     * @route GET /ui/strings
      */
     public function strings()
     {
@@ -67,7 +67,7 @@ class UI extends Controller
      * @param text Text to convert into speech.
      * @return ogg_audio
      *
-     * @route GET /v2/ui/tts
+     * @route GET /ui/tts
      */
     public function tts()
     {
@@ -100,7 +100,7 @@ class UI extends Controller
      *
      * @return [html_file => html]
      *
-     * @route GET /v2/ui/html
+     * @route GET /ui/html
      */
     public function html()
     {

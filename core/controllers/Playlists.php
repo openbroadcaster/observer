@@ -37,7 +37,7 @@ class Playlists extends Controller
      *
      * @return can_edit
      *
-     * @route GET /v2/playlists/editable
+     * @route GET /playlists/editable
      */
     private function user_can_edit($playlist)
     {
@@ -66,7 +66,7 @@ class Playlists extends Controller
      *
      * @return playlist
      *
-     * @route GET /v2/playlists/(:id:)
+     * @route GET /playlists/(:id:)
      */
     public function get()
     {
@@ -128,7 +128,7 @@ class Playlists extends Controller
      *
      * @return [num_results, playlists]
      *
-     * @route GET /v2/playlists
+     * @route GET /playlists
      */
     public function search()
     {
@@ -170,8 +170,8 @@ class Playlists extends Controller
      *
      * @return id
      *
-     * @route POST /v2/playlists
-     * @route PUT /v2/playlists/(:id:)
+     * @route POST /playlists
+     * @route PUT /playlists/(:id:)
      */
     public function save()
     {
@@ -424,7 +424,7 @@ class Playlists extends Controller
      *
      * @return [duration]
      *
-     * @route GET /v2/playlists/validate
+     * @route GET /playlists/validate
      */
     public function validate_dynamic_properties()
     {
@@ -456,7 +456,7 @@ class Playlists extends Controller
      *
      * @param id An array of playlist IDs. Can be a single ID.
      *
-     * @route DELETE /v2/playlists
+     * @route DELETE /playlists
      */
     public function delete()
     {
@@ -504,7 +504,7 @@ class Playlists extends Controller
      *
      * @return [items]
      *
-     * @route GET /v2/playlists/resolve/(:id:)
+     * @route GET /playlists/resolve/(:id:)
      */
     public function resolve()
     {

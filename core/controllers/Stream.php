@@ -29,7 +29,7 @@ class Stream extends Controller
      *
      * @param id Media ID
      *
-     * @route GET /v2/stream/(:id:)
+     * @route GET /stream/(:id:)
      */
     public function stream()
     {

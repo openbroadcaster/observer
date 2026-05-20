@@ -30,7 +30,7 @@ class Downloads extends Controller
      * @param id Media ID
      * @param version Media version
      *
-     * @route GET /v2/downloads/media/(:id:)/version/(:version:)
+     * @route GET /downloads/media/(:id:)/version/(:version:)
      */
     public function version()
     {
@@ -76,7 +76,7 @@ class Downloads extends Controller
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/media/(:id:)
+     * @route GET /downloads/media/(:id:)
      */
     public function media()
     {
@@ -99,7 +99,7 @@ class Downloads extends Controller
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/media/(:id:)/preview/
+     * @route GET /downloads/media/(:id:)/preview/
      */
     public function preview()
     {
@@ -170,7 +170,7 @@ class Downloads extends Controller
      *
      * @param id Media ID
      *
-     * @route GET /v2/downloads/media/(:id:)/thumbnail/
+     * @route GET /downloads/media/(:id:)/thumbnail/
      */
     public function thumbnail()
     {
