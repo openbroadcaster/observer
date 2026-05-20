@@ -494,6 +494,8 @@ class Routes
                                 if ($doc_class !== null && $doc_class->module !== null) {
                                     $route_url = '/api/v2/module/' . $doc_class->module . '/' . trim($route_url, '/');
                                 } else {
+                                    // TODO: /v2/ is currently manually part of route strings; can update to remove from all
+                                    // routes and just add in here, probably? Currently inconsistent with modules above.
                                     $route_url = '/api/' . trim($route_url, '/');
                                 }
 
