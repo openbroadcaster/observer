@@ -100,8 +100,8 @@ spl_autoload_register(function ($className) {
         if ($module !== '.' && $module !== '..' && is_dir($modulesDir . $module)) {
             $moduleNamespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
             $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}\\"] = $modulesDir . $module . '/';
-            $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}}\\Models\\"] = $modulesDir . $module . '/models/';
-            $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}}\\Controllers\\"] = $modulesDir . $module . '/controllers/';
+            $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}\\Models\\"] = $modulesDir . $module . '/models/';
+            $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}\\Controllers\\"] = $modulesDir . $module . '/controllers/';
             $namespaceMap["OpenBroadcaster\\Modules\\{$moduleNamespace}\\Cron\\"] = $modulesDir . $module . '/cron/';
         }
     }
