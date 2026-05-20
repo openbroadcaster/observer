@@ -20,6 +20,8 @@ A refactor in 5.5 changed most of the structure of the core code. In practically
 - The top level module definition file went from `module.php` to the actual module name. It also needs to be be properly namespaced. For example, `NowPlaying.php` now defines the class `NowPlaying` (without the old `Module` suffix) and has the namespace `OpenBroadcaster\Modules\NowPlaying`. The full class name is `OpenBroadcaster\Modules\NowPlaying\NowPlaying`
 - All controller, model, and update files in module follow the same namespacing convention. Rather than being in the global namespace, a model in a module (still in the models directory) now uses the namespace `OpenBroadcaster\Modules\YourModuleName\Models`
 
-## KNOWN BUGS/BROKEN
+## Controller Routes
 
-- Module controllers do not currently work. Any call to `$this->load->controller()` is done in the API, and now requires the module name as the second argument. This has not been implemented on the API side yet and likely requires a rework for how routing works.
+- All module controllers now requires v2 routes using DocBlocks. See the example module controllers for how to use these.
+- The final generated route gets prefixed with `/api/v2/module/ModuleName/`, so for example a DocBlock route called `@route GET /example` in a module named `YourModule` can be accessed with the GET HTTP method at `/api/v2/module/YourModule/example`.
+- TODO: v2 API integration for JS with modules
