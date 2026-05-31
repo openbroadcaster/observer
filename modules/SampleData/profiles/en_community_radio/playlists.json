@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Default Playlist",
+        "description": "Default playlist for the station. Add your most-played content here.",
+        "type": "standard",
+        "status": "public"
+    },
+    {
+        "name": "Sample Music Mix",
+        "description": "A sample music playlist. Replace with your own music selections.",
+        "type": "standard",
+        "status": "public"
+    },
+    {
+        "name": "Station IDs",
+        "description": "Station identification audio clips for broadcast compliance.",
+        "type": "standard",
+        "status": "public"
+    },
+    {
+        "name": "Live Assist Board",
+        "description": "Live assist playlist with quick-access buttons for on-air use.",
+        "type": "live_assist",
+        "status": "public"
+    }
+]
