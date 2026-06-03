@@ -159,7 +159,7 @@ class Schedule extends \OpenBroadcaster\Base\Remote
 
                     // we are supposed to use a parent player for cache, but that player doesn't have the cached item yet.
                     if (!$cache) {
-                        $media_items = $this->PlaylistsModel('resolve', $playlist['id'], $this->schedule_player_id, $player['parent_player_id'], $show_start, $show['duration']);
+                        $media_items = $this->PlaylistsModel('resolve', $playlist['id'], $this->schedule_player_id, $this->player->parent_player_id, $show_start, $show['duration']);
                         $cache_created = time();
                         $this->db->insert('shows_cache', [
                         'player_id' => $this->cache_player_id,
@@ -427,7 +427,7 @@ class Schedule extends \OpenBroadcaster\Base\Remote
                 $cache_created = $cache['created'];
             } else {
             */
-                $items = $this->PlaylistsModel('resolve', $button['button_playlist_id'], $this->player->id, false, $show_start);
+                $items = $this->PlaylistsModel('resolve', $button['button_playlist_id'], $this->player->id, $this->player->parent_player_id, $show_start);
                 $cache_created = time();
                 // $showxml->addChild('last_updated',$cache_created);
                 // $this->db->insert('schedules_liveassist_buttons_cache', array('player_id' => $this->player->id,'start' => $show['start'],'playlists_liveassist_button_id' => $button['id'],'data' => json_encode($items),'created' => $cache_created));

@@ -752,7 +752,6 @@ class Playlists extends Model
             $supports = ['audio','video','image','document'];
         }
 
-
         // TODO currently no player support for documents, but will be doing this at some point.
         $support_document = $player_id ? false : true;
 
@@ -765,6 +764,20 @@ class Playlists extends Model
         // get parent player
         if ($parent_player_id) {
             $parent_player = $this->models->players('get_one', $parent_player_id);
+
+            // if using parent dynamic, then we override support with that of the parent
+            if ($parent_player && $player['use_parent_dynamic']) {
+                $supports = [];
+                if ($parent_player['support_audio']) {
+                    $supports[] = 'audio';
+                }
+                if ($parent_player['support_video']) {
+                    $supports[] = 'video';
+                }
+                if ($parent_player['support_images']) {
+                    $supports[] = 'image';
+                }
+            }
         }
 
         // figure out which media IDs to exclude based on dayparting
