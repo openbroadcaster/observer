@@ -778,6 +778,11 @@ class ScheduleAction extends BaseAction
         $media_audio_offset = 0.0;
         $media_image_offset = 0.0;
 
+        // remove any items with type="voicetrack" as they don't affect the duration
+        $media_items = array_filter($media_items, function ($item) {
+            return $item['type'] != 'voicetrack';
+        });
+          
         if ($advanced) {
             foreach ($media_items as $media_item) {
                 if ($media_item['type'] == 'audio') {
