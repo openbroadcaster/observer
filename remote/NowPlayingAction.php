@@ -46,17 +46,29 @@ class NowPlayingAction extends BaseAction
         $this->db->where('id', $this->request->id);
         $this->db->update('players', $db);
 
-        // add entry to players log
-        $entry = [
-            'player_id'    => $this->request->id,
-            'timestamp'    => time(),
-            'media_id'     => $current_media_id,
-            'playlist_id'  => $current_playlist_id,
-            'media_end'    => $current_media_end,
-            'playlist_end' => $current_playlist_end,
-            'show_name'    => $current_show_name
-        ];
-        $this->db->insert('players_log', $entry);
+        // add entry to players log, skipping if identical to the last entry for this player
+        $this->db->where('player_id', $this->request->id);
+        $this->db->orderby('id', 'desc');
+        $last = $this->db->get_one('players_log');
+
+        if (
+            !$last ||
+            $last['media_id'] != $current_media_id ||
+            $last['playlist_id'] != $current_playlist_id ||
+            $last['media_end'] != $current_media_end ||
+            $last['playlist_end'] != $current_playlist_end
+        ) {
+            $entry = [
+                'player_id'    => $this->request->id,
+                'timestamp'    => time(),
+                'media_id'     => $current_media_id,
+                'playlist_id'  => $current_playlist_id,
+                'media_end'    => $current_media_end,
+                'playlist_end' => $current_playlist_end,
+                'show_name'    => $current_show_name
+            ];
+            $this->db->insert('players_log', $entry);
+        }
 
         return true;
     }
