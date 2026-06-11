@@ -14,7 +14,7 @@ OB.MediaDetails.page = function (id) {
         var item = response.data;
         var used = response.data.where_used.used;
 
-        if (item?.type == "image") {
+        if (item?.type == "image" || item?.type == "document") {
             OB.API.post("media", "get_properties", { id: id }, function (propertiesResponse) {
                 const properties = propertiesResponse.data;
 
