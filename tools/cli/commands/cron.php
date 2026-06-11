@@ -2,7 +2,7 @@
 
 namespace ob\tools\cli;
 
-define('OB_CRON_LOG', '/tmp/cronlog');
+define('OB_CRON_LOG', '/tmp/ob-cronlog-'.md5(__DIR__));
 
 global $argv;
 
