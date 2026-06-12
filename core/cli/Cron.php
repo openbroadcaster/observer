@@ -15,7 +15,7 @@ class Cron extends CLI
 
     public function run(array $args): bool
     {
-        $this->obCronLog = '/tmp/cronlog';
+        $this->obCronLog = '/tmp/ob-cronlog-' . md5(OB_LOCAL);
 
         // Check if a specific cron job was specified, and if the 'now' flag is set.
         if ($args[0] === 'run' && isset($args[1]) && isset($args[2])) {
