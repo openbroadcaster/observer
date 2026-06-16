@@ -91,6 +91,8 @@ class Shows extends Model
                 $data[$index]['name'] = $media['title'];
                 $data[$index]['owner'] = $media['owner_name'];
                 $data[$index]['type'] = 'standard';
+                $thumbnail = $this->models->uploads('thumbnail_get', $media['id'], 'media');
+                $data[$index]['thumbnail'] = $thumbnail[0];
             } elseif ($item['item_type'] == 'linein') {
                 $data[$index]['name'] = 'Line-In';
                 $data[$index]['type'] = 'standard';
