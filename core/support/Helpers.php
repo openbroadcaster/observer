@@ -10,6 +10,8 @@
  */
 namespace OpenBroadcaster\Support;
 
+use Imagick;
+
 class Helpers
 {
     public static function &get_instance()
