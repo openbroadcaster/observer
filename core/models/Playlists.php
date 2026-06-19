@@ -12,6 +12,7 @@
 namespace OpenBroadcaster\Models;
 
 use OpenBroadcaster\Base\Model;
+use OpenBroadcaster\Support\Helpers;
 
 class Playlists extends Model
 {
@@ -1093,5 +1094,75 @@ class Playlists extends Model
         }
 
         return $return;
+    }
+
+    /**
+     * Return the filename of a 600x600 thumbnail from the cache directory.
+     * Generate the cached thumbnail first if needed.
+     *
+     * @param playlist ID or playlist row array.
+     */
+    public function thumbnail_file($args = [])
+    {
+        Helpers::require_args($args, ['playlist']);
+
+        if (! is_array($args['playlist'])) {
+            $this->db->where('id', $args['playlist']);
+            $playlist = $this->db->get_one('playlists');
+
+            if (! $playlist) {
+                return false;
+            }
+        } else {
+            $playlist = $args['playlist'];
+        }
+
+        Helpers::require_args($playlist, ['file_location']);
+        if (strlen($playlist['file_location']) != 2) {
+            trigger_error('Invalid playlist file location.', E_USER_WARNING);
+            return false;
+        }
+
+        $playlist_properties = json_decode($playlist['properties'], true);
+        if ($playlist_properties && ($playlist_properties['rotate'] ?? null)) {
+            $rotate = $playlist_properties['rotate'];
+        } else {
+            $rotate = null;
+        }
+
+        // first search for a cached version of our resized thumbnail
+        $cache_directory = OB_CACHE . '/thumbnails/playlist/' . $playlist['file_location'][0] . '/' . $playlist['file_location'][1];
+        $thumbnail_files = glob($cache_directory . '/' . $playlist['id'] . '.*');
+        if (count($thumbnail_files) > 0) {
+            // early return of cached thumbnail
+            return $thumbnail_files[0];
+        }
+
+        // no cached version, let's try to create one from a source thumbnail/image
+        $thumbnail_directory = OB_THUMBNAILS . '/playlist/' . $playlist['file_location'][0] . '/' . $playlist['file_location'][1];
+        $thumbnail_files = glob($thumbnail_directory . '/' . $playlist['id'] . '.*');
+        if (count($thumbnail_files) < 1) {
+            return false;
+        } else {
+            // our thumbnail source comes from the thumbnail directory
+            $input_file = $thumbnail_files[0];
+        }
+
+        $output_dir = OB_CACHE . '/thumbnails/playlist/' . $playlist['file_location'][0] . '/' . $playlist['file_location'][1];
+        if (! is_dir($output_dir)) {
+            mkdir($output_dir, 0777, true);
+        }
+        $output_file = $output_dir . '/' . $playlist['id'] . '.webp';
+
+        // resize our image to a webp thumbnail
+        Helpers::image_resize($input_file, $output_file, 600, 600, $rotate);
+
+        // return our file if it exists now
+        if (file_exists($output_file)) {
+            return $output_file;
+        }
+
+        // failed to create cached thumbnail
+        return false;
     }
 }

@@ -166,7 +166,7 @@ class Downloads extends Controller
     }
 
     /**
-     * Get all restrictions.
+     * Get thumbnail data for media item.
      *
      * @param id Media ID
      *
@@ -191,6 +191,36 @@ class Downloads extends Controller
         } else {
             // if version is specified, allow cache if version matches expected
             if (($_GET['v'] ?? null) && $_GET['v'] == filemtime($file) && $media['status'] == 'public') {
+                header('Cache-Control: public, max-age=' . (60 * 60 * 24 * 7)); // cache for 7 days
+            }
+            Helpers::sendfile($file);
+        }
+    }
+
+    /**
+     * Get thumbnail data for playlist item.
+     *
+     * @param id Playlist ID
+     *
+     * @route GET /downloads/playlists/(:id:)/thumbnail/
+     */
+    public function playlistThumbnail()
+    {
+        $id = $this->data('id');
+        $playlist = $this->models->playlists('get_by_id', $id);
+
+        if (!$playlist) {
+            $this->error(OB_ERROR_NOTFOUND);
+        }
+
+        // get thumbnail
+        $file = $this->models->playlists('thumbnail_file', ['playlist' => $id]);
+
+        if (!$file || !file_exists($file)) {
+            $this->error(OB_ERROR_NOTFOUND);
+        } else {
+            // if version is specified, allow cache if version matches expected
+            if (($_GET['v'] ?? null) && $_GET['v'] == filemtime($file) && $playlist['status'] == 'public') {
                 header('Cache-Control: public, max-age=' . (60 * 60 * 24 * 7)); // cache for 7 days
             }
             Helpers::sendfile($file);
