@@ -296,7 +296,7 @@ class Playlists extends Model
      *
      * @return [num_results, playlists]
      */
-    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false, $owner = null, $group = null, $type = null)
+    public function search($query, $limit, $offset, $sort_by, $sort_dir, $my = false, $owner = null, $group = null, $type = null, $public = null)
     {
         $where_strings = [];
 
@@ -332,6 +332,11 @@ class Playlists extends Model
         // filter by group
         if (!empty($group)) {
             $where_strings[] = 'playlists.id IN (SELECT playlist_id FROM playlists_permissions_groups WHERE group_id = "' . $this->db->escape($group) . '")';
+        }
+
+        // allow filtering by public static separately
+        if (isset($public) && $public) {
+            $where_strings[] = 'status = "public"';
         }
 
         if (count($where_strings) > 0) {

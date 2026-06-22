@@ -144,8 +144,9 @@ class Playlists extends Controller
 
         $owner = $this->data('owner');
         $group = $this->data('group');
+        $public = $this->data('public'); // if set, limit to public only (undocumented, may need rework in future refactor)
 
-        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my, $owner, $group, $type);
+        $search_result = $this->models->playlists('search', $query, $limit, $offset, $sort_by, $sort_dir, $my, $owner, $group, $type, $public);
 
         foreach ($search_result['playlists'] as &$playlist) {
             $playlist['can_edit'] = $this->user_can_edit($playlist);
