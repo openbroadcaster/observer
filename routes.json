@@ -181,7 +181,7 @@
             "thumbnail"
         ],
         [
-            "/api/downloads/playlists/(:id:)/thumbnail",
+            "/api/v2/downloads/playlists/(:id:)/thumbnail",
             "downloads",
             "playlistThumbnail"
         ],

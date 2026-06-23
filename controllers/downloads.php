@@ -196,7 +196,7 @@ class Downloads extends OBFController
      *
      * @param id Playlist ID
      *
-     * @route GET /downloads/playlists/(:id:)/thumbnail/
+     * @route GET /v2/downloads/playlists/(:id:)/thumbnail/
      */
     public function playlistThumbnail()
     {
@@ -217,7 +217,7 @@ class Downloads extends OBFController
             if (($_GET['v'] ?? null) && $_GET['v'] == filemtime($file) && $playlist['status'] == 'public') {
                 header('Cache-Control: public, max-age=' . (60 * 60 * 24 * 7)); // cache for 7 days
             }
-            Helpers::sendfile($file);
+            OBFHelpers::sendfile($file);
         }
     }
 

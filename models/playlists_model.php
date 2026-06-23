@@ -1076,7 +1076,7 @@ class PlaylistsModel extends OBFModel
      */
     public function thumbnail_file($args = [])
     {
-        Helpers::require_args($args, ['playlist']);
+        OBFHelpers::require_args($args, ['playlist']);
 
         if (! is_array($args['playlist'])) {
             $this->db->where('id', $args['playlist']);
@@ -1089,7 +1089,7 @@ class PlaylistsModel extends OBFModel
             $playlist = $args['playlist'];
         }
 
-        Helpers::require_args($playlist, ['file_location']);
+        OBFHelpers::require_args($playlist, ['file_location']);
         if (strlen($playlist['file_location']) != 2) {
             trigger_error('Invalid playlist file location.', E_USER_WARNING);
             return false;
@@ -1127,7 +1127,7 @@ class PlaylistsModel extends OBFModel
         $output_file = $output_dir . '/' . $playlist['id'] . '.webp';
 
         // resize our image to a webp thumbnail
-        Helpers::image_resize($input_file, $output_file, 600, 600, $rotate);
+        OBFHelpers::image_resize($input_file, $output_file, 600, 600, $rotate);
 
         // return our file if it exists now
         if (file_exists($output_file)) {
