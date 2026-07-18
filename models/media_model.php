@@ -357,7 +357,7 @@ class MediaModel extends OBFModel
 
         $output_dir = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
         if (!is_dir($output_dir)) {
-            mkdir($output_dir, 0777, true);
+            @mkdir($output_dir, 0777, true);
         }
         $output_file = $output_dir . '/' . $media['id'] . '.webp';
 
