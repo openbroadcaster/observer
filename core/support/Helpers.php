@@ -111,7 +111,7 @@ class Helpers
     public static function image_format($filename)
     {
         if (!file_exists($filename)) {
-            trigger_error('This file does not exist', E_USER_WARNING);
+            //trigger_error('This file does not exist', E_USER_WARNING);
             return false;
         }
 
@@ -162,33 +162,31 @@ class Helpers
         // get destination directory and create if it doesn't exist
         $dst_pathinfo = pathinfo($dst);
         if (!is_dir($dst_pathinfo['dirname'])) {
-            mkdir($dst_pathinfo['dirname'], 0777, true);
-            echo $dst_pathinfo['dirname'];
+            @mkdir($dst_pathinfo['dirname'], 0777, true);
         }
 
         // make sure it exists now
         if (!is_dir($dst_pathinfo['dirname'])) {
-            echo 'foo';
-            trigger_error('Unable to create destination directory.', E_USER_WARNING);
+            //trigger_error('Unable to create destination directory.', E_USER_WARNING);
             return false;
         }
 
         // and we can write to it
         if (!is_writeable($dst_pathinfo['dirname'])) {
-            echo 'bar';
-            trigger_error('The destination directory is not writeable', E_USER_WARNING);
+            //trigger_error('The destination directory is not writeable', E_USER_WARNING);
             return false;
         }
 
         // figure out image format
         $format = Helpers::image_format($src);
         if (!$format) {
-            trigger_error('Unable to determine image format', E_USER_WARNING);
+            //trigger_error('Unable to determine image format', E_USER_WARNING);
             return false;
         }
 
         if ($format == 'svg' && !extension_loaded('imagick')) {
-            trigger_error('The ImageMagick (imagick) extension is required.', E_USER_ERROR);
+            //trigger_error('The ImageMagick (imagick) extension is required.', E_USER_ERROR);
+            return false;
         }
 
         $im = new Imagick();

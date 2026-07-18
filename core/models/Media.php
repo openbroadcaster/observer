@@ -364,7 +364,7 @@ class Media extends Model
 
         $output_dir = OB_CACHE . '/thumbnails/media/' . $media['file_location'][0] . '/' . $media['file_location'][1];
         if (!is_dir($output_dir)) {
-            mkdir($output_dir, 0777, true);
+            @mkdir($output_dir, 0777, true);
         }
         $output_file = $output_dir . '/' . $media['id'] . '.webp';
 
@@ -2086,7 +2086,7 @@ class Media extends Model
             // create original version file
             $dst_dir = (defined('OB_MEDIA_VERSIONS') ? OB_MEDIA_VERSIONS : OB_MEDIA . '/versions') . '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
             if (!is_dir($dst_dir)) {
-                mkdir($dst_dir, 0755, true);
+                @mkdir($dst_dir, 0755, true);
             }
             $dst_file = $dst_dir . '/' . $media_id . '-0.' . $media['format'];
             if (!file_exists($dst_file)) {
@@ -2162,7 +2162,7 @@ class Media extends Model
         $dst_dir .= '/' . $media['file_location'][0] . '/' . $media['file_location'][1];
 
         if (!is_dir($dst_dir)) {
-            mkdir($dst_dir, 0755, true);
+            @mkdir($dst_dir, 0755, true);
         }
 
         $created = time();
@@ -2803,7 +2803,7 @@ class Media extends Model
 
         foreach ($requiredDirs as $checkDir) {
             if (!file_exists($checkDir)) {
-                mkdir($checkDir, 0755, true);
+                @mkdir($checkDir, 0755, true);
             }
         }
 
