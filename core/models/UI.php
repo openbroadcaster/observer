@@ -232,7 +232,7 @@ class UI extends Model
             // scan if directory
             if (is_dir($dirfile) && $file[0] != '.') {
                 $this->find_files($dirfile, $ext, $array);
-            } elseif (is_file($dirfile)) {
+            } elseif (is_file($dirfile) && (! $ext || pathinfo($dirfile)['extension'] === $ext)) {
                 // Remove all path before and including /public/ since files will be served from there
                 // by default.
                 $publicPos = strrpos($dirfile, '/public/');
