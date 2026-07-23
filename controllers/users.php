@@ -56,6 +56,14 @@ class Users extends OBFController
     public function user_list()
     {
         $users = $this->models->users('user_list');
+
+        if (! $this->user->check_permission('manage_users')) {
+            $users = array_map(fn($user) => [
+                'display_name' => $user['display_name'],
+                'id' => $user['id'],
+            ], $users);
+        }
+
         return [true,'User list.',$users];
     }
 
