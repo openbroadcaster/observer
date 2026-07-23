@@ -14,9 +14,12 @@ class OBFieldUser extends OBField {
 
             if (!result.status) return false;
 
-            // create an object linking language "id" with language "ref_name"
             for (const user of result.data) {
-                OBFieldUser.users[user.id] = user.display_name + " (" + user.email + ")";
+                if (user.email) {
+                    OBFieldUser.users[user.id] = user.display_name + " (" + user.email + ")";
+                } else {
+                    OBFieldUser.users[user.id] = user.display_name;
+                }
             }
         }
     }
