@@ -111,7 +111,7 @@ class Remote
             if ($password_info['algo'] == 0) {
                 $password_match = $this->player->password == sha1(OB_HASH_SALT . $_REQUEST['pw']);
             } else {
-                $password_match = password_verify($_REQUEST['pw'] . OB_HASH_SALT, $this->player->password);
+                $password_match = password_verify(($_REQUEST['pw'] ?? '') . OB_HASH_SALT, $this->player->password);
             }
         } else {
             $password_match = false;
