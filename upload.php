@@ -17,21 +17,23 @@ if (!empty($_POST['i']) && !empty($_POST['k'])) {
     $auth_key = $_POST['k'];
 }
 
-/*
-// disabled, should no longer be used.
 // if not in post, try fetching from cookie.
 elseif(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
 {
   $auth_id = $_COOKIE['ob_auth_id'];
   $auth_key = $_COOKIE['ob_auth_key'];
 }
-*/
 
-// this is another comment
+// Authenticate user
 if (empty($_POST['appkey'])) {
-    $user->auth($auth_id, $auth_key);
+    $auth = $user->auth($auth_id, $auth_key);
 } else {
-    $user->auth_appkey($_POST['appkey'], [['media','save']]);
+    $auth = $user->auth_appkey($_POST['appkey'], [['media','save']]);
+}
+
+if (! $auth) {
+    echo json_encode(['error' => 'Authentication failed.']);
+    die();
 }
 
 // define our class, create instance, handle upload.
