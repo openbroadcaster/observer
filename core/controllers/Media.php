@@ -467,6 +467,17 @@ class Media extends Controller
         $this->user->require_authenticated();
 
         $id = $this->data('id');
+        $media = $this->models->media('get_by_id', ['id' => $id]);
+
+        //T Media not found.
+        if (!$media) {
+            return [false,'Media not found.'];
+        }
+
+        if ($media['status'] == 'private' && $media['owner_id'] != $this->user->param('id')) {
+            $this->user->require_permission('manage_media');
+        }
+
         $properties = $this->models->media('properties', ['id' => $id]);
 
         return [true, 'Properties.', $properties];
