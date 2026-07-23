@@ -941,4 +941,24 @@ Login at ' . OB_SITE;
         $this->db->where('users.id', $id);
         return $this->db->get_one('users');
     }
+
+    /**
+     * Check if user is admin.
+     *
+     * @param id
+     *
+     * @return is_admin
+     */
+    public function is_admin($id)
+    {
+        $this->db->where('users_to_groups.user_id', $id);
+        $this->db->where('users_to_groups.group_id', 1);
+        $admin = $this->db->get_one('users_to_groups');
+
+        if (! $admin) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

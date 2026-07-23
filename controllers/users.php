@@ -131,7 +131,40 @@ class Users extends OBFController
             }
         }
 
+        // If not admin, get current user group ids and all permissions attached to that.
+        // Then check which permissions are required for all the group ids. Fail if the
+        // selected group ids contain any permissions not currently held by the user.
         $data['group_ids'] = $this->data('group_ids');
+
+        if (! $this->user->is_admin) {
+            // Someone who manages users can remove permissions from existing users that they
+            // don't currently have themselves, but they should not be able to update anything
+            // on administrator accounts (this prevents demoting administrators)
+            if ($id && $this->models->users('is_admin', (int) $id)) {
+                return [false, 'Only administrators can update other administrator accounts.'];
+            }
+
+            // First, get all of our current user permission IDs in an array.
+            $groups = $this->user->get_group_ids();
+            $userPermissions = [];
+
+            foreach ($groups as $group) {
+                $permissions = $this->models->permissions('get_group_permissions', $group);
+                array_push($userPermissions, ...$permissions);
+            }
+            $userPermissions = array_values(array_unique($userPermissions));
+
+            // Now check all the permission IDs for the groups they want to set.
+            foreach ($data['group_ids'] as $group) {
+                $permissions = $this->models->permissions('get_group_permissions', $group);
+
+                foreach ($permissions as $permission) {
+                    if (! in_array($permission, $userPermissions)) {
+                        return [false, 'Selected groups contain permissions not held by current user.'];
+                    }
+                }
+            }
+        }
 
         $data['appkeys'] = $this->data('appkeys');
 
