@@ -11,7 +11,7 @@ class OBFieldSelect extends OBField {
     };
 
     addSelected(option) {
-        if (this.multiple && !this.selected.includes(option)) {
+        if (this.multiple && !this.selected.includes(option) && !this.selected.includes(parseInt(option))) {
             // add option to selected
             this.selected.push(option);
         } else if (!this.multiple) {
@@ -215,7 +215,7 @@ class OBFieldSelect extends OBField {
                 background-color: #e0e0e0;
             }
 
-            #input 
+            #input
             {
                 cursor: pointer;
                 width: 100%;
@@ -236,7 +236,7 @@ class OBFieldSelect extends OBField {
             }
 
             #input-filter {
-                // effectively hides the 
+                // effectively hides the
 
             }
 
