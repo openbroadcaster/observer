@@ -37,7 +37,7 @@ class Update20240731 extends Update
             mkdir(OB_THUMBNAILS . '/media', 0777, true);
         }
 
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(OB_THUMBNAILS . '/media'));
+        $rii = new RecursiveIteratorIterator(new \RecursiveDirectoryIterator(OB_THUMBNAILS . '/media'));
         $thumbnails = [];
         foreach ($rii as $file) {
             if ($file->isDir()) {
