@@ -385,8 +385,17 @@ class Account extends OBFController
         return $this->models->userstorage('get_all', $data);
     }
 
+    // expiry (in seconds) for each known nonce purpose. clients pick a purpose, not a duration,
+    // so they can't ask for an arbitrarily long-lived nonce.
+    private const NONCE_EXPIRY = [
+        'upload' => 1800, // uploads aren't checked until the whole file has reached the server, which can take a while.
+    ];
+    private const NONCE_EXPIRY_DEFAULT = 60;
+
     /**
      * Create a nonce for a one-time GET requests.
+     *
+     * @param purpose What the nonce will be used for. Determines how long it stays valid for.
      *
      * @route GET /v2/account/nonce/
      *
@@ -395,7 +404,10 @@ class Account extends OBFController
     public function nonce()
     {
         $this->user->require_authenticated();
-        $nonce = $this->user->create_nonce();
+
+        $seconds_valid = self::NONCE_EXPIRY[$this->data('purpose')] ?? self::NONCE_EXPIRY_DEFAULT;
+
+        $nonce = $this->user->create_nonce($seconds_valid);
         return [true, 'Nonce created.', ['nonce' => $nonce]];
     }
 }

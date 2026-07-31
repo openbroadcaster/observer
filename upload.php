@@ -8,18 +8,10 @@ require_once('components.php');
 // COMPLETE AUTHENTICATION, usually handled by api.php
 $user = OBFUser::get_instance();
 
-$auth_id = null;
-$auth_key = null;
-
-// get an ID/key pair for user authorization from the cookie.
-if (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
-{
-  $auth_id = $_COOKIE['ob_auth_id'];
-  $auth_key = $_COOKIE['ob_auth_key'];
-}
-
-// Authenticate user
-$auth = $user->auth($auth_id, $auth_key);
+// authenticate via a short-lived, single-use nonce (see Account::nonce()) rather than the
+// ob_auth_id/ob_auth_key cookie directly. this is a plain POST endpoint, so accepting the
+// cookie alone as authentication would make it forgeable via CSRF.
+$auth = !empty($_GET['nonce']) && $user->auth_nonce($_GET['nonce'], $_SERVER['REQUEST_URI']);
 
 if (! $auth) {
     echo json_encode(['error' => 'Authentication failed.']);

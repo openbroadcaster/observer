@@ -595,7 +595,12 @@ class OBFieldMedia extends OBField {
         }
 
         try {
-            const response = await fetch("/upload.php", {
+            const nonce = await OB.API.getNonce("upload");
+            if (!nonce) {
+                return false;
+            }
+
+            const response = await fetch("/upload.php?nonce=" + encodeURIComponent(nonce), {
                 method: "POST",
                 body: this.#blob,
             });

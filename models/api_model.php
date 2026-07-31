@@ -82,10 +82,17 @@ class ApiModel extends OBFModel
             }
         }
 
-        $ch = curl_init($this->api_url . 'upload.php');
+        // upload.php requires a short-lived nonce rather than accepting the auth cookie alone
+        // (see Account::nonce()), since a plain POST endpoint accepting cookie auth by itself
+        // would be forgeable via CSRF. 'upload' purpose gets a longer expiry (see
+        // Account::NONCE_EXPIRY) since, depending on server config, the nonce may not be
+        // checked until the whole upload has already reached the server.
+        $nonce_response = $this->call(['controller' => 'account', 'action' => 'nonce', 'data' => ['purpose' => 'upload']]);
+        if (empty($nonce_response->status) || empty($nonce_response->data->nonce)) {
+            return $nonce_response;
+        }
 
-        // we have login information. provide as cookie.  (ob_auth_id, ob_auth_key)
-        curl_setopt($ch, CURLOPT_COOKIE, 'ob_auth_id=' . $this->api_auth_id . '; ob_auth_key=' . $this->api_auth_key);
+        $ch = curl_init($this->api_url . 'upload.php?nonce=' . urlencode($nonce_response->data->nonce));
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_PUT, true);
