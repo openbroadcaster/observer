@@ -11,25 +11,15 @@ $user = OBFUser::get_instance();
 $auth_id = null;
 $auth_key = null;
 
-// try to get an ID/key pair for user authorization.
-if (!empty($_POST['i']) && !empty($_POST['k'])) {
-    $auth_id = $_POST['i'];
-    $auth_key = $_POST['k'];
-}
-
-// if not in post, try fetching from cookie.
-elseif(!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
+// get an ID/key pair for user authorization from the cookie.
+if (!empty($_COOKIE['ob_auth_id']) && !empty($_COOKIE['ob_auth_key']))
 {
   $auth_id = $_COOKIE['ob_auth_id'];
   $auth_key = $_COOKIE['ob_auth_key'];
 }
 
 // Authenticate user
-if (empty($_POST['appkey'])) {
-    $auth = $user->auth($auth_id, $auth_key);
-} else {
-    $auth = $user->auth_appkey($_POST['appkey'], [['media','save']]);
-}
+$auth = $user->auth($auth_id, $auth_key);
 
 if (! $auth) {
     echo json_encode(['error' => 'Authentication failed.']);
