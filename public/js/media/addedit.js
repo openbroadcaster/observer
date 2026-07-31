@@ -309,7 +309,7 @@ OB.Media.mediaUploaderNoop = function (event) {
     event.preventDefault();
 };
 
-OB.Media.mediaUploaderUpload = function () {
+OB.Media.mediaUploaderUpload = async function () {
     // already uploading? wait for last upload to finish (this will get called again).
     if (OB.Media.media_uploader_uploading) return;
 
@@ -321,8 +321,14 @@ OB.Media.mediaUploaderUpload = function () {
     OB.Media.media_uploader_uploading_count++;
     OB.Media.media_uploader_uploading = true;
 
+    const nonce = await OB.API.getNonce("upload");
+    if (!nonce) {
+        OB.Media.media_uploader_uploading = false;
+        return;
+    }
+
     $.ajax({
-        url: "/upload.php",
+        url: "/upload.php?nonce=" + encodeURIComponent(nonce),
         type: "POST",
         xhr: function () {
             myXhr = $.ajaxSettings.xhr();

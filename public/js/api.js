@@ -130,6 +130,19 @@ OB.API.postPromise = async function (controller, action, sdata) {
     });
 };
 
+// get a short-lived, single-use nonce for the current user (see Account::nonce()). used to
+// authenticate plain GET/POST requests (e.g. upload.php) that can't use the normal API auth,
+// without leaving them forgeable via CSRF. purpose determines expiry server-side (see
+// Account::NONCE_EXPIRY); omit it for the default (short) expiry.
+OB.API.getNonce = async function (purpose) {
+    const data = await OB.API.postPromise("account", "nonce", { purpose: purpose });
+    if (data.error) {
+        OB.UI.alert(data.error);
+        return null;
+    }
+    return data.data.nonce;
+};
+
 OB.API.abort = function (id) {
     if (!OB.API.ajax_list[id]) return;
     OB.API.ajax_list[id].abort();

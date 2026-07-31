@@ -45,12 +45,19 @@ OB.Media.versionUploaderNoop = function (event) {
     event.preventDefault();
 };
 
-OB.Media.versionUploaderUpload = function (file) {
+OB.Media.versionUploaderUpload = async function (file) {
     $("#media_upload_form").hide();
     $("#media_upload_progress").show();
 
+    const nonce = await OB.API.getNonce("upload");
+    if (!nonce) {
+        $("#media_upload_form").show();
+        $("#media_upload_progress").hide();
+        return;
+    }
+
     $.ajax({
-        url: "/upload.php",
+        url: "/upload.php?nonce=" + encodeURIComponent(nonce),
         type: "POST",
         xhr: function () {
             myXhr = $.ajaxSettings.xhr();
