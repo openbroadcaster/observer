@@ -58,13 +58,18 @@ class Upload extends OBFController
         $key = $this->randKey();
         $id = $this->db->insert('uploads', ['key' => $key, 'expiry' => strtotime('+24 hours')]);
 
+        $contentLength = (int) ($_SERVER["CONTENT_LENGTH"] ?? 0);
+
         $input = fopen("php://input", "r");
         $target = fopen(OB_ASSETS . '/uploads/' . $id, "w");
         $realSize = stream_copy_to_stream($input, $target);
         fclose($input);
         fclose($target);
 
-        if ($realSize != (int) $_SERVER["CONTENT_LENGTH"]) {
+        // reject if nothing was actually received, or if what we received doesn't match what was declared.
+        // (checking realSize/contentLength for equality alone isn't enough, since an empty request body
+        // paired with a missing/zero Content-Length would otherwise pass silently.)
+        if ($realSize === 0 || $contentLength === 0 || $realSize != $contentLength) {
             echo json_encode(['error' => 'File upload was not successful.  Please try again.']);
             unlink(OB_ASSETS . '/uploads/' . $id);
             return;
