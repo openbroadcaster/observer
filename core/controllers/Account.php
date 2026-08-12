@@ -192,7 +192,8 @@ class Account extends Controller
 
     /**
      * Send message to provided email to aid in recovering account with forgotten
-     * password.
+     * password. Does not change the password directly; emails a one-time link that
+     * must be clicked to actually confirm and complete the reset.
      *
      * @param email
      *
@@ -210,7 +211,29 @@ class Account extends Controller
 
         $this->models->users('forgotpass_process', $email);
 
-        return [true,'A new password has been emailed to you.'];
+        return [true,'A password reset link has been emailed to you.'];
+    }
+
+    /**
+     * Confirm a password reset requested via forgotpass(), using the one-time
+     * token from the link emailed to the account; generates and emails a new
+     * password for the account the token belongs to.
+     *
+     * This is meant to be opened directly in a browser from the emailed link, so
+     * it outputs a plain message instead of the usual JSON API response.
+     *
+     * @route GET /account/forgot/confirm
+     */
+    public function forgotpass_confirm()
+    {
+        header('Content-Type: text/plain; charset=utf-8');
+
+        $token = trim($_GET['token'] ?? '');
+
+        [, $msg] = $this->models->users('forgotpass_confirm', $token);
+
+        echo $msg;
+        die();
     }
 
     /**
