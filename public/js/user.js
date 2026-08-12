@@ -255,7 +255,7 @@ OB.User.manageUsersKeyAdd = function () {
             );
 
         $tr = $("<tr/>").attr("data-id", response.data.id);
-        $tr.append($("<td/>").html('<input type="text" class="user_appkey_name" value="' + response.data.name + '">'));
+        $tr.append($("<td/>").append($('<input type="text" class="user_appkey_name">').val(response.data.name)));
         $tr.append($("<td/>").text(format_timestamp(response.data.created)));
         $tr.append($("<td/>").text(format_timestamp(response.data.last_access)));
         $tr.append(
@@ -297,7 +297,7 @@ OB.User.manageUsersKeyLoad = function (id) {
 
         $.each(response.data, function (index, row) {
             $tr = $("<tr/>").attr("data-id", row.id);
-            $tr.append($("<td/>").html('<input type="text" class="user_appkey_name" value="' + row.name + '">'));
+            $tr.append($("<td/>").append($('<input type="text" class="user_appkey_name">').val(row.name)));
             $tr.append($("<td/>").text(format_timestamp(row.created)));
             $tr.append($("<td/>").text(format_timestamp(row.last_access)));
             $tr.append(

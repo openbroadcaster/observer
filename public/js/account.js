@@ -217,7 +217,7 @@ OB.Account.keyAdd = function () {
 
         $tr = $("<tr/>").attr("data-id", response.data.id);
         $tr.append(
-            $("<td/>").html('<input type="text" class="account_appkey_name" value="' + response.data.name + '">'),
+            $("<td/>").append($('<input type="text" class="account_appkey_name">').val(response.data.name)),
         );
         $tr.append($("<td/>").text(format_timestamp(response.data.created)));
         $tr.append($("<td/>").text(format_timestamp(response.data.last_access)));
@@ -284,7 +284,7 @@ OB.Account.keyLoad = function () {
         $("#account_appkey_table tbody").empty();
         $.each(response.data, function (index, row) {
             $tr = $("<tr/>").attr("data-id", row.id);
-            $tr.append($("<td/>").html('<input type="text" class="account_appkey_name" value="' + row.name + '">'));
+            $tr.append($("<td/>").append($('<input type="text" class="account_appkey_name">').val(row.name)));
             $tr.append($("<td/>").text(format_timestamp(row.created)));
             $tr.append($("<td/>").text(format_timestamp(row.last_access)));
             $tr.append(
