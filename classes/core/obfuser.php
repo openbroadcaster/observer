@@ -358,6 +358,33 @@ class OBFUser
     }
 
     /**
+     * Validate and consume a one-time nonce for a specific scope, without
+     * authenticating as the associated user like auth_nonce() does. Meant for
+     * one-off actions (e.g. a password reset link) rather than authorizing a
+     * whole request; always removes the nonce once looked up, so it can only
+     * ever be used once regardless of its delete_after_use setting.
+     *
+     * @return user_id the nonce was issued for, or FALSE if it's missing/expired/wrong scope.
+     */
+    public function consume_nonce($nonce, $scope)
+    {
+        $this->db->query('SELECT * FROM users_nonces WHERE
+            nonce = "' . $this->db->escape($nonce) . '" AND
+            scope = "' . $this->db->escape($scope) . '" AND
+            DATE_ADD(created, INTERVAL expiry SECOND) > NOW()');
+        $row = current($this->db->assoc_list());
+
+        if (!$row) {
+            return false;
+        }
+
+        $this->db->where('id', $row['id']);
+        $this->db->delete('users_nonces');
+
+        return $row['user_id'];
+    }
+
+    /**
      * Get a parameter from the userdata. Returns FALSE if no user is logged in.
      *
      * @param param
@@ -531,20 +558,23 @@ class OBFUser
     }
 
     /**
-     * Create a nonce for the current user.
+     * Create a nonce for the current user, or for another user if $user_id is
+     * provided (e.g. for flows like a password reset where nobody is logged in).
      */
-    public function create_nonce($expiry_seconds = null, $delete_after_use = null, $scope = null)
+    public function create_nonce($expiry_seconds = null, $delete_after_use = null, $scope = null, $user_id = null)
     {
-        if (!$this->param('id')) {
+        $user_id = $user_id ?? $this->param('id');
+
+        if (!$user_id) {
             return false;
         }
 
         // if not delete after use, see if we can reuse an existing nonce.
         if ($delete_after_use === false && (!$expiry_seconds || $expiry_seconds >= 60)) {
-            $this->db->query('SELECT nonce FROM users_nonces WHERE 
-                user_id = "' . $this->db->escape($this->param('id')) . '" AND 
-                scope = "' . $this->db->escape($scope) . '" AND 
-                delete_after_use = 0 AND 
+            $this->db->query('SELECT nonce FROM users_nonces WHERE
+                user_id = "' . $this->db->escape($user_id) . '" AND
+                scope = "' . $this->db->escape($scope) . '" AND
+                delete_after_use = 0 AND
                 DATE_ADD(created, INTERVAL 10 SECOND) > NOW()');
             $existing_nonce = $this->db->assoc_list();
 
@@ -556,7 +586,7 @@ class OBFUser
         $nonce = $this->random_key();
 
         $data = [
-            'user_id' => $this->param('id'),
+            'user_id' => $user_id,
             'nonce' => $nonce
         ];
 

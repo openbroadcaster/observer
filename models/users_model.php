@@ -795,24 +795,64 @@ class UsersModel extends OBFModel
         return [true,''];
     }
 
+    // path the password reset confirmation link points to. also used as the nonce
+    // scope, so a reset link can't be reused to authorize anything else.
+    private const FORGOTPASS_CONFIRM_PATH = '/api/v2/account/forgot/confirm';
+    private const FORGOTPASS_CONFIRM_EXPIRY = 1800; // 30 minutes
+
     /**
-     * Start the forgotten pass process for the provided email.
+     * Start the forgotten pass process for the provided email. Emails a one-time
+     * confirmation link rather than resetting the password immediately, so knowing
+     * someone's email address alone isn't enough to lock them out of their account.
      *
      * @param email
      */
     public function forgotpass_process($email)
     {
-        $password = $this->randpass();
-
-        $password_hash = $this->user->password_hash($password);
-
         $this->db->where('email', $email);
         $user = $this->db->get_one('users');
 
-        $this->db->where('id', $user['id']);
+        // invalidate any previously requested reset links for this account.
+        $this->db->where('user_id', $user['id']);
+        $this->db->where('scope', self::FORGOTPASS_CONFIRM_PATH);
+        $this->db->delete('users_nonces');
+
+        $token = $this->user->create_nonce(self::FORGOTPASS_CONFIRM_EXPIRY, true, self::FORGOTPASS_CONFIRM_PATH, $user['id']);
+
+        $link = rtrim(OB_SITE, '/') . self::FORGOTPASS_CONFIRM_PATH . '?token=' . $token;
+
+        $this('email_forgotpass_link', $email, $user['username'], $link);
+    }
+
+    /**
+     * Complete the forgotten pass process. Validates and consumes the one-time
+     * token from the link emailed in forgotpass_process(); if valid, generates
+     * and emails a new password for whichever account the token belonged to.
+     *
+     * @param token
+     *
+     * @return [is_valid, msg]
+     */
+    public function forgotpass_confirm($token)
+    {
+        $user_id = $this->user->consume_nonce($token, self::FORGOTPASS_CONFIRM_PATH);
+
+        if (!$user_id) {
+            return [false, 'This password reset link is invalid or has expired. Please request a new one.'];
+        }
+
+        $password = $this->randpass();
+        $password_hash = $this->user->password_hash($password);
+
+        $this->db->where('id', $user_id);
         $this->db->update('users', ['password' => $password_hash]);
 
-        $this('email_username_password', $email, $user['username'], $password);
+        $this->db->where('id', $user_id);
+        $user = $this->db->get_one('users');
+
+        $this('email_username_password', $user['email'], $user['username'], $password);
+
+        return [true, 'Your password has been reset. Check your email for your new password.'];
     }
 
     /**
@@ -923,6 +963,48 @@ Login at ' . OB_SITE;
         $mailer->FromName = OB_EMAIL_FROM;
 
         $mailer->Subject = 'Your OpenBroadcaster Account';
+
+        $mailer->AddAddress($email);
+
+        $mailer->Send();
+    }
+
+    /**
+     * Email a one-time password reset confirmation link to email address.
+     *
+     * @param email
+     * @param username
+     * @param link
+     */
+    public function email_forgotpass_link($email, $username, $link)
+    {
+        $mailer = new \PHPMailer\PHPMailer\PHPMailer();
+
+        if (defined('OB_EMAIL_HOST') && defined('OB_EMAIL_USER') && defined('OB_EMAIL_PASS') && defined('OB_EMAIL_TYPE') && defined('OB_EMAIL_PORT')) {
+            // WRFL custom code for SMTP email
+            require_once('extras/PHPMailer/src/SMTP.php');
+            $mailer->isSMTP();
+            $mailer->Host = OB_EMAIL_HOST;
+            $mailer->SMTPAuth = true;
+            $mailer->Username = OB_EMAIL_USER;
+            $mailer->Password = OB_EMAIL_PASS;
+            $mailer->SMTPSecure = OB_EMAIL_TYPE;
+            $mailer->Port = OB_EMAIL_PORT;
+        }
+
+        $mailer->Body = 'A password reset was requested for your OpenBroadcaster account (' . $username . ').
+
+If you made this request, click the link below within the next 30 minutes to reset your password and receive a new one by email:
+
+' . $link . '
+
+If you did not request this, you can safely ignore this email.';
+
+        $mailer->From = OB_EMAIL_REPLY;
+
+        $mailer->FromName = OB_EMAIL_FROM;
+
+        $mailer->Subject = 'OpenBroadcaster Password Reset';
 
         $mailer->AddAddress($email);
 
