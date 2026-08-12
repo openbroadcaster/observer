@@ -57,8 +57,31 @@ class ClientSettings extends OBFController
     public function set_welcome_page()
     {
         $this->user->require_permission('manage_global_client_storage');
-        $data = $this->data('client_welcome_page');
+        $data = $this->sanitize_welcome_page($this->data('client_welcome_page'));
         return $this->models->settings('setting_set', 'client_welcome_page', $data);
+    }
+
+    /**
+     * Strip the welcome page HTML down to what the editor's toolbar can actually
+     * produce (bold, italic, links, paragraphs/line breaks). This is rendered
+     * unescaped for every user on login, so it can't be trusted as-is: the editor
+     * widget is just a UI, nothing stops a request from setting arbitrary HTML
+     * directly through this endpoint.
+     *
+     * @param html
+     *
+     * @return sanitized_html
+     */
+    private function sanitize_welcome_page($html)
+    {
+        $config = \HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', 'p,br,b,strong,i,em,a[href]');
+        $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true]);
+        $config->set('Cache.SerializerPath', OB_CACHE);
+
+        $purifier = new \HTMLPurifier($config);
+
+        return $purifier->purify($html);
     }
 
     /**

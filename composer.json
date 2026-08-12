@@ -2,7 +2,8 @@
     "require": {
         "phpmailer/phpmailer": "^6.6",
         "sensiolabs/ansi-to-html": "^1.2",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^1.9",
+        "ezyang/htmlpurifier": "^4.19"
     },
     "config": {
         "allow-plugins": {
