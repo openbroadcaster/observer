@@ -887,7 +887,7 @@ class Users extends Model
         $password = '';
 
         while (strlen($password) < 8) {
-            $password .= $password_chars[rand(0, (strlen($password_chars) - 1))];
+            $password .= $password_chars[random_int(0, (strlen($password_chars) - 1))];
         }
 
         return $password;
