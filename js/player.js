@@ -42,8 +42,8 @@ OB.Player.playerOverview = function (orderby = "name", orderdesc = null) {
         }
 
         $.each(response.data, function (i, player) {
-            var dev_version = player.version == "" ? "<em>N/A</em>" : player.version;
-            var dev_lastip = player.last_ip_address;
+            var dev_version = player.version == "" ? "<em>N/A</em>" : htmlspecialchars(player.version);
+            var dev_lastip = htmlspecialchars(player.last_ip_address);
             var dev_conn_all = player.last_connect;
             var dev_conn_schedule = player.last_connect_schedule;
             var dev_conn_priority = player.last_connect_emergency;
