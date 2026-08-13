@@ -1,0 +1,23 @@
+<!--/*
+    Copyright 2012-2026 OpenBroadcaster, Inc.
+    SPDX-License-Identifier: AGPL-3.0-or-later
+*/-->
+
+<h1>Import Sample Data</h1>
+
+<p id="sampledata_module-info">Pick a sample data profile and click "Import" to seed your installation. The action is idempotent — items that already exist are skipped, never overwritten.</p>
+
+<table class="table">
+    <tr>
+        <td><label for="sampledata_module-profile">Profile</label></td>
+        <td><select id="sampledata_module-profile"></select></td>
+    </tr>
+    <tr>
+        <td colspan="2"><p id="sampledata_module-description"></p></td>
+    </tr>
+    <tr>
+        <td colspan="2"><button id="sampledata_module-import" class="button">Import Selected Profile</button></td>
+    </tr>
+</table>
+
+<pre id="sampledata_module-log" style="display: none; white-space: pre-wrap; background: #111; color: #eee; padding: 1em; border-radius: 4px; margin-top: 1em;"></pre>
