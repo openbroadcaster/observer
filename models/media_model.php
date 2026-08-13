@@ -1639,6 +1639,14 @@ class MediaModel extends OBFModel
             unset($item['metadata_' . $metadata_field['name']]);
         }
 
+        // filename and file_location are only ever set by this method itself, further
+        // down, based on $id/format (or preserved/regenerated from the original file) -
+        // never accepted from the client. they end up in filesystem paths (including
+        // deletes and moves) all over the codebase, so letting them through here would
+        // mean a plain metadata edit could point those operations at an arbitrary path.
+        unset($item['filename']);
+        unset($item['file_location']);
+
         // update or insert.
         if (!empty($id)) {
             // owner can't be reassigned through save; it's not client-controlled.
