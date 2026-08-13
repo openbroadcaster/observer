@@ -297,7 +297,7 @@ OB.Player.deletePlayerConfirm = function (player_id) {
    PLAYER MONITORING SECTION
 ========================= */
 
-OB.Player.monitor = function () {
+OB.Player.monitor = function (options = {}) {
     OB.UI.replaceMain("player/monitor.html");
 
     $("#monitor_date_start").attr("data-value", moment().subtract(1, "days"));
@@ -316,6 +316,15 @@ OB.Player.monitor = function () {
                 '<option value="' + item.id + '">' + htmlspecialchars(item.name) + "</option>",
             );
         });
+
+        if (options.media_id) {
+            $("#monitor_filter_field").val("media_id");
+            OB.Player.monitorFilterFieldChange();
+            $("#monitor_filter_operator").val("is");
+            $("#monitor_filter_value").val(options.media_id);
+            OB.Player.monitorFilterAdd();
+            OB.Player.monitorSearch();
+        }
     });
 };
 
