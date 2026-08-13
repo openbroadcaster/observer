@@ -297,6 +297,15 @@ class Helpers
             die();
         }
 
+        // no path this app builds should ever legitimately contain a '..' segment;
+        // reject outright as a backstop against traversal, regardless of which caller
+        // built $file or from what data.
+        if (preg_match('#(^|[\\\\/])\.\.([\\\\/]|$)#', $file)) {
+            http_response_code(500);
+
+            die();
+        }
+
         if ($download) {
             $type = 'application/octet-stream';
             header("Access-Control-Allow-Origin: *");
@@ -356,7 +365,11 @@ class Helpers
             $filedir = OB_MEDIA;
         }
 
-        return $filedir . '/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['filename'];
+        // filename/file_location should always be a bare id.ext / two-character shard
+        // (see Media::save()), but basename() them here too as a backstop so a
+        // traversal payload can never reach the filesystem via this path, even if bad
+        // data got into the db some other way.
+        return $filedir . '/' . basename($media['file_location'][0]) . '/' . basename($media['file_location'][1]) . '/' . basename($media['filename']);
     }
 
     /**
