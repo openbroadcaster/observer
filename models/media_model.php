@@ -1641,6 +1641,9 @@ class MediaModel extends OBFModel
 
         // update or insert.
         if (!empty($id)) {
+            // owner can't be reassigned through save; it's not client-controlled.
+            unset($item['owner_id']);
+
             $this->db->where('id', $id);
             $item['updated'] = time();
             $this->db->update('media', $item);
@@ -1649,9 +1652,8 @@ class MediaModel extends OBFModel
             $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
             $this->db->delete('shows_cache');
         } else {
-            if (!isset($item['owner_id'])) {
-                $item['owner_id'] = $this->user->param('id');
-            }
+            // owner is always the current user; not client-controlled (like playlists' save).
+            $item['owner_id'] = $this->user->param('id');
             $item['created'] = time();
             $item['updated'] = time();
 
