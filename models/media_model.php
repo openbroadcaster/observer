@@ -1659,6 +1659,10 @@ class MediaModel extends OBFModel
             // delete from shows_cache where this item has been scheduled.  should regenerate cache.
             $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
             $this->db->delete('shows_cache');
+
+            // same for liveassist button cache.
+            $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
+            $this->db->delete('shows_liveassist_buttons_cache');
         } else {
             // owner is always the current user; not client-controlled (like playlists' save).
             $item['owner_id'] = $this->user->param('id');
@@ -2497,6 +2501,10 @@ class MediaModel extends OBFModel
         // delete from shows_cache where this item has been scheduled.
         $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
         $this->db->delete('shows_cache');
+
+        // same for liveassist button cache.
+        $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
+        $this->db->delete('shows_liveassist_buttons_cache');
 
         // remove from schedules, schedules recurring
         $this->db->where('item_id', $id);

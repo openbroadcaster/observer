@@ -295,8 +295,8 @@ class Playlists extends OBFController
             $groups = $this->db->assoc_list();
 
             foreach ($groups as $group) {
-                $this->db->where('playlists_liveassist_button_id', $group['id']);
-                $this->db->delete('schedules_liveassist_buttons_cache');
+                $this->db->where('button_id', $group['id']);
+                $this->db->delete('shows_liveassist_buttons_cache');
             }
         }
 
