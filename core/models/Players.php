@@ -310,6 +310,9 @@ class Players extends Model
             ) {
                 $this->db->where('player_id', $id);
                 $this->db->delete('shows_cache');
+
+                $this->db->where('player_id', $id);
+                $this->db->delete('shows_liveassist_buttons_cache');
             } elseif ($original_player['default_playlist_id'] != $data['default_playlist_id']) {
                 // if we are changing the default playlist, clear the default playlist schedule cache for this player
                 $this->db->where('player_id', $id);

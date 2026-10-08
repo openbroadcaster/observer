@@ -15,8 +15,20 @@ class CleanShowsCache extends Cron
     {
         $db = \OpenBroadcaster\Support\DB::get_instance();
 
-        // remove cached schedule data for shows which stopped longer than 1 week ago (+/- some variablity due to timezones)
-        $db->query('DELETE FROM shows_cache where DATE_ADD(start, INTERVAL duration SECOND) < "' . date('Y-m-d H:i:s', strtotime('-1 week')) . '"');
+        $cutoff = strtotime('-1 week');
+
+        // remove cached schedule data for shows which stopped longer than 1 week ago (start is a unix timestamp)
+        $db->query('DELETE FROM shows_cache WHERE start + duration < ' . (int) $cutoff);
+        if ($db->error()) {
+            return false;
+        }
+
+        // remove cached liveassist button data for shows which started longer than 1 week ago
+        // (no duration stored; if a show runs longer than this, the cache is simply regenerated)
+        $db->query('DELETE FROM shows_liveassist_buttons_cache WHERE start < ' . (int) $cutoff);
+        if ($db->error()) {
+            return false;
+        }
 
         return true;
     }

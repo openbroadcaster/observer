@@ -416,22 +416,32 @@ class Schedule extends \OpenBroadcaster\Base\Remote
                 continue;
             } // playlist not available.
 
-            // $this->db->where('player_id', $this->player->id);
-            // $this->db->where('start', $show['start']);
-            // $this->db->where('playlists_liveassist_button_id', $button['id']);
-            // $cache = $this->db->get_one('schedules_liveassist_buttons_cache');
+            // see if we have resolved button items in our cache.
+            $this->db->where('player_id', $this->player->id);
+            $this->db->where('show_expanded_id', $show['exp_id']);
+            $this->db->where('start', $show['start']);
+            $this->db->where('button_id', $button['id']);
+            $cache = $this->db->get_one('shows_liveassist_buttons_cache');
 
-            /*
             if ($cache) {
-                $items = (array) json_decode($cache['data']);
+                $items = json_decode($cache['data'], true);
                 $cache_created = $cache['created'];
             } else {
-            */
                 $items = $this->PlaylistsModel('resolve', $button['button_playlist_id'], $this->player->id, $this->player->parent_player_id, $show_start);
                 $cache_created = time();
-                // $showxml->addChild('last_updated',$cache_created);
-                // $this->db->insert('schedules_liveassist_buttons_cache', array('player_id' => $this->player->id,'start' => $show['start'],'playlists_liveassist_button_id' => $button['id'],'data' => json_encode($items),'created' => $cache_created));
-            // }
+
+                // insert can fail on unique key if a concurrent request already cached this; that's fine.
+                if (is_array($items)) {
+                    $this->db->insert('shows_liveassist_buttons_cache', [
+                        'player_id' => $this->player->id,
+                        'show_expanded_id' => $show['exp_id'],
+                        'start' => $show['start'],
+                        'button_id' => $button['id'],
+                        'data' => json_encode($items),
+                        'created' => $cache_created
+                    ]);
+                }
+            }
 
             $group_xml = $buttons_xml->addChild('group');
             $group_xml->addChild('last_updated', $cache_created);
