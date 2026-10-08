@@ -271,8 +271,6 @@ class Media extends Model
      */
     public function get_init($args = [])
     {
-        $metadata_fields = $this->models->mediametadata('get_all');
-
         $this('get_init_what', ['metadata_fields' => $this->models->mediametadata('get_all_objects')]);
         $this('get_init_join');
     }
