@@ -10,6 +10,9 @@
  */
 class MediaMetadataModel extends OBFModel
 {
+    // raw media_metadata rows, cached for the request (cleared on writes in this model).
+    private $fields_cache = null;
+
     /**
      * Get all metadata columns as metadata objects.
      */
@@ -50,8 +53,13 @@ class MediaMetadataModel extends OBFModel
      */
     public function get_all()
     {
-        $this->db->orderby('order_id');
-        $fields = $this->db->get('media_metadata');
+        if ($this->fields_cache === null) {
+            $this->db->orderby('order_id');
+            $this->fields_cache = $this->db->get('media_metadata') ?: [];
+        }
+
+        // copy so settings are decoded fresh (callers get their own objects).
+        $fields = $this->fields_cache;
         if (!$fields) {
             return [];
         }
@@ -128,6 +136,7 @@ class MediaMetadataModel extends OBFModel
         }
 
         // save
+        $this->fields_cache = null;
         foreach ($order as $order_id => $field_id) {
             $this->db->where('id', $field_id);
             $this->db->update('media_metadata', ['order_id' => $order_id]);
@@ -247,6 +256,8 @@ class MediaMetadataModel extends OBFModel
 
         $save['settings'] = json_encode($save['settings']);
 
+        $this->fields_cache = null;
+
         if ($id) {
             $this->db->where('id', $id);
             return $this->db->update('media_metadata', $save);
@@ -301,6 +312,8 @@ class MediaMetadataModel extends OBFModel
         if (!$field) {
             return false;
         }
+
+        $this->fields_cache = null;
 
         $this->db->where('id', $id);
         $this->db->delete('media_metadata');
