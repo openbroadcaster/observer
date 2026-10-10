@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Admin",
+        "username": "admin",
+        "email": "admin@example.com",
+        "display_name": "Admin",
+        "password": "changeme",
+        "enabled": true,
+        "group": "Administrator",
+        "skip_if_exists": true
+    },
+    {
+        "name": "Basic User",
+        "username": "basic_user",
+        "email": "basic@example.com",
+        "display_name": "Basic User",
+        "password": "changeme",
+        "enabled": true,
+        "group": "Basic"
+    },
+    {
+        "name": "Manager",
+        "username": "manager",
+        "email": "manager@example.com",
+        "display_name": "Manager",
+        "password": "changeme",
+        "enabled": true,
+        "group": "Manager"
+    }
+]

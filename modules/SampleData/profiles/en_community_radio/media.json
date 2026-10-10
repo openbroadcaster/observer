@@ -1,0 +1,10 @@
+{
+    "url": "https://www.openbroadcaster.com/wp-content/uploads/2026/05/EN_Sample_Media_Ver_1.0.zip",
+    "description": "Official copyright-free sample media bundle from openbroadcaster.com — mix of audio (mp3/ogg), images (jpg/png), and video (mov/ogv).",
+    "default_categories_by_type": {
+        "audio": "Music",
+        "image": "Images",
+        "video": "Video",
+        "document": "Documents"
+    }
+}

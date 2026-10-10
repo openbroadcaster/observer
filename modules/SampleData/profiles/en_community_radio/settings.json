@@ -1,0 +1,13 @@
+{
+    "settings": {
+        "audio_formats": "flac,mp3,ogg,wav",
+        "video_formats": "avi,mpg,ogg",
+        "image_formats": "jpg,png",
+        "document_formats": "pdf",
+        "core_metadata": "{\"artist\":\"required\",\"album\":\"required\",\"year\":\"required\",\"category_id\":\"required\",\"country_id\":\"enabled\",\"language_id\":\"enabled\",\"comments\":\"enabled\"}"
+    },
+
+    "client_login_message": "Welcome to your Community Radio Station powered by OpenBroadcaster. Please log in to manage your station content, playlists, and schedules.",
+
+    "client_welcome_page": "<h2>Welcome to OpenBroadcaster</h2><p>Your community radio station is ready to go! Here are some things you can do:</p><ul><li><strong>Upload Media</strong> &mdash; Add music, audio, images, and video to your library</li><li><strong>Create Playlists</strong> &mdash; Organize your media into playlists for broadcast</li><li><strong>Schedule Shows</strong> &mdash; Set up your broadcast schedule on the Player Manager</li><li><strong>Manage Users</strong> &mdash; Add team members and assign permissions</li></ul><p>This station has been pre-configured with sample categories, genres, and playlists to help you get started. Feel free to modify or remove them as needed.</p><p>Need help? Visit <a href=\"https://openbroadcaster.com\" target=\"_blank\">openbroadcaster.com</a> for documentation and support.</p>"
+}

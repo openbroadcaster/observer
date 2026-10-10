@@ -1,0 +1,8 @@
+{
+    "name": "English Community Radio Station",
+    "description": "Sample data profile for an English-language community radio station. Populates categories, genres, users, permission groups, settings, custom metadata fields, playlists, and a sample schedule.",
+    "version": "1.0.0",
+    "author": "OpenBroadcaster",
+    "locale": "en",
+    "created": "2026-04-01"
+}

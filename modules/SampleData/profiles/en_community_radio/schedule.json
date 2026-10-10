@@ -1,0 +1,76 @@
+{
+    "player": {
+        "name": "Sample Player",
+        "timezone": "America/Toronto",
+        "support_audio": true,
+        "support_video": true,
+        "support_images": true
+    },
+
+    "shows": [
+        {
+            "title": "Morning Melodies",
+            "description": "Kickstart your day with the best mix of classic and contemporary tunes.",
+            "start_time": "06:00",
+            "duration": 120,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "News Hour",
+            "description": "Stay informed with the latest local, national, and international news stories.",
+            "start_time": "08:00",
+            "duration": 60,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Community Spotlight",
+            "description": "Highlighting local events, organizations, and people making a difference.",
+            "start_time": "09:00",
+            "duration": 120,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Lunchtime Jazz",
+            "description": "Enjoy a selection of smooth jazz tracks during your lunch break.",
+            "start_time": "11:00",
+            "duration": 60,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Indie Hour",
+            "description": "Discover emerging indie artists and bands from around the world.",
+            "start_time": "12:00",
+            "duration": 60,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Drive Time",
+            "description": "Get the latest traffic updates and upbeat tunes for your drive home.",
+            "start_time": "15:00",
+            "duration": 180,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Evening Chill",
+            "description": "Wind down with a mix of calming tracks and ambient sounds.",
+            "start_time": "18:00",
+            "duration": 120,
+            "mode": "daily",
+            "recurring_days": 180
+        },
+        {
+            "title": "Late Night Talk",
+            "description": "Join the conversation on various topics with expert guests and callers.",
+            "start_time": "20:00",
+            "duration": 240,
+            "mode": "daily",
+            "recurring_days": 180
+        }
+    ]
+}

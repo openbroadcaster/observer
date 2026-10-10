@@ -9,6 +9,7 @@ modules/*
 !modules/NowPlaying
 !modules/Logger
 !modules/Tutorial
+!modules/SampleData
 .*.swp
 .*.swo
 .well-known

@@ -1,0 +1,38 @@
+[
+    {
+        "name": "internal_memo",
+        "description": "Internal Memo (Private)",
+        "type": "textarea",
+        "visibility": "visible",
+        "mode": "optional",
+        "default": "",
+        "id3_key": ""
+    },
+    {
+        "name": "physical_tags",
+        "description": "Physical Tags",
+        "type": "tags",
+        "visibility": "public",
+        "mode": "optional",
+        "default": "",
+        "id3_key": "",
+        "tag_suggestions": [
+            "CD",
+            "Vinyl",
+            "Cassette",
+            "Digital",
+            "Donated",
+            "Library"
+        ]
+    },
+    {
+        "name": "day_parting",
+        "description": "Day Parting Tags",
+        "type": "select",
+        "visibility": "public",
+        "mode": "optional",
+        "default": "Anytime",
+        "id3_key": "",
+        "select_options": "Morning\nMidday\nAfternoon\nEvening\nOvernight\nAnytime"
+    }
+]
