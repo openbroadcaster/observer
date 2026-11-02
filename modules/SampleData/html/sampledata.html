@@ -1,0 +1,44 @@
+<!--/*
+    Copyright 2012-2026 OpenBroadcaster, Inc.
+    SPDX-License-Identifier: AGPL-3.0-or-later
+*/-->
+
+<div id="sampledata_module">
+    <h1 data-t>Import Sample Data</h1>
+
+    <obwidget id="sampledata_module-message" type="message"></obwidget>
+
+    <p id="sampledata_module-info" data-t>Checking this install…</p>
+
+    <div class="fieldrow">
+        <label for="sampledata_module-profile" data-t>Profile</label>
+        <select id="sampledata_module-profile"></select>
+    </div>
+
+    <p id="sampledata_module-description"></p>
+
+    <ob-element-button
+        id="sampledata_module-import"
+        data-text="Import Selected Profile"
+        data-icon-name="download"
+        data-icon-style="solid"
+        data-t
+        hidden
+        >Import Selected Profile</ob-element-button
+    >
+
+    <div id="sampledata_module-player" hidden>
+        <h2 data-t>Sample player sync details</h2>
+        <p data-t>Save these now. The password is only shown once.</p>
+        <div class="fieldrow">
+            <label data-t>Player ID</label>
+            <span id="sampledata_module-player-id"></span>
+        </div>
+        <div class="fieldrow">
+            <label data-t>Password</label>
+            <span id="sampledata_module-player-password"></span>
+        </div>
+    </div>
+
+    <pre id="sampledata_module-log" hidden></pre>
+</div>

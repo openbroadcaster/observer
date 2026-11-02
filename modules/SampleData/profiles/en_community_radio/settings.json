@@ -1,0 +1,8 @@
+{
+    "append_formats": {
+        "video_formats": ["mov"],
+        "document_formats": ["pdf"]
+    },
+    "client_login_message": "Welcome to your Community Radio Station powered by OpenBroadcaster. Please log in to manage your station content, playlists, and schedules.",
+    "client_welcome_page": "<p><strong>Welcome to your sample station.</strong> It's already set up with media, playlists, a player and a daily schedule, so you can see how everything fits together.</p><p>Change or remove any of it as you like.</p><p>Need help? Visit <a href=\"https://openbroadcaster.com\">openbroadcaster.com</a> for documentation and support.</p>"
+}

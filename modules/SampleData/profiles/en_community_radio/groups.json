@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Basic",
+        "permissions": ["create_own_media", "create_own_playlists"]
+    },
+    {
+        "name": "Manager",
+        "permissions": [
+            "advanced_show_scheduling",
+            "approve_own_media",
+            "create_own_media",
+            "create_own_playlists",
+            "download_media",
+            "manage_alerts",
+            "manage_media",
+            "manage_media_settings",
+            "manage_playlists",
+            "manage_timeslots",
+            "view_player_monitor"
+        ]
+    }
+]
