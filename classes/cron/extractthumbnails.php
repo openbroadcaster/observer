@@ -23,7 +23,7 @@ class ExtractThumbnails extends Cron
         $media = $db->assoc_list();
 
         foreach ($media as $item) {
-            $input_file = OB_MEDIA . '/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['filename'];
+            $input_file = \OBFHelpers::media_file($item);
             $output_dir = OB_THUMBNAILS . '/media/' . $item['file_location'][0] . '/' . $item['file_location'][1];
             $output_file = $output_dir . '/' . $item['id'] . '.webp';
 
@@ -36,7 +36,7 @@ class ExtractThumbnails extends Cron
             $thumbnail_search = glob(OB_THUMBNAILS . '/media/' . $item['file_location'][0] . '/' . $item['file_location'][1] . '/' . $item['id'] . '.*');
             foreach ($thumbnail_search as $thumbnail_file) {
                 $db->query('UPDATE media SET thumbnail_version = 2 WHERE id = ' . $db->escape($item['id']));
-                continue;
+                continue 2;
             }
 
             // no thumbnail in thumbnail dir, generate it
@@ -102,7 +102,8 @@ class ExtractThumbnails extends Cron
             mkdir($tmp_dir);
 
             // get 5 keyframes starting at 25% into the video.
-            $command = 'ffmpeg -ss ' . escapeshellarg($start) . ' -i ' . escapeshellarg($input_file) . ' -vf "select=eq(pict_type\,I), scale=w=600:h=600:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 -q:v 0 -compression_level 6 -lossless 1 ' . escapeshellarg($tmp_dir . '/thumb%04d.webp') . ' -hide_banner 2>&1';
+            // libwebp (not the default libwebp_anim) so each frame is a separate still image.
+            $command = 'ffmpeg -ss ' . escapeshellarg($start) . ' -i ' . escapeshellarg($input_file) . ' -vf "select=eq(pict_type\,I), scale=w=600:h=600:force_original_aspect_ratio=decrease" -vsync vfr -vframes 5 -c:v libwebp -q:v 80 -compression_level 6 ' . escapeshellarg($tmp_dir . '/thumb%04d.webp') . ' -hide_banner 2>&1';
             $return_var = 0;
             exec($command, $output, $return_var);
 
@@ -138,7 +139,7 @@ class ExtractThumbnails extends Cron
     {
         echo 'generating audio thumbnail for ' . $item['id'] . PHP_EOL;
 
-        $command = 'ffmpeg -y -i ' . escapeshellarg($input_file) . ' -vf "scale=w=600:h=600:force_original_aspect_ratio=decrease" -q:v 0 -compression_level 6 -lossless 1 ' . escapeshellarg($output_file) . ' -hide_banner 2>&1';
+        $command = 'ffmpeg -y -i ' . escapeshellarg($input_file) . ' -vf "scale=w=600:h=600:force_original_aspect_ratio=decrease" -c:v libwebp -q:v 80 -compression_level 6 ' . escapeshellarg($output_file) . ' -hide_banner 2>&1';
         $return_var = 0;
         exec($command, $output, $return_var);
         $success = true; // assume success, because will fail if no album art, but that's okay.
