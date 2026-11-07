@@ -8,7 +8,7 @@ class ExtractThumbnails extends Cron
 {
     public function interval(): int
     {
-        return 1;
+        return 60;
     }
 
     public function run(): bool
