@@ -1,6 +1,8 @@
 {
     "append_formats": {
-        "video_formats": ["mov"],
+        "audio_formats": ["flac", "mp3", "ogg", "webm", "mp4", "wav"],
+        "video_formats": ["avi", "mpg", "ogg", "wmv", "mov"],
+        "image_formats": ["jpg", "png", "tif", "svg"],
         "document_formats": ["pdf"]
     },
     "client_login_message": "Welcome to your Community Radio Station powered by OpenBroadcaster. Please log in to manage your station content, playlists, and schedules.",
