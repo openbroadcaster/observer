@@ -1305,6 +1305,9 @@ class MediaModel extends OBFModel
         $item = $args['item'];
         $skip_upload_check = $args['skip_upload_check'];
 
+        // keys other API clients may leave out; missing reads as null (as before), minus the warning.
+        $item['local_id'] ??= null;
+
         // check if id is valid (if editing)
         //T This media item no longer exists.
         if (!empty($item['id']) && !$this->db->id_exists('media', $item['id'])) {
@@ -1380,14 +1383,14 @@ class MediaModel extends OBFModel
             return [false,$item['local_id'],'The genre selected is no longer valid.'];
         }
         //T The language selected is no longer valid.
-        $this->db->where('language_id', $item['language']);
+        $this->db->where('language_id', $item['language'] ?? null);
         $exists = $this->db->get_one('languages');
         if (!empty($item['language']) && !$exists) {
             return [false,$item['local_id'],'The language selected is no longer valid.'];
         }
 
         //T The media status is not valid.
-        if ($item['status'] != 'private' && $item['status'] != 'visible' && $item['status'] != 'public') {
+        if (($item['status'] ?? null) != 'private' && ($item['status'] ?? null) != 'visible' && ($item['status'] ?? null) != 'public') {
             return [false,$item['local_id'],'The media status is not valid.'];
         }
 
@@ -1497,7 +1500,11 @@ class MediaModel extends OBFModel
 
         // grab some important values
         $id = isset($item['id']) ? $item['id'] : null;
-        $file_id = $item['file_id'];
+        $file_id = $item['file_id'] ?? null;
+
+        // CLI importers (tools/sync, tools/subsonic) have no logged-in user and pass the owner
+        // themselves. never taken from web requests, where the owner is always the current user.
+        $cli_owner_id = php_sapi_name() === 'cli' ? ($item['owner_id'] ?? null) : null;
         $file_info = (isset($item['file_info']) ? $item['file_info'] : null);
 
         $trimStart = $item['trim_start'] ?? null;
@@ -1522,13 +1529,13 @@ class MediaModel extends OBFModel
         }
 
         // some data might need cleanup
-        if ($item['is_copyright_owner'] != 1) {
+        if (($item['is_copyright_owner'] ?? null) != 1) {
             $item['is_copyright_owner'] = 0;
         }
-        if ($item['is_approved'] != 1) {
+        if (($item['is_approved'] ?? null) != 1) {
             $item['is_approved'] = 0;
         }
-        if ($item['dynamic_select'] != 1) {
+        if (($item['dynamic_select'] ?? null) != 1) {
             $item['dynamic_select'] = 0;
         }
 
@@ -1629,7 +1636,10 @@ class MediaModel extends OBFModel
                 }
                 $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
             } elseif ($metadata_field['type'] == 'coordinates') {
-                if ($item['metadata_' . $metadata_field['name']] === "") {
+                // empty: "" from a plain input, null from the coordinates widget, or left out
+                // entirely (e.g. field recordings); store NULL like the other field types do.
+                $coordinates = $item['metadata_' . $metadata_field['name']] ?? null;
+                if ($coordinates === "" || $coordinates === null) {
                     $metadata['metadata_' . $metadata_field['name']] = null;
                 } else {
                     $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
@@ -1671,7 +1681,12 @@ class MediaModel extends OBFModel
 
             $this->db->where('id', $id);
             $item['updated'] = time();
-            $this->db->update('media', $item);
+
+            // update failed: stop here (like a failed insert below) instead of carrying on with
+            // metadata/file changes and reporting the save as successful.
+            if (!$this->db->update('media', $item)) {
+                return false;
+            }
 
             // delete from shows_cache where this item has been scheduled.  should regenerate cache.
             $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
@@ -1682,11 +1697,17 @@ class MediaModel extends OBFModel
             $this->db->delete('shows_liveassist_buttons_cache');
         } else {
             // owner is always the current user; not client-controlled (like playlists' save).
-            $item['owner_id'] = $this->user->param('id');
+            $item['owner_id'] = $cli_owner_id ?? $this->user->param('id');
             $item['created'] = time();
             $item['updated'] = time();
 
             $id = $this->db->insert('media', $item);
+
+            // insert failed: stop here, before the uploaded file gets moved (as "<location>/.<format>")
+            // and its uploads row deleted.
+            if (!$id) {
+                return false;
+            }
         }
 
         // update or insert custom metadata
@@ -1700,6 +1721,10 @@ class MediaModel extends OBFModel
             $row['media_id'] = $id;
             $this->db->insert('media_tags', $row);
         }
+
+        // is_approved was unset above if this user can't change approval; the item keeps its
+        // current status then, so its file has to stay in the matching directory.
+        $is_approved = $item['is_approved'] ?? $original_media['is_approved'];
 
         // determine our file's name (may be used if we have a new file, or file requires renaming)
         // $filename_artist = preg_replace("/[^a-zA-Z0-9]/", "_", $item['artist']);
@@ -1730,7 +1755,7 @@ class MediaModel extends OBFModel
             // move our file to its home
             $file_src = OB_ASSETS . '/uploads/' . $file_id;
 
-            if ($item['is_approved'] == 0) {
+            if ($is_approved == 0) {
                 $file_dest = OB_MEDIA_UPLOADS . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA . $media_location . $filename;
@@ -1754,9 +1779,22 @@ class MediaModel extends OBFModel
             $data['file_location'] = $file_location;
             $data['file_hash'] = md5_file($file_dest);
 
+            // trimmed: store the trimmed file's duration, not the uploaded file's.
+            if ($trimStart || $trimEnd) {
+                $data['duration'] = $this('media_info', ['filename' => $file_dest])['duration'];
+            }
+
+            // replaced the file of an existing item: drop the old file's previews and streams,
+            // and reset stream_version so tools/stream/transcode.php builds new streams.
+            if ($original_media) {
+                $this->delete_cached(['media' => $original_media]);
+                $this->delete_streams($original_media);
+                $data['stream_version'] = null;
+            }
+
             $this->db->where('id', $id);
             $this->db->update('media', $data);
-        } elseif ($original_media && ($original_media['is_approved'] != $item['is_approved'] || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
+        } elseif ($original_media && ($original_media['is_approved'] != $is_approved || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
             // if we are not uploading new file, but we are changing approved status, we need to move our file. or we're changing the artist or title name (on which the filename is based).
             $media_location = '/' . $original_media['file_location'][0] . '/' . $original_media['file_location'][1] . '/';
 
@@ -1766,7 +1804,7 @@ class MediaModel extends OBFModel
                 $file_src = OB_MEDIA_UPLOADS . $media_location . $original_media['filename'];
             }
 
-            if ($item['is_approved'] == 1) {
+            if ($is_approved == 1) {
                 $file_dest = OB_MEDIA . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA_UPLOADS . $media_location . $filename;
@@ -2134,11 +2172,13 @@ class MediaModel extends OBFModel
         'format' => $version['format'],
         'duration' => $version['duration'],
         'file_hash' => $version['file_hash'],
-        'filename' => $new_version_filename
+        'filename' => $new_version_filename,
+        'stream_version' => null
         ]);
 
-        // delete media cache
+        // delete media cache and streams of the previous version
         $this->delete_cached(['media' => $media]);
+        $this->delete_streams($media);
 
         return [true, 'Version set.'];
     }
@@ -2316,6 +2356,7 @@ class MediaModel extends OBFModel
             }
 
             $this->delete_cached(['media' => $original_media[$id]]);
+            $this->delete_streams($original_media[$id], true);
 
             // store metadata of deleted media in case needed for reporting, etc.
             $this->db->insert('media_deleted', [
@@ -2349,9 +2390,35 @@ class MediaModel extends OBFModel
         $dh = opendir(OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1]);
 
         while (false !== ($entry = readdir($dh))) {
-            if (strpos($entry, $media['id'] . '_') === 0) {
+            if (strpos($entry, $media['id'] . '_') === 0 || $entry === $media['id'] . '.mp4') {
                 unlink(OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $entry);
             }
+        }
+    }
+
+    /**
+     * Remove a media item's HTTP stream files (written by tools/stream/transcode.php).
+     * Keeps thumb.jpg like transcode.php does when it re-transcodes, unless $all is set
+     * (media deleted), in which case the item's stream directory is removed entirely.
+     *
+     * @param media
+     * @param all
+     */
+    private function delete_streams($media, $all = false)
+    {
+        $dir = OB_CACHE . '/streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'];
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (glob($dir . '/*') as $file) {
+            if (is_file($file) && ($all || basename($file) !== 'thumb.jpg')) {
+                unlink($file);
+            }
+        }
+
+        if ($all) {
+            rmdir($dir);
         }
     }
 

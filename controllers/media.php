@@ -311,11 +311,11 @@ class Media extends OBFController
         // also trim artist/title (which is used to determine filename)
         foreach ($media as $index => $item) {
             if (!empty($item['file_id'])) {
-                $media[$index]['file_info'] = $this->models->uploads('file_info', $item['file_id'], $item['file_key']);
+                $media[$index]['file_info'] = $this->models->uploads('file_info', $item['file_id'], $item['file_key'] ?? null);
             }
 
-            $media[$index]['artist'] = trim($media[$index]['artist']);
-            $media[$index]['title'] = trim($media[$index]['title']);
+            $media[$index]['artist'] = trim($media[$index]['artist'] ?? '');
+            $media[$index]['title'] = trim($media[$index]['title'] ?? '');
         }
 
         // remove advanced permissions if we don't have permission to do that
@@ -357,6 +357,12 @@ class Media extends OBFController
             $items = [];
             foreach ($media as $item) {
                 $id = $this->models->media('save', ['item' => $item]);
+
+                if (!$id) {
+                    //T Unable to save media.
+                    return [false, 'Unable to save media.', [[false, $item['local_id'] ?? null, 'Unable to save media.']]];
+                }
+
                 $items[] = $id;
 
                 if (isset($item['thumbnail']) && $item['thumbnail'] !== "") {
