@@ -23,12 +23,6 @@ class ExtractThumbnails extends Cron
         $media = $db->assoc_list();
 
         foreach ($media as $item) {
-            // don't generate thumbnails for archived media files (these are in their own separate directory anyway and
-            // wouldn't be found)
-            if ($item['is_archived']) {
-                continue;
-            }
-
             $input_file = \OBFHelpers::media_file($item);
             $output_dir = OB_THUMBNAILS . '/media/' . $item['file_location'][0] . '/' . $item['file_location'][1];
             $output_file = $output_dir . '/' . $item['id'] . '.webp';
