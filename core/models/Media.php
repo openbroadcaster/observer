@@ -17,6 +17,17 @@ use OpenBroadcaster\Support\Helpers;
 class Media extends Model
 {
     /**
+     * Media table columns that save() writes from the item it's given. Every other
+     * media column (apart from custom metadata, handled separately) is set by the
+     * server only.
+     */
+    private const SAVE_COLUMNS = [
+        'title', 'artist', 'album', 'year', 'category_id', 'genre_id', 'country',
+        'language', 'comments', 'is_copyright_owner', 'is_approved', 'status',
+        'dynamic_select',
+    ];
+
+    /**
      * Return info about uploaded file.
      *
      * Originally in upload.php, moved here so it can be used elsewhere.
@@ -1529,6 +1540,9 @@ class Media extends Model
         $item = $args['item'];
         $skip_upload_check = $args['skip_upload_check'];
 
+        // keys other API clients may leave out; missing reads as null (as before), minus the warning.
+        $item['local_id'] ??= null;
+
         // check if id is valid (if editing)
         //T This media item no longer exists.
         if (!empty($item['id']) && !$this->db->id_exists('media', $item['id'])) {
@@ -1604,14 +1618,14 @@ class Media extends Model
             return [false,$item['local_id'],'The genre selected is no longer valid.'];
         }
         //T The language selected is no longer valid.
-        $this->db->where('language_id', $item['language']);
+        $this->db->where('language_id', $item['language'] ?? null);
         $exists = $this->db->get_one('languages');
         if (!empty($item['language']) && !$exists) {
             return [false,$item['local_id'],'The language selected is no longer valid.'];
         }
 
         //T The media status is not valid.
-        if ($item['status'] != 'private' && $item['status'] != 'visible' && $item['status'] != 'public') {
+        if (($item['status'] ?? null) != 'private' && ($item['status'] ?? null) != 'visible' && ($item['status'] ?? null) != 'public') {
             return [false,$item['local_id'],'The media status is not valid.'];
         }
 
@@ -1721,7 +1735,11 @@ class Media extends Model
 
         // grab some important values
         $id = isset($item['id']) ? $item['id'] : null;
-        $file_id = $item['file_id'];
+        $file_id = $item['file_id'] ?? null;
+
+        // CLI importers (tools/sync, tools/subsonic) have no logged-in user and pass the owner
+        // themselves. never taken from web requests, where the owner is always the current user.
+        $cli_owner_id = php_sapi_name() === 'cli' ? ($item['owner_id'] ?? null) : null;
         $file_info = (isset($item['file_info']) ? $item['file_info'] : null);
 
         $trimStart = $item['trim_start'] ?? null;
@@ -1746,13 +1764,13 @@ class Media extends Model
         }
 
         // some data might need cleanup
-        if ($item['is_copyright_owner'] != 1) {
+        if (($item['is_copyright_owner'] ?? null) != 1) {
             $item['is_copyright_owner'] = 0;
         }
-        if ($item['is_approved'] != 1) {
+        if (($item['is_approved'] ?? null) != 1) {
             $item['is_approved'] = 0;
         }
-        if ($item['dynamic_select'] != 1) {
+        if (($item['dynamic_select'] ?? null) != 1) {
             $item['dynamic_select'] = 0;
         }
 
@@ -1833,13 +1851,6 @@ class Media extends Model
             unset($item['advanced_permissions_groups']);
         }
 
-        // set our file info if we have it
-        if ($file_id) {
-            $item['duration'] = $file_info['duration'];
-            $item['type'] = $file_info['type'];
-            $item['format'] = $file_info['format'];
-        }
-
         // handle custom metadata
         $metadata_fields = $this->models->mediametadata('get_all');
         $metadata = [];
@@ -1860,7 +1871,10 @@ class Media extends Model
                 }
                 $metadata['metadata_' . $metadata_field['name']] = implode(',', $tags);
             } elseif ($metadata_field['type'] == 'coordinates') {
-                if ($item['metadata_' . $metadata_field['name']] === "") {
+                // empty: "" from a plain input, null from the coordinates widget, or left out
+                // entirely (e.g. field recordings); store NULL like the other field types do.
+                $coordinates = $item['metadata_' . $metadata_field['name']] ?? null;
+                if ($coordinates === "" || $coordinates === null) {
                     $metadata['metadata_' . $metadata_field['name']] = null;
                 } else {
                     $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
@@ -1872,13 +1886,28 @@ class Media extends Model
             unset($item['metadata_' . $metadata_field['name']]);
         }
 
-        // filename and file_location are only ever set by this method itself, further
-        // down, based on $id/format (or preserved/regenerated from the original file) -
-        // never accepted from the client. they end up in filesystem paths (including
-        // deletes and moves) all over the codebase, so letting them through here would
-        // mean a plain metadata edit could point those operations at an arbitrary path.
-        unset($item['filename']);
-        unset($item['file_location']);
+        // drop any media column the client isn't allowed to set (format, type, duration,
+        // filename, file_location, file_hash, is_archived, stream_version, owner_id, ...),
+        // the same way filename/file_location/owner_id were already ignored. format and
+        // filename end up in filesystem paths, so a plain metadata edit must never set
+        // them. custom metadata was pulled out above. keys that aren't media columns
+        // are left alone (they fail at the db as before). match the way the db layer
+        // resolves a key: case-insensitive, and "table.column" refers to column.
+        $this->db->query('SHOW COLUMNS FROM ' . $this->db->format_backticks('media'));
+        $protected_columns = array_map('strtolower', array_diff(array_column($this->db->assoc_list() ?: [], 'Field'), self::SAVE_COLUMNS));
+        foreach (array_keys($item) as $key) {
+            $column = strtolower(explode('.', $key, 2)[1] ?? $key);
+            if (in_array($column, $protected_columns, true)) {
+                unset($item[$key]);
+            }
+        }
+
+        // set our file info if we have it
+        if ($file_id) {
+            $item['duration'] = $file_info['duration'];
+            $item['type'] = $file_info['type'];
+            $item['format'] = $file_info['format'];
+        }
 
         // update or insert.
         if (!empty($id)) {
@@ -1887,7 +1916,12 @@ class Media extends Model
 
             $this->db->where('id', $id);
             $item['updated'] = time();
-            $this->db->update('media', $item);
+
+            // update failed: stop here (like a failed insert below) instead of carrying on with
+            // metadata/file changes and reporting the save as successful.
+            if (!$this->db->update('media', $item)) {
+                return false;
+            }
 
             // delete from shows_cache where this item has been scheduled.  should regenerate cache.
             $this->db->where_like('data', '"id":"' . $this->db->escape($id) . '"');
@@ -1898,11 +1932,17 @@ class Media extends Model
             $this->db->delete('shows_liveassist_buttons_cache');
         } else {
             // owner is always the current user; not client-controlled (like playlists' save).
-            $item['owner_id'] = $this->user->param('id');
+            $item['owner_id'] = $cli_owner_id ?? $this->user->param('id');
             $item['created'] = time();
             $item['updated'] = time();
 
             $id = $this->db->insert('media', $item);
+
+            // insert failed: stop here, before the uploaded file gets moved (as "<location>/.<format>")
+            // and its uploads row deleted.
+            if (!$id) {
+                return false;
+            }
         }
 
         // update or insert custom metadata
@@ -1916,6 +1956,10 @@ class Media extends Model
             $row['media_id'] = $id;
             $this->db->insert('media_tags', $row);
         }
+
+        // is_approved was unset above if this user can't change approval; the item keeps its
+        // current status then, so its file has to stay in the matching directory.
+        $is_approved = $item['is_approved'] ?? $original_media['is_approved'];
 
         // determine our file's name (may be used if we have a new file, or file requires renaming)
         // $filename_artist = preg_replace("/[^a-zA-Z0-9]/", "_", $item['artist']);
@@ -1946,7 +1990,7 @@ class Media extends Model
             // move our file to its home
             $file_src = OB_UPLOADS . '/' . $file_id;
 
-            if ($item['is_approved'] == 0) {
+            if ($is_approved == 0) {
                 $file_dest = OB_MEDIA_UNAPPROVED . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA . $media_location . $filename;
@@ -1970,9 +2014,22 @@ class Media extends Model
             $data['file_location'] = $file_location;
             $data['file_hash'] = md5_file($file_dest);
 
+            // trimmed: store the trimmed file's duration, not the uploaded file's.
+            if ($trimStart || $trimEnd) {
+                $data['duration'] = $this('media_info', ['filename' => $file_dest])['duration'];
+            }
+
+            // replaced the file of an existing item: drop the old file's previews and streams,
+            // and reset stream_version so tools/stream/transcode.php builds new streams.
+            if ($original_media) {
+                $this->delete_cached(['media' => $original_media]);
+                $this->delete_streams($original_media);
+                $data['stream_version'] = null;
+            }
+
             $this->db->where('id', $id);
             $this->db->update('media', $data);
-        } elseif ($original_media && ($original_media['is_approved'] != $item['is_approved'] || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
+        } elseif ($original_media && ($original_media['is_approved'] != $is_approved || $original_media['artist'] != $item['artist'] || $original_media['title'] != $item['title'])) {
             // if we are not uploading new file, but we are changing approved status, we need to move our file. or we're changing the artist or title name (on which the filename is based).
             $media_location = '/' . $original_media['file_location'][0] . '/' . $original_media['file_location'][1] . '/';
 
@@ -1982,7 +2039,7 @@ class Media extends Model
                 $file_src = OB_MEDIA_UNAPPROVED . $media_location . $original_media['filename'];
             }
 
-            if ($item['is_approved'] == 1) {
+            if ($is_approved == 1) {
                 $file_dest = OB_MEDIA . $media_location . $filename;
             } else {
                 $file_dest = OB_MEDIA_UNAPPROVED . $media_location . $filename;
@@ -2350,11 +2407,13 @@ class Media extends Model
         'format' => $version['format'],
         'duration' => $version['duration'],
         'file_hash' => $version['file_hash'],
-        'filename' => $new_version_filename
+        'filename' => $new_version_filename,
+        'stream_version' => null
         ]);
 
-        // delete media cache
+        // delete media cache and streams of the previous version
         $this->delete_cached(['media' => $media]);
+        $this->delete_streams($media);
 
         return [true, 'Version set.'];
     }
@@ -2532,6 +2591,7 @@ class Media extends Model
             }
 
             $this->delete_cached(['media' => $original_media[$id]]);
+            $this->delete_streams($original_media[$id], true);
 
             // store metadata of deleted media in case needed for reporting, etc.
             $this->db->insert('media_deleted', [
@@ -2565,9 +2625,35 @@ class Media extends Model
         $dh = opendir(OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1]);
 
         while (false !== ($entry = readdir($dh))) {
-            if (strpos($entry, $media['id'] . '_') === 0) {
+            if (strpos($entry, $media['id'] . '_') === 0 || $entry === $media['id'] . '.mp4') {
                 unlink(OB_CACHE . '/media/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $entry);
             }
+        }
+    }
+
+    /**
+     * Remove a media item's HTTP stream files (written by tools/stream/transcode.php).
+     * Keeps thumb.jpg like transcode.php does when it re-transcodes, unless $all is set
+     * (media deleted), in which case the item's stream directory is removed entirely.
+     *
+     * @param media
+     * @param all
+     */
+    private function delete_streams($media, $all = false)
+    {
+        $dir = OB_CACHE . '/streams/' . $media['file_location'][0] . '/' . $media['file_location'][1] . '/' . $media['id'];
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (glob($dir . '/*') as $file) {
+            if (is_file($file) && ($all || basename($file) !== 'thumb.jpg')) {
+                unlink($file);
+            }
+        }
+
+        if ($all) {
+            rmdir($dir);
         }
     }
 
