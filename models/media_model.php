@@ -1762,18 +1762,23 @@ class MediaModel extends OBFModel
             }
 
             // trim file first if trim_start and/or trim_end are set
+            $trimmed_duration = null;
             if ($trimStart || $trimEnd) {
                 $mediaStart = floatval($trimStart ?? 0.0);
                 $mediaEnd   = floatval($item['duration']) - $mediaStart - floatval($trimEnd ?? 0.0);
                 shell_exec('ffmpeg -ss ' . escapeshellarg($mediaStart) . ' -i ' . escapeshellarg($file_src) . ' -t ' . escapeshellarg($mediaEnd) . ' -c copy ' . escapeshellarg($file_dest));
+
+                // ffmpeg exits fine and writes a stub file even when the trim produced nothing
+                // (e.g. trim past the end), so judge the trim by the duration of what it wrote.
+                $trimmed_duration = is_file($file_dest) ? $this('media_info', ['filename' => $file_dest])['duration'] : null;
             } else {
                 rename($file_src, $file_dest);
             }
 
             // remove the upload: its file (still there if it was trimmed into a new file, since
-            // only an untrimmed upload gets moved) and its uploads row. keep the file if trimming
-            // didn't produce anything, so the recording isn't lost.
-            if (is_file($file_src) && is_file($file_dest)) {
+            // only an untrimmed upload gets moved) and its uploads row. keep the file if the trim
+            // didn't produce a playable file, so the recording isn't lost.
+            if (is_file($file_src) && $trimmed_duration > 0) {
                 unlink($file_src);
             }
             $this->db->where('id', $file_id);
@@ -1785,8 +1790,8 @@ class MediaModel extends OBFModel
             $data['file_hash'] = md5_file($file_dest);
 
             // trimmed: store the trimmed file's duration, not the uploaded file's.
-            if ($trimStart || $trimEnd) {
-                $data['duration'] = $this('media_info', ['filename' => $file_dest])['duration'];
+            if ($trimmed_duration > 0) {
+                $data['duration'] = $trimmed_duration;
             }
 
             // replaced the file of an existing item: drop the old file's previews and streams,
