@@ -1,0 +1,55 @@
+{
+    "player": {
+        "name": "Sample Player",
+        "description": "Sample player. It plays audio from its first sync.",
+        "timezone": "America/Toronto",
+        "support_audio": true,
+        "support_video": false,
+        "support_images": false,
+        "default_playlist": "Default Playlist",
+        "station_id_keys": ["16", "17", "18", "19"],
+        "station_id_image_duration": 15
+    },
+    "shows": [
+        {
+            "playlist": "Sample Playlist 2",
+            "start_time": "00:00",
+            "duration": 3600,
+            "days": 365
+        },
+        {
+            "playlist": "Basic",
+            "start_time": "12:00",
+            "duration": 3600,
+            "days": 365
+        },
+        {
+            "playlist": "Sample Playlist",
+            "start_time": "14:00",
+            "duration": 3600,
+            "days": 365,
+            "mode": "weekly",
+            "weekday": "Wednesday"
+        },
+        {
+            "playlist": "Sample Playlist",
+            "start_time": "16:00",
+            "duration": 3600,
+            "days": 365,
+            "mode": "xdays",
+            "every": 2
+        },
+        {
+            "playlist": "Sample Playlist",
+            "start_time": "19:00",
+            "duration": 3600,
+            "days": 365
+        },
+        {
+            "playlist": "Sample Playlist",
+            "start_time": "23:00",
+            "duration": 3600,
+            "days": 365
+        }
+    ]
+}

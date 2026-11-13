@@ -1,0 +1,36 @@
+[
+    {
+        "description": "Xmas music plays only December 23 to 26",
+        "type": "date",
+        "start": "2021-12-27",
+        "end": "2021-12-22",
+        "filters": {
+            "mode": "advanced",
+            "filters": [
+                {
+                    "filter": "metadata_day_parting",
+                    "description": "Day Parting Tags has \"Xmas\"",
+                    "op": "has",
+                    "val": "Xmas"
+                }
+            ]
+        }
+    },
+    {
+        "description": "Adult content plays only after 11:00 PM",
+        "type": "time",
+        "start": "06:00:00",
+        "end": "23:00:00",
+        "filters": {
+            "mode": "advanced",
+            "filters": [
+                {
+                    "filter": "metadata_day_parting",
+                    "description": "Day Parting Tags has \"Adult\"",
+                    "op": "has",
+                    "val": "Adult"
+                }
+            ]
+        }
+    }
+]

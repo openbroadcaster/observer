@@ -1,0 +1,328 @@
+[
+    {
+        "name": "Default Playlist",
+        "description": "Loops whenever no show is scheduled.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "media",
+                "key": "50"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "24"
+            },
+            {
+                "type": "media",
+                "key": "20"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "21"
+            },
+            {
+                "type": "media",
+                "key": "22"
+            },
+            {
+                "type": "media",
+                "key": "23"
+            }
+        ]
+    },
+    {
+        "name": "Sample Playlist",
+        "description": "Mix of music and video.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "15"
+            },
+            {
+                "type": "media",
+                "key": "24"
+            },
+            {
+                "type": "media",
+                "key": "20"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "21"
+            },
+            {
+                "type": "media",
+                "key": "22"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "dynamic",
+                "name": "Vallee",
+                "num_items": 1,
+                "image_duration": 15,
+                "query": {
+                    "mode": "advanced",
+                    "filters": [
+                        {
+                            "filter": "type",
+                            "description": "Media Type is \"Audio\"",
+                            "op": "is",
+                            "val": "audio"
+                        },
+                        {
+                            "filter": "artist",
+                            "description": "Artist contains \"vallee\"",
+                            "op": "like",
+                            "val": "vallee"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "media",
+                "key": "23"
+            }
+        ]
+    },
+    {
+        "name": "Sample Playlist 2",
+        "description": "Audio only.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "24"
+            },
+            {
+                "type": "media",
+                "key": "20"
+            },
+            {
+                "type": "media",
+                "key": "21"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "22"
+            },
+            {
+                "type": "media",
+                "key": "23"
+            }
+        ]
+    },
+    {
+        "name": "Scary Sounds",
+        "description": "Live Assist sound effects.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "media",
+                "key": "46"
+            },
+            {
+                "type": "media",
+                "key": "47"
+            },
+            {
+                "type": "media",
+                "key": "48"
+            },
+            {
+                "type": "media",
+                "key": "45"
+            },
+            {
+                "type": "media",
+                "key": "40"
+            },
+            {
+                "type": "media",
+                "key": "41"
+            },
+            {
+                "type": "media",
+                "key": "42"
+            },
+            {
+                "type": "media",
+                "key": "43"
+            },
+            {
+                "type": "media",
+                "key": "44"
+            }
+        ]
+    },
+    {
+        "name": "Strange Sounds",
+        "description": "Live Assist sound effects.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "media",
+                "key": "34"
+            },
+            {
+                "type": "media",
+                "key": "35"
+            },
+            {
+                "type": "media",
+                "key": "36"
+            },
+            {
+                "type": "media",
+                "key": "37"
+            },
+            {
+                "type": "media",
+                "key": "38"
+            },
+            {
+                "type": "media",
+                "key": "39"
+            }
+        ]
+    },
+    {
+        "name": "Animal",
+        "description": "Live Assist sound effects.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "media",
+                "key": "26"
+            },
+            {
+                "type": "media",
+                "key": "27"
+            },
+            {
+                "type": "media",
+                "key": "28"
+            },
+            {
+                "type": "media",
+                "key": "29"
+            },
+            {
+                "type": "media",
+                "key": "30"
+            },
+            {
+                "type": "media",
+                "key": "31"
+            },
+            {
+                "type": "media",
+                "key": "32"
+            },
+            {
+                "type": "media",
+                "key": "33"
+            }
+        ]
+    },
+    {
+        "name": "Live Assist",
+        "description": "Live Assist show with sound effect buttons.",
+        "type": "live_assist",
+        "items": [
+            {
+                "type": "media",
+                "key": "25"
+            },
+            {
+                "type": "media",
+                "key": "24"
+            },
+            {
+                "type": "media",
+                "key": "20"
+            },
+            {
+                "type": "media",
+                "key": "21"
+            },
+            {
+                "type": "media",
+                "key": "22"
+            },
+            {
+                "type": "media",
+                "key": "23"
+            }
+        ],
+        "buttons": ["Station ID", "Animal", "Strange Sounds", "Scary Sounds"]
+    },
+    {
+        "name": "Station ID",
+        "description": "Station identification clips.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "media",
+                "key": "16"
+            },
+            {
+                "type": "media",
+                "key": "18"
+            },
+            {
+                "type": "media",
+                "key": "19"
+            },
+            {
+                "type": "media",
+                "key": "17"
+            }
+        ]
+    },
+    {
+        "name": "Basic",
+        "description": "A small playlist of station IDs and sound effects.",
+        "type": "standard",
+        "items": [
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "48"
+            },
+            {
+                "type": "media",
+                "key": "40"
+            },
+            {
+                "type": "station_id"
+            },
+            {
+                "type": "media",
+                "key": "42"
+            }
+        ]
+    }
+]
