@@ -590,7 +590,11 @@ class OBFDB
      */
     public function format_backticks($value)
     {
-        return '`' . $this->escape($value) . '`';
+        // identifiers are quoted with backticks, so the only character that needs
+        // escaping is the backtick itself (by doubling it). mysqli_real_escape_string()
+        // is for string literals and leaves backticks alone, which would let a
+        // client-supplied column name close the identifier and inject SQL.
+        return '`' . str_replace('`', '``', (string) $value) . '`';
     }
 
     /**

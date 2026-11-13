@@ -12,6 +12,17 @@
 class MediaModel extends OBFModel
 {
     /**
+     * Media table columns that save() writes from the item it's given. Every other
+     * media column (apart from custom metadata, handled separately) is set by the
+     * server only.
+     */
+    private const SAVE_COLUMNS = [
+        'title', 'artist', 'album', 'year', 'category_id', 'genre_id', 'country',
+        'language', 'comments', 'is_copyright_owner', 'is_approved', 'status',
+        'dynamic_select',
+    ];
+
+    /**
      * Return info about uploaded file.
      *
      * Originally in upload.php, moved here so it can be used elsewhere.
@@ -1598,13 +1609,6 @@ class MediaModel extends OBFModel
             unset($item['advanced_permissions_groups']);
         }
 
-        // set our file info if we have it
-        if ($file_id) {
-            $item['duration'] = $file_info['duration'];
-            $item['type'] = $file_info['type'];
-            $item['format'] = $file_info['format'];
-        }
-
         // handle custom metadata
         $metadata_fields = $this->models->mediametadata('get_all');
         $metadata = [];
@@ -1637,13 +1641,28 @@ class MediaModel extends OBFModel
             unset($item['metadata_' . $metadata_field['name']]);
         }
 
-        // filename and file_location are only ever set by this method itself, further
-        // down, based on $id/format (or preserved/regenerated from the original file) -
-        // never accepted from the client. they end up in filesystem paths (including
-        // deletes and moves) all over the codebase, so letting them through here would
-        // mean a plain metadata edit could point those operations at an arbitrary path.
-        unset($item['filename']);
-        unset($item['file_location']);
+        // drop any media column the client isn't allowed to set (format, type, duration,
+        // filename, file_location, file_hash, is_archived, stream_version, owner_id, ...),
+        // the same way filename/file_location/owner_id were already ignored. format and
+        // filename end up in filesystem paths, so a plain metadata edit must never set
+        // them. custom metadata was pulled out above. keys that aren't media columns
+        // are left alone (they fail at the db as before). match the way the db layer
+        // resolves a key: case-insensitive, and "table.column" refers to column.
+        $this->db->query('SHOW COLUMNS FROM ' . $this->db->format_backticks('media'));
+        $protected_columns = array_map('strtolower', array_diff(array_column($this->db->assoc_list() ?: [], 'Field'), self::SAVE_COLUMNS));
+        foreach (array_keys($item) as $key) {
+            $column = strtolower(explode('.', $key, 2)[1] ?? $key);
+            if (in_array($column, $protected_columns, true)) {
+                unset($item[$key]);
+            }
+        }
+
+        // set our file info if we have it
+        if ($file_id) {
+            $item['duration'] = $file_info['duration'];
+            $item['type'] = $file_info['type'];
+            $item['format'] = $file_info['format'];
+        }
 
         // update or insert.
         if (!empty($id)) {
