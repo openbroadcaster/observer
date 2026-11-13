@@ -1880,7 +1880,15 @@ class Media extends Model
                     $metadata['metadata_' . $metadata_field['name']] = 'POINT(' . implode(',', $item['metadata_' . $metadata_field['name']]) . ')';
                 }
             } else {
-                $metadata['metadata_' . $metadata_field['name']] = $item['metadata_' . $metadata_field['name']] ?? null;
+                $value = $item['metadata_' . $metadata_field['name']] ?? null;
+
+                // an empty date/time/datetime/integer field means no value: store NULL (like a field
+                // that was never set) instead of letting the db turn '' into 0000-00-00, 00:00:00 or 0.
+                if ($value === '' && in_array($metadata_field['type'], ['date', 'time', 'datetime', 'integer'], true)) {
+                    $value = null;
+                }
+
+                $metadata['metadata_' . $metadata_field['name']] = $value;
             }
 
             unset($item['metadata_' . $metadata_field['name']]);
