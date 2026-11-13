@@ -2005,7 +2005,12 @@ class Media extends Model
                 rename($file_src, $file_dest);
             }
 
-            // remove file upload row from uploads table.
+            // remove the upload: its file (still there if it was trimmed into a new file, since
+            // only an untrimmed upload gets moved) and its uploads row. keep the file if trimming
+            // didn't produce anything, so the recording isn't lost.
+            if (is_file($file_src) && is_file($file_dest)) {
+                unlink($file_src);
+            }
             $this->db->where('id', $file_id);
             $this->db->delete('uploads');
 
