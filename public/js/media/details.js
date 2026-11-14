@@ -79,6 +79,17 @@ OB.MediaDetails.page = function (id) {
             document.querySelector("#media_details_restore").classList.remove("hidden");
         }
 
+        // allow users with player monitoring access to jump directly to filtered monitoring results.
+        if (
+            OB.Settings.permissions.indexOf("view_player_monitor") != -1 ||
+            OB.Settings.permissions.some((permission) => permission.indexOf("view_player_monitor:") == 0)
+        ) {
+            $("#media_details_monitoring").click(function () {
+                OB.Player.monitor({ media_id: id });
+            });
+            document.querySelector("#media_details_monitoring").classList.remove("hidden");
+        }
+
         // handle metadata
         $("#media_details_id").text(id);
         $("#media_details_thumbnail").val(item.thumbnail);
