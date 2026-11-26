@@ -459,7 +459,9 @@ class OBFDB
      */
     public function orderby($column, $dir = 'asc')
     {
-        if (!preg_match('/asc/i', $dir) && !preg_match('/desc/i', $dir)) {
+        // the direction goes into the query as is, so only asc or desc are allowed
+        $dir = strtolower(trim($dir));
+        if ($dir != 'asc' && $dir != 'desc') {
             $dir = 'asc';
         }
 
